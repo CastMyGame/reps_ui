@@ -1,5 +1,5 @@
-export const baseUrl = "http://localhost:8080"
-// export const baseUrl = "https://repsdev31.ue.r.appspot.com"
+// export const baseUrl = "http://localhost:8080"
+export const baseUrl = "https://repsdev31.ue.r.appspot.com"
 
 
 export const essayData = {
