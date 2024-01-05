@@ -66,6 +66,7 @@ word-wrap: break-word;
   align-items: center;
   height: 50vh;
   background-color: #f4f4f4;
+
 }
 
 /* Style for the form itself */
@@ -502,11 +503,14 @@ button:hover {
   background-color: purple;
   display: flex;
   flex-direction: row;
+  overflow-x: auto; /* This will add a horizontal scrollbar when content exceeds the container width */
+  white-space: nowrap; /* This will prevent content from wrapping to the next line */
+
+
 
 }
 
 .teacher-widget-half{
-  width: 50%;
   height: 300px;
   background-color: white;
   margin-right: 5px;
@@ -514,10 +518,10 @@ button:hover {
 
 }
 .teacher-widget-third{
-  width: 33%;
-  height: 300px;
+  height: auto;
   background-color: teal;
   margin-right: 5px;
+
 
 }
 
@@ -527,6 +531,8 @@ button:hover {
   display: flex;
   flex-direction: row;
   width: 100%;
+  background-color: grey;
+
 
 }
 
@@ -538,12 +544,12 @@ button:hover {
 
 
 .right-side-bar{
-  width: 15%;
+  width: 5%;
   background-color: orange;
 }
 
 .left-main{
-  width: 85%;
+  width: 95%;
 }
 
 
@@ -619,6 +625,19 @@ margin-bottom: 10px;
 
 }
 
+
+
+
+.vertical-text {
+  position: relative;
+  top: 500px;
+  margin-left: 210px;
+  transform: translateX(-50%) rotate(-90deg); /* Rotate text 90 degrees counter-clockwise */
+  transform-origin: 0 0; /* Set the origin point to the top-left corner */
+  white-space: nowrap; /* Prevent text from wrapping */
+  background-color: #fff; /* Background color to cover rotated content if needed */
+  padding: 5px 200px; /* Adjust padding as needed */
+}
 
 
 
@@ -706,11 +725,14 @@ table th tr {
 .widget-table {
   width: 100%;
   border-collapse: collapse;
+  font-size: x-small;
+
 }
 
 .widget-table-tr{
   background-color: turquoise;
-  color:white
+  color:white;
+  font-size: x-small;
 }
 
 

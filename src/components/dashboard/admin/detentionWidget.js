@@ -76,7 +76,7 @@ import { baseUrl } from '../../../utils/jsonData'
             <tr className="widget-table-tr"> {/* Moved the header row to thead */}
               <th>Name</th>
               <th>Infraction</th>
-              <th>Past Due</th>
+              <th>Inf Period</th>
             </tr>
           </thead>
     
@@ -95,7 +95,7 @@ import { baseUrl } from '../../../utils/jsonData'
                       </div>
                     </td>
                     <td>{x.infraction.infractionName}</td>
-                    <td>{days}</td>
+                    <td>{x.classPeriod}</td>
                   </tr>
                 );
               })

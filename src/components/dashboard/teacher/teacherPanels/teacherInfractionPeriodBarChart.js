@@ -1,98 +1,11 @@
-import React,{useState,useEffect} from 'react';
+import React from 'react';
 import { BarChart } from '@mui/x-charts/BarChart';
 import Typography from '@mui/material/Typography';
-import axios from 'axios';
-import { baseUrl } from '../../../../utils/jsonData';
 import { axisClasses } from '@mui/x-charts';
-
-const getCurrentWeekOfYear = () => {
-  const today = new Date();
-  const startOfYear = new Date(today.getFullYear(), 0, 1);
-  const dayOfYear = (today - startOfYear) / 86400000; // 86400000 ms in a day
-  return Math.ceil(dayOfYear / 7);
-};
-
-const getWeekNumber = (date) => {
-  const oneJan = new Date(date.getFullYear(), 0, 1);
-  const millisecondsInDay = 86400000; // 24 * 60 * 60 * 1000
-  return Math.ceil((((date - oneJan) / millisecondsInDay) + oneJan.getDay() + 1) / 7);
-};
+import { getIncidentByBehavior } from '../../global/helperFunctions';
 
 
-const TeacherInfractionOverPeriodBarChart = () => {
-  const [punishmentDataAssocTeacher, setPunishmentDataAssocTeacher] = useState([]);
-  const [punishmentData,setPunishmentData] = useState([])
-
-//Filters
-const filterPunishementsByLoggedInUser= (data) =>{
-  return data.filter(x=> x.teacherEmail === sessionStorage.getItem("email"));
-}
-
-const getStudentIdAssociatedToLoggedInUser = (data) => {
-  const studentIdArray = [];
-  const uniqueMap = new Map();
-
-  data.forEach(item => {
-    const studentId = item.student.studentIdNumber;
-
-    // If the studentIdNumber is not in the map, add it to studentIdArray and set its value in the map to true
-    if (!uniqueMap.has(studentId)) {
-      uniqueMap.set(studentId, true);
-      studentIdArray.push(studentId); // Add the studentId to the array
-    }
-  });
-
-  return studentIdArray; // Return the array containing unique student IDs
-}
-
-//takes list of id number
-
-  const getAllAssociatedPunishments = (data) => {
-    
-    return punishmentData.filter(punish => data.includes(punish.student.studentIdNumber));
-  }
-
-
-
-const headers = {
-  Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
-};
-
-const url = `${baseUrl}/punish/v1/punishments`;
-
-
-//Get All Punishments
-useEffect(() => {
-  axios
-    .get(url, { headers }) 
-    .then(function (response) {
-      setPunishmentData(response.data);
-    })
-    .catch(function (error) {
-      console.log(error);
-    });
-    
- 
-}, []);
-
-
-useEffect(()=>{
-    //Set Punishment By Loggined In User
- const teachersStudents =  filterPunishementsByLoggedInUser(punishmentData)
- const listOfStudents = getStudentIdAssociatedToLoggedInUser(teachersStudents);
- const listOfAllAssociatedPunishments = getAllAssociatedPunishments(listOfStudents)
- console.log(listOfStudents)
- setPunishmentDataAssocTeacher(listOfAllAssociatedPunishments)
-},[punishmentData])
-
-
-const getIncidentByBehavior = (behavioral) =>{
- const data = punishmentData.filter(item => item.infraction.infractionName === behavioral);
- return data.length
-}
-
-
-
+const TeacherInfractionOverPeriodBarChart = ({data = []}) => {
 
 const chartSetting = {
   yAxis: [
@@ -101,8 +14,8 @@ const chartSetting = {
     },
   ],
 
-  width: 500,
-  height: 200,
+  width: 900,
+  height: 260,
   sx: {
     [`.${axisClasses.left} .${axisClasses.label}`]: {
       transform: 'translate(-20px, 0)',
@@ -113,32 +26,32 @@ const chartSetting = {
 
 const dataset = [
   {
-    incidents: getIncidentByBehavior("Tardy"),
-    behavior: 'Tardy',
+    incidents: getIncidentByBehavior("Tardy",data),
+    behavior: 'Tardy'
   },
   {
-    incidents: getIncidentByBehavior("Disruptive Behavior"),
-    behavior: 'Disruptive Behavior',
+    incidents: getIncidentByBehavior("Disruptive Behavior",data),
+    behavior: 'Dis. Behavior',
   },
   {
-    incidents: getIncidentByBehavior("Horseplay"),
+    incidents: getIncidentByBehavior("Horseplay",data),
     behavior: 'Horseplay',
   },
   {
-    incidents: getIncidentByBehavior("Dress Code"),
+    incidents: getIncidentByBehavior("Dress Code",data),
     behavior: 'Dress Code',
   },
   {
-    incidents: getIncidentByBehavior("Unauthorized Device/Cell Phone"),
-    behavior: 'Unauthorized Device/Cell Phone',
+    incidents: getIncidentByBehavior("Unauthorized Device/Cell Phone",data),
+    behavior: 'Unauthorized Device',
   },
   {
-    incidents: getIncidentByBehavior("Behavioral Concern"),
-    behavior: 'Behavioral Concern',
+    incidents: getIncidentByBehavior("Behavioral Concern",data),
+    behavior: 'Bx Concern',
   },
   {
-    incidents: getIncidentByBehavior("Failure To Complete Work"),
-    behavior: 'Failure To Complete Work',
+    incidents: getIncidentByBehavior("Failure to Complete Work",data),
+    behavior: 'FTC',
   },
   
 ];

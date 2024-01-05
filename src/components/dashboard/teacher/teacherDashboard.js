@@ -18,7 +18,9 @@ import ShoutOutWidget from '../student/shoutOutWidget.js';
 import TeaherOverviewPanel from './teacherPanels/teacherOverview.js';
 import TeacherOverviewPanel from './teacherPanels/teacherOverview.js';
 import TeacherShoutOutWidget from './teacherPanels/teacherShoutOutWidget.js';
-
+import DetentionWidget from '../admin/detentionWidget.js';
+import ISSWidget from '../admin/issWidget.js';
+import DashboardIcon from '@mui/icons-material/Dashboard';
 
 const TeacherDashboard = () => {
   const [loggedIn, setLoggedIn] = useState(true);
@@ -32,9 +34,11 @@ const TeacherDashboard = () => {
     teacherDropdown:false,
     studentDropdown:false,
     toolsDropdown:false,
-    ftcDropdown:false
+    ftcDropdown:false,
+    newReferral:false,
   });
   const [punishmentFilter, setPunishmentFilter] =useState("OPEN")
+  const [sideBarOpen,setSideBarOpen]= useState(false)
 
 
 
@@ -103,7 +107,7 @@ const TeacherDashboard = () => {
       <>
         <div className ="app-bar">
           <Toolbar>
-       
+          <DashboardIcon onClick={()=>setPanelName("overview")} style={{color:"blue",backgroundColor:"black", marginRight:"10px"}}/>
             <Typography variant="h6" style={{ flexGrow: 1 }}>
               Welcome, {sessionStorage.getItem('userName')}
             </Typography>
@@ -122,6 +126,7 @@ const TeacherDashboard = () => {
       <div className = "student-main-content-menu">
       <div style={{display:"flex",backgroundColor:"rgb(25, 118, 210)"}}>
   
+
   {/* Punishment Drop Down */}
   <button 
     className='dropbtn' 
@@ -130,15 +135,19 @@ const TeacherDashboard = () => {
        setPanelName("punishment")}}
     style={{ flex: 1, outline:"1px solid  white", padding: "5px", textAlign: "center"}}
   >
-    Referals
+    Referals/Shoutouts
   </button>
   <div className={isDropdownOpen.referalDropdown ? 'dropdown-content show' : 'dropdown-content'}>
-    
+  <div onClick={()=>{
+        setIsDropdownOpen(false)
+        setPanelName("createPunishment")}}
+        className='dropdown-item'>Create New
+        </div>
+{renderDropdownContent(!isDropdownOpen.referalDropdown,"OPEN","View Open","punishment")}
+{renderDropdownContent(!isDropdownOpen.referalDropdown,"CFR","View CFR","punishment")}
+{renderDropdownContent(!isDropdownOpen.referalDropdown,"CLOSED","View Closed","punishment")}
+{renderDropdownContent(!isDropdownOpen.referalDropdown,"ALL","View All","punishment")}
 
-{renderDropdownContent(!isDropdownOpen.referalDropdown,"OPEN","Open","punishment")}
-{renderDropdownContent(!isDropdownOpen.referalDropdown,"CFR","CFR","punishment")}
-{renderDropdownContent(!isDropdownOpen.referalDropdown,"CLOSED","Closed","punishment")}
-{renderDropdownContent(!isDropdownOpen.referalDropdown,"ALL","All","punishment")}
   </div>
 
     {/* Student Drop Down */}
@@ -153,7 +162,7 @@ const TeacherDashboard = () => {
     Student
   </button>
       {/* Margin Left is used to move dropdown under the buttons */}
-  <div style={{marginLeft:"20%"}} className={isDropdownOpen.studentDropdown ? 'dropdown-content show' : 'dropdown-content'}>
+  <div style={{marginLeft:"25%"}} className={isDropdownOpen.studentDropdown ? 'dropdown-content show' : 'dropdown-content'}>
     <div onClick={()=>{
       setPanelName("student") 
       setIsDropdownOpen(!isDropdownOpen.studentDropdown)
@@ -174,7 +183,7 @@ const TeacherDashboard = () => {
     Tools
   </button>
       {/* Margin Left is used to move dropdown under the buttons */}
-  <div style={{marginLeft:"40%"}} className={isDropdownOpen.toolsDropdown ? 'dropdown-content show' : 'dropdown-content'}>
+  <div style={{marginLeft:"50%"}} className={isDropdownOpen.toolsDropdown ? 'dropdown-content show' : 'dropdown-content'}>
  
       <div onClick={()=>{
       setPanelName("createPunishment")  
@@ -196,7 +205,7 @@ const TeacherDashboard = () => {
     FTC
   </button>
       {/* Margin Left is used to move dropdown under the buttons */}
-  <div style={{marginLeft:"60%"}} className={isDropdownOpen.ftcDropdown ? 'dropdown-content show' : 'dropdown-content'}>
+  <div style={{marginLeft:"75%"}} className={isDropdownOpen.ftcDropdown ? 'dropdown-content show' : 'dropdown-content'}>
     <div onClick={()=>{
       setPanelName("ftc")  
       setIsDropdownOpen(!isDropdownOpen.ftcDropdown)
@@ -207,7 +216,7 @@ const TeacherDashboard = () => {
   </div>
   </div>
   <div className='sub-main'>
-  <div className='left-main'>
+  <div style={{width: sideBarOpen ?"70%":"95%"}} className='left-main'>
   <div className='teacher-overview'>
         <div className='teacher-overview-first'>
         <Card variant="outlined">
@@ -226,17 +235,29 @@ const TeacherDashboard = () => {
 
 
   </div>
-  <div className='right-side-bar'>
-    Side Bar
-  </div>
-
-
-  </div>
-
-
-   
-
-
+  <div style={{width: sideBarOpen ?"30%":"5%"}}className="sidebar-content">
+  {!sideBarOpen ? (
+    <div onClick={()=>setSideBarOpen(true)} className="vertical-text">
+      Click to open
+    </div>
+  ) : (
+    <>
+    <button onClick={()=>setSideBarOpen(false)}>Close (x)</button>
+    <div style={{marginBottom:"20px"}}>
+   < Card>
+        <DetentionWidget />
+      </Card>
+    </div>
+      <div>
+      <Card>
+      <ISSWidget />
+      </Card>
+      </div>
+  
+    </>
+  )}
+</div>
+</div>
       </div>
 
 
