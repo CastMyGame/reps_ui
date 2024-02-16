@@ -1,4 +1,3 @@
-//Centralize Api Here
 
 import axios from "axios";
 import { baseUrl } from "../jsonData";
@@ -60,5 +59,7 @@ export const post = async (endpoint, body) => {
       throw error;
     }
   };
+
+  
 
   

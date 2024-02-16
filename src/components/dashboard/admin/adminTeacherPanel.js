@@ -12,7 +12,6 @@ import 'jspdf-autotable';
 
 import { IncidentByStudentPieChart } from './widget/incident-by-student-pie-chart';
 import IncidentsByStudentTable from '../teacher/teacherPanels/incidentsByStudentTable';
-import { get } from '../../../utils/api/api';
 
    const AdminTeacherPanel = () => {
 	const [data, setData]= useState([])
@@ -23,46 +22,77 @@ import { get } from '../../../utils/api/api';
   const [filteredData, setFilteredData] = useState([]);
 
 
-
+    const headers = {
+      Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
+    };
     
+    const url = `${baseUrl}/employees/v1/employees/TEACHER`;
     
 
     useEffect(() => {
-      const fetchEmployeeData = async ()=>{
-        try{
-          const result = await get('employees/v1/employees/TEACHER')
-          setData(result)
-        }catch(err){
-          console.error('Error Fetching Data: ',err)
-        } 
-     
-      }
-
-      fetchEmployeeData();
-    
-    },[])
-
-
-
+      axios
+        .get(url, { headers }) // Pass the headers option with the JWT token
+        .then(function (response) {
+          setData(response.data);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    }, []);
 
 
 
 
 //Fetch Teacher Data 
-  const fetchTeacherData = async (teacherEmail)=>{
-    try{
-      const result = await get('punish/v1/punishments/')
-      const newData = result.filter(((x)=> x.teacherEmail === teacherEmail));
-      console.log("find me ", newData)
-      setTeacherProfileData(newData);
-      setTeacherProfileModal(true);  
-  
-  
-    }catch(err){
-      console.error('Error Fetching Data: ',err)
-    } 
- 
+
+const fetchTeacherData = async (teacherEmail) =>{
+  try{
+    const token = sessionStorage.getItem('Authorization');
+    const headers = { Authorization: `Bearer ${token}` };
+  //Replace with teacherendpoint
+  const punishUrl= `${baseUrl}/punish/v1/punishments/`;
+  const response = axios.get(punishUrl, { headers }) // Pass the headers option with the JWT token
+
+    const data = response.data;
+    console.log(teacherEmail)
+    const newData = data.filter(((x)=> x.teacherEmail === teacherEmail));
+    console.log("find me ", newData)
+    setTeacherProfileData(newData);
+    setTeacherProfileModal(true);  
+    
+console.log(newData)
+  } catch (error) {
+    if (error.response && error.response.status === 403) {
+      // Token might have expired, try refreshing the token
+      try {
+        // Implement token refresh logic here
+        // This might involve making a separate request to refresh the token
+        // Update the sessionStorage with the new token
+
+        // After refreshing the token, retry the original request
+        const newToken = sessionStorage.getItem('Authorization');
+        const newHeaders = { Authorization: `Bearer ${newToken}` };
+        const punishUrl= `${baseUrl}/punish/v1/punishments/`;
+        const response = axios.get(punishUrl, { headers }) // Pass the headers option with the JWT token
+
+        const data = response.data;
+        console.log(teacherEmail)
+        const newData = data.filter(((x)=> x.teacherEmail === teacherEmail));
+        console.log("find me ", newData)
+        setTeacherProfileData(newData);
+        setTeacherProfileModal(true);  
+    
+      } catch (refreshError) {
+        console.error('Error refreshing token:', refreshError);
+      }
+    } else {
+      console.error('Error fetching data:', error);
+    }
   }
+  fetchTeacherData();
+};
+
+
 
 const handleSearchChange = (e) => {
   setSearchQuery(e.target.value);
@@ -164,11 +194,11 @@ const generatePDF = (activeTeacher,studentData) => {
             </div>
             </div>
             <div  className='box-center'>
-            <IncidentsByStudentTable writeUps={teacherProfileData}/>
+            <IncidentsByStudentTable data={teacherProfileData}/>
 
             </div>
             <div className='box-right'>
-                              <IncidentByStudentPieChart writeUps={teacherProfileData}/>
+                              <IncidentByStudentPieChart data={teacherProfileData}/>
 
 
 
