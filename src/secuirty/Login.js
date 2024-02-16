@@ -92,22 +92,21 @@ export default function SignIn() {
     setWarningToast(false);
   };
 
-  const handleSubmit = (event) => {
+  
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const payload = {
       username: data.get('username'),
       password: data.get('password')
     }
-
-  setLoading(true);
-
- 
-axios.post(`${baseUrl}/auth`, payload)
-.then(function (res) {
-  if (res.data && res.data.userModel) {
-    const token = res.data.response;
-    const userName = res.data.userModel.firstName;
+    setLoading(true);
+  
+    try {
+      const res = await axios.post(`${baseUrl}/auth`, payload);
+      if (res.data && res.data.userModel) {
+        const token = res.data.response;
+        const userName = res.data.userModel.firstName;
     const schoolName = res.data.userModel.schoolName;
     const email = res.data.userModel.username;
     const role = res.data.userModel.roles[0]["role"]
@@ -120,40 +119,36 @@ axios.post(`${baseUrl}/auth`, payload)
 
     
     routeChange(role);
-  } else {
-    // Handle the case where the expected data is missing
-    console.error("Data or userModel is null or undefined in the response.");
-    // You can set a warning or error state here if needed
-    setLoading(false);
-    setWarningToast(true);
-    setTimeout(()=>{
-      setWarningToast(false);
-
-    },2000)
-    setFormData((prev) => ({
-      ...prev,
-      password: '',
-      username: ''
-    }));
-
-  }
-})
-.catch(function (error) {
-  console.error("Error:", error);
-  setLoading(false);
-  setWarningToast(true);
-  setTimeout(()=>{
-    setWarningToast(false);
-
-  },2000)
-  setFormData((prev) => ({
-    ...prev,
-    password: '',
-    username: ''
-  }));
-
-  // Handle the error as needed
-});
+  
+      } else {
+        // Handle the case where the expected data is missing
+        console.error("Data or userModel is null or undefined in the response.");
+        // You can set a warning or error state here if needed
+        setLoading(false);
+        setWarningToast(true);
+        setTimeout(() => {
+          setWarningToast(false);
+        }, 2000);
+        setFormData((prev) => ({
+          ...prev,
+          password: '',
+          username: '',
+        }));
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      setLoading(false);
+      setWarningToast(true);
+      setTimeout(() => {
+        setWarningToast(false);
+      }, 2000);
+      setFormData((prev) => ({
+        ...prev,
+        password: '',
+        username: '',
+      }));
+      // Handle the error as needed
+    }
   };
 
 

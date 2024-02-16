@@ -11,19 +11,30 @@ import {  Top5TeacherRatioTable } from './widget/top-5-ratio-table';
 import { WorseClassTable } from './widget/top-class-with-write-up';
 import { IncidentByStudentPieChart } from './widget/incident-by-student-pie-chart';
 import TeacherShoutOutWidget from '../teacher/teacherPanels/teacherShoutOutWidget';
+import { get } from '../../../utils/api/api';
 
-   const AdminOverviewPanel = ({data = []}) => {
+   const AdminOverviewPanel = ({punishmentData = [],teacherData = []}) => {
+    const [writeUpData,setWriteUpData] = useState([])
 
 
-  const dataExcludeNonReferrals = data.filter((x)=>{return (x.infraction.infractionName !=="Positive Behavior Shout Out!" && x.infraction.infractionName !=="Behavioral Concerns")})
-  const weeklyData = dataExcludeNonReferrals.filter((x) => {
-     const currentDate = new Date();
-     const itemDate = new Date(x.timeCreated);
-     const sevenDaysAgo = new Date(currentDate.setDate(currentDate.getDate() - 7));
-     return itemDate > sevenDaysAgo;
- });
+//Fetch Data to Prop Drill to Componetns
 
- const weeklyDataIncSOBxConcern = data.filter((x) => {
+useEffect(() => {
+  const fetchWriteUpData = async ()=>{
+    try{
+      const result = await get('punish/v1/writeUps')
+      setWriteUpData(result)
+    }catch(err){
+      console.error('Error Fetching Data: ',err)
+    } 
+ 
+  }
+  fetchWriteUpData();
+},[])
+
+
+
+ const weeklyDataIncSOBxConcern = punishmentData.filter((x) => {
     const currentDate = new Date();
     const itemDate = new Date(x.timeCreated);
     const sevenDaysAgo = new Date(currentDate.setDate(currentDate.getDate() - 7));
@@ -35,7 +46,7 @@ import TeacherShoutOutWidget from '../teacher/teacherPanels/teacherShoutOutWidge
         <>
                         <div className='teacher-overview-first'>
         <Card variant="outlined">
-        <TeacherShoutOutWidget data={data}/>
+        <TeacherShoutOutWidget data={punishmentData}/>
         </Card>
         </div>
          <div style={{backgroundColor:"rgb(25, 118, 210)",marginTop:"10px", marginBlock:"5px"}}>
@@ -50,7 +61,7 @@ import TeacherShoutOutWidget from '../teacher/teacherPanels/teacherShoutOutWidge
     <div className='teacher-widget-third'>
       {/* <Card> */}
     <div style={{ textAlign:"center",marginTop:"10px"}}>
-<IncidentByStudentPieChart data={weeklyData}/>
+<IncidentByStudentPieChart writeUps={writeUpData}/>
 
 
     </div>
@@ -59,7 +70,7 @@ import TeacherShoutOutWidget from '../teacher/teacherPanels/teacherShoutOutWidge
     <div className='teacher-widget-third'>
       <div style={{overflowY:"auto",height:"100%"}} className='infraction-bar-chart'>
         {/* <Card> */}
-<IncidentsByStudentTable data={weeklyData}/>
+<IncidentsByStudentTable writeUps={writeUpData}/>
 {/* </Card> */}
       </div>
   
@@ -92,7 +103,7 @@ import TeacherShoutOutWidget from '../teacher/teacherPanels/teacherShoutOutWidge
     <div className='teacher-widget-third'>
     <div  className='infraction-bar-chart'>
 <Card style={{padding:"5px"}}>
-    <IncidentByTeacherPieChart data={data}/>
+    <IncidentByTeacherPieChart data={punishmentData} teacherData={teacherData}/>
 </Card>
 
 
@@ -102,7 +113,7 @@ import TeacherShoutOutWidget from '../teacher/teacherPanels/teacherShoutOutWidge
     <div className='teacher-widget-third'>
     <div  className='infraction-bar-chart'>
 <Card style={{padding:"5px"}}>
-    <Top5TeacherRatioTable data={data}/>
+   {teacherData && <Top5TeacherRatioTable data={punishmentData} teacherData={teacherData}/>}
 </Card>
 </div>
     </div>
@@ -110,7 +121,7 @@ import TeacherShoutOutWidget from '../teacher/teacherPanels/teacherShoutOutWidge
     <div className='teacher-widget-third'>
     <div className='infraction-bar-chart'>
 <Card style={{padding:"5px"}}>
-<WorseClassTable data={data}/>
+<WorseClassTable data={punishmentData} teacherData={teacherData}/>
 </Card>
 
 </div>
@@ -131,7 +142,7 @@ import TeacherShoutOutWidget from '../teacher/teacherPanels/teacherShoutOutWidge
 
     <Card style={{padding:"5px"}}>
 
-      <TotalReferralByWeek data={data}/>
+      <TotalReferralByWeek data={punishmentData}/>
 
       </Card>
 
@@ -140,13 +151,13 @@ import TeacherShoutOutWidget from '../teacher/teacherPanels/teacherShoutOutWidge
     </div>
     <div className='teacher-widget-third'>
     <Card style={{padding:"5px"}}>
-<TotalStudentReferredByWeek data={data}/>
+<TotalStudentReferredByWeek data={punishmentData}/>
 </Card>
 </div>
 
 <div className='teacher-widget-third'>
 <Card style={{padding:"5px"}}>
-<ReferralByBehavior data={data}/>
+<ReferralByBehavior data={punishmentData}/>
 </Card>
 
 </div>
