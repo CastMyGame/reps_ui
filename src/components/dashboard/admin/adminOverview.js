@@ -11,30 +11,19 @@ import {  Top5TeacherRatioTable } from './widget/top-5-ratio-table';
 import { WorseClassTable } from './widget/top-class-with-write-up';
 import { IncidentByStudentPieChart } from './widget/incident-by-student-pie-chart';
 import TeacherShoutOutWidget from '../teacher/teacherPanels/teacherShoutOutWidget';
-import { get } from '../../../utils/api/api';
 
-   const AdminOverviewPanel = ({punishmentData = [],teacherData = []}) => {
-    const [writeUpData,setWriteUpData] = useState([])
+   const AdminOverviewPanel = ({data = []}) => {
 
 
-//Fetch Data to Prop Drill to Componetns
+  const dataExcludeNonReferrals = data.filter((x)=>{return (x.infraction.infractionName !=="Positive Behavior Shout Out!" && x.infraction.infractionName !=="Behavioral Concerns")})
+  const weeklyData = dataExcludeNonReferrals.filter((x) => {
+     const currentDate = new Date();
+     const itemDate = new Date(x.timeCreated);
+     const sevenDaysAgo = new Date(currentDate.setDate(currentDate.getDate() - 7));
+     return itemDate > sevenDaysAgo;
+ });
 
-useEffect(() => {
-  const fetchWriteUpData = async ()=>{
-    try{
-      const result = await get('punish/v1/writeUps')
-      setWriteUpData(result)
-    }catch(err){
-      console.error('Error Fetching Data: ',err)
-    } 
- 
-  }
-  fetchWriteUpData();
-},[])
-
-
-
- const weeklyDataIncSOBxConcern = punishmentData.filter((x) => {
+ const weeklyDataIncSOBxConcern = data.filter((x) => {
     const currentDate = new Date();
     const itemDate = new Date(x.timeCreated);
     const sevenDaysAgo = new Date(currentDate.setDate(currentDate.getDate() - 7));
@@ -46,7 +35,7 @@ useEffect(() => {
         <>
                         <div className='teacher-overview-first'>
         <Card variant="outlined">
-        <TeacherShoutOutWidget data={punishmentData}/>
+        <TeacherShoutOutWidget data={data}/>
         </Card>
         </div>
          <div style={{backgroundColor:"rgb(25, 118, 210)",marginTop:"10px", marginBlock:"5px"}}>
@@ -61,7 +50,7 @@ useEffect(() => {
     <div className='teacher-widget-third'>
       {/* <Card> */}
     <div style={{ textAlign:"center",marginTop:"10px"}}>
-<IncidentByStudentPieChart writeUps={writeUpData}/>
+<IncidentByStudentPieChart data={weeklyData}/>
 
 
     </div>
@@ -70,7 +59,7 @@ useEffect(() => {
     <div className='teacher-widget-third'>
       <div style={{overflowY:"auto",height:"100%"}} className='infraction-bar-chart'>
         {/* <Card> */}
-<IncidentsByStudentTable writeUps={writeUpData}/>
+<IncidentsByStudentTable data={weeklyData}/>
 {/* </Card> */}
       </div>
   
@@ -103,7 +92,7 @@ useEffect(() => {
     <div className='teacher-widget-third'>
     <div  className='infraction-bar-chart'>
 <Card style={{padding:"5px"}}>
-    <IncidentByTeacherPieChart data={punishmentData} teacherData={teacherData}/>
+    <IncidentByTeacherPieChart data={data}/>
 </Card>
 
 
@@ -113,7 +102,7 @@ useEffect(() => {
     <div className='teacher-widget-third'>
     <div  className='infraction-bar-chart'>
 <Card style={{padding:"5px"}}>
-   {teacherData && <Top5TeacherRatioTable data={punishmentData} teacherData={teacherData}/>}
+    <Top5TeacherRatioTable data={data}/>
 </Card>
 </div>
     </div>
@@ -121,7 +110,7 @@ useEffect(() => {
     <div className='teacher-widget-third'>
     <div className='infraction-bar-chart'>
 <Card style={{padding:"5px"}}>
-<WorseClassTable data={punishmentData} teacherData={teacherData}/>
+<WorseClassTable data={data}/>
 </Card>
 
 </div>
@@ -142,7 +131,7 @@ useEffect(() => {
 
     <Card style={{padding:"5px"}}>
 
-      <TotalReferralByWeek data={punishmentData}/>
+      <TotalReferralByWeek data={data}/>
 
       </Card>
 
@@ -151,13 +140,13 @@ useEffect(() => {
     </div>
     <div className='teacher-widget-third'>
     <Card style={{padding:"5px"}}>
-<TotalStudentReferredByWeek data={punishmentData}/>
+<TotalStudentReferredByWeek data={data}/>
 </Card>
 </div>
 
 <div className='teacher-widget-third'>
 <Card style={{padding:"5px"}}>
-<ReferralByBehavior data={punishmentData}/>
+<ReferralByBehavior data={data}/>
 </Card>
 
 </div>

@@ -1,12 +1,52 @@
 import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { baseUrl } from "../../../../utils/jsonData";
+import axios from "axios";
 
-export const WorseClassTable = ({ data = [],teacherData=[] }) => {
+export const WorseClassTable = ({ data = [] }) => {
+  const [teacherData, setTeacherData] = useState([]);
 
+  const headers = {
+    Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
+  };
 
+  const url = `${baseUrl}/employees/v1/employees/TEACHER`;
 
- 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const token = sessionStorage.getItem('Authorization');
+        const headers = { Authorization: `Bearer ${token}` };
+        const url = `${baseUrl}/employees/v1/employees/TEACHER`;
+
+        const response = await axios.get(url, { headers });
+        setTeacherData(response.data);
+      } catch (error) {
+        if (error.response && error.response.status === 403) {
+          // Token might have expired, try refreshing the token
+          try {
+            // Implement token refresh logic here
+            // This might involve making a separate request to refresh the token
+            // Update the sessionStorage with the new token
+
+            // After refreshing the token, retry the original request
+            const newToken = sessionStorage.getItem('Authorization');
+            const newHeaders = { Authorization: `Bearer ${newToken}` };
+            const url = `${baseUrl}/employees/v1/employees/TEACHER`;
+
+            const response = await axios.get(url, { headers: newHeaders });
+            setTeacherData(response.data);
+          } catch (refreshError) {
+            console.error('Error refreshing token:', refreshError);
+          }
+        } else {
+          console.error('Error fetching data:', error);
+        }
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const getTeacherWithMostIncidents = (classItem) => {
     const maxBlock = Math.max(classItem.blocks.block1, classItem.blocks.block2, classItem.blocks.block3, classItem.blocks.block4);
