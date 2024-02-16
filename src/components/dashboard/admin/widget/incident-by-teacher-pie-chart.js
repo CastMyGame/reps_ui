@@ -1,75 +1,18 @@
 import { Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { PieChart, pieArcLabelClasses } from '@mui/x-charts/PieChart';
-import axios from "axios";
-import { baseUrl } from "../../../../utils/jsonData";
 
-export const IncidentByTeacherPieChart = ({ data = [] }) => {
-  const [teacherData,setTeacherData] = useState([])
-
-
-
-
-
-  // Get Unique Teachers Info
-  const headers = {
-    Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
-  };
-  
-  const url = `${baseUrl}/employees/v1/employees/TEACHER`;
-  
-
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const token = sessionStorage.getItem('Authorization');
-        const headers = { Authorization: `Bearer ${token}` };
-        const url = `${baseUrl}/employees/v1/employees/TEACHER`;
-        const response = await axios.get(url, { headers }) // Pass the headers option with the JWT token
-
-        setTeacherData(response.data);
-      } catch (error) {
-        if (error.response && error.response.status === 403) {
-          // Token might have expired, try refreshing the token
-          try {
-            // Implement token refresh logic here
-            // This might involve making a separate request to refresh the token
-            // Update the sessionStorage with the new token
-
-            // After refreshing the token, retry the original request
-            const newToken = sessionStorage.getItem('Authorization');
-            const newHeaders = { Authorization: `Bearer ${newToken}` };
-
-            const url = `${baseUrl}/employees/v1/employees/TEACHER`;
-            const response = await axios.get(url, { headers }) // Pass the headers option with the JWT token
-
-            setTeacherData(response.data);
-          } catch (refreshError) {
-            console.error('Error refreshing token:', refreshError);
-          }
-        } else {
-          console.error('Error fetching data:', error);
-        }
-      }
-    };
-
-    fetchData();
-  }, []);
-
-
-
+export const IncidentByTeacherPieChart = ({ data = [], teacherData=[] }) => {
 
 //grab total indcidents
 const totalIncidents = data.length;
 
 
 //Grab teachers and extract emails
-
-
 const teachersWithIncidentsList = []
 
 teacherData.map((teacher) => {
+  console.log(teacher.email)
   const filteredData = data.filter(item => item.teacherEmail === teacher.email);
   if(filteredData.length > 0){
      
