@@ -172,4 +172,3 @@ useEffect(() => {
 
     export default AdminOverviewPanel;
 
-
