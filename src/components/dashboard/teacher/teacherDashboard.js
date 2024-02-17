@@ -17,21 +17,21 @@ import Card from '@mui/material/Card';
 import ShoutOutWidget from '../student/shoutOutWidget.js';
 import TeaherOverviewPanel from './teacherPanels/teacherOverview.js';
 import TeacherOverviewPanel from './teacherPanels/teacherOverview.js';
-import TeacherShoutOutWidget from './teacherPanels/teacherShoutOutWidget.js';
+import TeacherShoutOutWidget from './teacherPanels/charts/tables/teacherShoutOutWidget.js';
 import DetentionWidget from '../admin/detentionWidget.js';
 import ISSWidget from '../admin/issWidget.js';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import LevelThreePanel from '../global/levelThreePanel.js';
 import ChatIcon from '@mui/icons-material/Chat';
 import { ContactUsModal } from '../../../secuirty/contactUsModal';
+import { get } from '../../../utils/api/api.js';
 
 const TeacherDashboard = () => {
   const [loggedIn, setLoggedIn] = useState(true);
   const [data, setData] = useState([]);
-  const [openDrawer, setOpenDrawer] = useState(false);
   const [openNotificationDrawer, setOpenNotificationDrawer] = useState(false)
   const [panelName,setPanelName] = useState("overview")
-  const [notificationData,setNotificationData]= useState([])
+  const [studentData,setStudentData]= useState([])
   const [isDropdownOpen, setIsDropdownOpen] = useState({
     referralDropdown:false,
     teacherDropdown:false,
@@ -63,25 +63,38 @@ const TeacherDashboard = () => {
   }, []);
 
 
-  const headers = {
-    Authorization: 'Bearer ' + sessionStorage.getItem("Authorization"),
-  };
 
 
   useEffect(() => {
-    axios
-      .get(`${baseUrl}/punish/v1/punishments`, { headers })
-      .then(function (response) {
-        setData(response.data);
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
+    const fetchPunishmentData = async () =>{
+      try{
+        const response = await get('punish/v1/punishments')
+        setData(response)
+      }catch(err){
+        console.error(err)
+      }
+
+    }
+
+    fetchPunishmentData()
+
   }, []);
 
-  const toggleDrawer = (open) => {
-    setOpenDrawer(open);
-  };
+  // useEffect(()=>{
+  //   const fetchStudentData = async ()=>{
+  //     try{
+  //       const response = await get('student/v1/allStudents');
+  //       setStudentData(response)
+
+  //     }catch(err){
+  //       console.error(err)
+  //     }
+  //   }
+  //   fetchStudentData();
+
+  // },[])
+
+
 
   const toggleNotificationDrawer = (open) => {
     setOpenNotificationDrawer(open);
@@ -93,19 +106,6 @@ const TeacherDashboard = () => {
       ...prev, [field]: !isDropdownOpen[field]
     }))
   }
-
-  const renderDropdownContent = (dropdownState,filterValue,label,panelName) =>{
-    return(
-      <div onClick={()=>{
-        setIsDropdownOpen(dropdownState)
-        setPunishmentFilter(filterValue)
-        setPanelName(panelName)}}
-        className='teacher-dropdown-item'>{label}
-        </div>
-    )
-  }
-
-
 
 
   return (
@@ -230,7 +230,7 @@ const TeacherDashboard = () => {
 
       <div className = "teacher-panel">
       {panelName === "overview" &&<TeacherOverviewPanel setPanelName={setPanelName} data={data}/>}
-{panelName === "student" &&<TeacherStudentPanel/>}
+{panelName === "student" &&<TeacherStudentPanel listOfStudents={studentData}/>}
 {panelName === "punishment" &&<GlobalPunishmentPanel filter={punishmentFilter} roleType={"teacher"}/>}
 {panelName === "createPunishment" && <CreatePunishmentPanel/>}
 {panelName === "ftc" && <TeacherFTCPanel/>}

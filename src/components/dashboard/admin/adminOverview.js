@@ -1,16 +1,16 @@
 import react, {useState,useEffect} from 'react'
 import Typography from '@mui/material/Typography';
 import Card from '@mui/material/Card';
-import TotalReferralByWeek from '../teacher/teacherPanels/referralsByWeek';
-import TotalStudentReferredByWeek from '../teacher/teacherPanels/numberOfStudentReferralsByWeek';
-import ReferralByBehavior from '../teacher/teacherPanels/referralsByBehavior';
-import IncidentsByStudentTable from '../teacher/teacherPanels/incidentsByStudentTable';
-import TeacherInfractionOverPeriodBarChart from '../teacher/teacherPanels/teacherInfractionPeriodBarChart';
+import TotalReferralByWeek from '../teacher/teacherPanels/charts/lineCharts/referralsByWeek';
+import TotalStudentReferredByWeek from '../teacher/teacherPanels/charts/lineCharts/numberOfStudentReferralsByWeek';
+import ReferralByBehavior from '../teacher/teacherPanels/charts/lineCharts/referralsByBehavior';
+import IncidentsByStudentTable from '../teacher/teacherPanels/charts/tables/incidentsByStudentTable';
+import TeacherInfractionOverPeriodBarChart from '../teacher/teacherPanels/charts/barChart/teacherInfractionPeriodBarChart';
 import { IncidentByTeacherPieChart } from './widget/incident-by-teacher-pie-chart';
 import {  Top5TeacherRatioTable } from './widget/top-5-ratio-table';
 import { WorseClassTable } from './widget/top-class-with-write-up';
 import { IncidentByStudentPieChart } from './widget/incident-by-student-pie-chart';
-import TeacherShoutOutWidget from '../teacher/teacherPanels/teacherShoutOutWidget';
+import TeacherShoutOutWidget from '../teacher/teacherPanels/charts/tables/teacherShoutOutWidget';
 import { get } from '../../../utils/api/api';
 
    const AdminOverviewPanel = ({punishmentData = [],teacherData = []}) => {

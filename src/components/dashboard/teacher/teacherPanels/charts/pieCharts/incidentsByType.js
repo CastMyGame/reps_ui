@@ -1,42 +1,32 @@
 import { Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { PieChart, pieArcLabelClasses } from '@mui/x-charts/PieChart';
-import '../../admin/widget/CustomPieChart.css'
-import { baseUrl } from '../../../../utils/jsonData';
-import axios from 'axios';
+import '../../../../admin/widget/CustomPieChart.css'
+import { get } from "../../../../../../utils/api/api";
 
 export const IncidentByTypePieChart = ({ data = [] }) => {
 
   const [writeUps,setWriteUps] = useState([])
 
-  // const filterData = data.filter()
-  const totalIncidents = writeUps.length;
   
-  const url = `${baseUrl}/punish/v1/punishments/${data.studentEmail}`;
-
-  
-
   useEffect(() => {
-    const headers = {
-      Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
-    };
+    const fetchWriteUps = async () =>{
+      try{
+        const response = await get(`punish/v1/punishments/${data.studentEmail}`)
+        setWriteUps(response)
+      }catch(error){
+console.error(error)
+      }
 
-    axios
-      .get(url, { headers }) // Pass the headers option with the JWT token
-      .then(function (response) {
-        setWriteUps(response.data);
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
+    }   
+
+    fetchWriteUps();
+
+
   }, []);
 
 
-  // Get Unique Students Info
-  // writeUps.forEach(item => {
-  //   const infractionName = item.punishment.Infraction.infractionName;
-  //   uniqueStudents[infractionName] = (uniqueStudents[infractionName] || 0) + 1;
-  // });
+ 
   const tardyList = writeUps.filter(punishment => punishment.infraction.infractionName === "Tardy");
   const disruptiveList = writeUps.filter(punishment => punishment.infraction.infractionName === "Disruptive Behavior");
   const cellList = writeUps.filter(punishment => punishment.infraction.infractionName === "Unauthorized Device/Cell Phone");

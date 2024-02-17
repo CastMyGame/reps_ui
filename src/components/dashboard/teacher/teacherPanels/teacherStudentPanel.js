@@ -1,15 +1,12 @@
-import react, {useState,useEffect,useRef} from 'react'
+import  {useState,useEffect,useRef} from 'react'
 import { Table, TableContainer, TableHead, TableBody, TableRow, TableCell, Paper, TextField } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import axios from "axios"
-import { baseUrl } from '../../../../utils/jsonData'
-import StudentProfile from '../../../StudentProfile';
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
-import Select from "react-select";
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
-import { IncidentByTypePieChart } from './incidentsByType';
+import { IncidentByTypePieChart } from './charts/pieCharts/incidentsByType';
+import { get } from '../../../../utils/api/api';
 
 
    const TeacherStudentPanel = () => {
@@ -17,52 +14,19 @@ import { IncidentByTypePieChart } from './incidentsByType';
 
 	const [listOfStudents, setListOfStudents]= useState([])
   const [studentDisplay, setStudentDisplay] = useState(false);
-  const [studentEmail, setStudentEmail] = useState("");
-  const [studentData, setStudentData] = useState("");
-  const [studentProfileModal,setStudentProfileModal] = useState(false)
-  const [studentName, setStudentName] = useState("")
+  const [studentData, setStudentData] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredData, setFilteredData] = useState([]);
 
-    const headers = {
-      Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
-    };
-
-    const admin = sessionStorage.getItem("role")=== "ADMIN";
-
     
-//get
-    const url = `${baseUrl}/student/v1/allStudents`;
     useEffect(() => {
       const fetchData = async () => {
         try {
-        const token = sessionStorage.getItem('Authorization');
-        const headers = { Authorization: `Bearer ${token}` };
-        const url = `${baseUrl}/student/v1/allStudents`;
-        const response = await axios.get(url, { headers }) // Pass the headers option with the JWT token
-        
-        setListOfStudents(response.data);
+          const response = await get("student/v1/allStudents") // Pass the headers option with the JWT token
+          setListOfStudents(response);
         } catch (error) {
-          if (error.response && error.response.status === 403) {
-            // Token might have expired, try refreshing the token
-            try {
-              // Implement token refresh logic here
-              // This might involve making a separate request to refresh the token
-              // Update the sessionStorage with the new token
-  
-              // After refreshing the token, retry the original request
-              const newToken = sessionStorage.getItem('Authorization');
-              const newHeaders = { Authorization: `Bearer ${newToken}` };
-              const url = `${baseUrl}/student/v1/allStudents`;
-
-              const response = await axios.get(url, { headers: newHeaders });
-              setListOfStudents(response.data);
-            } catch (refreshError) {
-              console.error('Error refreshing token:', refreshError);
-            }
-          } else {
-            console.error('Error fetching data:', error);
-          }
+          console.error(error)
+         
         }
       };
   
@@ -71,25 +35,28 @@ import { IncidentByTypePieChart } from './incidentsByType';
 
 
 
-console.log(listOfStudents)
 
 
 
-const fetchStudentData = (studentEmail) =>{
-  const studentUrl= `${baseUrl}/punish/v1/student/punishments/${studentEmail}`;
-  axios
-  .get(studentUrl, { headers }) // Pass the headers option with the JWT token
-  .then(function (response) {
-    //Figure out how we are going to return only students associated with teacher.
-    // Maybe only pulling up students with active and closed punishments
-    const data = response.data;
-    setStudentData(data);
+const fetchStudentData = async (studentEmail) =>{
+
+  
+try{
+  const response = await get(`punish/v1/student/punishments/${studentEmail}`) 
+  if(response !=null){
+    setStudentData(response);
     setStudentDisplay(true);  
 
-  })
-  .catch(function (error) {
-    console.log(error);
-  });
+  }
+
+
+}catch(error){
+
+  console.error(error);
+
+}
+
+
 }
 
 const handleSearchChange = (e) => {
@@ -108,35 +75,7 @@ useEffect(() => {
    
 
 
-  // const uniqueMap = new Map();
-
-  // const data = listOfStudents.filter(item => {
-  //   const studentId = item.student.studentIdNumber;
-  //   let unique = [];
-
-  //   listOfStudents.forEach(punishment => {
-  //     // Check if the student is in unique
-  //     const existingStudent = unique.find(item =>
-  //       item.student.studentIdNumber === punishment.student.studentIdNumber);
-
-  //     // If not found, push to unique
-  //     if(!existingStudent) {
-  //       unique.push(punishment);
-  //     }
-  //   });
-
-//     // If the studentIdNumber is not in the map, add it and return true to keep the item
-//     if (!uniqueMap.has(studentId)) {
-//         uniqueMap.set(studentId, true);
-//         return true;
-//     }
-    
-//     // If the studentIdNumber is already in the map, return false to filter out the duplicate item
-//     return false;
-// });
-
 const handleProfileClick = (x) =>{
-  setStudentName(x.firstName);
   fetchStudentData(x.studentEmail)
 }
 
@@ -181,7 +120,6 @@ const generatePDF = (studentData) => {
   pdf.save('student_report.pdf');
 };
 
-console.log(studentData)
 
     const hasScroll = listOfStudents.length > 10;
 

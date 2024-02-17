@@ -1,17 +1,14 @@
-import react, {useState,useEffect,useRef} from 'react'
+import {useState,useEffect,useRef} from 'react'
 import { Table, TableContainer, TableHead, TableBody, TableRow, TableCell, Paper,Card, TextField } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import axios from "axios"
-import { baseUrl } from '../../../utils/jsonData'
-import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 
 
 
 import { IncidentByStudentPieChart } from './widget/incident-by-student-pie-chart';
-import IncidentsByStudentTable from '../teacher/teacherPanels/incidentsByStudentTable';
+import IncidentsByStudentTable from '../teacher/teacherPanels/charts/tables/incidentsByStudentTable';
 import { get } from '../../../utils/api/api';
 
    const AdminTeacherPanel = () => {
@@ -23,9 +20,6 @@ import { get } from '../../../utils/api/api';
   const [filteredData, setFilteredData] = useState([]);
 
 
-
-    
-    
 
     useEffect(() => {
       const fetchEmployeeData = async ()=>{
@@ -41,11 +35,6 @@ import { get } from '../../../utils/api/api';
       fetchEmployeeData();
     
     },[])
-
-
-
-
-
 
 
 //Fetch Teacher Data 

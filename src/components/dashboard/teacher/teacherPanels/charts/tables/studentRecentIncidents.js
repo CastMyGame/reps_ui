@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import { Table, TableContainer, TableHead, TableBody, TableRow, TableCell, Paper, TextField, Typography } from '@mui/material';
-import { dateCreateFormat } from '../../global/helperFunctions';
+import { dateCreateFormat } from '../../../../global/helperFunctions';
 
 
 const RecentIncidents = ({data = []}) => {

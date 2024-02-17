@@ -1,6 +1,6 @@
 import { LineChart } from '@mui/x-charts/LineChart';
 import { Typography } from '@mui/material';
-import { findDataByWeekAndByPunishment, getCurrentWeekOfYear, getFirstDayOfWeek } from '../../global/helperFunctions';
+import { findDataByWeekAndByPunishment, getCurrentWeekOfYear, getFirstDayOfWeek } from '../../../../global/helperFunctions';
 import { useState } from 'react';
 
 export default function ReferralByBehavior({ data = [] }) {

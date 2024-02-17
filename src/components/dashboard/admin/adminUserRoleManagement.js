@@ -9,7 +9,6 @@ import { baseUrl } from '../../../utils/jsonData'
 import MenuItem from '@mui/material/MenuItem';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-import StudentProfile from '../../StudentProfile';
 import AddTeacherForm from './addTeacherForm';
 
    const AdminUserRoleManagement = () => {

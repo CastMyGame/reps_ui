@@ -1,35 +1,19 @@
-import react, {useState,useEffect} from 'react'
-import { Table, TableContainer, TableHead, TableBody, TableRow, TableCell, Paper } from '@mui/material';
+import  {useState,useEffect} from 'react'
 import Typography from '@mui/material/Typography';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import axios from "axios"
-import { baseUrl } from '../../../../utils/jsonData'
-import StudentProfile from '../../../StudentProfile';
-import IncidentsByStudentTable from './incidentsByStudentTable';
-import TotalReferralByWeek from './referralsByWeek';
-import TotalStudentReferredByWeek from './numberOfStudentReferralsByWeek';
+import IncidentsByStudentTable from './charts/tables/incidentsByStudentTable.js';
+import TotalReferralByWeek from './charts/lineCharts/referralsByWeek.js';
+import TotalStudentReferredByWeek from './charts/lineCharts/numberOfStudentReferralsByWeek.js';
 import Card from '@mui/material/Card';
-import ReferralByBehavior from './referralsByBehavior';
-import { fetchDataFromApi } from '../../global/helperFunctions';
-import TeacherInfractionOverPeriodBarChart from './teacherInfractionPeriodBarChart';
-import { PieChartParentCommunication } from './pieChartParentCommunication';
-import RecentIncidents from './studentRecentIncidents';
-import TeacherShoutOutWidget from './teacherShoutOutWidget.js';
-import LevelThreePanel from '../../global/levelThreePanel.js';
+import ReferralByBehavior from './charts/lineCharts/referralsByBehavior.js';
+import TeacherInfractionOverPeriodBarChart from './charts/barChart/teacherInfractionPeriodBarChart.js';
+import { PieChartParentCommunication } from './charts/pieCharts/pieChartParentCommunication.js';
+import RecentIncidents from './charts/tables/studentRecentIncidents.js';
+import TeacherShoutOutWidget from './charts/tables/teacherShoutOutWidget.js';
 import Button from '@mui/material/Button';
 
 
    const TeacherOverviewPanel = ({setPanelName,data = []}) => {
-	const [listOfStudents, setListOfStudents]= useState([])
-  const [studentDisplay, setStudentDisplay] = useState(false);
-  const [studentEmail, setStudentEmail] = useState("");
-  const [studentName, setStudentName] = useState("");
   const [openModal, setOpenModal] = useState({display:false,message:"",buttonType:""})
-  const [status, setStatus] = useState([])
-
-  // const filterPunishmentByStatus = (data) => {
-  //   return data.filter(x => x.status === "PENDING");
-  // }
 
 
   const dataExcludeNonReferrals = data.filter((x)=>{return (x.infraction.infractionName !=="Positive Behavior Shout Out!")})
@@ -135,7 +119,7 @@ import Button from '@mui/material/Button';
     <div className='teacher-widget-half'>
 <div className='studentIncidentTable'>
 {/* <Card style={{padding:"5px"}}> */}
-    <IncidentsByStudentTable data={data}/>
+    <IncidentsByStudentTable writeUps={data}/>
 {/* </Card> */}
 
 
@@ -163,7 +147,7 @@ import Button from '@mui/material/Button';
     <div className='teacher-widget-third'>
     {/* <Card style={{padding:"5px"}}> */}
 
-      <TotalReferralByWeek data={data}/>
+    { data ? <TotalReferralByWeek data={data}/> : <h1>loading</h1>}
 
       {/* </Card> */}
 

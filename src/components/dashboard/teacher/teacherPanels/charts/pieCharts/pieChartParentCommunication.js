@@ -1,19 +1,15 @@
 import { Typography } from "@mui/material"
 import React from "react"
 import { PieChart, pieArcLabelClasses } from '@mui/x-charts/PieChart';
-import { filterPunishementsByLoggedInUser, getIncidentByBehavior } from "../../global/helperFunctions";
+import { filterPunishementsByLoggedInUser, getIncidentByBehavior } from "../../../../global/helperFunctions";
 
 export const PieChartParentCommunication = ({data = []}) =>{
 
 
     const numShoutout = getIncidentByBehavior("Positive Behavior Shout Out!",data)
     const numBxConcern = getIncidentByBehavior("Behavioral Concern",data)
-    const infractionNamesToMatch = ["Tardy","Unauthorized Device/Cell Phone", "Disruptive Behavior", "Horseplay", "Dress Code","Failure to Complete Work"];
 
-// This is total school referrals    
-// const numReferrals = data.filter(record => infractionNamesToMatch.includes(record.infraction.infractionName)).length;
 
-// This is referrals by who is logged in
 const teachReferrals = filterPunishementsByLoggedInUser(data);
 
 

@@ -1,12 +1,13 @@
 import { LineChart } from '@mui/x-charts/LineChart';
 import { Typography } from '@mui/material';
-import { extractDataByWeek, extractDataByWeekFirstDay, getCurrentWeekOfYear, getFirstDayOfWeek, getUniqueStudentIdFromList } from '../../global/helperFunctions';
+import {  extractDataByWeekFirstDay, getCurrentWeekOfYear, getFirstDayOfWeek } from '../../../../global/helperFunctions';
 import { useState } from 'react';
 
-export default function TotalStudentReferredByWeek({data = []}) {
-const [rangeWeeks,setRangeWeek] = useState(10)
-const currentWeek = getCurrentWeekOfYear();
+export default function TotalReferralByWeek({data = []}) {
+  const [rangeWeeks,setRangeWeek] = useState(10);
+  const currentWeek = getCurrentWeekOfYear();
 
+//This helps adjust the week number if current week extend prior to this year
 const yearAdj = (cw) =>{
   if(cw>0)
   return(cw)
@@ -14,6 +15,7 @@ if(cw <=0){
   return 52 + cw;
 }
 }
+
 
 
 const GenerateChartData = (currentWeek, rangeWeeks, data) => {
@@ -38,7 +40,6 @@ const GenerateChartData = (currentWeek, rangeWeeks, data) => {
 };
 
 
-
 const displayDate = GenerateChartData(currentWeek,rangeWeeks,data)
 
 //This reverses the x axis
@@ -47,23 +48,21 @@ displayDate.reverse()
 
 
 
-  // Convert the weekMap to the format suitable for LineChart
-  const xAxisData = displayDate.map(obj => Object.keys(obj)[0]); // Extract the keys (labels)
-  const seriesData = displayDate.map(obj => Object.values(obj)[0] || 0); // Extract the values associated with the keys
-  
-
+// Convert the weekMap to the format suitable for LineChart
+const xAxisData = displayDate.map(obj => Object.keys(obj)[0]); // Extract the keys (labels)
+const seriesData = displayDate.map(obj => Object.values(obj)[0] || 0); // Extract the values associated with the keys
 
   return (
      data && (<>
       <Typography variant="h6" gutterBottom>
-       Number of Students Receiving Referrals By Week
+       Number of Referrals By Week
       </Typography> <button onClick={()=>setRangeWeek((prev)=> prev-1)} style={{height:"20px", width:"20px",padding:0,borderRadius:0}}>-</button> <button onClick={()=>setRangeWeek((prev)=> prev+1)} style={{height:"20px", width:"20px",padding:0, borderRadius:0}}>+</button> 
       <LineChart
         xAxis={[{ 
           scaleType:'band', data: xAxisData, label:"Weeks"
        }]}
 
-       yAxis={[ {label:"Number of Student Referred"}
+       yAxis={[ {label:"Number of Incidents"}
       ]}
         
         series={[
