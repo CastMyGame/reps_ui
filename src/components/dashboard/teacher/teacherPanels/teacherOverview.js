@@ -38,7 +38,7 @@ import Button from '@mui/material/Button';
     }
   }, [data]);
 
-
+{!data &&  <h1>Loading Data</h1>}
 
     return (
         <>
@@ -171,8 +171,8 @@ import Button from '@mui/material/Button';
 
   
     </>
-    )
-    }
+    )}
+   
 
 
     export default TeacherOverviewPanel;

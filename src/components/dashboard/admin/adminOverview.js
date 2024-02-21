@@ -11,26 +11,11 @@ import {  Top5TeacherRatioTable } from './widget/top-5-ratio-table';
 import { WorseClassTable } from './widget/top-class-with-write-up';
 import { IncidentByStudentPieChart } from './widget/incident-by-student-pie-chart';
 import TeacherShoutOutWidget from '../teacher/teacherPanels/charts/tables/teacherShoutOutWidget';
-import { get } from '../../../utils/api/api';
 
-   const AdminOverviewPanel = ({punishmentData = [],teacherData = []}) => {
-    const [writeUpData,setWriteUpData] = useState([])
+   const AdminOverviewPanel = ({punishmentData = [],teacherData = [] , writeUpData=[]}) => {
 
 
 //Fetch Data to Prop Drill to Componetns
-
-useEffect(() => {
-  const fetchWriteUpData = async ()=>{
-    try{
-      const result = await get('punish/v1/writeUps')
-      setWriteUpData(result)
-    }catch(err){
-      console.error('Error Fetching Data: ',err)
-    } 
- 
-  }
-  fetchWriteUpData();
-},[])
 
 
 

@@ -26,6 +26,7 @@ const AdminDashboard = () => {
   const [openNotificationDrawer, setOpenNotificationDrawer] = useState(false)
   const [panelName,setPanelName] = useState("overview")
   const [punishmentData,setPunishmentData] = useState([])
+  const [writeUpData,setWriteUpData] = useState([])
   const [teacherData,setTeacherData] = useState([])
   const [isDropdownOpen, setIsDropdownOpen] = useState({
     referralDropdown:false,
@@ -78,26 +79,22 @@ const openDropdown =(field)=>{
 useEffect(() => {
   const fetchPunishmentData = async ()=>{
     try{
-      const result = await get('punish/v1/punishments')
-      setPunishmentData(result)
+      const result = await get('DTO/v1/AdminOverviewData')
+      setPunishmentData(result.punishments)
+      setTeacherData(result.teachers)
+      setWriteUpData(result.writeUps)
     }catch(err){
       console.error('Error Fetching Data: ',err)
     } 
  
   }
-  const fetchTeacherData = async ()=>{
-    try{
-      const result = await get('employees/v1/employees/TEACHER')
-      setTeacherData(result)
-    }catch(err){
-      console.error('Error Fetching Data: ',err)
-    } 
- 
-  }
-  fetchPunishmentData();
-  fetchTeacherData();
 
-},[])
+if(panelName === "overview"){
+  fetchPunishmentData();
+
+}
+
+},[panelName])
 
 
 
@@ -235,7 +232,7 @@ useEffect(() => {
         </div>
       </div>
       <div className = "main-content-panel">
-{panelName === "overview" &&<AdminOverviewPanel punishmentData={punishmentData} teacherData={teacherData}/>}
+{panelName === "overview" &&<AdminOverviewPanel punishmentData={punishmentData} teacherData={teacherData} writeUpData={writeUpData}/>}
 {panelName === "viewTeacher" &&<AdminTeacherPanel/>}
 {panelName === "student" &&<TeacherStudentPanel/>}
 {panelName === "punishment" &&<GlobalPunishmentPanel filter={punishmentFilter} />}

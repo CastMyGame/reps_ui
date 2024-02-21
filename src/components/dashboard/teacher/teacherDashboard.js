@@ -66,19 +66,22 @@ const TeacherDashboard = () => {
 
 
   useEffect(() => {
+ 
     const fetchPunishmentData = async () =>{
       try{
-        const response = await get('punish/v1/punishments')
-        setData(response)
+        const response = await get('DTO/v1/TeacherOverviewData')
+        setData(response.punishments)
       }catch(err){
         console.error(err)
       }
 
     }
+    if(panelName === "overview"){
+      fetchPunishmentData()
 
-    fetchPunishmentData()
+    }
 
-  }, []);
+  }, [panelName]);
 
   // useEffect(()=>{
   //   const fetchStudentData = async ()=>{
@@ -229,7 +232,8 @@ const TeacherDashboard = () => {
    className='left-main'>
 
       <div className = "teacher-panel">
-      {panelName === "overview" &&<TeacherOverviewPanel setPanelName={setPanelName} data={data}/>}
+      {panelName === "overview" && <TeacherOverviewPanel setPanelName={setPanelName} data={data} />}
+
 {panelName === "student" &&<TeacherStudentPanel listOfStudents={studentData}/>}
 {panelName === "punishment" &&<GlobalPunishmentPanel filter={punishmentFilter} roleType={"teacher"}/>}
 {panelName === "createPunishment" && <CreatePunishmentPanel/>}
