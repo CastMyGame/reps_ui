@@ -1,34 +1,9 @@
-import react, {useState,useEffect} from 'react'
 import { Table, TableContainer, TableHead, TableBody, TableRow, TableCell, Paper, getImageListItemBarUtilityClass } from '@mui/material';
 import Typography from '@mui/material/Typography';
-import axios from "axios"
-import { baseUrl } from '../../../utils/jsonData'
 
-   const StudentClosedPunishmentPanel = () => {
+   const StudentClosedPunishmentPanel = ({listOfPunishments =[]}) =>{
 
     const loggedInUser = sessionStorage.getItem("email")
-
-    const [listOfPunishments, setListOfPunishments]= useState([])
-
-    const headers = {
-      Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
-    };
-    
-    const url = `${baseUrl}/punish/v1/punishments`;
-    
-
-    useEffect(() => {
-      axios
-        .get(url, { headers }) // Pass the headers option with the JWT token
-        .then(function (response) {
-          setListOfPunishments(response.data);
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
-    }, []);
-
-
 
 	  const data = listOfPunishments.filter(user=> (user.student.studentEmail).toLowerCase() === loggedInUser.toLowerCase()).filter(punish => (punish.status === "CLOSED" || punish.status === "CFR"));
       

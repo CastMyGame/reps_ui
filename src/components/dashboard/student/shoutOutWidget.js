@@ -1,40 +1,10 @@
-import react, {useState,useEffect} from 'react'
 import { Table, TableContainer, TableHead, TableBody, TableRow, TableCell, Paper, getImageListItemBarUtilityClass } from '@mui/material';
-import Typography from '@mui/material/Typography';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import ContactsIcon from '@mui/icons-material/Contacts';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import axios from "axios"
-import { baseUrl } from '../../../utils/jsonData'
 import { dateCreateFormat } from '../global/helperFunctions';
 
-   const ShoutOutWidget = () => {
+   const ShoutOutWidget = ({listOfPunishments }) => {
 
     const loggedInUser = sessionStorage.getItem("email")
-
-    const [listOfPunishments, setListOfPunishments]= useState([])
-
-    const headers = {
-      Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
-    };
-    
-    const url = `${baseUrl}/punish/v1/punishments`;
-    
-
-    useEffect(() => {
-      axios
-        .get(url, { headers }) // Pass the headers option with the JWT token
-        .then(function (response) {
-          setListOfPunishments(response.data);
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
-    }, []);
-
-    //Temp Filter, we should filter in backend base on principal user
-
-	  const data = listOfPunishments.filter(user=> user.student.studentEmail === loggedInUser).filter(punish => punish.status === "SO" || punish.status ==="CFR");
+	  const data = listOfPunishments.filter(user=> String(user.student.studentEmail).toLowerCase() === String(loggedInUser).toLowerCase()).filter(punish => punish.status === "SO" || punish.status ==="CFR");
       
     const hasScroll = data.length > 2;
 

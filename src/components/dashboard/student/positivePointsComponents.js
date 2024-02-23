@@ -1,4 +1,4 @@
-const TotalPositivePoints = ({ data = { points: 0 } }) => {
+const TotalPositivePoints = ({ data =[] }) => {
     return (
       <>
         <h3>Total Positive Points Component</h3>

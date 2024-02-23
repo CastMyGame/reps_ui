@@ -42,7 +42,7 @@ export default function IdleComponent() {
   const idleTimer = useIdleTimer({
     crossTab: true,
     ref: idleTimeRef,
-    timeout: 5* 60 * 1000, // Five minutes
+    timeout: 10* 60 * 1000, // Ten minutes
     onIdle: onIdle,
   });
 

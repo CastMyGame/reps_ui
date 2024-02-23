@@ -25,6 +25,7 @@ import LevelThreePanel from '../global/levelThreePanel.js';
 import ChatIcon from '@mui/icons-material/Chat';
 import { ContactUsModal } from '../../../secuirty/contactUsModal';
 import { get } from '../../../utils/api/api.js';
+import LoadingWheelPanel from '../student/blankPanelForTest.js';
 
 const TeacherDashboard = () => {
   const [loggedIn, setLoggedIn] = useState(true);
@@ -226,7 +227,7 @@ const TeacherDashboard = () => {
   </div> */}
   
   </div>
-  <div className='teacher-overview'>
+ { data.length===0 ? <LoadingWheelPanel/>:<div className='teacher-overview'>
   <div 
   style={{width: false ?"70%":"100%"}}
    className='left-main'>
@@ -243,7 +244,7 @@ const TeacherDashboard = () => {
 
 
   </div>
-   </div> 
+   </div> }
      </div>
   
         <Drawer anchor='right' open={openNotificationDrawer} onClose={()=> toggleNotificationDrawer(false)}>

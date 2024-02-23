@@ -1,33 +1,14 @@
-import react, {useState,useEffect} from 'react'
-import { Table, TableContainer, TableHead, TableBody, TableRow, TableCell, Paper } from '@mui/material';
-import Typography from '@mui/material/Typography';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import ContactsIcon from '@mui/icons-material/Contacts';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import axios from "axios"
-import { baseUrl } from '../../../utils/jsonData'
+import React from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 
-   const BlankPanelForTest = () => {
+const LoadingWheelPanel = () => {
+  return (
+    <div style={{ height:"50vh",backgroundColor:"white",textAlign: 'center', marginTop: '50px' }}>
+      <h1>Loading...</h1>
+      <FontAwesomeIcon icon={faSpinner} spin size="3x" style={{ color: 'blue', marginTop: '20px' }} />
+    </div>
+  );
+};
 
-
-	
-    
-
-  
-
-
-
-    return (
-        <>
-
-          
-     <h1>SAMPLE STUDENT ONLY PANEL</h1>
-
-    </>
-    )
-    }
-
-
-    export default BlankPanelForTest;
-
-
+export default LoadingWheelPanel;

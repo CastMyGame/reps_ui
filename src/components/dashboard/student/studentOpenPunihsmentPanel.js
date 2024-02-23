@@ -1,54 +1,24 @@
 import react, {useState,useEffect} from 'react'
 import { Table, TableContainer, TableHead, TableBody, TableRow, TableCell, Paper, getImageListItemBarUtilityClass, Button } from '@mui/material';
 import Typography from '@mui/material/Typography';
-import OpenInNewIcon from '@mui/icons-material/OpenInNew';
-import axios from "axios"
 import Tooltip from '@mui/material/Tooltip';
 import WarningIcon from '@mui/icons-material/Warning';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import { dateCreateFormat } from '../global/helperFunctions';
 
-import { baseUrl } from '../../../utils/jsonData'
-
-   const StudentOpenPunishmentPanel = ({handleStartAssignment}) => {
+   const StudentOpenPunishmentPanel = ({listOfPunishments,handleStartAssignment}) => {
 
     const loggedInUser = sessionStorage.getItem("email")
 
-    const [listOfPunishments, setListOfPunishments]= useState([])
 
-    const headers = {
-      Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
-    };
+    const sortedData = listOfPunishments.sort((a,b)=>{
+      const dateA = new Date(a.timeCreated);
+      const dateB = new Date(b.timeCreated);
+      return dateA-dateB; //descending order
     
-    const url = `${baseUrl}/punish/v1/punishments`;
+    })
+
   
-
-    useEffect(() => {
-      axios
-        .get(url, { headers }) // Pass the headers option with the JWT token
-        .then(function (response) {
-          const data = response.data.sort((a, b) => {
-            // Convert the timeCreated strings to Date objects for proper comparison
-            const dateA = new Date(a.timeCreated);
-            const dateB = new Date(b.timeCreated);
-    
-            // Compare the dates
-            return   dateA - dateB; // Sort in descending order, change to dateA - dateB for ascending order
-          });
-    
-          setListOfPunishments(data);
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
-    }, []);
-
-    console.log(listOfPunishments)
-
-    //Temp Filter, we should filter in backend base on principal user
-
-
-
 const handleAssignmentClick=(x)=>{
   handleStartAssignment(x)
   };
@@ -94,7 +64,7 @@ const handleAssignmentClick=(x)=>{
   };
   
   
-	  const data = listOfPunishments.filter(user=> (user.student.studentEmail).toLowerCase() === loggedInUser.toLowerCase()).filter(punish => (punish.status === "OPEN" || punish.status=== "PENDING"));
+	  const data = sortedData.filter(user=> (user.student.studentEmail).toLowerCase() === loggedInUser.toLowerCase()).filter(punish => (punish.status === "OPEN" || punish.status=== "PENDING"));
       
     const hasScroll = data.length > 10;
 

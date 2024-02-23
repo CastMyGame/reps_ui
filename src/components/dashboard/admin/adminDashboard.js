@@ -18,6 +18,7 @@ import AssignmentManager from '../../../utils/EssayForm';
 import TeacherStudentPanel from '../teacher/teacherPanels/teacherStudentPanel';
 import AddTeacherForm from './addTeacherForm';
 import { get } from '../../../utils/api/api';
+import LoadingWheelPanel from '../student/blankPanelForTest';
 
 //New Code
 
@@ -232,7 +233,7 @@ if(panelName === "overview"){
         </div>
       </div>
       <div className = "main-content-panel">
-{panelName === "overview" &&<AdminOverviewPanel punishmentData={punishmentData} teacherData={teacherData} writeUpData={writeUpData}/>}
+{punishmentData.length=== 0? <LoadingWheelPanel/> :panelName === "overview" &&<AdminOverviewPanel punishmentData={punishmentData} teacherData={teacherData} writeUpData={writeUpData}/>}
 {panelName === "viewTeacher" &&<AdminTeacherPanel/>}
 {panelName === "student" &&<TeacherStudentPanel/>}
 {panelName === "punishment" &&<GlobalPunishmentPanel filter={punishmentFilter} />}

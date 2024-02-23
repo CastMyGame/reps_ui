@@ -17,6 +17,8 @@ import TotalPositivePoints from './positivePointsComponents';
 import Card from '@mui/material/Card';
 import BlankPanelForTest from './blankPanelForTest';
 import ViolationPage from '../../../forms/ViolationPage';
+import { get } from '../../../utils/api/api';
+import LoadingWheelPanel from './blankPanelForTest';
 
 
 
@@ -50,35 +52,24 @@ const StudentDashboard = () => {
 
 
 
-
-  const headers = {
-    Authorization: 'Bearer ' + sessionStorage.getItem('Authorization'),
-  };
-
   useEffect(() => {
-    axios
-      .get(`${baseUrl}/punish/v1/punishments`, { headers })
-      .then(function (response) {
-        setData(response.data);
-      })
-      .catch(function (error) {
-        setListOfInfractionsAssociatedByTeacher([]);
-        console.log(error);
-      });
-  }, []);
+ 
+    const fetchData = async () =>{
+      try{
+        const response = await get(`DTO/v1/StudentOverviewData/${sessionStorage.getItem('email')}`)
+        setData(response.punishments)
+        setStudentDetails(response.student)
+      }catch(err){
+        console.error(err)
+      }
 
-  useEffect(() => {
-    axios
-      .get(`${baseUrl}/student/v1/email/${sessionStorage.getItem("email")}`, { headers })
-      .then(function (response) {
-        setStudentDetails(response.data);
-      })
-      .catch(function (error) {
-        setStudentDetails([]);
-        console.log(error);
-      });
-  }, []);
+    }
+    
+      fetchData()
 
+    
+
+  }, [panelName]);
 
 
   const toggleNotificationDrawer = (open) => {
@@ -90,7 +81,9 @@ const StudentDashboard = () => {
     setPanelName("startAssignment")
   }
 
-  return (
+
+ return (
+  
     loggedIn && (
       <>
         <div className ="app-bar">
@@ -157,9 +150,10 @@ const StudentDashboard = () => {
       </div>
       </div>
 
-      { false ? 
+      { data.length ===0 ? 
+
       <div style={{backgroundColor:"white",height:"80vh",marginTop:"10px"}} className='student-panel'>
-      <BlankPanelForTest/>
+      <LoadingWheelPanel/>
       </div>:<>
 
       
@@ -168,7 +162,7 @@ const StudentDashboard = () => {
       <div className='student-overview' style={{display: panelName ==="startAssignment"?"none":""}}>
         <div className='student-overview-first'>
         <Card variant="outlined">
-        <ShoutOutWidget/>
+        <ShoutOutWidget listOfPunishments={data}/>
         </Card>
         </div>
         <div className='student-overview-second'>
@@ -180,9 +174,8 @@ const StudentDashboard = () => {
       </div>
 
       <div style={{height:"80vh"}}className = "student-panel">
-          {panelName === "shoutOutPanel" &&<ShoutOutReport/>}
-        {panelName === "closedAssignments" &&<StudentClosedPunishmentPanel/>}
-        {panelName === "openAssignments" &&<StudentOpenPunishmentPanel handleStartAssignment={handleStartAssignment}/>}
+        {panelName === "closedAssignments" &&<StudentClosedPunishmentPanel listOfPunishments={data}/>}
+        {panelName === "openAssignments" &&<StudentOpenPunishmentPanel listOfPunishments={data} handleStartAssignment={handleStartAssignment}/>}
         {panelName === "startAssignment" &&<ViolationPage data={selectAssignmentToStart} />}
       </div>
       </>
