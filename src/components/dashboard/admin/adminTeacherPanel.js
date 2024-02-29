@@ -296,4 +296,3 @@ const generatePDF = (activeTeacher,studentData) => {
 
     export default AdminTeacherPanel;
 
-
