@@ -204,8 +204,8 @@ const defaultTheme = createTheme();
       <button style={{backgroundColor:"red"}} onClick={() => {
         setOpenModal({display:false,message:""})
         setTextareaValue("")}}>Cancel</button>
-      {openModal.buttonType==="delete" && <button disabled={textareaValue===""} style={{backgroundColor: textareaValue===""?"grey":'green'}} onClick={() => handleDeletePunishment(deletePayload)}>Delete Referral</button>}
-     {openModal.buttonType==="close" && <button disabled={textareaValue.length===""} style={{backgroundColor:textareaValue===""?"grey":"white"}} onClick={() => handleClosePunishment(deletePayload)}>Close Referral</button>}
+      {openModal.buttonType==="delete" && <button disabled={textareaValue.length===0} style={{backgroundColor: textareaValue===""?"grey":'red'}} onClick={() => handleDeletePunishment(deletePayload)}>Delete Referral</button>}
+     {openModal.buttonType==="close" && <button disabled={textareaValue.length===0} style={{backgroundColor:textareaValue===""?"grey":"green"}} onClick={() => handleClosePunishment(deletePayload)}>Close Referral</button>}
 
     </div>
   </div>

@@ -1,6 +1,6 @@
 import { LineChart } from '@mui/x-charts/LineChart';
 import { Typography } from '@mui/material';
-import {  extractDataByWeekFirstDay, getCurrentWeekOfYear, getFirstDayOfWeek, getUniqueStudentIdFromList } from '../../../../global/helperFunctions';
+import {  extractDataByWeek, extractDataByWeekFirstDay, getCurrentWeekOfYear, getFirstDayOfWeek, getUniqueStudentIdFromList } from '../../../../global/helperFunctions';
 import { useState } from 'react';
 
 export default function TotalStudentReferredByWeek({data = []}) {
@@ -21,7 +21,7 @@ const GenerateChartData = (currentWeek, rangeWeeks, data) => {
   
   for (let i = 0; i < rangeWeeks; i++) {
     const weekKey = `W${yearAdj(currentWeek - i)}`;
-    const weekData = extractDataByWeekFirstDay(yearAdj(currentWeek - i), data).length; // Assuming findDataByWeek and yearAdj are defined elsewhere
+    const weekData = extractDataByWeek(yearAdj(currentWeek - i), data).length; // Assuming findDataByWeek and yearAdj are defined elsewhere
     
     const startDate = getFirstDayOfWeek(yearAdj(currentWeek - i));
     const endDate = new Date(startDate);

@@ -209,8 +209,8 @@ const defaultTheme = createTheme();
         <button onClick={() => {
           setOpenModal({display:false,message:""})
           setTextareaValue("")}}>Cancel</button>
-          <button disabled={textareaValue.length===""} style={{backgroundColor:textareaValue===""?"grey":"orange"}} onClick={() => handleRejectPunishment(deletePayload)}>Reject Answers</button>
-       <button disabled={textareaValue.length===""} style={{backgroundColor:textareaValue===""?"grey":"green"}} onClick={() => handleClosePunishment(deletePayload)}>Accept Answers</button>
+          <button disabled={textareaValue.length===0} style={{backgroundColor:textareaValue===""?"grey":"orange"}} onClick={() => handleRejectPunishment(deletePayload)}>Reject Answers</button>
+       <button disabled={textareaValue.length===0} style={{backgroundColor:textareaValue===""?"grey":"green"}} onClick={() => handleClosePunishment(deletePayload)}>Accept Answers</button>
   
       </div>
     </div>

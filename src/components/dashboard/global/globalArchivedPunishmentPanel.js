@@ -167,7 +167,7 @@ import RestoreIcon from '@mui/icons-material/Restore';
       <button onClick={() => {
         setOpenModal({display:false,message:""})
         setTextareaValue("")}}>Cancel</button>
-      {openModal.buttonType==="delete" && <button disabled={textareaValue===""} style={{backgroundColor: textareaValue===""?"grey":'red'}} onClick={() => handleDeletePunishment(deletePayload)}>Delete</button>}
+      {openModal.buttonType==="delete" && <button disabled={textareaValue.length===0} style={{backgroundColor: textareaValue===""?"grey":'red'}} onClick={() => handleDeletePunishment(deletePayload)}>Delete</button>}
 
     </div>
   </div>

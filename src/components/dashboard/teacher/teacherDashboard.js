@@ -70,8 +70,8 @@ const TeacherDashboard = () => {
  
     const fetchPunishmentData = async () =>{
       try{
-        const response = await get('DTO/v1/TeacherOverviewData')
-        setData(response.punishments)
+        const response = await get(`DTO/v1/TeacherOverviewData/${sessionStorage.getItem("email")}`)
+        setData(response)
       }catch(err){
         console.error(err)
       }

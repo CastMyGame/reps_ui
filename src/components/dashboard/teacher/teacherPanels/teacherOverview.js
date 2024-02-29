@@ -16,7 +16,7 @@ import Button from '@mui/material/Button';
   const [openModal, setOpenModal] = useState({display:false,message:"",buttonType:""})
 
 
-  const dataExcludeNonReferrals = data.filter((x)=>{return (x.infraction.infractionName !=="Positive Behavior Shout Out!")})
+  const dataExcludeNonReferrals = data.punishments.filter((x)=>{return (x.infraction.infractionName !=="Positive Behavior Shout Out!")})
   const weeklyData = dataExcludeNonReferrals.filter((x) => {
      const currentDate = new Date();
      const itemDate = new Date(x.timeCreated);
@@ -24,7 +24,7 @@ import Button from '@mui/material/Button';
      return itemDate > sevenDaysAgo;
  });
 
- const weeklyDataIncSOBxConcern = data.filter((x) => {
+ const weeklyDataIncSOBxConcern = data.punishments.filter((x) => {
     const currentDate = new Date();
     const itemDate = new Date(x.timeCreated);
     const sevenDaysAgo = new Date(currentDate.setDate(currentDate.getDate() - 7));
@@ -32,13 +32,12 @@ import Button from '@mui/material/Button';
 });
 
   useEffect(() => {
-    const statusQuo = data.filter(x => x.status === "PENDING" && x.infraction.infractionLevel === "3");
+    const statusQuo = data.punishments.filter(x => x.status === "PENDING" && x.infraction.infractionLevel === "3");
     if(statusQuo.length > 0){
       setOpenModal({display:true, message:"Attention! You have level 3 punishments with student answers that must be reviewed before closing.You can go to the page to review these by clicking the \"Level Three\" Button or you may hit the \"Later\" button to take care of this at another time. You will receive notifications until the answers are reviewed as they are not Closed until you review. Thank you!", buttonType:"redirect"});
     }
   }, [data]);
 
-{!data &&  <h1>Loading Data</h1>}
 
     return (
         <>
@@ -73,7 +72,7 @@ import Button from '@mui/material/Button';
                 className='teacher-overview-first'
                 >
         <Card variant="outlined">
-        <TeacherShoutOutWidget data={data}/>
+        <TeacherShoutOutWidget data={data.punishments}/>
         </Card>
         </div>
          <div style={{backgroundColor:"rgb(25, 118, 210)",marginTop:"10px", marginBlock:"5px"}}>
@@ -119,7 +118,7 @@ import Button from '@mui/material/Button';
     <div className='teacher-widget-half'>
 <div className='studentIncidentTable'>
 {/* <Card style={{padding:"5px"}}> */}
-    <IncidentsByStudentTable writeUps={data}/>
+    <IncidentsByStudentTable writeUps={data.writeUps}/>
 {/* </Card> */}
 
 
@@ -128,7 +127,7 @@ import Button from '@mui/material/Button';
     </div>
     <div className='teacher-widget-half'>
 {/* <Card style={{padding:"5px"}}> */}
-<RecentIncidents data={data}/>
+<RecentIncidents data={data.punishments}/>
 {/* </Card> */}
 
 </div>
@@ -147,7 +146,7 @@ import Button from '@mui/material/Button';
     <div className='teacher-widget-third'>
     {/* <Card style={{padding:"5px"}}> */}
 
-    { data ? <TotalReferralByWeek data={data}/> : <h1>loading</h1>}
+    { data ? <TotalReferralByWeek data={data.writeUps}/> : <h1>loading</h1>}
 
       {/* </Card> */}
 
@@ -156,13 +155,13 @@ import Button from '@mui/material/Button';
     </div>
     <div className='teacher-widget-third'>
     {/* <Card style={{padding:"5px"}}> */}
-<TotalStudentReferredByWeek data={data}/>
+<TotalStudentReferredByWeek data={data.writeUps}/>
 {/* </Card> */}
 </div>
 
 <div className='teacher-widget-third'>
 {/* <Card style={{padding:"5px"}}> */}
-<ReferralByBehavior data={data}/>
+<ReferralByBehavior data={data.writeUps}/>
 {/* </Card> */}
 
 </div>
