@@ -1,10 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
 import Drawer from '@mui/material/Drawer';
-import AccountBoxIcon from '@mui/icons-material/AccountBox';
-import NotificationsIcon from '@mui/icons-material/Notifications';
 import CreatePunishmentPanel from '../panel/createPunishmentPanel';
 import CreateNewStudentPanel from '../panel/createNewStudentPanel';
 import ISSWidget from './issWidget';
@@ -13,15 +8,11 @@ import AdminTeacherPanel from './adminTeacherPanel';
 import GlobalPunishmentPanel from '../global/globalPunishmentPanel';
 import GlobalArchivedPunishmentPanel from '../global/globalArchivedPunishmentPanel';
 import AdminOverviewPanel from './adminOverview';
-import DashboardIcon from '@mui/icons-material/Dashboard';
 import AssignmentManager from '../../../utils/EssayForm';
 import TeacherStudentPanel from '../teacher/teacherPanels/teacherStudentPanel';
 import AddTeacherForm from './addTeacherForm';
 import { get } from '../../../utils/api/api';
 import LoadingWheelPanel from '../student/blankPanelForTest';
-import { ThemeProvider } from '@emotion/react';
-import { Navigation } from '../../landing/navigation';
-import { NavigationLoggedIn } from '../../landing/navigation-loggedIn';
 import { ContactUsModal } from '../../../secuirty/contactUsModal';
 import { NavigationAdmin } from '../../landing/navigation-admin';
 
@@ -37,11 +28,10 @@ const AdminDashboard = () => {
   const [modalType,setModalType] = useState("")
 
   const [isDropdownOpen, setIsDropdownOpen] = useState("");
-const [punishmentFilter, setPunishmentFilter] =useState("OPEN")
   
-const handleGeneratePDF = () => {
-  window.open('/forms/report', '_blank'); // '_blank' will open the URL in a new tab/window
-};
+// const handleGeneratePDF = () => {
+//   window.open('/forms/report', '_blank'); // '_blank' will open the URL in a new tab/window
+// };
 
 const handleLogout = () => {
   clearSessionStorage();
@@ -68,12 +58,12 @@ const clearSessionStorage = () => {
     setOpenNotificationDrawer(open);
   };
 
-const openDropdown =(field)=>{
-  setIsDropdownOpen({})
-  setIsDropdownOpen((prev)=>({
-    ...prev, [field]: !isDropdownOpen[field]
-  }))
-}
+// const openDropdown =(field)=>{
+//   setIsDropdownOpen({})
+//   setIsDropdownOpen((prev)=>({
+//     ...prev, [field]: !isDropdownOpen[field]
+//   }))
+// }
 
 
 
@@ -123,7 +113,7 @@ if(panelName === "overview"){
 {punishmentData.length=== 0? <LoadingWheelPanel/> :panelName === "overview" &&<AdminOverviewPanel data={punishmentData} teacherData={teacherData} writeUpData={writeUpData}/>}
 {panelName === "viewTeacher" &&<AdminTeacherPanel/>}
 {panelName === "student" &&<TeacherStudentPanel/>}
-{panelName === "punishment" &&<GlobalPunishmentPanel filter={punishmentFilter} />}
+{panelName === "punishment" &&<GlobalPunishmentPanel  />}
 {panelName === "createPunishment" && <CreatePunishmentPanel/>}
 {panelName === "createNewStudent" && <CreateNewStudentPanel/>}
 {panelName === "userManagement" && <AddTeacherForm/>}

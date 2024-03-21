@@ -1,9 +1,5 @@
-import react, {useEffect,useRef,useState} from 'react'
-import { Table, TableContainer, TableHead, TableBody, TableRow, TableCell, Paper } from '@mui/material';
+import  {useEffect,useState} from 'react'
 import Typography from '@mui/material/Typography';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import ContactsIcon from '@mui/icons-material/Contacts';
-import VisibilityIcon from '@mui/icons-material/Visibility';
 import axios from "axios"
 import { baseUrl } from '../../../utils/jsonData'
 import jsPDF from 'jspdf';
@@ -36,15 +32,15 @@ import jsPDF from 'jspdf';
 
    
   
-    const pdfRef = useRef();
+    // const pdfRef = useRef();
 
     const generatePDF = (studentData) => {
       const pdf = new jsPDF();
         // Add logo
-        const logoWidth = 50; // Adjust the width of the logo as needed
-        const logoHeight = 50; // Adjust the height of the logo as needed
-        const logoX = 130; // Adjust the X coordinate of the logo as needed
-        const logoY = 15; // Adjust the Y coordinate of the logo as needed
+        // const logoWidth = 50; // Adjust the width of the logo as needed
+        // const logoHeight = 50; // Adjust the height of the logo as needed
+        // const logoX = 130; // Adjust the X coordinate of the logo as needed
+        // const logoY = 15; // Adjust the Y coordinate of the logo as needed
         
     //https://medium.com/dont-leave-me-out-in-the-code/5-steps-to-create-a-pdf-in-react-using-jspdf-1af182b56cee
     

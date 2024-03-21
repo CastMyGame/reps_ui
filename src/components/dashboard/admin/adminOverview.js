@@ -1,4 +1,3 @@
-import react, {useState,useEffect} from 'react'
 import Typography from '@mui/material/Typography';
 import Card from '@mui/material/Card';
 import TotalReferralByWeek from '../teacher/teacherPanels/charts/lineCharts/referralsByWeek';
@@ -10,7 +9,6 @@ import { IncidentByTeacherPieChart } from './widget/incident-by-teacher-pie-char
 import {  Top5TeacherRatioTable } from './widget/top-5-ratio-table';
 import { WorseClassTable } from './widget/top-class-with-write-up';
 import { IncidentByStudentPieChart } from './widget/incident-by-student-pie-chart';
-import TeacherShoutOutWidget from '../teacher/teacherPanels/charts/tables/teacherShoutOutWidget';
 import "./admin.css"
 import AdminShoutOut from '../teacher/teacherPanels/charts/tables/adminShoutOutWidget copy';
 
