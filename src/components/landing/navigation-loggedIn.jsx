@@ -44,7 +44,7 @@ export const NavigationLoggedIn = (props) => {
             <div onClick={() => props.setDropdown(prev => prev === "referral" ? "" : "referral")} >
   Referral/Shout Out
 </div>
-              <div style={{display: props.isDropdownOpen === "referral"?"block":"none"}} class="feature-menu-dropdown">
+              <div style={{display: props.isDropdownOpen === "referral"?"block":"none"}} className="feature-menu-dropdown">
   <div 
   onClick={()=>dropdownHandler("createPunishment")}
   className="item">New Referral/Shout Outs</div>
