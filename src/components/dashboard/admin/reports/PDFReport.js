@@ -85,12 +85,6 @@ const PDFReport = () => {
     const [data, setData] = useState([]); // State for the first table data
     const [data2, setData2] = useState([]); // State for the second table data
   
-    const headers = {
-        Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
-      };
-    
-      const url = `${baseUrl}/punish/v1/punishments`;
-
       const filterISS = (data) => {
         return data.filter((punishment) => {
           const days = calculateDaysSince(punishment.timeCreated);
@@ -105,8 +99,12 @@ const PDFReport = () => {
         });
       } 
     useEffect(() => {
+      const headers = {
+        Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
+      };
+    
+      const url = `${baseUrl}/punish/v1/punishments`;
    
-
       axios
         .get(url, { headers })
         .then(function (response) {
