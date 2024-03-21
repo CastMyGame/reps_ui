@@ -19,10 +19,10 @@ import IdleTimerContainer from './secuirty/IdleTimerContainer';
 function App() {
   const [isLoggedOut, setIsLoggedOut] = useState(false);
 
-  const handleIdle = () => {
-    // Perform logout logic or any other action on idle
-    setIsLoggedOut(true);
-  };
+  // const handleIdle = () => {
+  //   // Perform logout logic or any other action on idle
+  //   setIsLoggedOut(true);
+  // };
 
 
   return (

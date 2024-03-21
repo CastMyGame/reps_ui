@@ -38,7 +38,8 @@ const defaultTheme = createTheme();
         Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
       };
       
-      const url = `${baseUrl}/punish/v1/punishments`;
+
+      const url = `${baseUrl}/DTO/v1/punishmentsDTO`;
       const urlArchive = `${baseUrl}/punish/v1/archived`;
 
       
@@ -51,9 +52,10 @@ const defaultTheme = createTheme();
         axios
           .get(url, { headers }) // Pass the headers option with the JWT token
           .then(function (response) {
-            const sortedData = response.data.sort((a, b) => new Date(a.timeCreated) - new Date(b.timeCreated));
+            console.log("response", response.data)
+            const sortedData = response.data.sort((a, b) => new Date(a.punishment.timeCreated) - new Date(b.punishment.timeCreated));
             if(roleType==="teacher"){
-              const sortedByRole = sortedData.filter(x=>x.teacherEmail === sessionStorage.getItem("email"))
+              const sortedByRole = sortedData.filter(x=>x.punishment.teacherEmail === sessionStorage.getItem("email"))
               setListOfPunishments(sortedByRole);   
             
             }
@@ -70,7 +72,7 @@ const defaultTheme = createTheme();
           axios
           .get(urlArchive, { headers }) // Pass the headers option with the JWT token
           .then(function (response) {
-            const sortedData = response.data.sort((a, b) => new Date(a.timeCreated) - new Date(b.timeCreated));
+            const sortedData = response.data.sort((a, b) => new Date(a.punishment.timeCreated) - new Date(b.punishment.timeCreated));
             if(roleType==="teacher"){
               const sortedByRole = sortedData.filter(x=>x.teacherEmail === sessionStorage.getItem("email"))
               setArchivedData(sortedByRole);   
@@ -87,7 +89,7 @@ const defaultTheme = createTheme();
 
 //Merging the punishment and arhcived data
 
-      const data = sort === "ARCHIVED" ? archivedData : (sort === "ALL")? listOfPunishments: listOfPunishments.filter((x)=> x.status === sort);
+      const data = sort === "ARCHIVED" ? archivedData : (sort === "ALL")? listOfPunishments: listOfPunishments.filter((x)=> x.punishment.status === sort);
 
   
       const hasScroll = data.length > 10;
@@ -285,7 +287,8 @@ const defaultTheme = createTheme();
             <TableBody>
               {data.length > 0 ? (
                 data.map((x, key) => {
-                  const days = calculateDaysSince(x.timeCreated);
+                  console.log(x,"find me")
+                  const days = calculateDaysSince(x.punishment.timeCreated);
   
                   return (
                     <TableRow
@@ -300,25 +303,25 @@ const defaultTheme = createTheme();
                               color: 'rgb(25, 118, 210)', // Change the color to blue
                             }}
                           />
-                          <span>{x.student.firstName} {x.student.lastName}</span>
+                          <span>{x.firstName} {x.lastName}</span>
                         </div>
                       </TableCell>
-                      <TableCell>{x.infraction.infractionName}</TableCell>
-                      <TableCell style={{maxWidth:"150px", whiteSpace:'normal', wordBreak: 'break-word'}}>{x.infraction.infractionDescription[1]}</TableCell>
-                      <TableCell>{x.infraction.infractionLevel}</TableCell>
+                      <TableCell>{x.punishment.infractionName}</TableCell>
+                      <TableCell style={{maxWidth:"150px", whiteSpace:'normal', wordBreak: 'break-word'}}>{x.punishment.infractionDescription[1]}</TableCell>
+                      <TableCell>{x.punishment.infractionLevel}</TableCell>
                       <TableCell>
   <div 
   className={`status-tag ${days >= 4 ? "tag-critical" : days >= 3 ? "tag-danger" : days >= 2 ? "tag-warning" : "tag-good"}`}
   >
-    {x.status}
+    {x.punishment.status}
   </div>
 </TableCell>
 
-                      <TableCell>{dateCreateFormat(x.timeCreated)}</TableCell>
+                      <TableCell>{dateCreateFormat(x.punishment.timeCreated)}</TableCell>
                       <TableCell>
 
 
-  {x.archived === false &&(x.status === "OPEN" ?  <><button style={{height:"60px", width:"180px", backgroundColor: "green"}} onClick={() => {  setOpenModal({display:true,message:"You are attempting to remove the restorative assignment and close out a referral. If this was not your intent click cancel. If this is your intent, provide a brief explanation for why the restorative assignment is being removed and click Close",buttonType:"close"})
+  {x.punishment.archived === false &&(x.punishment.status === "OPEN" ?  <><button style={{height:"60px", width:"180px", backgroundColor: "green"}} onClick={() => {  setOpenModal({display:true,message:"You are attempting to remove the restorative assignment and close out a referral. If this was not your intent click cancel. If this is your intent, provide a brief explanation for why the restorative assignment is being removed and click Close",buttonType:"close"})
   setDeletePayload(x)  }}>
     <p style={{marginBottom:"5px", marginTop:"-2%"}}>Close Referral</p>
     {(loadingPunihsmentId.id === x.punishmentId && loadingPunihsmentId.buttonType==="close") ? (
@@ -332,14 +335,14 @@ const defaultTheme = createTheme();
   <button style={{height:"60px", width:"180px", backgroundColor:"red"}} onClick={() => {   setOpenModal({display:true,message:"You are attempting to delete the record of this referral. If you were attempting to remove the restorative assignment and close out the referral please click cancel and hit the “Close Referral” button. If you still want to delete the record of this referral, provide a brief explanation for this action and click Delete Referral.",buttonType:"delete"})
   setDeletePayload(x) }}>
     <p style={{marginBottom:"5px", marginTop:"-2%"}}>Delete Referral</p>
-    {(loadingPunihsmentId.id === x.punishmentId && loadingPunihsmentId.buttonType==="delete") ? (
+    {(loadingPunihsmentId.id === x.punishment.punishmentId && loadingPunihsmentId.buttonType==="delete") ? (
       <CircularProgress style={{height:"20px", width:"20px"}} color="secondary" />
     ) : (
       <DeleteForeverIcon/>
     )}
   </button></> : <> <button style={{height:"45px", width:"90px",backgroundColor:"red"}} onClick={() => {   setOpenModal({display:true,message:"You are attempting to delete the record of this referral. If you were attempting to remove the restorative assignment and close out the referral please click cancel and hit the “Close Referral” button. If you still want to delete the record of this referral, provide a brief explanation for this action and click Delete Referral.",buttonType:"delete"})
   setDeletePayload(x) }}>
-    {(loadingPunihsmentId.id === x.punishmentId && loadingPunihsmentId.buttonType==="delete") ? (
+    {(loadingPunihsmentId.id === x.punishment.punishmentId && loadingPunihsmentId.buttonType==="delete") ? (
       <CircularProgress style={{height:"20px", width:"20px"}} color="secondary" />
     ) : (
       <DeleteForeverIcon/>

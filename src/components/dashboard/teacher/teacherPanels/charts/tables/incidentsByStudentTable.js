@@ -16,12 +16,12 @@ const IncidentsByStudentTable = ({writeUps = []}) => {
 
   
   const studentsWithIncidentsList = Object.entries(uniqueStudents).map(([studentEmail, incidents]) => {
-    const {studentFirstName, studentLastName} = writeUps.find(item => item.studentEmail === studentEmail);
+    const {firstName, lastName} = writeUps.find(item => item.studentEmail === studentEmail);
 
     return {
       studentEmail,
-      studentFirstName,
-      studentLastName,
+      firstName,
+      lastName,
       incidents,
       percent: ((incidents / totalIncidents) * 100).toFixed(2),
     };
@@ -43,9 +43,9 @@ const IncidentsByStudentTable = ({writeUps = []}) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {studentsWithIncidentsList.map(({ studentEmail, studentFirstName, studentLastName, incidents, percent }, index) => (
+          {studentsWithIncidentsList.map(({ studentEmail, firstName, lastName, incidents, percent }, index) => (
             <TableRow key={index}>
-              <TableCell style={{ fontSize: '1.25rem'}}>{studentFirstName} {studentLastName}</TableCell>
+              <TableCell style={{ fontSize: '1.25rem'}}>{firstName} {lastName}</TableCell>
               <TableCell style={{ fontSize: '1.25rem'}}>{incidents}</TableCell>
               <TableCell style={{ fontSize: '1.25rem'}}>{percent}%</TableCell> 
             </TableRow>

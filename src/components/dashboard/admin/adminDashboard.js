@@ -1,10 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
 import Drawer from '@mui/material/Drawer';
-import AccountBoxIcon from '@mui/icons-material/AccountBox';
-import NotificationsIcon from '@mui/icons-material/Notifications';
 import CreatePunishmentPanel from '../panel/createPunishmentPanel';
 import CreateNewStudentPanel from '../panel/createNewStudentPanel';
 import ISSWidget from './issWidget';
@@ -13,12 +8,13 @@ import AdminTeacherPanel from './adminTeacherPanel';
 import GlobalPunishmentPanel from '../global/globalPunishmentPanel';
 import GlobalArchivedPunishmentPanel from '../global/globalArchivedPunishmentPanel';
 import AdminOverviewPanel from './adminOverview';
-import DashboardIcon from '@mui/icons-material/Dashboard';
 import AssignmentManager from '../../../utils/EssayForm';
 import TeacherStudentPanel from '../teacher/teacherPanels/teacherStudentPanel';
 import AddTeacherForm from './addTeacherForm';
 import { get } from '../../../utils/api/api';
 import LoadingWheelPanel from '../student/blankPanelForTest';
+import { ContactUsModal } from '../../../secuirty/contactUsModal';
+import { NavigationAdmin } from '../../landing/navigation-admin';
 
 //New Code
 
@@ -29,17 +25,13 @@ const AdminDashboard = () => {
   const [punishmentData,setPunishmentData] = useState([])
   const [writeUpData,setWriteUpData] = useState([])
   const [teacherData,setTeacherData] = useState([])
-  const [isDropdownOpen, setIsDropdownOpen] = useState({
-    referralDropdown:false,
-    teacherDropdown:false,
-    studentDropdown:false,
-    toolsDropdown:false
-  });
-const [punishmentFilter, setPunishmentFilter] =useState("OPEN")
+  const [modalType,setModalType] = useState("")
+
+  const [isDropdownOpen, setIsDropdownOpen] = useState("");
   
-const handleGeneratePDF = () => {
-  window.open('/forms/report', '_blank'); // '_blank' will open the URL in a new tab/window
-};
+// const handleGeneratePDF = () => {
+//   window.open('/forms/report', '_blank'); // '_blank' will open the URL in a new tab/window
+// };
 
 const handleLogout = () => {
   clearSessionStorage();
@@ -66,12 +58,12 @@ const clearSessionStorage = () => {
     setOpenNotificationDrawer(open);
   };
 
-const openDropdown =(field)=>{
-  setIsDropdownOpen({})
-  setIsDropdownOpen((prev)=>({
-    ...prev, [field]: !isDropdownOpen[field]
-  }))
-}
+// const openDropdown =(field)=>{
+//   setIsDropdownOpen({})
+//   setIsDropdownOpen((prev)=>({
+//     ...prev, [field]: !isDropdownOpen[field]
+//   }))
+// }
 
 
 
@@ -102,149 +94,39 @@ if(panelName === "overview"){
   return (
     loggedIn && (
       <>
-        <div className ="app-bar">
-        <Toolbar style={{background:"darkblue", color: "white"}}>
-          <DashboardIcon onClick={()=>setPanelName("overview")} style={{color:"white",backgroundColor:"black", marginRight:"10px"}}/>
-            <Typography variant="h6" style={{ flexGrow: 1 }}>
-              Welcome, {sessionStorage.getItem('userName')}
-            </Typography>
-            <NotificationsIcon style={{marginRight:"15px"}} onClick={()=> toggleNotificationDrawer(true) }/>
-    
+     
+       <div>
+        <div>
 
-            <AccountBoxIcon/>           
-              <IconButton type="button" color="inherit" onClick={handleLogout}>
-              Logout
-            </IconButton>
+        {modalType === "contact" && <ContactUsModal setContactUsDisplayModal={setModalType} />}
 
-          </Toolbar>
+<NavigationAdmin toggleNotificationDrawer ={toggleNotificationDrawer } setModalType={setModalType} setPanelName={setPanelName}  setDropdown={setIsDropdownOpen} isDropdownOpen={isDropdownOpen} setLogin={handleLogout} />
         </div>
-       <div className='page'>
          
-      <div className='teacher-main-content'> 
-      <div className="">
-      <div className = "teacher-main-content-menu">
 
-        {/* Overview button */}
-    <button 
-    className='teacher-dash-dropbtn' 
-    onClick={() => {
-      setPanelName("overview")
-  }}
-  >
-    Overview
-  </button>
-
-  {/* New Shout Reffere **/}
-  <button 
-    className='teacher-dash-dropbtn' 
-    onClick={() => {
-      openDropdown("newReferral")
-      // setPanelName("createPunishment")
-  }}
-  >
-  Referral/Shout Out
-  </button>
-  <div style={{marginLeft:"25%"}} className={isDropdownOpen.newReferral ? 'dropdown-content show' : 'dropdown-content'}>
-    <div onClick={()=>{
-      setPanelName("createPunishment")  
-      setIsDropdownOpen(!isDropdownOpen.newReferral)
-
-     }}className='teacher-dropdown-item'>New Referral/Shout Out</div>
-       <div onClick={()=>{
-      setPanelName("punishment")  
-      setIsDropdownOpen(!isDropdownOpen.newReferral)
-
-     }}className='teacher-dropdown-item'>Existing Referrals/Shout Outs</div>
-
-</div>
-  
-  {/* Punishment Drop Down */}
-  {/* Student Drop Down */}
-  <button 
-    className='teacher-dash-dropbtn' 
-    onClick={() => {
-      openDropdown("studentDropdown")
-      // setPanelName("student")
-  }}
-    // style={{ flex: 1, outline:"1px solid  white", padding: "5px", textAlign: "center"}}
-  >
-    Reports
-  </button>
-      {/* Margin Left is used to move dropdown under the buttons */}
-  <div style={{marginLeft:"50%"}} className={isDropdownOpen.studentDropdown ? 'dropdown-content show' : 'dropdown-content'}>
-    <div onClick={()=>{
-      setPanelName("student") 
-      setIsDropdownOpen(!isDropdownOpen.studentDropdown)
- 
-     }}className='teacher-dropdown-item'>By Student</div>
-
-      <div onClick={()=>{
-      setIsDropdownOpen(!isDropdownOpen.studentDropdown)
-      // setPunishmentFilter("OPEN")
-       setPanelName("viewTeacher")
-       }}className='dropdown-item'> By Teacher</div>
-  </div>
-     
-    {/* Teacher Drop Down */}
-    {/* <button 
-    className='dropbtn' 
-    onClick={() => {
-      openDropdown("teacherDropDown")
-  }}
-    style={{ flex: 1, outline:"1px solid  white", padding: "5px", textAlign: "center"}}
-  >
-    Teachers
-  </button>
-      {/* Margin Left is used to move dropdown under the buttons */}
- 
-
- 
-
-    {/* Tooks Drop Down */}
-    <button 
-    className='teacher-dash-dropbtn' 
-    onClick={() => {
-      openDropdown("toolsDropdown")
-      // setPanelName("punishment")
-  }}
-    style={{ flex: 1, outline:"1px solid  white", padding: "5px", textAlign: "center"}}
-  >
-    Tools
-  </button>
-      {/* Margin Left is used to move dropdown under the buttons */}
-  <div style={{marginLeft:"75%"}} className={isDropdownOpen.toolsDropdown ? 'dropdown-content show' : 'dropdown-content'}>
-    <div onClick={()=>{
-      setPanelName("createEditAssignments")  
-      setIsDropdownOpen(!isDropdownOpen.toolsDropdown)
-
-     }}className='dropdown-item'>Create/Edit Assignments</div>
-      <div onClick={()=>{
-      setPanelName("userManagement")  
-      setIsDropdownOpen(!isDropdownOpen.toolsDropdown)
-
-     }}className='dropdown-item'>Create a Student/Teacher</div>
-           <div onClick={()=>{
-      setPanelName("archived")  
-      setIsDropdownOpen(!isDropdownOpen.toolsDropdown)
-
-     }}className='dropdown-item'>Archived</div>
-     
-  </div>
-        </div>
-      </div>
-      <div className = "main-content-panel">
-{punishmentData.length=== 0? <LoadingWheelPanel/> :panelName === "overview" &&<AdminOverviewPanel punishmentData={punishmentData} teacherData={teacherData} writeUpData={writeUpData}/>}
+      <div className='header'> 
+      {punishmentData.length === 0 ? <LoadingWheelPanel/>:<div className=''>
+       
+      <div  style={{width: false ?"70%":"100%"}}
+   className='left-main'>
+<div className = "main-content-panel">
+{punishmentData.length=== 0? <LoadingWheelPanel/> :panelName === "overview" &&<AdminOverviewPanel data={punishmentData} teacherData={teacherData} writeUpData={writeUpData}/>}
 {panelName === "viewTeacher" &&<AdminTeacherPanel/>}
 {panelName === "student" &&<TeacherStudentPanel/>}
-{panelName === "punishment" &&<GlobalPunishmentPanel filter={punishmentFilter} />}
+{panelName === "punishment" &&<GlobalPunishmentPanel  />}
 {panelName === "createPunishment" && <CreatePunishmentPanel/>}
 {panelName === "createNewStudent" && <CreateNewStudentPanel/>}
 {panelName === "userManagement" && <AddTeacherForm/>}
 {panelName === "archived" && <GlobalArchivedPunishmentPanel/>}
 {panelName === "createEditAssignments" && <AssignmentManager/>}
 
+</div>
 
       </div>
+       
+       
+        </div>}
+
       </div>
 
          

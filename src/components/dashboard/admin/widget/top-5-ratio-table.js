@@ -6,8 +6,8 @@ export const Top5TeacherRatioTable = ({data = [], teacherData=[] }) =>{
  
   const teachersWithIncidentsList = []
   const schoolTotal =  data.length
-  const posAvg = data.filter(item => item.infraction.infractionName === "Positive Behavior Shout Out!").length
-  const negAvg = data.filter(item => item.infraction.infractionName !== "Positive Behavior Shout Out!").length
+  const posAvg = data.filter(item => item.infractionName === "Positive Behavior Shout Out!").length
+  const negAvg = data.filter(item => item.infractionName !== "Positive Behavior Shout Out!").length
 
 
 
@@ -20,16 +20,15 @@ const schoolAvg = {pos:((posAvg/schoolTotal * 100).toFixed(2)) ,neg:((negAvg/sch
 
 if(teacherIncidents.length>0){
       const totalIncidents = teacherIncidents.length;
-      const posIncidents = teacherIncidents.filter(item => item.infraction.infractionName === "Positive Behavior Shout Out!").length;
-      const negIncidents = teacherIncidents.filter(item => item.infraction.infractionName !== "Positive Behavior Shout Out!").length;
+      const posIncidents = teacherIncidents.filter(item => item.infractionName === "Positive Behavior Shout Out!").length;
+      const negIncidents = teacherIncidents.filter(item => item.infractionName !== "Positive Behavior Shout Out!").length;
 
       teachersWithIncidentsList.push({teacherName:teacher.firstName + " " + teacher.lastName, posRatio:(posIncidents/totalIncidents * 100).toFixed(2),negRatio:(negIncidents/totalIncidents * 100).toFixed(2)})
 }
 
 
       
-
-         
+       
       
     }
 });

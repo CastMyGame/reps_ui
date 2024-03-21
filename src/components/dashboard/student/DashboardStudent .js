@@ -19,6 +19,9 @@ import BlankPanelForTest from './blankPanelForTest';
 import ViolationPage from '../../../forms/ViolationPage';
 import { get } from '../../../utils/api/api';
 import LoadingWheelPanel from './blankPanelForTest';
+import { ContactUsModal } from '../../../secuirty/contactUsModal';
+import { NavigationAdmin } from '../../landing/navigation-admin';
+import { NavigationStudent } from '../../landing/navigation-student';
 
 
 
@@ -26,6 +29,8 @@ const StudentDashboard = () => {
   const [loggedIn, setLoggedIn] = useState(true);
   const [listOfInfractionsAssociatedByTeacher, setListOfInfractionsAssociatedByTeacher] = useState([]);
   const [data, setData] = useState([]);
+  const [modalType,setModalType] = useState("")
+  const [isDropdownOpen, setIsDropdownOpen] = useState("")
   const [openDrawer, setOpenDrawer] = useState(false);
   const [openNotificationDrawer, setOpenNotificationDrawer] = useState(false)
   const [panelName,setPanelName] = useState("openAssignments")
@@ -86,68 +91,20 @@ const StudentDashboard = () => {
   
     loggedIn && (
       <>
-        <div className ="app-bar">
-        <Toolbar style={{background:"yellow", color: "black"}}>
-            <Typography variant="h6" style={{ flexGrow: 1 }}>
-              Welcome, {sessionStorage.getItem('userName')}
-            </Typography>
-            <NotificationsIcon style={{marginRight:"15px"}} onClick={()=> toggleNotificationDrawer(true) }/>
-    
+         <div>
+      
+      {modalType === "contact" && <ContactUsModal setContactUsDisplayModal={setModalType} />}
 
-            <AccountBoxIcon/>           
-              <IconButton type="button" color="inherit" onClick={handleLogout}>
-              Logout
-            </IconButton>
-
-          </Toolbar>
-        </div>
-       <div className='page'>
+      <NavigationStudent toggleNotificationDrawer ={toggleNotificationDrawer } setModalType={setModalType} setPanelName={setPanelName}  setDropdown={setIsDropdownOpen} isDropdownOpen={isDropdownOpen} setLogin={handleLogout} />
+  </div>
+       <div className='header'>
       <div className='student-main-content'> 
-      {/* start-nav-bar */}
     
     
 
-      <div className='dashboard-title'>
-      <div className ="student-main-content-menu">
+      <div style={{width:"100%"}}className='dashboard-title'>
       <div>Student Dashboard</div>
 
-            {/* Mandatory Open Assignment Drop Down */}
-          <button 
-          className='student-drop-btn' 
-          onClick={() => {
-            // openDropdown("studentDropdown")
-            setPanelName("openAssignments")
-        }}
-        >
-          Mandatory Open Assignments
-        </button>
-
-             
-
-    
-  {/* Histroy Drop Down */}
-  <button 
-          className='student-drop-btn' 
-          onClick={() => {
-      // openDropdown("referralDropdown")
-       setPanelName("closedAssignments")}}
-  >
-    History
-  </button>
-
-    {/* Histroy Drop Down */}
-    <button disabled={true}
-          style={{opacity:.4}}
-
-          className='student-drop-btn' 
-          onClick={() => {
-      // openDropdown("referralDropdown")
-       setPanelName("closedAssignments")}}
-  >
-    Resources
-  </button>
-
-      </div>
       </div>
 
       { data.length ===0 ? 

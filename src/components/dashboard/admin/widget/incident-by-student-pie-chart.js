@@ -21,12 +21,12 @@ export const IncidentByStudentPieChart = ({ writeUps = [] }) => {
   });
 
   const studentsWithIncidentsList = Object.entries(uniqueStudents).map(([studentEmail, incidents]) => {
-    const {studentFirstName, studentLastName} = writeUps.find(item => item.studentEmail === studentEmail);
+    const {firstName, lastName} = writeUps.find(item => item.studentEmail === studentEmail);
 
     return {
       studentEmail,
-      studentFirstName,
-      studentLastName,
+      firstName,
+      lastName,
       incidents,
       percent: ((incidents / totalIncidents) * 100).toFixed(2),
     };
@@ -73,7 +73,7 @@ const modifiedList = [
           series={[
             {
               data: modifiedList.map((student, index) => ({
-                id: index, value: parseFloat(student.percent), label: `${student.firstName} ${student.lastName} (${student.studentId.substring(0, 5)})`
+                id: index, value: parseFloat(student.percent), label: `${student.firstName} ${student.lastName}`
               })),
               arcLabel: (item) => `(${parseFloat(item.value)}%)`,
               arcLabelMinAngle: 45,

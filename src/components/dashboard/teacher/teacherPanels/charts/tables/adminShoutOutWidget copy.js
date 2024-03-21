@@ -3,17 +3,17 @@ import { Table, TableContainer, TableHead, TableBody, TableRow, TableCell, Paper
 import { dateCreateFormat } from '../../../../global/helperFunctions';
 import ArrowDropDownCircleIcon from '@mui/icons-material/ArrowDropDownCircle';
   
-const TeacherShoutOutWidget = ({data = []}) => {
+const AdminShoutOut = ({data = []}) => {
     const [barOpen,setBarOpen] = useState(true)
   
     //We need to fix the cfr issues
     console.log("shoutout", data)
 	  const shoutOutData = data
-    .filter(punish => punish.infractionName === "Positive Behavior Shout Out!");
+    .filter(punish => punish.punishment.infractionName === "Positive Behavior Shout Out!");
       
     const hasScroll = shoutOutData.length > 2;
 
-    shoutOutData.sort((a,b) => b.timeCreated - a.timeCreated ? 1 : -1)
+    shoutOutData.sort((a,b) => b.punishment.timeCreated - a.punishment.timeCreated ? 1 : -1)
 
     return (
 !barOpen ?  
@@ -66,12 +66,12 @@ onClick={() => setBarOpen(false)}
       {shoutOutData.length > 0 ? (
         shoutOutData.map((x, key) => (
           <TableRow key={key}>
-            <TableCell style={{ width: '20%', fontSize: '1.25rem' }}>{dateCreateFormat(x.timeCreated)}</TableCell>
-            <TableCell style={{ width: '20%', fontSize: '1.25rem' }}>{x.studentEmail} </TableCell>
+            <TableCell style={{ width: '20%', fontSize: '1.25rem' }}>{dateCreateFormat(x.punishment.timeCreated)}</TableCell>
+            <TableCell style={{ width: '20%', fontSize: '1.25rem' }}>{x.firstName} {x.lastName}</TableCell>
             <TableCell style={{ width: '30%', fontSize: '1.25rem' }}>
-  {x.infractionDescription}
+  {x.punishment.infractionDescription}
 </TableCell>            
-<TableCell style={{ width: '30%', fontSize: '1.25rem' }}>{x.teacherEmail}</TableCell>
+<TableCell style={{ width: '30%', fontSize: '1.25rem' }}>{x.punishment.teacherEmail}</TableCell>
           </TableRow>
         ))
       ) : (
@@ -85,6 +85,6 @@ onClick={() => setBarOpen(false)}
     )
     }
 
-    export default TeacherShoutOutWidget;
+    export default AdminShoutOut;
 
 

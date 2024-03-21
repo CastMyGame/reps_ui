@@ -14,6 +14,8 @@ import MultipleChoiceFormat from './ViolationContents/MultipleChoiceFormat';
   const [studentAnswers, setStudentAnswers] = useState([])
   const [mapIndex, setMapIndex] = useState(0)
   const [essay,setEssay] = useState()
+
+
   
 
   useEffect(()=>{
@@ -26,14 +28,16 @@ useEffect(()=>{
     Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
   };
   
+  console.log("ENJPY", props.data)
+
 
 const url =`${baseUrl}/assignments/v1/`
 axios.get(url,{headers})
 .then(response => {
 const essay = response.data.filter(
   essay =>
-    essay.infractionName === props.data.infraction.infractionName &&
-    essay.level == parseInt(props.data.infraction.infractionLevel)
+    essay.infractionName === props.data.infractionName &&
+    essay.level == parseInt(props.data.infractionLevel)
 );
 setEssay(essay[0])
 })

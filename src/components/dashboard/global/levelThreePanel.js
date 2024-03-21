@@ -2,7 +2,6 @@ import  {useEffect,useState} from 'react'
 import * as React from 'react';
 
 import { Table, TableContainer, TableHead, TableBody, TableRow, TableCell, Paper, TextField, Select, Box, Chip, MenuItem, createTheme } from '@mui/material';
-import Typography from '@mui/material/Typography';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import axios from "axios"
 import { baseUrl } from '../../../utils/jsonData'
@@ -11,6 +10,7 @@ import MuiAlert from '@mui/material/Alert';
 import CircularProgress from '@mui/material/CircularProgress';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
+import LoadingWheelPanel from '../student/blankPanelForTest';
 
 
 
@@ -27,6 +27,7 @@ import CheckBoxIcon from '@mui/icons-material/CheckBox';
       const [openModal, setOpenModal] = useState({display:false,message:"",buttonType:"",data:null})
       const [deletePayload, setDeletePayload] = useState(null)
       const [textareaValue, setTextareaValue] = useState("");
+      const [loading, setLoading] = useState(false)
 const [filter, setFilter] = useState("Open");
 
 const defaultTheme = createTheme();
@@ -36,38 +37,43 @@ const defaultTheme = createTheme();
         Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
       };
       
-      const url = `${baseUrl}/punish/v1/punishments`;
+      const url = `${baseUrl}/DTO/v1/punishmentsDTO`;
       
-
-  
   useEffect(()=>{
       setSort(filter)
       
   },[filter])
   
       useEffect(() => {
+        setLoading(true)
         axios
           .get(url, { headers }) // Pass the headers option with the JWT token
           .then(function (response) {
-            const sortedData = response.data.sort((a, b) => new Date(a.timeCreated) - new Date(b.timeCreated));
+            const sortedData = response.data.sort((a, b) => new Date(a.punishment.timeCreated) - new Date(b.punishment.timeCreated));
             if(roleType==="teacher"){
-              const sortedByRole = sortedData.filter(x=>x.teacherEmail === sessionStorage.getItem("email"))
+              setLoading(false)
+
+              const sortedByRole = sortedData.filter(x=>x.punishment.teacherEmail === sessionStorage.getItem("email"))
               setListOfPunishments(sortedByRole);   
             
             }
             else{
               const sortedByRole = sortedData;
+              setLoading(false)
+
               setListOfPunishments(sortedByRole);        
 
             }
       })
           .catch(function (error) {
+            setLoading(false)
+
             console.log(error);
           });
       }, [ toast.visible]);
 
 
-      let data = (sort === "ALL")? listOfPunishments: (sort==="Open") ?listOfPunishments.filter((x)=>  x.status === "PENDING" || (x.infraction.infractionName ==="Failure to Complete Work" && x.status==="PENDING") ): listOfPunishments.filter((x)=> x.status === sort);
+      let data = (sort === "ALL")? listOfPunishments: (sort==="Open") ?listOfPunishments.filter((x)=>  x.punishment.status === "PENDING" || (x.punishment.infractionName ==="Failure to Complete Work" && x.punishment.status==="PENDING") ): listOfPunishments.filter((x)=> x.punishment.status === sort);
 
       const hasScroll = data.length > 10;
   
@@ -172,7 +178,7 @@ const defaultTheme = createTheme();
       <div className='modal-header'>
         <h3>{openModal.message}</h3>
         <div className='answer-container'>
-        {openModal.data.infraction.infractionDescription.map((item, index) => {
+        {openModal.data.punishment.infractionDescription.map((item, index) => {
   if (index > 1) {
     const match = item.match(/question=([\s\S]+?),\s*answer=([\s\S]+?)(?=\))/);
     if (match) {
@@ -283,10 +289,15 @@ const defaultTheme = createTheme();
    
           </TableRow>
         </TableHead>
+        { loading && <TableBody>
+          
+            <LoadingWheelPanel/>
+
+        </TableBody> }
             <TableBody>
               {data.length > 0 ? (
                 data.map((x, key) => {
-                  const days = calculateDaysSince(x.timeCreated);
+                  const days = calculateDaysSince(x.punishment.timeCreated);
   
                   return (
                     <TableRow
@@ -301,24 +312,24 @@ const defaultTheme = createTheme();
                               color: 'rgb(25, 118, 210)', // Change the color to blue
                             }}
                           />
-                          <span>{x.student.firstName} {x.student.lastName}</span>
+                          <span>{x.firstName} {x.lastName}</span>
                         </div>
                       </TableCell>
-                      <TableCell>{x.infraction.infractionName}</TableCell>
-                      <TableCell style={{width:"75px"}}>{x.infraction.infractionDescription[1]}</TableCell>
-                      <TableCell>{x.infraction.infractionLevel}</TableCell>
+                      <TableCell>{x.punishment.infractionName}</TableCell>
+                      <TableCell style={{width:"75px"}}>{x.punishment.infractionDescription[1]}</TableCell>
+                      <TableCell>{x.punishment.infractionLevel}</TableCell>
                       <TableCell>
   <div 
   className={`status-tag ${days >= 4 ? "tag-critical" : days >= 3 ? "tag-danger" : days >= 2 ? "tag-warning" : "tag-good"}`}
   >
-    {x.status}
+    {x.punishment.status}
   </div>
 </TableCell>
 
                       <TableCell>
                         <div className='level-three-button-container'>
                      
-  {x.infraction.infractionLevel === "3" ? (
+  {x.punishment.infractionLevel === "3" ? (
     <>
       <button
         className='level-three-buttons'
@@ -332,7 +343,7 @@ const defaultTheme = createTheme();
           setDeletePayload(x);
         }}
       >
-        {loadingPunihsmentId.id === x.punishmentId && loadingPunihsmentId.buttonType === 'close' ? (
+        {loadingPunihsmentId.id === x.punishment.punishmentId && loadingPunihsmentId.buttonType === 'close' ? (
           <CircularProgress style={{ height: '20px', width: '20px' }} color='secondary' />
         ) : (
           <div>Review</div>

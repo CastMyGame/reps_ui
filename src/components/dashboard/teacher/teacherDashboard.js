@@ -4,7 +4,6 @@ import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import Drawer from '@mui/material/Drawer';
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
-import NotificationsIcon from '@mui/icons-material/Notifications';
 import CreatePunishmentPanel from '../panel/createPunishmentPanel';
 import TeacherStudentPanel from './teacherPanels/teacherStudentPanel';
 import TeacherFTCPanel from './teacherPanels/FTCpanel';
@@ -14,11 +13,12 @@ import DetentionWidget from '../admin/detentionWidget.js';
 import ISSWidget from '../admin/issWidget.js';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import LevelThreePanel from '../global/levelThreePanel.js';
-import ChatIcon from '@mui/icons-material/Chat';
 import { ContactUsModal } from '../../../secuirty/contactUsModal';
 import { get } from '../../../utils/api/api.js';
 import LoadingWheelPanel from '../student/blankPanelForTest.js';
 import "../teacher/teacherPanels/teacher.css"
+import { NavigationLoggedIn } from '../../landing/navigation-loggedIn.jsx';
+import { ThemeProvider } from '@emotion/react';
 
 const TeacherDashboard = () => {
   const [loggedIn, setLoggedIn] = useState(true);
@@ -27,14 +27,9 @@ const TeacherDashboard = () => {
   const [panelName,setPanelName] = useState("overview")
   const [studentData,setStudentData]= useState([])
   const [modalType,setModalType] = useState("")
-  const [isDropdownOpen, setIsDropdownOpen] = useState({
-    referralDropdown:false,
-    teacherDropdown:false,
-    studentDropdown:false,
-    toolsDropdown:false,
-    ftcDropdown:false,
-    newReferral:false,
-  });
+  const [isDropdownOpen, setIsDropdownOpen] = useState("")
+
+
   const [punishmentFilter, setPunishmentFilter] =useState("OPEN")
   const [sideBarOpen,setSideBarOpen]= useState(false)
 
@@ -91,135 +86,28 @@ const TeacherDashboard = () => {
   }
 
 
+
   return (
     loggedIn && (
-      <>
-        <div 
-        className='dashboard-frame'
-        >
+      <div>
+        <div>
       
-          <Toolbar style={{background:"", color: "black"}}>
-          {modalType === "contact" &&
-              <ContactUsModal setContactUsDisplayModal={setModalType} />
-        
-        }
-          <DashboardIcon onClick={()=>setPanelName("overview")} style={{color:"white",backgroundColor:"black", marginRight:"10px"}}/>
-            <Typography variant="h6" style={{ flexGrow: 1 }}>
-              Welcome, {sessionStorage.getItem('userName')}
-            </Typography>
-            <NotificationsIcon style={{marginRight:"15px"}} onClick={()=> toggleNotificationDrawer(true) }/>
-            <div onClick={()=>setModalType("contact")}><ChatIcon style={{marginRight:"15px"}}/></div>
-    
+          {modalType === "contact" && <ContactUsModal setContactUsDisplayModal={setModalType} />}
 
-            <AccountBoxIcon/>           
-              <IconButton type="button" color="inherit" onClick={handleLogout}>
-              Logout
-            </IconButton>
+          <NavigationLoggedIn toggleNotificationDrawer ={toggleNotificationDrawer } setModalType={setModalType} setPanelName={setPanelName}  setDropdown={setIsDropdownOpen} isDropdownOpen={isDropdownOpen} setLogin={handleLogout} />
+      </div>
 
-          </Toolbar>
-        </div>
-       <div className='page'>
-      <div className='teacher-main-content'> 
-      <div className = "">
-      <div style={{backgroundColor:"#5ca9fb"}}className='teacher-main-content-menu'
-      >
-  
-    {/* Overview button */}
-    <button 
-    className='teacher-dash-dropbtn' 
-    onClick={() => {
-      setPanelName("overview")
-  }}
-  >
-    Overview
-  </button>
 
-  {/* New Shout Reffere **/}
-  <button 
-    className='teacher-dash-dropbtn' 
-    onClick={() => {
-      openDropdown("newReferral")
-      // setPanelName("createPunishment")
-  }}
-  >
-  Referral/Shout Out
-  </button>
-  <div style={{marginLeft:"25%"}} className={isDropdownOpen.newReferral ? 'dropdown-content show' : 'dropdown-content'}>
-    <div onClick={()=>{
-      setPanelName("createPunishment")  
-      setIsDropdownOpen(!isDropdownOpen.newReferral)
 
-     }}className='teacher-dropdown-item'>New Referral/Shout Out</div>
-       <div onClick={()=>{
-      setPanelName("punishment")  
-      setIsDropdownOpen(!isDropdownOpen.newReferral)
+      <div className = "header">
 
-     }}className='teacher-dropdown-item'>Existing Referrals/Shout Outs</div>
-
-</div>
- 
-    {/* Student Drop Down */}
-    <button 
-    className='teacher-dash-dropbtn' 
-    onClick={() => {
-      // openDropdown("studentDropdown")
-      setPanelName("student")
-  }}
-  >
-    My Students
-  </button>
-      {/* Margin Left is used to move dropdown under the buttons */}
-  {/* <div style={{marginLeft:"50%"}} className={isDropdownOpen.studentDropdown ? 'dropdown-content show' : 'dropdown-content'}>
-    <div onClick={()=>{
-      setPanelName("student") 
-      setIsDropdownOpen(!isDropdownOpen.studentDropdown)
- 
-     }}className='teacher-dropdown-item'>My Students</div>
-
-    <div onClick={()=>{
-      setPanelName("punishment") 
-      setIsDropdownOpen(!isDropdownOpen.studentDropdown)
- 
-     }}className='teacher-dropdown-item'>My Write-Ups</div>
-     
-  </div> */}
-
-  
-
-    {/* FTC Drop Down */}
-    <button 
-    className='teacher-dash-dropbtn' 
-    onClick={() => {
-      // openDropdown("ftcDropdown")
-      setPanelName("levelThree")
-  }}
-  >
-    My Tasks
-  </button>
-  {/* <div style={{marginLeft:"75%"}} className={isDropdownOpen.ftcDropdown ? 'dropdown-content show' : 'dropdown-content'}>
-    <div onClick={()=>{
-      setPanelName("ftc")  
-      setIsDropdownOpen(!isDropdownOpen.ftcDropdown)
-
-     }}className='teacher-dropdown-item'>Failure to Complete Work</div>
-       <div onClick={()=>{
-      setPanelName("levelThree")  
-      setIsDropdownOpen(!isDropdownOpen.ftcDropdown)
-
-     }}className='teacher-dropdown-item'>Level Three Approval</div>
-   
-     
-  </div> */}
-  
-  </div>
  { data.length===0 ? <LoadingWheelPanel/>:<div className='teacher-overview'>
   <div 
   style={{width: false ?"70%":"100%"}}
    className='left-main'>
 
       <div className = "teacher-panel">
-      {panelName === "overview" && <TeacherOverviewPanel setPanelName={setPanelName} data={data} />}
-
+{panelName === "overview" && <TeacherOverviewPanel setPanelName={setPanelName} data={data} />}
 {panelName === "student" &&<TeacherStudentPanel listOfStudents={studentData}/>}
 {panelName === "punishment" &&<GlobalPunishmentPanel filter={punishmentFilter} roleType={"teacher"}/>}
 {panelName === "createPunishment" && <CreatePunishmentPanel/>}
@@ -233,14 +121,13 @@ const TeacherDashboard = () => {
      </div>
   
         <Drawer anchor='right' open={openNotificationDrawer} onClose={()=> toggleNotificationDrawer(false)}>
-        {/* <NotificationBar notificationData={data}/> */}
         <DetentionWidget />
       
         <ISSWidget />
         </Drawer>
+
+   
       </div>
-      </div>
-      </>
     )
   );
 };
