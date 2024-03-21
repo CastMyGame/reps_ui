@@ -15,6 +15,8 @@ import ResetPassword from './secuirty/Reset';
 import ForgotPassword from './secuirty/forgotPassword';
 import { useState } from 'react';
 import IdleTimerContainer from './secuirty/IdleTimerContainer';
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 
 function App() {
   const [isLoggedOut, setIsLoggedOut] = useState(false);
