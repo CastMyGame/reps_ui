@@ -5,11 +5,7 @@ import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
 import Snackbar from '@mui/material/Snackbar';
-import IconButton from '@mui/material/IconButton';
-// import CloseIcon from '@mui/icons-material/Close';
-import MuiAlert, { AlertProps } from '@mui/material/Alert';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
+import MuiAlert from '@mui/material/Alert';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
@@ -19,7 +15,7 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import axios from 'axios';
 import { baseUrl } from '../utils/jsonData';
-import { redirect, useNavigate } from 'react-router-dom';
+import {  useNavigate } from 'react-router-dom';
 import CircularProgress from '@mui/material/CircularProgress';
 import { ContactUsModal } from './contactUsModal';
 import ChatIcon from '@mui/icons-material/Chat';
@@ -29,10 +25,6 @@ import { Header } from '../components/landing/header';
 import { Features } from '../components/landing/features';
 import { About } from '../components/landing/about';
 import { Services } from '../components/landing/services';
-import { Gallery } from '../components/landing/gallery';
-import { Testimonials } from '../components/landing/testimonials';
-import { Team } from '../components/landing/Team';
-import { Contact } from '../components/landing/contact';
 import "./modal.css"
 import ForgotPassword from './forgotPassword';
 import CloseIcon from '@mui/icons-material/Close';
@@ -93,7 +85,6 @@ export default function SignIn() {
   
   }
 
-  const [resetModalDisplay,setResetModalDisplay] = useState(false);
   const [modalType,setModalType] = useState("login");
   const [formData, setFormData] = useState({
     username: '',
@@ -153,11 +144,7 @@ const [login,setLogin] = useState(false);
         setTimeout(() => {
           setWarningToast(false);
         }, 2000);
-        setFormData((prev) => ({
-          ...prev,
-          password: '',
-          username: '',
-        }));
+       
       }
     } catch (error) {
       console.error("Error:", error);
@@ -166,21 +153,17 @@ const [login,setLogin] = useState(false);
       setTimeout(() => {
         setWarningToast(false);
       }, 2000);
-      setFormData((prev) => ({
-        ...prev,
-        password: '',
-        username: '',
-      }));
+      // 
       // Handle the error as needed
     }
   };
 
 
 
-  const setContactUsDisplayModal= () =>{
-    setModalType("contact")
+  // const setContactUsDisplayModal= () =>{
+  //   setModalType("contact")
 
-  }
+  // }
 
 
 
