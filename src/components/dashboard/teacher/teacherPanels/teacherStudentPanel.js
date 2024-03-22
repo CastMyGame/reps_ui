@@ -17,7 +17,7 @@ import "jspdf-autotable";
 import { IncidentByTypePieChart } from "./charts/pieCharts/incidentsByType";
 import { get } from "../../../../utils/api/api";
 
-const TeacherStudentPanel = () => {
+const TeacherStudentPanel = ({ setPanelName, data = [] }) => {
   const [listOfStudents, setListOfStudents] = useState([]);
   const [studentDisplay, setStudentDisplay] = useState(false);
   const [studentData, setStudentData] = useState(null);
@@ -45,6 +45,7 @@ const TeacherStudentPanel = () => {
       if (response != null) {
         setStudentData(response);
         setStudentDisplay(true);
+        console.log(response + "Student Data");
       }
     } catch (error) {
       console.error(error);
@@ -88,15 +89,11 @@ const TeacherStudentPanel = () => {
     // Add student details section
     pdf.setFontSize(12);
     pdf.rect(15, 15, 180, 50);
-    pdf.text(
-      `${studentData[0].student.firstName} ${studentData[0].student.lastName}`,
-      20,
-      20
-    );
-    pdf.text(`Email: ${studentData[0].student.studentEmail}`, 20, 30);
-    pdf.text(`Phone: ${studentData[0].student.studentPhoneNumber}`, 20, 40);
-    pdf.text(`Grade: ${studentData[0].student.grade}`, 20, 50);
-    pdf.text(`Address: ${studentData[0].student.address}`, 20, 60);
+    pdf.text(`${studentData[0].firstName} ${studentData[0].lastName}`, 20, 20);
+    pdf.text(`Email: ${studentData[0].studentEmail}`, 20, 30);
+    pdf.text(`Phone: ${studentData[0].studentPhoneNumber}`, 20, 40);
+    pdf.text(`Grade: ${studentData[0].grade}`, 20, 50);
+    pdf.text(`Address: ${studentData[0].address}`, 20, 60);
 
     // Add punishment details table
     pdf.autoTable({
@@ -158,6 +155,7 @@ const TeacherStudentPanel = () => {
               <button
                 onClick={() => {
                   generatePDF(studentData);
+                  console.log(studentData + "Student Data");
                 }}
                 style={{ backgroundColor: "#CF9FFF" }}
               >
@@ -204,21 +202,20 @@ const TeacherStudentPanel = () => {
                       <AccountBoxIcon style={{ fontSize: "100px" }} />
                     </div>
                     <h4 style={{ textAlign: "left" }}>
-                      {studentData[0].student.firstName}{" "}
-                      {studentData[0].student.lastName}
+                      {studentData[0].firstName} {studentData[0].lastName}
                     </h4>
                     <div className="details-box">
                       <div style={{ textAlign: "left" }}>
-                        Email: {studentData[0].student.studentEmail}
+                        Email: {studentData[0].studentEmail}
                       </div>
                       <div style={{ textAlign: "left" }}>
-                        Phone: {studentData[0].student.studentPhoneNumber}
+                        Phone: {studentData[0].studentPhoneNumber}
                       </div>
                       <div style={{ textAlign: "left" }}>
-                        Grade: {studentData[0].student.grade}
+                        Grade: {studentData[0].grade}
                       </div>
                       <div style={{ textAlign: "left" }}>
-                        Address: {studentData[0].student.address}
+                        Address: {studentData[0].address}
                       </div>
                     </div>
                   </div>
@@ -239,12 +236,12 @@ const TeacherStudentPanel = () => {
                 <Table stickyHeader>
                   <TableHead>
                     <TableRow>
-                      <TableCell style={{ width: "25%" }}>Status</TableCell>
-                      <TableCell style={{ width: "25%" }}>
+                      <TableCell style={{ width: "5%" }}>Status</TableCell>
+                      <TableCell style={{ width: "45%" }}>
                         Description
                       </TableCell>
-                      <TableCell style={{ width: "25%" }}>Date</TableCell>
-                      <TableCell style={{ width: "25%" }}>Infraction</TableCell>
+                      <TableCell style={{ width: "15%" }}>Date</TableCell>
+                      <TableCell style={{ width: "35%" }}>Infraction</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -259,13 +256,13 @@ const TeacherStudentPanel = () => {
                           {student.status}
                         </TableCell>
                         <TableCell style={{ width: "25%" }}>
-                          {student.infraction.infractionDescription}
+                          {student.infractionDescription}
                         </TableCell>
                         <TableCell style={{ width: "25%" }}>
                           {student.timeCreated}
                         </TableCell>
                         <TableCell style={{ width: "25%" }}>
-                          {student.infraction.infractionName}
+                          {student.infractionName}
                         </TableCell>
                       </TableRow>
                     ))}
@@ -305,7 +302,13 @@ const TeacherStudentPanel = () => {
         <Typography
           color="white"
           variant="h6"
-          style={{ flexGrow: 1, outline: "1px solid  white", padding: "5px", fontSize: 36, fontWeight: "bolder" }}
+          style={{
+            flexGrow: 1,
+            outline: "1px solid  white",
+            padding: "5px",
+            fontSize: 36,
+            fontWeight: "bolder",
+          }}
         >
           Students Overview
         </Typography>
@@ -415,9 +418,6 @@ const TeacherStudentPanel = () => {
             )}
           </TableBody>
         </Table>
-        {/* <TableRow>
-      <TableCell colSpan="5"><button>Add New Student</button></TableCell>
-      </TableRow> */}
       </TableContainer>
     </>
   );
