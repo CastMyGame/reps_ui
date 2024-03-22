@@ -1,9 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
 import Drawer from '@mui/material/Drawer';
-import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import CreatePunishmentPanel from '../panel/createPunishmentPanel';
 import TeacherStudentPanel from './teacherPanels/teacherStudentPanel';
 import TeacherFTCPanel from './teacherPanels/FTCpanel';
@@ -11,14 +7,12 @@ import GlobalPunishmentPanel from '../global/globalPunishmentPanel.js';
 import TeacherOverviewPanel from './teacherPanels/teacherOverview.js';
 import DetentionWidget from '../admin/detentionWidget.js';
 import ISSWidget from '../admin/issWidget.js';
-import DashboardIcon from '@mui/icons-material/Dashboard';
 import LevelThreePanel from '../global/levelThreePanel.js';
 import { ContactUsModal } from '../../../secuirty/contactUsModal';
 import { get } from '../../../utils/api/api.js';
 import LoadingWheelPanel from '../student/blankPanelForTest.js';
 import "../teacher/teacherPanels/teacher.css"
 import { NavigationLoggedIn } from '../../landing/navigation-loggedIn.jsx';
-import { ThemeProvider } from '@emotion/react';
 
 const TeacherDashboard = () => {
   const [loggedIn, setLoggedIn] = useState(true);
@@ -31,7 +25,6 @@ const TeacherDashboard = () => {
 
 
   const [punishmentFilter, setPunishmentFilter] =useState("OPEN")
-  const [sideBarOpen,setSideBarOpen]= useState(false)
 
   const handleLogout = () => {
     sessionStorage.removeItem('Authorization');

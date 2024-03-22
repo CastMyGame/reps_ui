@@ -19,7 +19,7 @@ export const NavigationStudent = (props) => {
         <div style={{display:"flex"}}className="navbar-header">
       
           <a className="navbar-brand page-scroll" href="#page-top">
-            Welcome! {sessionStorage.getItem("userName")}
+            Welcome {sessionStorage.getItem("userName")}!
           </a>{" "}
           <div onClick={()=>props.setModalType("contact")}><ChatIcon style={{marginRight:"15px"}}/></div>
           <NotificationsIcon style={{marginRight:"15px"}} onClick={()=> props.toggleNotificationDrawer(true) }/>
@@ -37,14 +37,14 @@ export const NavigationStudent = (props) => {
               <div 
                 onClick={()=>dropdownHandler("openAssignments")}
                 className="page-scroll">
-                  Mandatory Open Assignments             
+                 Open Assignments             
                 </div>
             </li>
             <li>
               <div 
                 onClick={()=>dropdownHandler("closedAssignments")}
                 className="page-scroll">
-                  History             
+                Contact History             
                 </div>
             </li>
             <li>
