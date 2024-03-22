@@ -334,9 +334,7 @@ const LevelThreePanel = ({ roleType }) => {
             </TableRow>
           </TableHead>
           {loading ? (
-            <TableBody>
               <LoadingWheelPanel />
-            </TableBody>
           ):
           <TableBody>
             {data.length > 0 ? (
