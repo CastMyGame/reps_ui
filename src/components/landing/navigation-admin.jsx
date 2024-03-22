@@ -1,8 +1,5 @@
-import React, {useState} from "react";
-import "./landing.css"
-import ChatIcon from '@mui/icons-material/Chat';
-import NotificationsIcon from '@mui/icons-material/Notifications';
-
+import React from "react";
+import "./landing.css";
 
 
 export const NavigationAdmin = (props) => {
