@@ -148,8 +148,11 @@ const LevelThreePanel = ({ roleType }) => {
   };
 
   const handleRejectPunishment = (obj) => {
-    setLoadingPunishmentId({ id: obj.punishmentId, buttonType: "close" });
-    const url = `${baseUrl}/punish/v1/rejected/${obj.punishmentId}`;
+    setLoadingPunishmentId({
+      id: obj.punishment.punishmentId,
+      buttonType: "close",
+    });
+    const url = `${baseUrl}/punish/v1/rejected/${obj.punishment.punishmentId}`;
     axios
       .put(url, [textareaValue], { headers }) // Pass the headers option with the JWT token
       .then(function (response) {
