@@ -1,5 +1,6 @@
 import React from "react";
 import "./landing.css";
+import { Diversity2 } from "@mui/icons-material";
 
 export const NavigationAdmin = (props) => {
   const dropdownHandler = (panel) => {
@@ -35,6 +36,7 @@ export const NavigationAdmin = (props) => {
             </li>
             <li>
               <div
+              className="page-scroll"
                 onClick={() =>
                   props.setDropdown((prev) =>
                     prev === "referral" ? "" : "referral"
@@ -52,13 +54,13 @@ export const NavigationAdmin = (props) => {
               >
                 <div
                   onClick={() => dropdownHandler("createPunishment")}
-                  className="item"
+                  className="item page-scroll"
                 >
                   New Parent Contact
                 </div>
                 <div
                   onClick={() => dropdownHandler("punishment")}
-                  className="item"
+                  className="item page-scroll"
                 >
                   Existing Parent Contacts
                 </div>
@@ -66,6 +68,7 @@ export const NavigationAdmin = (props) => {
             </li>
             <li>
               <div
+              className="page-scroll"
                 onClick={() =>
                   props.setDropdown((prev) =>
                     prev === "reports" ? "" : "reports"
@@ -79,17 +82,17 @@ export const NavigationAdmin = (props) => {
                   display:
                     props.isDropdownOpen === "reports" ? " block" : "none",
                 }}
-                class="feature-menu-dropdown"
+                class="feature-menu-dropdown page-scroll"
               >
                 <div
                   onClick={() => dropdownHandler("student")}
-                  className="item"
+                  className="item page-scroll"
                 >
                   By Students
                 </div>
                 <div
                   onClick={() => dropdownHandler("viewTeacher")}
-                  className="item"
+                  className="item page-scroll"
                 >
                   By Teachers
                 </div>
@@ -97,6 +100,7 @@ export const NavigationAdmin = (props) => {
             </li>
             <li>
               <div
+              className="page-scroll"
                 onClick={() =>
                   props.setDropdown((prev) => (prev === "tools" ? "" : "tools"))
                 }
@@ -107,23 +111,23 @@ export const NavigationAdmin = (props) => {
                 style={{
                   display: props.isDropdownOpen === "tools" ? " block" : "none",
                 }}
-                class="feature-menu-dropdown"
+                class="feature-menu-dropdown page-scroll"
               >
                 <div
                   onClick={() => dropdownHandler("createEditAssignments")}
-                  className="item"
+                  className="item page-scroll"
                 >
                   Create/Edit Assignments
                 </div>
                 <div
                   onClick={() => dropdownHandler("userManagement")}
-                  className="item"
+                  className="item page-scroll"
                 >
                   Create A Student/Teachers
                 </div>
                 <div
                   onClick={() => dropdownHandler("archived")}
-                  className="item"
+                  className="item page-scroll"
                 >
                   Archived
                 </div>
@@ -131,6 +135,7 @@ export const NavigationAdmin = (props) => {
             </li>
             <li>
               <div
+                className="page-scroll"
                 onClick={() => {
                   props.setModalType("contact");
                 }}
@@ -140,6 +145,7 @@ export const NavigationAdmin = (props) => {
             </li>
             <li>
               <div
+                className="page-scroll"
                 onClick={() => {
                   props.toggleNotificationDrawer(true);
                 }}
@@ -148,7 +154,7 @@ export const NavigationAdmin = (props) => {
               </div>
             </li>
             <li>
-              <button className="login-btn" onClick={() => props.setLogin()}>
+              <button className="login-btn page-scroll" onClick={() => props.setLogin()}>
                 Logout
               </button>
             </li>
