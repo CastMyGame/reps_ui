@@ -37,9 +37,9 @@ export const NavigationLoggedIn = (props) => {
             </li>
             <li>
             <div onClick={() => props.setDropdown(prev => prev === "referral" ? "" : "referral")} >
-  Parent Contact
-</div>
-              <div style={{display: props.isDropdownOpen === "referral"?"block":"none"}} class="feature-menu-dropdown">
+                Parent Contact
+            </div>
+            <div style={{display: props.isDropdownOpen === "referral"?"block":"none"}} class="feature-menu-dropdown">
   <div 
   onClick={()=>dropdownHandler("createPunishment")}
   className="item">New Parent Contact</div>
