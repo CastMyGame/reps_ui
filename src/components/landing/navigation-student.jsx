@@ -60,7 +60,7 @@ export const NavigationStudent = (props) => {
  
       
             <li>
-              <button className="login-btn"
+              <button className="login-btn page-scroll"
               onClick={()=>props.setLogin()}>
                 Logout
               </button>

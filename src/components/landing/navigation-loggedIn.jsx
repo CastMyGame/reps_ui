@@ -36,21 +36,24 @@ export const NavigationLoggedIn = (props) => {
               </div>
             </li>
             <li>
-            <div onClick={() => props.setDropdown(prev => prev === "referral" ? "" : "referral")} >
+            <div
+            className="page-scroll"
+             onClick={() => props.setDropdown(prev => prev === "referral" ? "" : "referral")} >
                 Parent Contact
             </div>
             <div style={{display: props.isDropdownOpen === "referral"?"block":"none"}} class="feature-menu-dropdown">
   <div 
   onClick={()=>dropdownHandler("createPunishment")}
-  className="item">New Parent Contact</div>
+  className="item page-scroll">New Parent Contact</div>
   <div 
   onClick={()=>dropdownHandler("punishment")}
-  className="item">Existing Parent Contacts</div>
+  className="item page-scroll">Existing Parent Contacts</div>
 </div>
               
             </li>
             <li>
               <div 
+              className="page-scroll"
                onClick={()=>dropdownHandler("student")}
               >
               My Students
@@ -58,6 +61,7 @@ export const NavigationLoggedIn = (props) => {
             </li>
             <li>
               <div 
+              className="page-scroll"
               onClick={()=>{
                 props.setPanelName("levelThree")
               }}
@@ -67,6 +71,7 @@ export const NavigationLoggedIn = (props) => {
             </li>
             <li>
               <div 
+              className="page-scroll"
               onClick={()=>{
                 props.setModalType("contact")
               }}
@@ -76,6 +81,7 @@ export const NavigationLoggedIn = (props) => {
             </li>
             <li>
               <div 
+              className="page-scroll"
               onClick={()=>{
                 props.toggleNotificationDrawer(true)
               }}
@@ -85,7 +91,7 @@ export const NavigationLoggedIn = (props) => {
             </li>
            
             <li>
-              <button className="login-btn"
+              <button className="login-btn page-scroll"
               onClick={()=>props.setLogin()}>
                 Logout
               </button>

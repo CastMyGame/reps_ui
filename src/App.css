@@ -1038,3 +1038,7 @@ button:hover {
   font-size: large;
   font-weight: bold;
 }
+
+.page-scroll {
+  cursor: pointer;
+}

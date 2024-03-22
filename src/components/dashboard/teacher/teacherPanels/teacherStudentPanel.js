@@ -366,6 +366,7 @@ const TeacherStudentPanel = ({ setPanelName, data = [] }) => {
             {filteredData.length > 0 ? (
               filteredData.map((x, key) => (
                 <TableRow
+                  className="page-scroll"
                   key={key}
                   onClick={() => {
                     handleProfileClick(x);
@@ -413,7 +414,16 @@ const TeacherStudentPanel = ({ setPanelName, data = [] }) => {
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan="5">No open assignments found.</TableCell>
+                <TableCell
+                  colSpan="5"
+                  style={{
+                    fontSize: 18,
+                    fontWeight: "lighter",
+                    fontStyle: "italic",
+                  }}
+                >
+                  No open assignments found.
+                </TableCell>
               </TableRow>
             )}
           </TableBody>
