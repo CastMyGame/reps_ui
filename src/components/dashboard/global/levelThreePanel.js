@@ -333,11 +333,11 @@ const LevelThreePanel = ({ roleType }) => {
               </TableCell>
             </TableRow>
           </TableHead>
-          {loading && (
+          {loading ? (
             <TableBody>
               <LoadingWheelPanel />
             </TableBody>
-          )}
+          ):
           <TableBody>
             {data.length > 0 ? (
               data.map((x, key) => {
@@ -446,7 +446,7 @@ const LevelThreePanel = ({ roleType }) => {
                 </TableCell>
               </TableRow>
             )}
-          </TableBody>
+          </TableBody>}
         </Table>
       </TableContainer>
     </>
