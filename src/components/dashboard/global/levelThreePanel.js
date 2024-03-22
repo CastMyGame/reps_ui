@@ -40,6 +40,7 @@ const LevelThreePanel = ({ roleType }) => {
   const [deletePayload, setDeletePayload] = useState(null);
   const [textareaValue, setTextareaValue] = useState("");
   const [loading, setLoading] = useState(false);
+  const [filter, setFilter] = useState("Open");
 
   const defaultTheme = createTheme();
 
@@ -48,6 +49,10 @@ const LevelThreePanel = ({ roleType }) => {
   };
 
   const url = `${baseUrl}/DTO/v1/punishmentsDTO`;
+
+  useEffect(() => {
+    setSort(filter);
+  }, [filter]);
 
   useEffect(() => {
     setLoading(true);
@@ -260,37 +265,6 @@ const LevelThreePanel = ({ roleType }) => {
         </div>
       )}
 
-      {/* <Select
-      sx={{ width: '100%',backgroundColor:"white"}}
-
-  labelId="filterSelected"
-  value={filter}
-  onChange={handleFilterChange}
-  renderValue={(selected) => {
-    // Check if selected is an array, if not, wrap it in an array
-    const selectedArray = Array.isArray(selected) ? selected : [selected];
-  
-    return (
-      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-        {selectedArray.map((value) => (
-          <Chip key={value} label={value} />
-        ))}
-      </Box>
-    );
-  }}
-  MenuProps={"MenuProps"}
->
-  {filterOptions.map((name) => (
-    <MenuItem
-      key={name.value}
-      value={name.value}
-    >
-      {name.label}
-    </MenuItem>
-  ))}
-
-</Select> */}
-
       <Snackbar
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
         open={toast.visible}
@@ -311,23 +285,41 @@ const LevelThreePanel = ({ roleType }) => {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell variant="head" style={{ fontWeight: "bold" }}>
+              <TableCell
+                variant="head"
+                style={{ fontWeight: "bold", fontSize: 24 }}
+              >
                 Name
               </TableCell>
-              <TableCell variant="head" style={{ fontWeight: "bold" }}>
+              <TableCell
+                variant="head"
+                style={{ fontWeight: "bold", fontSize: 24 }}
+              >
                 Referral Type
               </TableCell>
-              <TableCell variant="head" style={{ fontWeight: "bold" }}>
+              <TableCell
+                variant="head"
+                style={{ fontWeight: "bold", fontSize: 24 }}
+              >
                 Description
               </TableCell>
-              <TableCell variant="head" style={{ fontWeight: "bold" }}>
+              <TableCell
+                variant="head"
+                style={{ fontWeight: "bold", fontSize: 24 }}
+              >
                 Level
               </TableCell>
-              <TableCell variant="head" style={{ fontWeight: "bold" }}>
+              <TableCell
+                variant="head"
+                style={{ fontWeight: "bold", fontSize: 24 }}
+              >
                 Status
               </TableCell>
 
-              <TableCell variant="head" style={{ fontWeight: "bold" }}>
+              <TableCell
+                variant="head"
+                style={{ fontWeight: "bold", fontSize: 24 }}
+              >
                 Action
               </TableCell>
             </TableRow>
@@ -348,20 +340,42 @@ const LevelThreePanel = ({ roleType }) => {
                       <div style={{ display: "flex", alignItems: "center" }}>
                         <AccountCircleIcon
                           style={{
+                            alignItems: "center",
                             fontSize: "2rem", // Adjust the size as needed
                             color: "rgb(25, 118, 210)", // Change the color to blue
                           }}
                         />
-                        <span>
+                        <span
+                          style={{
+                            fontSize: 18,
+                          }}
+                        >
                           {x.firstName} {x.lastName}
                         </span>
                       </div>
                     </TableCell>
-                    <TableCell>{x.punishment.infractionName}</TableCell>
-                    <TableCell style={{ width: "75px" }}>
-                      {x.punishment.infractionDescription[1]}
+                    <TableCell
+                      style={{
+                        fontSize: 18,
+                      }}
+                    >
+                      {x.punishment.infractionName}
                     </TableCell>
-                    <TableCell>{x.punishment.infractionLevel}</TableCell>
+                    <TableCell
+                      style={{
+                        fontSize: 18,
+                        maxWidth: "60%",
+                      }}
+                    >
+                      {x.punishment.infractionDescription[0]}
+                    </TableCell>
+                    <TableCell
+                      style={{
+                        fontSize: 18
+                      }}
+                    >
+                      {x.punishment.infractionLevel}
+                    </TableCell>
                     <TableCell>
                       <div
                         className={`status-tag ${days >= 4 ? "tag-critical" : days >= 3 ? "tag-danger" : days >= 2 ? "tag-warning" : "tag-good"}`}

@@ -15,7 +15,6 @@ const TeacherOverviewPanel = ({ setPanelName, data = [] }) => {
   const [openModal, setOpenModal] = useState({
     display: false,
     message: "",
-    buttonType: "",
   });
 
   const dataExcludeNonReferrals = data.punishments.filter((x) => {
@@ -50,7 +49,6 @@ const TeacherOverviewPanel = ({ setPanelName, data = [] }) => {
         display: true,
         message:
           'Attention! You have level 3 punishments with student answers that must be reviewed before closing.You can go to the page to review these by clicking the "Level Three" Button or you may hit the "Later" button to take care of this at another time. You will receive notifications until the answers are reviewed as they are not Closed until you review. Thank you!',
-        buttonType: "redirect",
       });
     }
   }, [data]);
@@ -75,20 +73,15 @@ const TeacherOverviewPanel = ({ setPanelName, data = [] }) => {
                 Later
               </button>
 
-              {openModal.buttonType === "redirect" && (
-                <Button
-                  type="redirect"
-                  onClick={() => {
-                    setOpenModal({ display: false, message: "" });
-                    setPanelName("levelThree");
-                  }}
-                  width="50%"
-                  variant="contained"
-                  sx={{ height: "100%" }} // Set explicit height
-                >
-                  Level Three
-                </Button>
-              )}
+              <button
+                onClick={() => {
+                  setOpenModal({ display: false, message: "" });
+                  setPanelName("levelThree");
+                }}
+                sx={{ height: "100%" }} // Set explicit height
+              >
+                Level Three
+              </button>
             </div>
           </div>
         </div>

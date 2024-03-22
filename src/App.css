@@ -28,6 +28,7 @@
 .level-three-buttons{
   height: 40px;
   width: 100px;
+  background-color: #2980b9;
 
 
 }
@@ -861,16 +862,17 @@ button:hover {
 /* styles.css */
 
 .status-tag {
-  width: 75px;
+  width: 100px;
+  height: 35px;
   padding: 5px 10px;
   border-radius: 15px;
   text-align: center;
-  font-weight: bold;
+  font-weight: bolder;
+  font-size: medium;
   border: 1px solid #000;
 }
 
 .tag-critical {
-
   background-color: #cc3300;
 }
 
@@ -1030,4 +1032,9 @@ button:hover {
   padding: 8px 2px;
   border-radius: 0;
 
+}
+
+.table-header {
+  font-size: large;
+  font-weight: bold;
 }
