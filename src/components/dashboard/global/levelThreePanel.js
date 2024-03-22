@@ -440,7 +440,7 @@ const LevelThreePanel = ({ roleType }) => {
               <TableRow>
                 <TableCell
                   colSpan="5"
-                  style={{ fontSize: 24, fontWeight: "bolder" }}
+                  style={{ fontSize: 18, fontWeight: "lighter", fontStyle:"italic" }}
                 >
                   No Open ended questions need reviewing
                 </TableCell>
