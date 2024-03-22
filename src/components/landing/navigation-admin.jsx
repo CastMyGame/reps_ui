@@ -1,8 +1,5 @@
-import React, {useState} from "react";
-import "./landing.css"
-import ChatIcon from '@mui/icons-material/Chat';
-import NotificationsIcon from '@mui/icons-material/Notifications';
-
+import React from "react";
+import "./landing.css";
 
 
 export const NavigationAdmin = (props) => {
@@ -18,11 +15,9 @@ export const NavigationAdmin = (props) => {
       <div className="container">
         <div style={{display:"flex"}}className="navbar-header">
       
-          <a className="navbar-brand page-scroll" href="#page-top">
-            Welcome! {sessionStorage.getItem("userName")}
-          </a>{" "}
-          <div onClick={()=>props.setModalType("contact")}><ChatIcon style={{marginRight:"15px"}}/></div>
-          <NotificationsIcon style={{marginRight:"15px"}} onClick={()=> props.toggleNotificationDrawer(true) }/>
+          <a className="navbar-brand page-scroll" href="#page-top" style={{ fontSize: 16}}>
+            Welcome {sessionStorage.getItem("userName")}!
+          </a>
     
 
    
@@ -42,15 +37,15 @@ export const NavigationAdmin = (props) => {
             </li>
             <li>
             <div onClick={() => props.setDropdown(prev => prev === "referral" ? "" : "referral")} >
-  Referral/Shout Out
+  Parent Contact
 </div>
               <div style={{display: props.isDropdownOpen === "referral"?"block":"none"}} class="feature-menu-dropdown">
   <div 
   onClick={()=>dropdownHandler("createPunishment")}
-  className="item">New Referral/Shout Outs</div>
+  className="item">New Parent Contact</div>
   <div 
   onClick={()=>dropdownHandler("punishment")}
-  className="item">Existing Referral/Shout Outs</div>
+  className="item">Existing Parent Contacts</div>
 </div>
               
             </li>
@@ -80,21 +75,35 @@ Tools</div>
     <div 
   onClick={()=>dropdownHandler("archived")}
   className="item">Archived</div>
-</div>
-
-
+  </div>
+  </li>
+<li>
+              <div 
+              onClick={()=>{
+                props.setModalType("contact")
+              }}
+              >
+              Contact Us
+              </div>
             </li>
-           
+            <li>
+              <div 
+              onClick={()=>{
+                props.toggleNotificationDrawer(true)
+              }}
+              >
+              Detention/ISS List
+              </div>
+            </li>
             <li>
               <button className="login-btn"
               onClick={()=>props.setLogin()}>
                 Logout
               </button>
             </li>
-          
           </ul>
         </div>
-      </div>
+        </div>
     </nav>
   );
 };
