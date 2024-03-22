@@ -42,15 +42,15 @@ export const NavigationAdmin = (props) => {
             </li>
             <li>
             <div onClick={() => props.setDropdown(prev => prev === "referral" ? "" : "referral")} >
-  Referral/Shout Out
+  Parent Contact
 </div>
               <div style={{display: props.isDropdownOpen === "referral"?"block":"none"}} class="feature-menu-dropdown">
   <div 
   onClick={()=>dropdownHandler("createPunishment")}
-  className="item">New Referral/Shout Outs</div>
+  className="item">New Parent Contact</div>
   <div 
   onClick={()=>dropdownHandler("punishment")}
-  className="item">Existing Referral/Shout Outs</div>
+  className="item">Existing Parent Contacts</div>
 </div>
               
             </li>
