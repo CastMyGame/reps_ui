@@ -125,8 +125,11 @@ const LevelThreePanel = ({ roleType }) => {
   };
 
   const handleClosePunishment = (obj) => {
-    setLoadingPunishmentId({ id: obj.punishmentId, buttonType: "close" });
-    const url = `${baseUrl}/punish/v1/close/${obj.punishmentId}`;
+    setLoadingPunishmentId({
+      id: obj.punishment.punishmentId,
+      buttonType: "close",
+    });
+    const url = `${baseUrl}/punish/v1/close/${obj.punishment.punishmentId}`;
     axios
       .post(url, [textareaValue], { headers }) // Pass the headers option with the JWT token
       .then(function (response) {
@@ -245,7 +248,7 @@ const LevelThreePanel = ({ roleType }) => {
               <button
                 disabled={textareaValue.length === 0}
                 style={{
-                  backgroundColor: textareaValue === "" ? "grey" : "orange",
+                  backgroundColor: textareaValue === "" ? "grey" : "red",
                 }}
                 onClick={() => handleRejectPunishment(deletePayload)}
               >
@@ -256,7 +259,10 @@ const LevelThreePanel = ({ roleType }) => {
                 style={{
                   backgroundColor: textareaValue === "" ? "grey" : "green",
                 }}
-                onClick={() => handleClosePunishment(deletePayload)}
+                onClick={() => {
+                  handleClosePunishment(deletePayload);
+                  console.log(deletePayload);
+                }}
               >
                 Accept Answers
               </button>
@@ -371,7 +377,7 @@ const LevelThreePanel = ({ roleType }) => {
                     </TableCell>
                     <TableCell
                       style={{
-                        fontSize: 18
+                        fontSize: 18,
                       }}
                     >
                       {x.punishment.infractionLevel}
@@ -429,7 +435,12 @@ const LevelThreePanel = ({ roleType }) => {
               })
             ) : (
               <TableRow>
-                <TableCell colSpan="5">No open assignments found.</TableCell>
+                <TableCell
+                  colSpan="5"
+                  style={{ fontSize: 24, fontWeight: "bolder" }}
+                >
+                  No Open ended questions need reviewing
+                </TableCell>
               </TableRow>
             )}
           </TableBody>
