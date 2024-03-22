@@ -18,11 +18,9 @@ export const NavigationLoggedIn = (props) => {
       <div className="container">
         <div style={{display:"flex"}}className="navbar-header">
       
-          <a className="navbar-brand page-scroll" href="#page-top">
-            Welcome! {sessionStorage.getItem("userName")}
-          </a>{" "}
-          <div onClick={()=>props.setModalType("contact")}><ChatIcon style={{marginRight:"15px"}}/></div>
-          <NotificationsIcon style={{marginRight:"15px"}} onClick={()=> props.toggleNotificationDrawer(true) }/>
+          <a className="navbar-brand page-scroll" href="#page-top" style={{ fontSize: 16}}>
+            Welcome {sessionStorage.getItem("userName")}!
+          </a>
     
 
    
@@ -68,6 +66,24 @@ export const NavigationLoggedIn = (props) => {
               }}
               >
               My Tasks
+              </div>
+            </li>
+            <li>
+              <div 
+              onClick={()=>{
+                props.setModalType("contact")
+              }}
+              >
+              Contact Us
+              </div>
+            </li>
+            <li>
+              <div 
+              onClick={()=>{
+                props.toggleNotificationDrawer(true)
+              }}
+              >
+              Detention/ISS List
               </div>
             </li>
            

@@ -18,11 +18,9 @@ export const NavigationAdmin = (props) => {
       <div className="container">
         <div style={{display:"flex"}}className="navbar-header">
       
-          <a className="navbar-brand page-scroll" href="#page-top">
-            Welcome! {sessionStorage.getItem("userName")}
-          </a>{" "}
-          <div onClick={()=>props.setModalType("contact")}><ChatIcon style={{marginRight:"15px"}}/></div>
-          <NotificationsIcon style={{marginRight:"15px"}} onClick={()=> props.toggleNotificationDrawer(true) }/>
+          <a className="navbar-brand page-scroll" href="#page-top" style={{ fontSize: 16}}>
+            Welcome {sessionStorage.getItem("userName")}!
+          </a>
     
 
    
@@ -80,21 +78,35 @@ Tools</div>
     <div 
   onClick={()=>dropdownHandler("archived")}
   className="item">Archived</div>
-</div>
-
-
+  </div>
+  </li>
+<li>
+              <div 
+              onClick={()=>{
+                props.setModalType("contact")
+              }}
+              >
+              Contact Us
+              </div>
             </li>
-           
+            <li>
+              <div 
+              onClick={()=>{
+                props.toggleNotificationDrawer(true)
+              }}
+              >
+              Detention/ISS List
+              </div>
+            </li>
             <li>
               <button className="login-btn"
               onClick={()=>props.setLogin()}>
                 Logout
               </button>
             </li>
-          
           </ul>
         </div>
-      </div>
+        </div>
     </nav>
   );
 };
