@@ -4,7 +4,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 
 const LoadingWheelPanel = () => {
   return (
-    <div style={{  display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+    <div style={{  display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh' }}>
       <CircularProgress color="inherit" size={70} />
     </div>
   );
