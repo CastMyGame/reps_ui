@@ -43,40 +43,44 @@ const IncidentsByStudentTable = ({ writeUps = [] }) => {
 
     const recentRecords = [];
 
-    sortedData.reverse();
-    const recentContacts = uniqueStudentIds.map((studentEmail) => {
-      // Find the most recent record for each unique studentId
-      const mostRecentRecord = sortedData.find(
-        (record) => record.studentEmail === studentEmail
-      );
-      return mostRecentRecord;
-    });
+    // sortedData.reverse();
+    // const recentContacts = uniqueStudentIds.map((studentEmail) => {
+    //   // Find the most recent record for each unique studentId
+    //   const mostRecentRecord = sortedData.find(
+    //     (record) => record.studentEmail === studentEmail
+    //   );
+    //   return mostRecentRecord;
+    // });
 
-    setFilteredData(recentContacts);
+    setFilteredData(studentsWithIncidentsList);
   }, [writeUps, searchQuery]);
 
   // //Get Unique Students Info
-  // writeUps.forEach((item) => {
-  //   const studentEmail = item.studentEmail;
-  //   uniqueStudents[studentEmail] = (uniqueStudents[studentEmail] || 0) + 1;
-  // });
+  writeUps.forEach((item) => {
+    const studentEmail = item.studentEmail;
+    uniqueStudents[studentEmail] = (uniqueStudents[studentEmail] || 0) + 1;
+  });
 
-  // const studentsWithIncidentsList = Object.entries(uniqueStudents).map(
-  //   ([studentEmail, incidents]) => {
-  //     console.log(uniqueStudents + "      Unique Students");
-  //     const { firstName, lastName } = writeUps.find(
-  //       (item) => item.studentEmail === studentEmail
-  //     );
+  const studentsWithIncidentsList = Object.entries(uniqueStudents).map(
+    ([studentEmail, incidents]) => {
+      const studentRecord = writeUps.find(
+        (item) => item.studentEmail === studentEmail
+      );
 
-  //     return {
-  //       studentEmail,
-  //       firstName,
-  //       lastName,
-  //       incidents,
-  //       percent: ((incidents / totalIncidents) * 100).toFixed(2),
-  //     };
-  //   }
-  // );
+      const firstName = studentRecord.studentFirstName;
+      const lastName = studentRecord.studentLastName;
+      console.log("answer",incidents)
+
+
+      return {
+        studentEmail,
+        firstName,
+        lastName,
+        incidents,
+        percent: ((incidents / totalIncidents) * 100).toFixed(2),
+      };
+    }
+  );
 
   filteredData.sort((a, b) => b.incidents - a.incidents);
 
@@ -101,10 +105,10 @@ const IncidentsByStudentTable = ({ writeUps = [] }) => {
           {filteredData.map((record, index) => (
               <TableRow key={index}>
                 <TableCell style={{ fontSize: 14 }}>
-                  {record.studentFirstName} {record.studentLastName}
+                  {record.firstName} {record.lastName}
                 </TableCell>
-                <TableCell style={{ fontSize: 14 }}>{record.length}</TableCell>
-                <TableCell style={{ fontSize: 14 }}>{record.length}%</TableCell>
+                <TableCell style={{ fontSize: 14 }}>{record.incidents}</TableCell>
+                <TableCell style={{ fontSize: 14 }}>{record.percent}%</TableCell>
               </TableRow>
             )
           )}
