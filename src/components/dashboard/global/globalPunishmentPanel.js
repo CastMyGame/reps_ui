@@ -25,6 +25,8 @@ import CircularProgress from "@mui/material/CircularProgress";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import { dateCreateFormat } from "../global/helperFunctions";
+import LoadingWheelPanel from "../student/blankPanelForTest";
+import { faL } from "@fortawesome/free-solid-svg-icons";
 
 const GlobalPunishmentPanel = ({ roleType }) => {
   const Alert = React.forwardRef(function Alert(props, ref) {
@@ -47,6 +49,7 @@ const GlobalPunishmentPanel = ({ roleType }) => {
   const [textareaValue, setTextareaValue] = useState("");
   const [archivedData, setArchivedData] = useState([]);
   const [filter, setFilter] = useState("OPEN");
+  const [loading, setLoading] = useState(false);
 
   const defaultTheme = createTheme();
 
@@ -62,6 +65,7 @@ const GlobalPunishmentPanel = ({ roleType }) => {
   }, [filter]);
 
   useEffect(() => {
+    setLoading(true);
     axios
       .get(url, { headers }) // Pass the headers option with the JWT token
       .then(function (response) {
@@ -72,16 +76,21 @@ const GlobalPunishmentPanel = ({ roleType }) => {
             new Date(b.punishment.timeCreated)
         );
         if (roleType === "teacher") {
+          setLoading(false);
+
           const sortedByRole = sortedData.filter(
             (x) => x.punishment.teacherEmail === sessionStorage.getItem("email")
           );
           setListOfPunishments(sortedByRole);
         } else {
+          setLoading(false);
+
           const sortedByRole = sortedData;
           setListOfPunishments(sortedByRole);
         }
       })
       .catch(function (error) {
+        setLoading(false);
         console.log(error);
       });
 
@@ -94,6 +103,8 @@ const GlobalPunishmentPanel = ({ roleType }) => {
             new Date(b.punishment.timeCreated)
         );
         if (roleType === "teacher") {
+          setLoading(false);
+
           const sortedByRole = sortedData.filter(
             (x) => x.teacherEmail === sessionStorage.getItem("email")
           );
@@ -102,6 +113,7 @@ const GlobalPunishmentPanel = ({ roleType }) => {
         }
       })
       .catch(function (error) {
+        setLoading(false);
         console.log(error);
       });
   }, [toast.visible]);
@@ -367,213 +379,219 @@ const GlobalPunishmentPanel = ({ roleType }) => {
               </TableCell>
             </TableRow>
           </TableHead>
-          <TableBody>
-            {data.length > 0 ? (
-              data.map((x, key) => {
-                console.log(x, "find me");
-                const days = calculateDaysSince(x.punishment.timeCreated);
+          {loading ? (
+            <div style={{ position: "absolute", marginLeft: "50%" }}>
+              <LoadingWheelPanel />
+            </div>
+          ) : (
+            <TableBody>
+              {data.length > 0 ? (
+                data.map((x, key) => {
+                  console.log(x, "find me");
+                  const days = calculateDaysSince(x.punishment.timeCreated);
 
-                return (
-                  <TableRow key={key}>
-                    <TableCell>
-                      <div style={{ display: "flex", alignItems: "center" }}>
-                        <AccountCircleIcon
-                          style={{
-                            fontSize: "2rem", // Adjust the size as needed
-                            color: "rgb(25, 118, 210)", // Change the color to blue
-                          }}
-                        />
-                        <span
-                          style={{
-                            fontSize: 14,
-                          }}
-                        >
-                          {x.firstName} {x.lastName}
-                        </span>
-                      </div>
-                    </TableCell>
-                    <TableCell
-                      style={{
-                        fontSize: 14,
-                      }}
-                    >
-                      {x.punishment.infractionName}
-                    </TableCell>
-                    <TableCell
-                      style={{
-                        maxWidth: "150px",
-                        whiteSpace: "normal",
-                        wordBreak: "break-word",
-                        fontSize: 14,
-                      }}
-                    >
-                      {x.punishment.infractionDescription[0]}
-                    </TableCell>
-                    <TableCell
-                      style={{
-                        fontSize: 14,
-                        textAlign: "auto",
-                      }}
-                    >
-                      {x.punishment.infractionLevel}
-                    </TableCell>
-                    <TableCell
-                      style={{
-                        fontSize: 14,
-                      }}
-                    >
-                      <div
-                        className={`status-tag ${days >= 4 ? "tag-critical" : days >= 3 ? "tag-danger" : days >= 2 ? "tag-warning" : "tag-good"}`}
+                  return (
+                    <TableRow key={key}>
+                      <TableCell>
+                        <div style={{ display: "flex", alignItems: "center" }}>
+                          <AccountCircleIcon
+                            style={{
+                              fontSize: "2rem", // Adjust the size as needed
+                              color: "rgb(25, 118, 210)", // Change the color to blue
+                            }}
+                          />
+                          <span
+                            style={{
+                              fontSize: 14,
+                            }}
+                          >
+                            {x.firstName} {x.lastName}
+                          </span>
+                        </div>
+                      </TableCell>
+                      <TableCell
+                        style={{
+                          fontSize: 14,
+                        }}
                       >
-                        {x.punishment.status}
-                      </div>
-                    </TableCell>
+                        {x.punishment.infractionName}
+                      </TableCell>
+                      <TableCell
+                        style={{
+                          maxWidth: "150px",
+                          whiteSpace: "normal",
+                          wordBreak: "break-word",
+                          fontSize: 14,
+                        }}
+                      >
+                        {x.punishment.infractionDescription[0]}
+                      </TableCell>
+                      <TableCell
+                        style={{
+                          fontSize: 14,
+                          textAlign: "auto",
+                        }}
+                      >
+                        {x.punishment.infractionLevel}
+                      </TableCell>
+                      <TableCell
+                        style={{
+                          fontSize: 14,
+                        }}
+                      >
+                        <div
+                          className={`status-tag ${days >= 4 ? "tag-critical" : days >= 3 ? "tag-danger" : days >= 2 ? "tag-warning" : "tag-good"}`}
+                        >
+                          {x.punishment.status}
+                        </div>
+                      </TableCell>
 
-                    <TableCell
-                      style={{
-                        fontSize: 14,
-                      }}
-                    >
-                      {dateCreateFormat(x.punishment.timeCreated)}
-                    </TableCell>
-                    <TableCell
-                      style={{
-                        alignItems: "center",
-                      }}
-                    >
-                      {x.punishment.archived === false &&
-                        (x.punishment.status === "OPEN" ? (
-                          <>
-                            <button
-                              style={{
-                                height: "60px",
-                                width: "180px",
-                                backgroundColor: "green",
-                              }}
-                              onClick={() => {
-                                setOpenModal({
-                                  display: true,
-                                  message:
-                                    "You are attempting to remove the restorative assignment and close out a referral. If this was not your intent click cancel. If this is your intent, provide a brief explanation for why the restorative assignment is being removed and click Close",
-                                  buttonType: "close",
-                                });
-                                setDeletePayload(x);
-                              }}
-                            >
-                              <p
+                      <TableCell
+                        style={{
+                          fontSize: 14,
+                        }}
+                      >
+                        {dateCreateFormat(x.punishment.timeCreated)}
+                      </TableCell>
+                      <TableCell
+                        style={{
+                          alignItems: "center",
+                        }}
+                      >
+                        {x.punishment.archived === false &&
+                          (x.punishment.status === "OPEN" ? (
+                            <>
+                              <button
                                 style={{
-                                  marginBottom: "5px",
-                                  marginTop: "-2%",
+                                  height: "60px",
+                                  width: "180px",
+                                  backgroundColor: "green",
+                                }}
+                                onClick={() => {
+                                  setOpenModal({
+                                    display: true,
+                                    message:
+                                      "You are attempting to remove the restorative assignment and close out a referral. If this was not your intent click cancel. If this is your intent, provide a brief explanation for why the restorative assignment is being removed and click Close",
+                                    buttonType: "close",
+                                  });
+                                  setDeletePayload(x);
                                 }}
                               >
-                                Close Referral
-                              </p>
-                              {loadingPunihsmentId.id === x.punishmentId &&
-                              loadingPunihsmentId.buttonType === "close" ? (
-                                <CircularProgress
-                                  style={{ height: "20px", width: "20px" }}
-                                  color="secondary"
-                                />
-                              ) : (
-                                <CheckBoxIcon />
-                              )}
-                            </button>
+                                <p
+                                  style={{
+                                    marginBottom: "5px",
+                                    marginTop: "-2%",
+                                  }}
+                                >
+                                  Close Referral
+                                </p>
+                                {loadingPunihsmentId.id === x.punishmentId &&
+                                loadingPunihsmentId.buttonType === "close" ? (
+                                  <CircularProgress
+                                    style={{ height: "20px", width: "20px" }}
+                                    color="secondary"
+                                  />
+                                ) : (
+                                  <CheckBoxIcon />
+                                )}
+                              </button>
 
-                            <button
-                              style={{
-                                height: "60px",
-                                width: "180px",
-                                backgroundColor: "red",
-                              }}
-                              onClick={() => {
-                                setOpenModal({
-                                  display: true,
-                                  message:
-                                    "You are attempting to delete the record of this referral. If you were attempting to remove the restorative assignment and close out the referral please click cancel and hit the “Close Referral” button. If you still want to delete the record of this referral, provide a brief explanation for this action and click Delete Referral.",
-                                  buttonType: "delete",
-                                });
-                                setDeletePayload(x);
-                              }}
-                            >
-                              <p
+                              <button
                                 style={{
-                                  marginBottom: "5px",
-                                  marginTop: "-2%",
+                                  height: "60px",
+                                  width: "180px",
+                                  backgroundColor: "red",
+                                }}
+                                onClick={() => {
+                                  setOpenModal({
+                                    display: true,
+                                    message:
+                                      "You are attempting to delete the record of this referral. If you were attempting to remove the restorative assignment and close out the referral please click cancel and hit the “Close Referral” button. If you still want to delete the record of this referral, provide a brief explanation for this action and click Delete Referral.",
+                                    buttonType: "delete",
+                                  });
+                                  setDeletePayload(x);
                                 }}
                               >
-                                Delete Referral
-                              </p>
-                              {loadingPunihsmentId.id ===
-                                x.punishment.punishmentId &&
-                              loadingPunihsmentId.buttonType === "delete" ? (
-                                <CircularProgress
-                                  style={{ height: "20px", width: "20px" }}
-                                  color="secondary"
-                                />
-                              ) : (
-                                <DeleteForeverIcon />
-                              )}
-                            </button>
-                          </>
-                        ) : (
-                          <>
-                            {" "}
-                            <button
-                              style={{
-                                height: "60px",
-                                width: "180px",
-                                backgroundColor: "red",
-                              }}
-                              onClick={() => {
-                                setOpenModal({
-                                  display: true,
-                                  message:
-                                    "You are attempting to delete the record of this referral. If you were attempting to remove the restorative assignment and close out the referral please click cancel and hit the “Close Referral” button. If you still want to delete the record of this referral, provide a brief explanation for this action and click Delete Referral.",
-                                  buttonType: "delete",
-                                });
-                                setDeletePayload(x);
-                              }}
-                            >
-                              <p
+                                <p
+                                  style={{
+                                    marginBottom: "5px",
+                                    marginTop: "-2%",
+                                  }}
+                                >
+                                  Delete Referral
+                                </p>
+                                {loadingPunihsmentId.id ===
+                                  x.punishment.punishmentId &&
+                                loadingPunihsmentId.buttonType === "delete" ? (
+                                  <CircularProgress
+                                    style={{ height: "20px", width: "20px" }}
+                                    color="secondary"
+                                  />
+                                ) : (
+                                  <DeleteForeverIcon />
+                                )}
+                              </button>
+                            </>
+                          ) : (
+                            <>
+                              {" "}
+                              <button
                                 style={{
-                                  marginBottom: "5px",
-                                  marginTop: "-2%",
+                                  height: "60px",
+                                  width: "180px",
+                                  backgroundColor: "red",
+                                }}
+                                onClick={() => {
+                                  setOpenModal({
+                                    display: true,
+                                    message:
+                                      "You are attempting to delete the record of this referral. If you were attempting to remove the restorative assignment and close out the referral please click cancel and hit the “Close Referral” button. If you still want to delete the record of this referral, provide a brief explanation for this action and click Delete Referral.",
+                                    buttonType: "delete",
+                                  });
+                                  setDeletePayload(x);
                                 }}
                               >
-                                Delete Referral
-                              </p>
-                              {loadingPunihsmentId.id ===
-                                x.punishment.punishmentId &&
-                              loadingPunihsmentId.buttonType === "delete" ? (
-                                <CircularProgress
-                                  style={{ height: "20px", width: "20px" }}
-                                  color="secondary"
-                                />
-                              ) : (
-                                <DeleteForeverIcon />
-                              )}
-                            </button>
-                          </>
-                        ))}
-                    </TableCell>
-                  </TableRow>
-                );
-              })
-            ) : (
-              <TableRow>
-                <TableCell
-                  colSpan="5"
-                  style={{
-                    fontSize: 18,
-                    fontWeight: "lighter",
-                    fontStyle: "italic",
-                  }}
-                >
-                  No open assignments found.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
+                                <p
+                                  style={{
+                                    marginBottom: "5px",
+                                    marginTop: "-2%",
+                                  }}
+                                >
+                                  Delete Referral
+                                </p>
+                                {loadingPunihsmentId.id ===
+                                  x.punishment.punishmentId &&
+                                loadingPunihsmentId.buttonType === "delete" ? (
+                                  <CircularProgress
+                                    style={{ height: "20px", width: "20px" }}
+                                    color="secondary"
+                                  />
+                                ) : (
+                                  <DeleteForeverIcon />
+                                )}
+                              </button>
+                            </>
+                          ))}
+                      </TableCell>
+                    </TableRow>
+                  );
+                })
+              ) : (
+                <TableRow>
+                  <TableCell
+                    colSpan="5"
+                    style={{
+                      fontSize: 18,
+                      fontWeight: "lighter",
+                      fontStyle: "italic",
+                    }}
+                  >
+                    No open assignments found.
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          )}
         </Table>
       </TableContainer>
     </>
