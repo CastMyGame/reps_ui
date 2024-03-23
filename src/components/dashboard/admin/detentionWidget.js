@@ -97,7 +97,7 @@ pdf.text('Detention List', 105, 40, { align: 'center' }); // Adjust coordinates 
                   style={{ backgroundColor: rowBackgroundColor }}>
                            <td style={{ paddingRight: '15px'}}>
                       <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <span style={{  textAlign: 'center', fontSize:'150%'}}>{x.studentEmail.split("@")[0]}</span>
+                        <span style={{  textAlign: 'center', fontSize:'150%'}}>{x.studentEmail?.split("@")[0]}</span>
                       </div>
                     </td>
                     <td style={{ paddingRight: '15px'}}>
