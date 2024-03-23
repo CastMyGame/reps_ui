@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Table,
   TableContainer,
@@ -13,8 +13,49 @@ import {
 const IncidentsByStudentTable = ({ writeUps = [] }) => {
   const uniqueStudents = {};
   const totalIncidents = writeUps.length;
+  const[searchQuery, setSearchQuery] = useState("");
+  const [filteredData, setFilteredData] = useState([]);
 
-  //Get Unique Students Info
+  useEffect(() => {
+    // Filter the data based on the search query
+    const filteredRecords = writeUps.filter((record) => {
+      const fullName =
+        `${record.studentFirstName} ${record.studentLastName}`.toLowerCase();
+
+      return (
+        fullName.includes(searchQuery.toLowerCase()) ||
+        record.infractionName.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    });
+
+    // Sort the filtered records based on the number of incidents in descending order
+    const sortedData = [...filteredRecords];
+    const uniqueStudentIds = sortedData.reduce((uniqueIds, record) => {
+      const studentEmail = record.studentEmail;
+
+      // Check if the studentId is not already in the uniqueIds array
+      if (!uniqueIds.includes(studentEmail)) {
+        uniqueIds.push(studentEmail);
+      }
+
+      return uniqueIds;
+    }, []);
+
+    const recentRecords = [];
+
+    // sortedData.reverse();
+    // const recentContacts = uniqueStudentIds.map((studentEmail) => {
+    //   // Find the most recent record for each unique studentId
+    //   const mostRecentRecord = sortedData.find(
+    //     (record) => record.studentEmail === studentEmail
+    //   );
+    //   return mostRecentRecord;
+    // });
+
+    setFilteredData(studentsWithIncidentsList);
+  }, [writeUps, searchQuery]);
+
+  // //Get Unique Students Info
   writeUps.forEach((item) => {
     const studentEmail = item.studentEmail;
     uniqueStudents[studentEmail] = (uniqueStudents[studentEmail] || 0) + 1;
@@ -22,9 +63,14 @@ const IncidentsByStudentTable = ({ writeUps = [] }) => {
 
   const studentsWithIncidentsList = Object.entries(uniqueStudents).map(
     ([studentEmail, incidents]) => {
-      const { firstName, lastName } = writeUps.find(
+      const studentRecord = writeUps.find(
         (item) => item.studentEmail === studentEmail
       );
+
+      const firstName = studentRecord.studentFirstName;
+      const lastName = studentRecord.studentLastName;
+      console.log("answer",incidents)
+
 
       return {
         studentEmail,
@@ -36,7 +82,7 @@ const IncidentsByStudentTable = ({ writeUps = [] }) => {
     }
   );
 
-  studentsWithIncidentsList.sort((a, b) => b.incidents - a.incidents);
+  filteredData.sort((a, b) => b.incidents - a.incidents);
 
   return (
     <TableContainer component={Paper}>
@@ -56,17 +102,13 @@ const IncidentsByStudentTable = ({ writeUps = [] }) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {studentsWithIncidentsList.map(
-            (
-              { studentEmail, firstName, lastName, incidents, percent },
-              index
-            ) => (
+          {filteredData.map((record, index) => (
               <TableRow key={index}>
                 <TableCell style={{ fontSize: 14 }}>
-                  {firstName} {lastName}
+                  {record.firstName} {record.lastName}
                 </TableCell>
-                <TableCell style={{ fontSize: 14 }}>{incidents}</TableCell>
-                <TableCell style={{ fontSize: 14 }}>{percent}%</TableCell>
+                <TableCell style={{ fontSize: 14 }}>{record.incidents}</TableCell>
+                <TableCell style={{ fontSize: 14 }}>{record.percent}%</TableCell>
               </TableRow>
             )
           )}

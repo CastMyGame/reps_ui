@@ -7,7 +7,7 @@ import Card from "@mui/material/Card";
 import ReferralByBehavior from "./charts/lineCharts/referralsByBehavior.js";
 import TeacherInfractionOverPeriodBarChart from "./charts/barChart/teacherInfractionPeriodBarChart.js";
 import { PieChartParentCommunication } from "./charts/pieCharts/pieChartParentCommunication.js";
-import RecentIncidents from "./charts/tables/studentRecentIncidents.js";
+import RecentIncidents from "./charts/tables/studentRecentContacts.js";
 import TeacherShoutOutWidget from "./charts/tables/teacherShoutOutWidget.js";
 import Button from "@mui/material/Button";
 
@@ -17,7 +17,7 @@ const TeacherOverviewPanel = ({ setPanelName, data = [] }) => {
     message: "",
   });
 
-  const dataExcludeNonReferrals = data.punishments.filter((x) => {
+  const dataExcludeNonReferrals = data.punishmentResponse.filter((x) => {
     return x.infractionName !== "Positive Behavior Shout Out!";
   });
   const weeklyData = dataExcludeNonReferrals.filter((x) => {
@@ -31,7 +31,7 @@ const TeacherOverviewPanel = ({ setPanelName, data = [] }) => {
 
   console.log("FIND ME 3", dataExcludeNonReferrals);
 
-  const weeklyDataIncSOBxConcern = data.punishments.filter((x) => {
+  const weeklyDataIncSOBxConcern = data.punishmentResponse.filter((x) => {
     const currentDate = new Date();
     const itemDate = new Date(x.timeCreated);
     const sevenDaysAgo = new Date(
@@ -41,7 +41,7 @@ const TeacherOverviewPanel = ({ setPanelName, data = [] }) => {
   });
 
   useEffect(() => {
-    const statusQuo = data.punishments.filter(
+    const statusQuo = data.punishmentResponse.filter(
       (x) => x.status === "PENDING" && x.infractionLevel === "3"
     );
     if (statusQuo.length > 0) {
@@ -88,7 +88,7 @@ const TeacherOverviewPanel = ({ setPanelName, data = [] }) => {
       )}
       <div className="teacher-overview-first">
         <Card variant="outlined">
-          <TeacherShoutOutWidget data={data.punishments} />
+          <TeacherShoutOutWidget data={data.punishmentResponse} />
         </Card>
       </div>
 
@@ -97,7 +97,12 @@ const TeacherOverviewPanel = ({ setPanelName, data = [] }) => {
         <Typography
           color="white"
           variant="h6"
-          style={{ flexGrow: 1, outline: "1px solid  white", padding: "5px" }}
+          style={{
+            flexGrow: 1,
+            outline: "1px solid  white",
+            padding: "5px",
+            fontSize: 36,
+          }}
         >
           Week At a Glance
         </Typography>
@@ -117,7 +122,12 @@ const TeacherOverviewPanel = ({ setPanelName, data = [] }) => {
         <Typography
           color="white"
           variant="h6"
-          style={{ flexGrow: 1, outline: "1px solid  white", padding: "5px" }}
+          style={{
+            flexGrow: 1,
+            outline: "1px solid  white",
+            padding: "5px",
+            fontSize: 36,
+          }}
         >
           Students of Concern
         </Typography>
@@ -126,15 +136,11 @@ const TeacherOverviewPanel = ({ setPanelName, data = [] }) => {
       <div className="overview-row">
         <div className="card-overview-half">
           <div className="studentIncidentTable">
-            {/* <Card style={{padding:"5px"}}> */}
-            <IncidentsByStudentTable writeUps={data.writeUps} />
-            {/* </Card> */}
+            <IncidentsByStudentTable writeUps={data.punishmentResponse} />
           </div>
         </div>
         <div className="card-overview-half">
-          {/* <Card style={{padding:"5px"}}> */}
-          <RecentIncidents data={data.punishments} />
-          {/* </Card> */}
+          <RecentIncidents data={data.punishmentResponse} />
         </div>
       </div>
 
@@ -142,7 +148,12 @@ const TeacherOverviewPanel = ({ setPanelName, data = [] }) => {
         <Typography
           color="white"
           variant="h6"
-          style={{ flexGrow: 1, outline: "1px solid  white", padding: "5px" }}
+          style={{
+            flexGrow: 1,
+            outline: "1px solid  white",
+            padding: "5px",
+            fontSize: 36,
+          }}
         >
           Longitudinal Reports
         </Typography>
@@ -153,7 +164,7 @@ const TeacherOverviewPanel = ({ setPanelName, data = [] }) => {
           {/* <Card style={{padding:"5px"}}> */}
 
           {data ? (
-            <TotalReferralByWeek data={data.writeUps} />
+            <TotalReferralByWeek data={data.writeUpResponse} />
           ) : (
             <h1>loading</h1>
           )}
@@ -162,13 +173,13 @@ const TeacherOverviewPanel = ({ setPanelName, data = [] }) => {
         </div>
         <div className="card-overview-third">
           {/* <Card style={{padding:"5px"}}> */}
-          <TotalStudentReferredByWeek data={data.writeUps} />
+          <TotalStudentReferredByWeek data={data.writeUpResponse} />
           {/* </Card> */}
         </div>
 
         <div className="card-overview-third">
           {/* <Card style={{padding:"5px"}}> */}
-          <ReferralByBehavior data={data.writeUps} />
+          <ReferralByBehavior data={data.writeUpResponse} />
           {/* </Card> */}
         </div>
       </div>

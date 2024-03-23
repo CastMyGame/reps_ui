@@ -93,22 +93,22 @@ import jsPDF from 'jspdf';
 
 <td style={{ paddingRight: '15px'}}>
                       <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <span style={{  textAlign: 'center', fontSize:'150%'}}>{x.student.studentEmail.split("@")[0]}</span>
+                        <span style={{  textAlign: 'center', fontSize:'150%'}}>{x.punishment.studentEmail?.split("@")[0]}</span>
                         </div>
                     </td>
 <td style={{ paddingRight: '15px'}}>
                       <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <span style={{  textAlign: 'center', fontSize:'150%'}}>{x.student.firstName}</span>
+                        <span style={{  textAlign: 'center', fontSize:'150%'}}>{x.firstName}</span>
                       </div>
                     </td>   
                     <td style={{ paddingRight: '15px'}}>
                       <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <span style={{  textAlign: 'center', fontSize:'150%'}}>{x.student.lastName}</span>
+                        <span style={{  textAlign: 'center', fontSize:'150%'}}>{x.lastName}</span>
                       </div>
                     </td>
                     <td style={{ paddingRight: '15px'}}>
                       <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <span style={{  textAlign: 'center', fontSize:'150%'}}>{x.classPeriod}</span>
+                        <span style={{  textAlign: 'center', fontSize:'150%'}}>{x.punishment.classPeriod}</span>
                       </div>
                     </td>
                   </tr>

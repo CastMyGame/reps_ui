@@ -70,44 +70,74 @@ pdf.text('Detention List', 105, 40, { align: 'center' }); // Adjust coordinates 
      
     return (
       <>
-
-        <div style={{ backgroundColor: "rgb(25, 118, 210)", marginTop: "10px", marginBlock: "5px" }}>
-          <Typography color="white" variant="h5" style={{ flexGrow: 1, outline: "1px solid white", padding: "5px",textAlign:"center" }}>
+        <div
+          style={{
+            backgroundColor: "rgb(25, 118, 210)",
+            marginTop: "10px",
+            marginBlock: "5px",
+          }}
+        >
+          <Typography
+            color="white"
+            variant="h5"
+            style={{
+              flexGrow: 1,
+              outline: "1px solid white",
+              padding: "5px",
+              textAlign: "center",
+            }}
+          >
             Detention list
           </Typography>
         </div>
-    
-        <table className='widget-table'> {/* Added borderCollapse for proper styling */}
+
+        <table className="widget-table">
+          {" "}
+          {/* Added borderCollapse for proper styling */}
           <thead>
-            <tr className="widget-table-tr"> {/* Moved the header row to thead */}
+            <tr className="widget-table-tr">
+              {" "}
+              {/* Moved the header row to thead */}
               <th>Student Username</th>
               <th>First Name</th>
               <th>Last Name</th>
-
+              <th>Infraction Period</th>
             </tr>
           </thead>
-    
           <tbody>
             {data.length > 0 ? (
               data.map((x, key) => {
                 const rowBackgroundColor = key % 2 === 0 ? "#f2f2f2" : "white"; // Alternate colors
 
                 return (
-                  <tr key={key}
-                  style={{ backgroundColor: rowBackgroundColor }}>
-                           <td style={{ paddingRight: '15px'}}>
-                      <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <span style={{  textAlign: 'center', fontSize:'150%'}}>{x.studentEmail.split("@")[0]}</span>
+                  <tr key={key} style={{ backgroundColor: rowBackgroundColor }}>
+                    <td style={{ paddingRight: "15px" }}>
+                      <div style={{ display: "flex", alignItems: "center" }}>
+                        <span style={{ textAlign: "center", fontSize: "150%" }}>
+                          {x.punishment.studentEmail?.split("@")[0]}
+                        </span>
                       </div>
                     </td>
-                    <td style={{ paddingRight: '15px'}}>
-                      <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <span style={{  textAlign: 'center', fontSize:'150%'}}>{x.firstName}</span>
+                    <td style={{ paddingRight: "15px" }}>
+                      <div style={{ display: "flex", alignItems: "center" }}>
+                        <span style={{ textAlign: "center", fontSize: "150%" }}>
+                          {x.firstName}
+                        </span>
                       </div>
                     </td>
-                    <td style={{ paddingRight: '15px'}}>
-                      <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <span style={{  textAlign: 'center', fontSize:'150%'}}> {x.lastName}</span>
+                    <td style={{ paddingRight: "15px" }}>
+                      <div style={{ display: "flex", alignItems: "center" }}>
+                        <span style={{ textAlign: "center", fontSize: "150%" }}>
+                          {" "}
+                          {x.lastName}
+                        </span>
+                      </div>
+                    </td>
+                    <td style={{ paddingRight: "15px" }}>
+                      <div style={{ display: "flex", alignItems: "center" }}>
+                        <span style={{ textAlign: "center", fontSize: "150%" }}>
+                          {x.punishment.classPeriod}
+                        </span>
                       </div>
                     </td>
                   </tr>
@@ -115,12 +145,22 @@ pdf.text('Detention List', 105, 40, { align: 'center' }); // Adjust coordinates 
               })
             ) : (
               <tr>
-                <td colSpan="4" style={{ textAlign: "center" }}>No student is assigned Detention.</td>
+                <td colSpan="4" style={{ textAlign: "center" }}>
+                  No student is assigned Detention.
+                </td>
               </tr>
             )}
           </tbody>
         </table>
-        <button className='widget-print-button' onClick={()=>{generatePDF(data)}}style={{backgroundColor:"#CF9FFF"}} >Print</button>
+        <button
+          className="widget-print-button"
+          onClick={() => {
+            generatePDF(data);
+          }}
+          style={{ backgroundColor: "#CF9FFF" }}
+        >
+          Print
+        </button>
       </>
     );
             }
