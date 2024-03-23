@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Table,
   TableContainer,
@@ -13,30 +13,72 @@ import {
 const IncidentsByStudentTable = ({ writeUps = [] }) => {
   const uniqueStudents = {};
   const totalIncidents = writeUps.length;
+  const[searchQuery, setSearchQuery] = useState("");
+  const [filteredData, setFilteredData] = useState([]);
 
-  //Get Unique Students Info
-  writeUps.forEach((item) => {
-    const studentEmail = item.studentEmail;
-    uniqueStudents[studentEmail] = (uniqueStudents[studentEmail] || 0) + 1;
-  });
+  useEffect(() => {
+    // Filter the data based on the search query
+    const filteredRecords = writeUps.filter((record) => {
+      const fullName =
+        `${record.studentFirstName} ${record.studentLastName}`.toLowerCase();
 
-  const studentsWithIncidentsList = Object.entries(uniqueStudents).map(
-    ([studentEmail, incidents]) => {
-      const { firstName, lastName } = writeUps.find(
-        (item) => item.studentEmail === studentEmail
+      return (
+        fullName.includes(searchQuery.toLowerCase()) ||
+        record.infractionName.toLowerCase().includes(searchQuery.toLowerCase())
       );
+    });
 
-      return {
-        studentEmail,
-        firstName,
-        lastName,
-        incidents,
-        percent: ((incidents / totalIncidents) * 100).toFixed(2),
-      };
-    }
-  );
+    // Sort the filtered records based on the number of incidents in descending order
+    const sortedData = [...filteredRecords];
+    const uniqueStudentIds = sortedData.reduce((uniqueIds, record) => {
+      const studentEmail = record.studentEmail;
 
-  studentsWithIncidentsList.sort((a, b) => b.incidents - a.incidents);
+      // Check if the studentId is not already in the uniqueIds array
+      if (!uniqueIds.includes(studentEmail)) {
+        uniqueIds.push(studentEmail);
+      }
+
+      return uniqueIds;
+    }, []);
+
+    const recentRecords = [];
+
+    sortedData.reverse();
+    const recentContacts = uniqueStudentIds.map((studentEmail) => {
+      // Find the most recent record for each unique studentId
+      const mostRecentRecord = sortedData.find(
+        (record) => record.studentEmail === studentEmail
+      );
+      return mostRecentRecord;
+    });
+
+    setFilteredData(recentContacts);
+  }, [writeUps, searchQuery]);
+
+  // //Get Unique Students Info
+  // writeUps.forEach((item) => {
+  //   const studentEmail = item.studentEmail;
+  //   uniqueStudents[studentEmail] = (uniqueStudents[studentEmail] || 0) + 1;
+  // });
+
+  // const studentsWithIncidentsList = Object.entries(uniqueStudents).map(
+  //   ([studentEmail, incidents]) => {
+  //     console.log(uniqueStudents + "      Unique Students");
+  //     const { firstName, lastName } = writeUps.find(
+  //       (item) => item.studentEmail === studentEmail
+  //     );
+
+  //     return {
+  //       studentEmail,
+  //       firstName,
+  //       lastName,
+  //       incidents,
+  //       percent: ((incidents / totalIncidents) * 100).toFixed(2),
+  //     };
+  //   }
+  // );
+
+  filteredData.sort((a, b) => b.incidents - a.incidents);
 
   return (
     <TableContainer component={Paper}>
@@ -56,17 +98,13 @@ const IncidentsByStudentTable = ({ writeUps = [] }) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {studentsWithIncidentsList.map(
-            (
-              { studentEmail, firstName, lastName, incidents, percent },
-              index
-            ) => (
+          {filteredData.map((record, index) => (
               <TableRow key={index}>
                 <TableCell style={{ fontSize: 14 }}>
-                  {firstName} {lastName}
+                  {record.studentFirstName} {record.studentLastName}
                 </TableCell>
-                <TableCell style={{ fontSize: 14 }}>{incidents}</TableCell>
-                <TableCell style={{ fontSize: 14 }}>{percent}%</TableCell>
+                <TableCell style={{ fontSize: 14 }}>{record.length}</TableCell>
+                <TableCell style={{ fontSize: 14 }}>{record.length}%</TableCell>
               </TableRow>
             )
           )}

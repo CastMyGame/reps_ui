@@ -3,7 +3,7 @@ import { Table, TableContainer, TableHead, TableBody, TableRow, TableCell, Paper
 import { dateCreateFormat } from '../../../../global/helperFunctions';
 
 
-const RecentIncidents = ({data = []}) => {
+const RecentContacts = ({data = []}) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredData, setFilteredData] = useState([]);
 
@@ -87,4 +87,4 @@ const RecentIncidents = ({data = []}) => {
   );
 };
 
-export default RecentIncidents;
+export default RecentContacts;
