@@ -48,7 +48,7 @@ export default function ReferralByBehavior({ data = [] }) {
 
   return (
     data && (<>
-      <Typography variant="h6" gutterBottom>
+      <Typography variant="h4" gutterBottom>
         Behavior Trends
       </Typography>
       <button onClick={() => setRangeWeek((prev) => prev - 1)} style={{ height: "20px", width: "20px", padding: 0, borderRadius: 0 }}>-</button>

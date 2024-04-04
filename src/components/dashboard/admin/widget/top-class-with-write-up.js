@@ -8,25 +8,25 @@ export const WorseClassTable = ({ data = [],teacherData=[] }) => {
 
  
 
-  const getTeacherWithMostIncidents = (classItem) => {
-    const maxBlock = Math.max(classItem.blocks.block1, classItem.blocks.block2, classItem.blocks.block3, classItem.blocks.block4);
-    const teachersWithMaxBlock = teacherData.filter((teacher) => {
-      const negWriteUpData = data.filter((item) => item.infraction.infractionName !== "Positive Behavior Shout Out!" && item.teacherEmail === teacher.email);
-      const blockIncidents = negWriteUpData.filter((item) => item.classPeriod === `block${maxBlock}`).length;
-      return blockIncidents > 0;
-    });
+  // const getTeacherWithMostIncidents = (classItem) => {
+  //   const maxBlock = Math.max(classItem.blocks.block1, classItem.blocks.block2, classItem.blocks.block3, classItem.blocks.block4);
+  //   const teachersWithMaxBlock = teacherData.filter((teacher) => {
+  //     const negWriteUpData = data.filter((item) => item.infraction.infractionName !== "Positive Behavior Shout Out!" && item.teacherEmail === teacher.email);
+  //     const blockIncidents = negWriteUpData.filter((item) => item.classPeriod === `block${maxBlock}`).length;
+  //     return blockIncidents > 0;
+  //   });
 
-    const teacherWithMostIncidents = teachersWithMaxBlock.reduce((maxTeacher, currentTeacher) => {
-      const blockIncidents = data.filter((item) => item.teacherEmail === currentTeacher.email && item.classPeriod === `block${maxBlock}`).length;
-      return blockIncidents > maxTeacher.incidents ? { ...currentTeacher, incidents: blockIncidents } : maxTeacher;
-    }, { incidents: -1 });
+  //   const teacherWithMostIncidents = teachersWithMaxBlock.reduce((maxTeacher, currentTeacher) => {
+  //     const blockIncidents = data.filter((item) => item.teacherEmail === currentTeacher.email && item.classPeriod === `block${maxBlock}`).length;
+  //     return blockIncidents > maxTeacher.incidents ? { ...currentTeacher, incidents: blockIncidents } : maxTeacher;
+  //   }, { incidents: -1 });
 
-    return teacherWithMostIncidents.email;
-  };
+  //   return teacherWithMostIncidents.email;
+  // };
 
   // Move this declaration inside the component function
   const worseClassByIncident = teacherData.map((teacher) => {
-    const negWriteUpData = data.filter((item) => item.infraction.infractionName !== "Positive Behavior Shout Out!" && item.teacherEmail === teacher.email);
+    const negWriteUpData = data.filter((item) => item.infractionName !== "Positive Behavior Shout Out!" && item.teacherEmail === teacher.email);
     const block1 = negWriteUpData.filter((item) => item.classPeriod === "block1").length;
     const block2 = negWriteUpData.filter((item) => item.classPeriod === "block2").length;
     const block3 = negWriteUpData.filter((item) => item.classPeriod === "block3").length;

@@ -3,6 +3,7 @@ import { Button, FormControl, InputLabel, MenuItem, Select, Snackbar, TextField,
 import MuiAlert from '@mui/material/Alert';
 import axios from 'axios';
 import { baseUrl } from '../utils/jsonData';
+import "./modal.css"
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -79,20 +80,13 @@ export const ContactUsModal = ({ setContactUsDisplayModal, contactUsDisplayModal
         </Alert>
       </Snackbar>
 
-      {contactUsDisplayModal && (
+      
         <div
+        className='pop-modal'
           style={{
-            position: 'fixed',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            backgroundColor: 'white',
-            height: '600px',
-            width: '500px',
-            borderRadius: '10px',
+        
             zIndex: 2,
-            padding: '20px',
-            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+        
           }}
         >
           <div className="header" style={{ marginBottom: '20px' }}>
@@ -135,12 +129,12 @@ export const ContactUsModal = ({ setContactUsDisplayModal, contactUsDisplayModal
               Send Message
             </Button>
 
-            <Button variant="contained" color="success" onClick={() => setContactUsDisplayModal(false)}>
+            <Button variant="contained" color="success" onClick={() => setContactUsDisplayModal("login")}>
               Close
             </Button>
           </div>
         </div>
-      )}
+      
     </>
   );
 };

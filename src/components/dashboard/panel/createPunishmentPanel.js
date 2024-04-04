@@ -181,9 +181,10 @@ const CreatePunishmentPanel = () => {
         setOpenModal({display:false,message:""})
         const payloadContent = []
         studentNames.map((student)=>{
+          console.log(student + "This is the student!")
           const studentPayload = {
-            firstName:"placeholder",
-            lastName:"placeholder",
+            firstName:"Placeholder 1",
+            lastName:"Placeholder 2",
             studentEmail: student.value,
             teacherEmail: teacherEmailSelected,
             infractionPeriod: infractionPeriodSelected,

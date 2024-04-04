@@ -1,9 +1,5 @@
-import react, {useEffect,useRef,useState} from 'react'
-import { Table, TableContainer, TableHead, TableBody, TableRow, TableCell, Paper } from '@mui/material';
+import  {useEffect,useState} from 'react'
 import Typography from '@mui/material/Typography';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import ContactsIcon from '@mui/icons-material/Contacts';
-import VisibilityIcon from '@mui/icons-material/Visibility';
 import axios from "axios"
 import { baseUrl } from '../../../utils/jsonData'
 import jsPDF from 'jspdf';
@@ -22,7 +18,7 @@ import jsPDF from 'jspdf';
         Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
       };
       
-      const url = `${baseUrl}/student/v1/issList`;
+      const url = `${baseUrl}/student/v1/issList/${sessionStorage.getItem("schoolName")}`;
       axios
         .get(url, { headers })
         .then(function (response) {
@@ -36,15 +32,15 @@ import jsPDF from 'jspdf';
 
    
   
-    const pdfRef = useRef();
+    // const pdfRef = useRef();
 
     const generatePDF = (studentData) => {
       const pdf = new jsPDF();
         // Add logo
-        const logoWidth = 50; // Adjust the width of the logo as needed
-        const logoHeight = 50; // Adjust the height of the logo as needed
-        const logoX = 130; // Adjust the X coordinate of the logo as needed
-        const logoY = 15; // Adjust the Y coordinate of the logo as needed
+        // const logoWidth = 50; // Adjust the width of the logo as needed
+        // const logoHeight = 50; // Adjust the height of the logo as needed
+        // const logoX = 130; // Adjust the X coordinate of the logo as needed
+        // const logoY = 15; // Adjust the Y coordinate of the logo as needed
         
     //https://medium.com/dont-leave-me-out-in-the-code/5-steps-to-create-a-pdf-in-react-using-jspdf-1af182b56cee
     
@@ -97,22 +93,22 @@ import jsPDF from 'jspdf';
 
 <td style={{ paddingRight: '15px'}}>
                       <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <span style={{  textAlign: 'center', fontSize:'150%'}}>{x.student.studentEmail.split("@")[0]}</span>
+                        <span style={{  textAlign: 'center', fontSize:'150%'}}>{x.punishment.studentEmail?.split("@")[0]}</span>
                         </div>
                     </td>
 <td style={{ paddingRight: '15px'}}>
                       <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <span style={{  textAlign: 'center', fontSize:'150%'}}>{x.student.firstName}</span>
+                        <span style={{  textAlign: 'center', fontSize:'150%'}}>{x.firstName}</span>
                       </div>
                     </td>   
                     <td style={{ paddingRight: '15px'}}>
                       <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <span style={{  textAlign: 'center', fontSize:'150%'}}>{x.student.lastName}</span>
+                        <span style={{  textAlign: 'center', fontSize:'150%'}}>{x.lastName}</span>
                       </div>
                     </td>
                     <td style={{ paddingRight: '15px'}}>
                       <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <span style={{  textAlign: 'center', fontSize:'150%'}}>{x.classPeriod}</span>
+                        <span style={{  textAlign: 'center', fontSize:'150%'}}>{x.punishment.classPeriod}</span>
                       </div>
                     </td>
                   </tr>

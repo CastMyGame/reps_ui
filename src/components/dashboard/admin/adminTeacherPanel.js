@@ -1,5 +1,5 @@
 import {useState,useEffect,useRef} from 'react'
-import { Table, TableContainer, TableHead, TableBody, TableRow, TableCell, Paper,Card, TextField } from '@mui/material';
+import { Table, TableContainer, TableHead, TableBody, TableRow, TableCell, Paper, TextField } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import jsPDF from 'jspdf';
@@ -41,9 +41,7 @@ import { get } from '../../../utils/api/api';
   const fetchTeacherData = async (teacherEmail)=>{
     try{
       const result = await get('punish/v1/punishments/')
-      const newData = result.filter(((x)=> x.teacherEmail === teacherEmail));
-      console.log("find me ", newData)
-      setTeacherProfileData(newData);
+      setTeacherProfileData(result);
       setTeacherProfileModal(true);  
   
   
@@ -74,7 +72,7 @@ const handleProfileClick = (x) =>{
   setTeacherProfileModal(true)
 }
 
-const pdfRef = useRef();
+// const pdfRef = useRef();
 
 const generatePDF = (activeTeacher,studentData) => {
   const pdf = new jsPDF();

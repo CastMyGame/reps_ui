@@ -4,7 +4,7 @@ import { dateCreateFormat } from '../global/helperFunctions';
    const ShoutOutWidget = ({listOfPunishments }) => {
 
     const loggedInUser = sessionStorage.getItem("email")
-	  const data = listOfPunishments.filter(user=> String(user.student.studentEmail).toLowerCase() === String(loggedInUser).toLowerCase()).filter(punish => punish.status === "SO" || punish.status ==="CFR");
+	  const data = listOfPunishments.filter(user=> String(user.studentEmail).toLowerCase() === String(loggedInUser).toLowerCase()).filter(punish => punish.status === "SO" || punish.status ==="CFR");
       
     const hasScroll = data.length > 2;
 
@@ -42,7 +42,7 @@ import { dateCreateFormat } from '../global/helperFunctions';
 <TableRow key={key}>
 <TableCell>{dateCreateFormat(x.timeCreated)}</TableCell>
 
-  <TableCell>{x.infraction.infractionDescription}</TableCell>
+  <TableCell>{x.infractionDescription}</TableCell>
   <TableCell>{x.teacherEmail}</TableCell>
 </TableRow>
             ))

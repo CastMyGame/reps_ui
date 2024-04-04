@@ -1,15 +1,11 @@
 import * as React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
 import Snackbar from '@mui/material/Snackbar';
-import IconButton from '@mui/material/IconButton';
-// import CloseIcon from '@mui/icons-material/Close';
-import MuiAlert, { AlertProps } from '@mui/material/Alert';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
+import MuiAlert from '@mui/material/Alert';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
@@ -19,10 +15,20 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import axios from 'axios';
 import { baseUrl } from '../utils/jsonData';
-import { redirect, useNavigate } from 'react-router-dom';
+import {  useNavigate } from 'react-router-dom';
 import CircularProgress from '@mui/material/CircularProgress';
 import { ContactUsModal } from './contactUsModal';
 import ChatIcon from '@mui/icons-material/Chat';
+import JsonData from '../utils/data.json';
+import { Navigation } from '../components/landing/navigation';
+import { Header } from '../components/landing/header';
+import { Features } from '../components/landing/features';
+import { About } from '../components/landing/about';
+import { Testimonials } from '../components/landing/testimonials';
+import "./modal.css"
+import ForgotPassword from './forgotPassword';
+import CloseIcon from '@mui/icons-material/Close';
+
 
 
 
@@ -40,7 +46,8 @@ function Copyright(props) {
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}
-      version 2.29.24.1
+      version 4.4.24-1
+
     </Typography>
   );
 }
@@ -79,11 +86,12 @@ export default function SignIn() {
   
   }
 
-  const [contactUsDisplayModal,setContactUsDisplayModal] = useState(false)
+  const [modalType,setModalType] = useState("login");
   const [formData, setFormData] = useState({
     username: '',
     password: '',
   });
+const [login,setLogin] = useState(false);
 
   const handleClose = (event, reason) => {
     if (reason === 'clickaway') {
@@ -92,6 +100,11 @@ export default function SignIn() {
 
     setWarningToast(false);
   };
+
+  const [landingPageData, setLandingPageData] = useState({});
+  useEffect(() => {
+    setLandingPageData(JsonData);
+  }, []);
 
   
   const handleSubmit = async (event) => {
@@ -120,6 +133,8 @@ export default function SignIn() {
 
     
     routeChange(role);
+    setLogin(false);
+    setModalType("login")
   
       } else {
         // Handle the case where the expected data is missing
@@ -130,11 +145,7 @@ export default function SignIn() {
         setTimeout(() => {
           setWarningToast(false);
         }, 2000);
-        setFormData((prev) => ({
-          ...prev,
-          password: '',
-          username: '',
-        }));
+       
       }
     } catch (error) {
       console.error("Error:", error);
@@ -143,32 +154,45 @@ export default function SignIn() {
       setTimeout(() => {
         setWarningToast(false);
       }, 2000);
-      setFormData((prev) => ({
-        ...prev,
-        password: '',
-        username: '',
-      }));
+      // 
       // Handle the error as needed
     }
   };
 
 
 
+  // const setContactUsDisplayModal= () =>{
+  //   setModalType("contact")
+
+  // }
+
+
+
   return (
     <ThemeProvider theme={defaultTheme}>
-      <ContactUsModal setContactUsDisplayModal={setContactUsDisplayModal} contactUsDisplayModal={contactUsDisplayModal}/>
+      <div>
+      <Navigation setLogin={setLogin} />
+      <Header data={landingPageData.Header} />
+      <Features data={landingPageData.Features} />
+      <About data={landingPageData.About} />
+      <Testimonials data={landingPageData.Testimonials} />
+    </div>
       <Container component="main" maxWidth="xs" >
 
         <CssBaseline />
         <Box
-          sx={{
-            marginTop: 8,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-          }}
+        className={login ? `pop-modal` : `none`}
+     
         >
-          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+           <CloseIcon
+            size="large" // Set size to large
+            sx={{ position: 'absolute', top: 10, right: 10,width:"15px" }}
+             onClick={()=>{
+              setLogin(false);
+            setModalType("login")}}
+          ></CloseIcon>
+          { modalType ==="login" && <div className='box-content'>
+          <Avatar sx={{ m: 1, bgcolor: 'grey' }}>
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
@@ -211,7 +235,7 @@ export default function SignIn() {
               label="Remember me"
             /> */}
             <br/>
-                          <Snackbar open={warningToast} autoHideDuration={6000} onClose={handleClose}>
+  <Snackbar open={warningToast} autoHideDuration={6000} onClose={handleClose}>
   <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
    Email or Password is incorrect
   </Alert>
@@ -226,20 +250,29 @@ export default function SignIn() {
             </Button>
             <Grid container>
               <Grid item xs>
-                <Link href="/forgot-password" variant="body2" style={{color:"white"}}>
+                <p
+                onClick={()=>setModalType("reset")}
+                 style={{color:"grey"}}>
                   Forgot password?
-                </Link>
+                </p>
               </Grid>
               <Grid item>
-                <Link href="/register" variant="body2" style={{color:"white"}}>
+                <Link href="/register" variant="body2" style={{color:"grey"}}>
                   {"Don't have an account? Sign Up"}
                 </Link>
 
               </Grid>
             </Grid>
           </Box>}
-          <div><ChatIcon onClick={()=>setContactUsDisplayModal(true)} sx={{color:"black",marginTop:"50px",fontSize:"50px"}}/></div>
+          <div><ChatIcon onClick={()=>setModalType("contact")} sx={{color:"black",marginTop:"50px",fontSize:"50px"}}/></div>
         <div style={{color:"white"}}>Contact Us</div>
+        </div>}
+        {modalType === "contact" &&
+              <ContactUsModal setContactUsDisplayModal={setModalType} />
+        
+        }
+        {modalType === "reset" &&   <ForgotPassword setResetModalDisplay={setModalType} />
+}
         </Box>
         <Copyright sx={{ mt: 8, mb: 4 }} /> 
        

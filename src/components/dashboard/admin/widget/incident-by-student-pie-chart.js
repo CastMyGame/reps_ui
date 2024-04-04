@@ -16,14 +16,15 @@ export const IncidentByStudentPieChart = ({ writeUps = [] }) => {
 
   // Get Unique Students Info
   writeUps.forEach(item => {
-    const studentId = item.student.studentIdNumber;
-    uniqueStudents[studentId] = (uniqueStudents[studentId] || 0) + 1;
+    const studentEmail = item.studentEmail;
+    uniqueStudents[studentEmail] = (uniqueStudents[studentEmail] || 0) + 1;
   });
 
-  const studentsWithIncidentsList = Object.entries(uniqueStudents).map(([studentId, incidents]) => {
-    const { firstName, lastName } = writeUps.find(item => item.student.studentIdNumber === studentId).student;
+  const studentsWithIncidentsList = Object.entries(uniqueStudents).map(([studentEmail, incidents]) => {
+    const {firstName, lastName} = writeUps.find(item => item.studentEmail === studentEmail);
+
     return {
-      studentId,
+      studentEmail,
       firstName,
       lastName,
       incidents,
@@ -39,8 +40,8 @@ const modifiedList = [
   ...meetsTres,
   {
     studentId: "001",
-    firstName: "Other",
-    lastName: "",
+    studentFirstName: "Other",
+    studentLastName: "",
     incidents: otherNotMeetingTreshold.reduce((acc, student) => {
       return acc + student.incidents;
     }, 0).toFixed(2),
@@ -72,7 +73,7 @@ const modifiedList = [
           series={[
             {
               data: modifiedList.map((student, index) => ({
-                id: index, value: parseFloat(student.percent), label: `${student.firstName} ${student.lastName} (${student.studentId.substring(0, 5)})`
+                id: index, value: parseFloat(student.percent), label: `${student.firstName} ${student.lastName}`
               })),
               arcLabel: (item) => `(${parseFloat(item.value)}%)`,
               arcLabelMinAngle: 45,

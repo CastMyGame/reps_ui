@@ -5,7 +5,7 @@ import Typography from '@mui/material/Typography';
 
     const loggedInUser = sessionStorage.getItem("email")
 
-	  const data = listOfPunishments.filter(user=> (user.student.studentEmail).toLowerCase() === loggedInUser.toLowerCase()).filter(punish => (punish.status === "CLOSED" || punish.status === "CFR"));
+	  const data = listOfPunishments.filter(user=> (user.studentEmail).toLowerCase() === loggedInUser.toLowerCase()).filter(punish => (punish.status === "CLOSED" || punish.status === "CFR"));
       
     const hasScroll = data.length > 10;
 
@@ -51,9 +51,9 @@ import Typography from '@mui/material/Typography';
   <TableCell>
     ***-{x.punishmentId.substring(1,5)}
   </TableCell>
-  <TableCell>{x.infraction.infractionName}</TableCell>
-  <TableCell>{x.infraction.infractionDescription}</TableCell>
-  <TableCell>{x.infraction.infractionLevel}</TableCell>
+  <TableCell>{x.infractionName}</TableCell>
+  <TableCell>{x.infractionDescription}</TableCell>
+  <TableCell>{x.infractionLevel}</TableCell>
   <TableCell>{x.status}</TableCell>
 
 </TableRow>

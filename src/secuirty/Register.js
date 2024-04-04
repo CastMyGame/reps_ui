@@ -6,8 +6,6 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
@@ -16,9 +14,7 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Snackbar from '@mui/material/Snackbar';
-import IconButton from '@mui/material/IconButton';
-import CloseIcon from '@mui/icons-material/Close';
-import MuiAlert, { AlertProps } from '@mui/material/Alert';
+import MuiAlert from '@mui/material/Alert';
 
 
 function Copyright(props) {
@@ -52,13 +48,13 @@ export default function Register() {
     confirmPassword: false,
   });
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: ' ',
-    schoolName: ' ',
-    username: '',
-    password: '',
-  });
+  // const [formData, setFormData] = useState({
+  //   firstName: '',
+  //   lastName: ' ',
+  //   schoolName: ' ',
+  //   username: '',
+  //   password: '',
+  // });
 
   const [passwordMatches , setPasswordMatches] = useState(false)
   const [registrationSuccessMessage, setRegistrationSuccessMessage] = useState(false)

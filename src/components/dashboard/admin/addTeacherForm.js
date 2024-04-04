@@ -271,7 +271,7 @@ console.log(payload)
                   required
                   fullWidth
                   id="studentEmail"
-                  label={type=="employee"?`Email Address`:'Student Email Address'}
+                  label={type === "employee"?`Email Address`:'Student Email Address'}
                   name="studentEmail"
                   // autoComplete="email"
                   error={formErrors.studentEmail} // Add error prop

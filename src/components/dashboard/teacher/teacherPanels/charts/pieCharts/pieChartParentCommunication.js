@@ -16,7 +16,7 @@ const teachReferrals = filterPunishementsByLoggedInUser(data);
 
     return(
         <>
-         <Typography>Parent Communcation</Typography>
+         <Typography style={{ fontSize: '2rem'}}>Parent Communcation</Typography>
     <PieChart
       series={[
       
@@ -37,6 +37,7 @@ const teachReferrals = filterPunishementsByLoggedInUser(data);
         [`& .${pieArcLabelClasses.root}`]: {
           fill: 'white',
           fontWeight: 'bold',
+          fontSize: '2rem'
         },
       }}
    

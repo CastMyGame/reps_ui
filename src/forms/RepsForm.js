@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from "axios";
 import Select from "react-select";
-import { useNavigate } from 'react-router-dom';
 import { baseUrl } from '../utils/jsonData';
 
 
@@ -23,17 +22,17 @@ function MyForm() {
 
   const emailPattern = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
 
-  const tardyDescription = "Description of Behavior/Event. This will be sent directly to the student and guardian so be sure to provide accurate and objective facts."
-  const cellPhoneDescription = "Description of Behavior/Event. This will be sent directly to the student and guardian so be sure to provide accurate and objective facts."
-  const disruptiveBehavioralDescription = "Description of Behavior/Event. This will be sent directly to the student and guardian so be sure to provide accurate and objective facts."
-  const HorseplayDescription = "Description of Behavior/Event. This will be sent directly to the student and guardian so be sure to provide accurate and objective facts."
-  const failureToCompleteWorkDescription = "Provide a brief description of the missing assignment (Name of assignment in Powerschool, link to the assignment if possible, the impact it is having on the students grade and the possible points they can regain upon completion.)"
-  const dressCodeDescription = "Description of Behavior/Event. This will be sent directly to the student and guardian so be sure to provide accurate and objective facts."
-  const positiveBehaviorDescription = "Needs Text"
-  const failureToCompleteWorkTitle = "Failure to complete Work"
-  const otherTitle = "For all offenses other than positive behavior shout out and failure to complete work."
-  const behaviorShoutTitle = "Shout Comment"
-  const concernTitle = "Description of Behavior/Event. This will be sent directly to the student and guardian so be sure to provide accurate and objective facts."
+  // const tardyDescription = "Description of Behavior/Event. This will be sent directly to the student and guardian so be sure to provide accurate and objective facts."
+  // const cellPhoneDescription = "Description of Behavior/Event. This will be sent directly to the student and guardian so be sure to provide accurate and objective facts."
+  // const disruptiveBehavioralDescription = "Description of Behavior/Event. This will be sent directly to the student and guardian so be sure to provide accurate and objective facts."
+  // const HorseplayDescription = "Description of Behavior/Event. This will be sent directly to the student and guardian so be sure to provide accurate and objective facts."
+  // const failureToCompleteWorkDescription = "Provide a brief description of the missing assignment (Name of assignment in Powerschool, link to the assignment if possible, the impact it is having on the students grade and the possible points they can regain upon completion.)"
+  // const dressCodeDescription = "Description of Behavior/Event. This will be sent directly to the student and guardian so be sure to provide accurate and objective facts."
+  // const positiveBehaviorDescription = "Needs Text"
+  // const failureToCompleteWorkTitle = "Failure to complete Work"
+  // const otherTitle = "For all offenses other than positive behavior shout out and failure to complete work."
+  // const behaviorShoutTitle = "Shout Comment"
+  // const concernTitle = "Description of Behavior/Event. This will be sent directly to the student and guardian so be sure to provide accurate and objective facts."
   const [selectedOptions, setSelectedOptions] = useState();
 
 
@@ -69,13 +68,14 @@ function MyForm() {
     return titles[selectedOption] ||  "For all offenses other than positive behavior shout out and failure to complete work."
   }
 
-  const headers = {
-    Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
-  };
-  
-  const url = `${baseUrl}/student/v1/allStudents`; // Replace with your actual API endpoint
-  
+
   useEffect(() => {
+    const headers = {
+      Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
+    };
+    
+    const url = `${baseUrl}/student/v1/allStudents`; // Replace with your actual API endpoint
+    
     axios
       .get(url, { headers }) // Pass the headers option with the JWT token
       .then(function (response) {
@@ -131,7 +131,12 @@ function MyForm() {
             "teacherEmail": teacherEmail
             }
 
-            axios.post(`${baseUrl}/punish/v1/startPunish/form`,payload,
+            const headers = {
+              Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
+            };
+            
+          
+            axios.post(`${baseUrl}/punish/v1/startPunish/formList`,payload,
              {headers: headers}
 
             )

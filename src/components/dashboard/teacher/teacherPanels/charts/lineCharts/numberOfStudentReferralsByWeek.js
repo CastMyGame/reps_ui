@@ -55,7 +55,7 @@ displayDate.reverse()
 
   return (
      data && (<>
-      <Typography variant="h6" gutterBottom>
+      <Typography variant="h4" gutterBottom>
        Number of Students Receiving Referrals By Week
       </Typography> <button onClick={()=>setRangeWeek((prev)=> prev-1)} style={{height:"20px", width:"20px",padding:0,borderRadius:0}}>-</button> <button onClick={()=>setRangeWeek((prev)=> prev+1)} style={{height:"20px", width:"20px",padding:0, borderRadius:0}}>+</button> 
       <LineChart

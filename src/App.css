@@ -1,7 +1,7 @@
 .App {
   width: 98%;      
   margin: 0 auto;
-  background-color: #5333ed;  
+  background-color: #f4f4f4;  
   height: 100vh;
 
 }
@@ -22,12 +22,14 @@
   display: flex;
   flex-direction: row;
   justify-content: space-evenly;
+  max-height: fit-content;
 
 }
 
 .level-three-buttons{
   height: 40px;
   width: 100px;
+  background-color: #2980b9;
 
 
 }
@@ -309,7 +311,7 @@ input[type="password"], input[type="password"], select {
   text-decoration: none;
   border-radius: 5px;
   font-size: 18px;
-  transition: background-color 0.3s;
+  /*transition: background-color 0.3s;*/
 }
 
 .dashboard-button:hover {
@@ -330,12 +332,12 @@ input[type="password"], input[type="password"], select {
 }
 
 body {
-  background: linear-gradient(45deg, #141BC6, #1483C6, #E12BE3);
+  background: white;
   background-size: 600% 600%;
-  animation: GradientBackground 8s ease infinite;
+  /* animation: GradientBackground 8s ease infinite; */
 }
 
-@keyframes GradientBackground {
+/* @keyframes GradientBackground {
   0% {
     background-position: 0% 50%;
   }
@@ -347,7 +349,7 @@ body {
   100% {
     background-position: 0% 50%;
   }
-};
+}; */
 
 /* Essay Styles */
 .essay-container {
@@ -487,7 +489,7 @@ button:hover {
   display: flex;
   flex-direction: row;
 justify-content: space-between;
-  background-color: yellow;
+  /* background-color: yellow; */
 }
 
 
@@ -651,21 +653,6 @@ height: 60px;
 }
 
 
-
-
-.vertical-text {
-  position: relative;
-  top: 500px;
-  margin-left: 210px;
-  transform: translateX(-50%) rotate(-90deg); /* Rotate text 90 degrees counter-clockwise */
-  transform-origin: 0 0; /* Set the origin point to the top-left corner */
-  white-space: nowrap; /* Prevent text from wrapping */
-  background-color: #fff; /* Background color to cover rotated content if needed */
-  padding: 5px 200px; /* Adjust padding as needed */
-}
-
-
-
 .main-content-menu{
   width: 100%;
   height: 5%;
@@ -682,7 +669,7 @@ height: 100%;
 
 
 table th tr {
-  font-size: small;
+  font-size: large;
   height: fit-content;
   
 
@@ -750,7 +737,7 @@ table th tr {
 /* Styling for the dropdown button */
 .teacher-dash-dropbtn {
   flex:1;
-  background-color: #0056b3; /* Blue background */
+  background-color: #5ca9fb; /* Blue background */
   color: white; /* White text color */
   padding: 10px 20px;
   font-size: 16px; /* Font size */
@@ -760,7 +747,15 @@ table th tr {
   outline: none; /* Remove outline on focus */
   position: relative;
   height: 50px;
-  border: 1px solid #02448b;
+  border: 1px solid grey;
+  font-family: "Lato", sans-serif;
+  text-transform: uppercase;
+  color: #555;
+  font-size: 15px;
+  font-weight: 400;
+  padding: 8px 2px;
+  border-radius: 0;
+
 
 }
 
@@ -808,6 +803,7 @@ table th tr {
   justify-content: center;
   align-items: center;
   z-index: 1000;  /* Adjust the value as needed */
+  max-height: fit-content;
 
   
 }
@@ -856,7 +852,7 @@ button {
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  /*transition: background-color 0.3s ease;*/
 }
 
 button:hover {
@@ -868,16 +864,17 @@ button:hover {
 /* styles.css */
 
 .status-tag {
-  width: 75px;
+  width: 100px;
+  height: 35px;
   padding: 5px 10px;
   border-radius: 15px;
   text-align: center;
-  font-weight: bold;
+  font-weight: bolder;
+  font-size: medium;
   border: 1px solid #000;
 }
 
 .tag-critical {
-
   background-color: #cc3300;
 }
 
@@ -992,4 +989,58 @@ button:hover {
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
   /* background: blue;  */
+}
+
+/* Landing Page */
+@media screen and (max-width: 400px) {
+  #features {
+    padding: 20px;
+    width: 111%;
+  }
+  #about,
+  #services,
+  #testimonials,
+  #team,
+  #contact,
+  #footer {
+    width: 111%;
+  }
+
+  #portfolio {
+    width: 110%;
+  }
+}
+
+.section-title{
+
+  position: relative;
+  content: "";
+  background: linear-gradient(to right, #5ca9fb 0%, #6372ff 100%);
+  height: 4px;
+  left: 0%;
+  margin-top: 20px;
+  margin-bottom: 30px;
+
+}
+
+.section-title > h2 {
+  color:black;
+  background-color:#5ca9fb;
+  font-family: "Lato", sans-serif;
+  text-transform: uppercase;
+  color: #555;
+  font-size: 15px;
+  font-weight: 700;
+  padding: 8px 2px;
+  border-radius: 0;
+
+}
+
+.table-header {
+  font-size: large;
+  font-weight: bold;
+}
+
+.page-scroll {
+  cursor: pointer;
 }

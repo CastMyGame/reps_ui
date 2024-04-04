@@ -15,12 +15,13 @@ import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
 import CircularProgress from '@mui/material/CircularProgress';
 import { baseUrl } from '../utils/jsonData';
+import "./modal.css"
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
-const ForgotPassword =()=> {
+const ForgotPassword =(props)=> {
   const [warningToast, setWarningToast] = useState(false);
   const [loading, setLoading] = useState(false);
   const [toast, setToast] = useState(false);
@@ -80,18 +81,10 @@ const [alertMessage, setAlertMessage] = useState('');
 
 
   return (
-    <ThemeProvider theme={createTheme()}>
-      <Container component="main" maxWidth="xs">
-        <CssBaseline />
         <Box
-          sx={{
-            marginTop: 8,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-          }}
+        className="pop-modal"
         >
-          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+          <Avatar sx={{ m: 1, bgcolor: 'grey' }}>
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
@@ -128,8 +121,6 @@ const [alertMessage, setAlertMessage] = useState('');
             </Box>
           )}
         </Box>
-      </Container>
-    </ThemeProvider>
   );
 }
 
