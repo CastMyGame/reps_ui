@@ -67,8 +67,8 @@ const IncidentsByStudentTable = ({ writeUps = [] }) => {
         (item) => item.studentEmail === studentEmail
       );
 
-      const firstName = studentRecord.firstName;
-      const lastName = studentRecord.lastName;
+      const firstName = studentRecord.studentFirstName;
+      const lastName = studentRecord.studentLastName;
       console.log("answer",incidents)
 
 
