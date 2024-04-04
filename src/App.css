@@ -22,6 +22,7 @@
   display: flex;
   flex-direction: row;
   justify-content: space-evenly;
+  max-height: fit-content;
 
 }
 
@@ -802,6 +803,7 @@ table th tr {
   justify-content: center;
   align-items: center;
   z-index: 1000;  /* Adjust the value as needed */
+  max-height: fit-content;
 
   
 }

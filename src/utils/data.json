@@ -1,10 +1,10 @@
 {
     "Header": {
-      "title": "Welcome to Reps Discipline!",
-      "paragraph": "Thank you for your interest in Reps Discipline! This system is meant to give teachers time back in the classroom as well as give everyone in the school much needed data. Reps also facilitates parent to teacher communication and automates the process of giving students a restorative assignment when necessary. Please look at all the info provided to get an idea of what we do and how we can be of service to you and your school!"
+      "title": "Welcome to Reps!",
+      "paragraph": "REPS takes a coaching approach in all aspects of the discipline process. Good coaches maintain high expectations, use productive means to hold athletes accountable, develops a sense of community and continue to grow themselves. REPS mirrors this approach by providing an immediate corrective action that is designed to benefit the student, involves the parents/guardians, improves communication between teachers, administrators and school counselors and provides data for continued improvement."
     },
     "About": {
-      "paragraph": "Reps Discipline was created to make the discipline process easy for teachers and empowering for families. When a teacher needs to write up something positive or negative about a student they use an easy to use form which takes 2-3 minutes at most to complete. After this a group email is immediately created and sent to the parent, student, and teacher with information on what happened and any further action that needs to take place. If an assignment is necessary then the student can login and complete the assignment which should take no more than 3-5 minutes. Once the assignment is complete, that same group email from before is used to notify everyone of the successful completion. If there are any questions from any of the parties during the process then that email can be used to facilitate useful conversation between everyone involved.",
+      "paragraph": "Reps Discipline was created by two coaches who wanted another option to the standard discipline practices seen in schools and we looked to sports for inspiration. Coaches can easily take immediate action to positively redirect athletes with push ups or sprints and feel confident that this action is benefitting the athlete. We mirrored this process with automated restorative assignments and then went to work simplifying all of the other aspects of discipline and climate building that take time away from learning.",
       "Why": [
         "Get time back in the classroom",
         "Facilitate parent communication",
@@ -99,34 +99,19 @@
     ],
     "Testimonials": [
       {
-        "img": "img/testimonials/01.jpg",
-        "text": "I know I am old but even I can use this crazy thing!",
-        "name": "John Oldman"
+        "icon": "fa fa-group",
+        "text": "The immediacy of the system allowed me to restore a relationship that was damaged after a student was written up for being tardy. After completing the referral the mother informed me that the student was late because their father was undergoing emergency surgery. This allowed me to remove the referral, check in with the student and provide support.",
+        "name": ""
       },
       {
-        "img": "img/testimonials/02.jpg",
-        "text": "I was headed for a career in the back alley. Now I manage the bowling alley. Thank you Reps!",
-        "name": "Johnathan Mutton"
+        "img": "fa fa-group",
+        "text": "The behavioral concern is so helpful when a behavior does not warrant discipline action but should result in notifying the parent. After seeing a student struggling to stay away during class, I sent a behavioral concern to inform the parent. The parent then informed me that she was pregnant and in her third trimester. This allowed for a productive conversation on ways to support the student.",
+        "name": ""
       },
       {
-        "img": "img/testimonials/03.jpg",
-        "text": "I stopped vaping because of Reps! Now I know how to read the warnings on the boxes!",
-        "name": "John Smoke"
-      },
-      {
-        "img": "img/testimonials/04.jpg",
-        "text": "Reps helped me realize I am addicted to my cell phone. Now my GPA is closer to my phone number than my shoe size!",
-        "name": "Cheryl Doe"
-      },
-      {
-        "img": "img/testimonials/05.jpg",
-        "text": "I used to manage a bowling alley. Now I manage an Indie coffee shop!",
-        "name": "John Mutton"
-      },
-      {
-        "img": "img/testimonials/06.jpg",
-        "text": "I always knew one of my teachers just didn't like student and thankfully Reps gave me all the data I needed to make him change his ways!",
-        "name": "Karen Doe"
+        "img": "fa fa-group",
+        "text": "With other discipline management systems we always see the negatives but with Reps we are able to see the positive things other teachers are saying about our students. This had made it so easy to start productive conversations with my students and allows the students to feel seen when they are doing something positive.",
+        "name": ""
       }
     ],
     "Team": [
@@ -162,23 +147,23 @@
     "Features": [
       {
         "icon": "fa fa-comments-o",
-        "title": "Instant Communication",
-        "text": "Reps will instantly create a group email between the student, parent, and teacher when a Positive Shout Out or Behavioral Concern occurs to open those lines of communication for all parties instantly."
+        "title": "Coachable Moments",
+        "text": "Our dashboards were created to provoke action for teachers and administrators. This allows teachers to identify students in need, evaluate effectiveness and ensure they have a positive ratio of parent communication. Administrators are given multiple ways to prioritize needs for support."
       },
       {
         "icon": "fa fa-bullhorn",
-        "title": "Automatic Rewards and Reprecussions",
-        "text": "Reps will automatically award Reps points or assign restorative assignments immediately when necessary"
+        "title": "Customizable",
+        "text": "Reps acknowledges the differences between schools and students which is why we have built in accommodations for students with IEP’s and 504’s in addition to providing schools the freedom to create and revise student assignments."
       },
       {
         "icon": "fa fa-group",
-        "title": "Linked Community",
-        "text": "Students actions are linked across all classes and allow parents and teachers to communicate and collaborate with easy to access information"
+        "title": "Supports a Positive Culture",
+        "text": "Reps takes a strength based approach to discipline and showcases the positivity within our schools. Reps also supports PBIS schools by utilizing a token economy and a point system to track student progress."
       },
       {
         "icon": "fa fa-magic",
-        "title": "Automatic Infraction Handling",
-        "text": "All assignments will send emails to parents, teachers, and the student upon completion"
+        "title": "Automation",
+        "text": "Reps ensures good intentions and well thought out plans are executed through the automation of a restorative discipline process. This includes follow up emails and notification for new and completed assignments."
       }
     ]
   }
