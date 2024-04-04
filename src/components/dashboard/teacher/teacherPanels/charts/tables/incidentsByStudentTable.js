@@ -20,7 +20,7 @@ const IncidentsByStudentTable = ({ writeUps = [] }) => {
     // Filter the data based on the search query
     const filteredRecords = writeUps.filter((record) => {
       const fullName =
-        `${record.studentFirstName} ${record.studentLastName}`.toLowerCase();
+        `${record.firstName} ${record.lastName}`.toLowerCase();
 
       return (
         fullName.includes(searchQuery.toLowerCase()) ||
@@ -67,8 +67,8 @@ const IncidentsByStudentTable = ({ writeUps = [] }) => {
         (item) => item.studentEmail === studentEmail
       );
 
-      const firstName = studentRecord.studentFirstName;
-      const lastName = studentRecord.studentLastName;
+      const firstName = studentRecord.firstName || studentRecord.studentFirstName;
+      const lastName = studentRecord.lastName || studentRecord.studentFirstName;
       console.log("answer",incidents)
 
 
