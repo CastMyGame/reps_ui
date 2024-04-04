@@ -88,7 +88,7 @@ const TeacherOverviewPanel = ({ setPanelName, data = [] }) => {
       )}
       <div className="teacher-overview-first">
         <Card variant="outlined">
-          <TeacherShoutOutWidget data={data.punishmentResponse} />
+          <TeacherShoutOutWidget data={data.shoutOutsResponse} />
         </Card>
       </div>
 
