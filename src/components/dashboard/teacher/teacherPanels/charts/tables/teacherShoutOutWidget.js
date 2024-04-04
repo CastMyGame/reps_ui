@@ -6,8 +6,6 @@ import {
   TableBody,
   TableRow,
   TableCell,
-  Paper,
-  getImageListItemBarUtilityClass,
 } from "@mui/material";
 import { dateCreateFormat } from "../../../../global/helperFunctions";
 import ArrowDropDownCircleIcon from "@mui/icons-material/ArrowDropDownCircle";
@@ -17,9 +15,7 @@ const TeacherShoutOutWidget = ({ data = [] }) => {
 
   //We need to fix the cfr issues
   console.log("shoutout", data);
-  const shoutOutData = data.filter(
-    (punish) => punish.infractionName === "Positive Behavior Shout Out!"
-  );
+  const shoutOutData = data
 
   const hasScroll = shoutOutData.length > 2;
 
@@ -86,6 +82,12 @@ const TeacherShoutOutWidget = ({ data = [] }) => {
               </TableCell>
               <TableCell
                 variant="head"
+                style={{ fontWeight: "bold", width: "20%", fontSize: 18 }}
+              >
+                Student Email
+              </TableCell>
+              <TableCell
+                variant="head"
                 style={{ fontWeight: "bold", width: "30%", fontSize: 18 }}
               >
                 Shout Outs
@@ -103,16 +105,19 @@ const TeacherShoutOutWidget = ({ data = [] }) => {
               shoutOutData.map((x, key) => (
                 <TableRow key={key}>
                   <TableCell style={{ width: "20%", fontSize: 14 }}>
-                    {dateCreateFormat(x.timeCreated)}
+                    {dateCreateFormat(x.punishment.timeCreated)}
+                  </TableCell>
+                  <TableCell style={{ width: "20%", fontSize: 14 }}>
+                    {x.firstName} {x.lastName}{" "}
                   </TableCell>
                   <TableCell style={{ width: "20%", fontSize: 14 }}>
                     {x.studentEmail}{" "}
                   </TableCell>
                   <TableCell style={{ width: "30%", fontSize: 14 }}>
-                    {x.infractionDescription}
+                    {x.punishment.infractionDescription}
                   </TableCell>
                   <TableCell style={{ width: "30%", fontSize: 14 }}>
-                    {x.teacherEmail}
+                    {x.punishment.teacherEmail}
                   </TableCell>
                 </TableRow>
               ))
