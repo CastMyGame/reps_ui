@@ -18,7 +18,7 @@ import jsPDF from 'jspdf';
         Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
       };
       
-      const url = `${baseUrl}/student/v1/issList`;
+      const url = `${baseUrl}/student/v1/issList/${sessionStorage.getItem("schoolName")}`;
       axios
         .get(url, { headers })
         .then(function (response) {

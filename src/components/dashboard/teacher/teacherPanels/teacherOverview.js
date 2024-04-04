@@ -42,7 +42,7 @@ const TeacherOverviewPanel = ({ setPanelName, data = [] }) => {
 
   useEffect(() => {
     const statusQuo = data.punishmentResponse.filter(
-      (x) => x.status === "PENDING" && x.infractionLevel === "3"
+      (x) => x.status === "PENDING" && x.level === "3"
     );
     if (statusQuo.length > 0) {
       setOpenModal({

@@ -403,7 +403,7 @@ const LevelThreePanel = ({ roleType }) => {
                               onClick={() => {
                                 setOpenModal({
                                   display: true,
-                                  message: "Please Review Student Answers",
+                                  message: "Please Review Student Answers, Accept and Reject buttons are enabled when text is entered in comment section either approving or explaining the rejection",
                                   buttonType: "close",
                                   data: x,
                                 });

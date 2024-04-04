@@ -24,7 +24,7 @@ import { Navigation } from '../components/landing/navigation';
 import { Header } from '../components/landing/header';
 import { Features } from '../components/landing/features';
 import { About } from '../components/landing/about';
-import { Services } from '../components/landing/services';
+import { Testimonials } from '../components/landing/testimonials';
 import "./modal.css"
 import ForgotPassword from './forgotPassword';
 import CloseIcon from '@mui/icons-material/Close';
@@ -174,7 +174,7 @@ const [login,setLogin] = useState(false);
       <Header data={landingPageData.Header} />
       <Features data={landingPageData.Features} />
       <About data={landingPageData.About} />
-      <Services data={landingPageData.Services} />
+      <Testimonials data={landingPageData.Testimonials} />
     </div>
       <Container component="main" maxWidth="xs" >
 
