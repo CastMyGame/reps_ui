@@ -105,19 +105,19 @@ const TeacherShoutOutWidget = ({ data = [] }) => {
               shoutOutData.map((x, key) => (
                 <TableRow key={key}>
                   <TableCell style={{ width: "20%", fontSize: 14 }}>
-                    {dateCreateFormat(x.punishment.timeCreated)}
+                    {dateCreateFormat(x.timeCreated )}
                   </TableCell>
                   <TableCell style={{ width: "20%", fontSize: 14 }}>
-                    {x.firstName} {x.lastName}{" "}
+                    {x.studentFirstName } {x.studentLastName }{" "}
                   </TableCell>
                   <TableCell style={{ width: "20%", fontSize: 14 }}>
                     {x.studentEmail}{" "}
                   </TableCell>
                   <TableCell style={{ width: "30%", fontSize: 14 }}>
-                    {x.punishment.infractionDescription}
+                    {x.infractionDescription}
                   </TableCell>
                   <TableCell style={{ width: "30%", fontSize: 14 }}>
-                    {x.punishment.teacherEmail}
+                    {x.teacherEmail}
                   </TableCell>
                 </TableRow>
               ))
