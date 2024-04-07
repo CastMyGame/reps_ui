@@ -130,7 +130,7 @@ export default function ViolationPage(props) {
         window.location.href = "/dashboard/student";
       })
       .catch(function (error) {
-        console.log(error);
+        console.error(error);
       });
   };
 

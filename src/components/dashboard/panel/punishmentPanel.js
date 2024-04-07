@@ -37,7 +37,7 @@ import { baseUrl } from '../../../utils/jsonData'
             const sortedData = response.data.sort((a, b) => new Date(a.timeCreated) - new Date(b.timeCreated));
             setListOfPunishments(sortedData);        })
           .catch(function (error) {
-            console.log(error);
+            console.error(error);
           });
       }, []);
   

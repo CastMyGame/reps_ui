@@ -1,37 +1,26 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { baseUrl } from '../../../utils/jsonData';
-import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
 import Drawer from '@mui/material/Drawer';
-import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import NotificationBar from '../../notification-bar/NotificationBar';
-import NotificationsIcon from '@mui/icons-material/Notifications';
 import StudentClosedPunishmentPanel from './studentClosePunihsmentPanel';
 import StudentOpenPunishmentPanel from './studentOpenPunihsmentPanel';
-import ShoutOutReport from './shoutOutReport';
-import WarningIcon from '@mui/icons-material/Warning';
 import ShoutOutWidget from './shoutOutWidget';
 import TotalPositivePoints from './positivePointsComponents';
 import Card from '@mui/material/Card';
-import BlankPanelForTest from './blankPanelForTest';
+// import BlankPanelForTest from './blankPanelForTest';
 import ViolationPage from '../../../forms/ViolationPage';
 import { get } from '../../../utils/api/api';
 import LoadingWheelPanel from './blankPanelForTest';
 import { ContactUsModal } from '../../../secuirty/contactUsModal';
-import { NavigationAdmin } from '../../landing/navigation-admin';
 import { NavigationStudent } from '../../landing/navigation-student';
 
 
 
 const StudentDashboard = () => {
   const [loggedIn, setLoggedIn] = useState(true);
-  const [listOfInfractionsAssociatedByTeacher, setListOfInfractionsAssociatedByTeacher] = useState([]);
   const [data, setData] = useState([]);
   const [modalType,setModalType] = useState("")
   const [isDropdownOpen, setIsDropdownOpen] = useState("")
-  const [openDrawer, setOpenDrawer] = useState(false);
   const [openNotificationDrawer, setOpenNotificationDrawer] = useState(false)
   const [panelName,setPanelName] = useState("openAssignments")
   const [selectAssignmentToStart,setSelectAssignmentToStart] = useState();
@@ -53,9 +42,6 @@ const StudentDashboard = () => {
       setLoggedIn(true);
     }
   }, []);
-
-
-  const loggedInUser = sessionStorage.getItem("email")
 
   useEffect(() => {
  

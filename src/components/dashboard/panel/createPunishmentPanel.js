@@ -139,7 +139,7 @@ const CreatePunishmentPanel = () => {
           setListOfStudents(response.data);
         })
         .catch(function (error) {
-          console.log(error);
+          console.error(error);
         });
     }, []);
   
@@ -211,7 +211,7 @@ const CreatePunishmentPanel = () => {
 
            })
 .catch(function (error){
-               console.log(error)
+               console.error(error);
                setToast({display:true,message:"Something Went Wrong"})
                setTimeout(()=>{
                 setLoading(false)

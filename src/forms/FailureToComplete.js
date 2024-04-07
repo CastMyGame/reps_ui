@@ -34,7 +34,7 @@ function FailureToComplete() {
     .then(function(response){
         setListOfStudents(response.data)
     }).catch(function (error){
-        console.log(error)
+        console.error(error)
     })
 
 },[]);
@@ -47,7 +47,7 @@ useEffect(()=>{
   }).catch(function (error){
     setListOfInfractions([])
 
-      console.log(error)
+      console.error(error)
   })
 
 },[email]);
@@ -106,7 +106,7 @@ if(foundStudent){
    
          })
             .catch(function (error){
-              console.log(error)
+              console.error(error)
 
          });
         } else{
@@ -130,7 +130,7 @@ if(foundStudent){
   
    })
       .catch(function (error){
-        console.log(error)
+        console.error(error)
 
    });
     

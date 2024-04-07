@@ -15,7 +15,6 @@ import {
   MenuItem,
   createTheme,
 } from "@mui/material";
-import Typography from "@mui/material/Typography";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import axios from "axios";
 import { baseUrl } from "../../../utils/jsonData";
@@ -26,7 +25,6 @@ import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import { dateCreateFormat } from "../global/helperFunctions";
 import LoadingWheelPanel from "../student/blankPanelForTest";
-import { faL } from "@fortawesome/free-solid-svg-icons";
 
 const GlobalPunishmentPanel = ({ roleType }) => {
   const Alert = React.forwardRef(function Alert(props, ref) {
@@ -91,7 +89,7 @@ const GlobalPunishmentPanel = ({ roleType }) => {
       })
       .catch(function (error) {
         setLoading(false);
-        console.log(error);
+        console.error(error);
       });
 
     axios
@@ -114,7 +112,7 @@ const GlobalPunishmentPanel = ({ roleType }) => {
       })
       .catch(function (error) {
         setLoading(false);
-        console.log(error);
+        console.error(error);
       });
   }, [toast.visible]);
 
@@ -176,7 +174,7 @@ const GlobalPunishmentPanel = ({ roleType }) => {
         setToast({ visible: true, message: "Your Referral was closed" });
       })
       .catch(function (error) {
-        console.log(error);
+        console.error(error);
       })
       .finally(() => {
         setOpenModal({ display: false, message: "" });
@@ -198,7 +196,7 @@ const GlobalPunishmentPanel = ({ roleType }) => {
         setToast({ visible: true, message: "Your Referral was Deleted" });
       })
       .catch(function (error) {
-        console.log(error);
+        console.error(error);
       })
       .finally(() => {
         setOpenModal({ display: false, message: "" });
