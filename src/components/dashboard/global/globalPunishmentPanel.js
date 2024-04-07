@@ -15,7 +15,6 @@ import {
   MenuItem,
   createTheme,
 } from "@mui/material";
-import Typography from "@mui/material/Typography";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import axios from "axios";
 import { baseUrl } from "../../../utils/jsonData";
@@ -26,7 +25,6 @@ import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import { dateCreateFormat } from "../global/helperFunctions";
 import LoadingWheelPanel from "../student/blankPanelForTest";
-import { faL } from "@fortawesome/free-solid-svg-icons";
 
 const GlobalPunishmentPanel = ({ roleType }) => {
   const Alert = React.forwardRef(function Alert(props, ref) {
