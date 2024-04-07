@@ -89,7 +89,7 @@ const GlobalPunishmentPanel = ({ roleType }) => {
       })
       .catch(function (error) {
         setLoading(false);
-        console.log(error);
+        console.error(error);
       });
 
     axios
@@ -112,7 +112,7 @@ const GlobalPunishmentPanel = ({ roleType }) => {
       })
       .catch(function (error) {
         setLoading(false);
-        console.log(error);
+        console.error(error);
       });
   }, [toast.visible]);
 
@@ -174,7 +174,7 @@ const GlobalPunishmentPanel = ({ roleType }) => {
         setToast({ visible: true, message: "Your Referral was closed" });
       })
       .catch(function (error) {
-        console.log(error);
+        console.error(error);
       })
       .finally(() => {
         setOpenModal({ display: false, message: "" });
@@ -196,7 +196,7 @@ const GlobalPunishmentPanel = ({ roleType }) => {
         setToast({ visible: true, message: "Your Referral was Deleted" });
       })
       .catch(function (error) {
-        console.log(error);
+        console.error(error);
       })
       .finally(() => {
         setOpenModal({ display: false, message: "" });

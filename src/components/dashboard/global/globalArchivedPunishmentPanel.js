@@ -69,7 +69,7 @@ const GlobalArchivedPunishmentPanel = ({ filter, roleType }) => {
         }
       })
       .catch(function (error) {
-        console.log(error);
+        console.error(error);
       });
   }, [render]);
 
@@ -112,7 +112,7 @@ const GlobalArchivedPunishmentPanel = ({ filter, roleType }) => {
         setToast({ visible: true, message: "Your Referral was Restored" });
       })
       .catch(function (error) {
-        console.log(error);
+        console.error(error);
       })
       .finally(() => {
         setRender((prev) => !prev);
@@ -134,7 +134,7 @@ const GlobalArchivedPunishmentPanel = ({ filter, roleType }) => {
         setToast({ visible: true, message: "Your Referral was Deleted" });
       })
       .catch(function (error) {
-        console.log(error);
+        console.error(error);
       })
       .finally(() => {
         setRender((prev) => !prev);

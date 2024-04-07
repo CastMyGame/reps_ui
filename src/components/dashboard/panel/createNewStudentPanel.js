@@ -75,7 +75,7 @@ const [studentForm, setStudentForm] = useState(	{
           setListOfStudents(response.data);
         })
         .catch(function (error) {
-          console.log(error);
+          console.error(error);
         });
     }, []);
   
@@ -121,7 +121,7 @@ const [studentForm, setStudentForm] = useState(	{
                resetForm();
            })
 .catch(function (error){
-               console.log(error)
+               console.error(error);
                const errorMessage = error.response.status === 500 ? "Bad Request": "Other Error";
                setErrorDisplay(true)
                setErrorMessage(errorMessage)

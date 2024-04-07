@@ -57,7 +57,7 @@ import CircularProgress from '@mui/material/CircularProgress';
           setListOfStudents(data);
         })
         .catch(function (error) {
-          console.log(error);
+          console.error(error);
         });
     }, [toast]);
 
@@ -79,7 +79,7 @@ const data = listOfStudents;
         ,2000)
       })
       .catch(function (error) {
-        console.log(error);
+        console.error(error);
       })
       .finally(()=>{
         setToast(false)

@@ -81,7 +81,7 @@ const LevelThreePanel = ({ roleType }) => {
       .catch(function (error) {
         setLoading(false);
 
-        console.log(error);
+        console.error(error);
       });
   }, [toast.visible]);
 
@@ -136,7 +136,7 @@ const LevelThreePanel = ({ roleType }) => {
         setToast({ visible: true, message: "Your Referral was closed" });
       })
       .catch(function (error) {
-        console.log(error);
+        console.error(error);
       })
       .finally(() => {
         setOpenModal({ display: false, message: "" });
@@ -163,7 +163,7 @@ const LevelThreePanel = ({ roleType }) => {
         });
       })
       .catch(function (error) {
-        console.log(error);
+        console.error(error);
       })
       .finally(() => {
         setOpenModal({ display: false, message: "" });

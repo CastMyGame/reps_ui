@@ -46,7 +46,7 @@ const AdminUserRoleManagement = () => {
         setListOfStudents(response.data);
       })
       .catch(function (error) {
-        console.log(error);
+        console.error(error);
       });
   }, [approveUpdate]); // Run useEffect whenever approveUpdate changes
 
@@ -68,7 +68,7 @@ const AdminUserRoleManagement = () => {
         window.alert("You have updated user");
       })
       .catch(function (error) {
-        console.log(error);
+        console.error(error);
       });
   };
 
@@ -85,7 +85,7 @@ const AdminUserRoleManagement = () => {
         );
       })
       .catch(function (error) {
-        console.log(error);
+        console.error(error);
       });
   };
 

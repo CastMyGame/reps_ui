@@ -20,7 +20,7 @@ const ISSWidget = () => {
         setData(data);
       })
       .catch(function (error) {
-        console.log(error);
+        console.error(error);
       });
   }, []);
 
