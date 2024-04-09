@@ -315,4 +315,5 @@ const AdminTeacherPanel = () => {
   );
 };
 
-export default AdminTeacherPanel;
+    export default AdminTeacherPanel;
+
