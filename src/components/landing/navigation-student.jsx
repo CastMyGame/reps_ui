@@ -21,8 +21,10 @@ export const NavigationStudent = (props) => {
           <a className="navbar-brand page-scroll" href="#page-top">
             Welcome {sessionStorage.getItem("userName")}!
           </a>{" "}
-          <div onClick={()=>props.setModalType("contact")}><ChatIcon style={{marginRight:"15px"}}/></div>
-          <NotificationsIcon style={{marginRight:"15px"}} onClick={()=> props.toggleNotificationDrawer(true) }/>
+          {/* 
+          <div onClick={()=>props.setModalType("contact")}><ChatIcon style={{marginRight:"15px"}}/></div> */}
+          {/* Keeping this until we add notifications system but can move and use this in the future
+           <NotificationsIcon style={{marginRight:"15px"}} onClick={()=> props.toggleNotificationDrawer(true) }/> */}
     
 
    

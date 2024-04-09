@@ -1,4 +1,4 @@
-import { Table, TableContainer, TableHead, TableBody, TableRow, TableCell, Paper, getImageListItemBarUtilityClass } from '@mui/material';
+import { Table, TableContainer, TableHead, TableBody, TableRow, TableCell, Paper } from '@mui/material';
 import Typography from '@mui/material/Typography';
 
    const StudentClosedPunishmentPanel = ({listOfPunishments =[]}) =>{

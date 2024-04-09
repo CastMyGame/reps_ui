@@ -1,4 +1,4 @@
-import { Table, TableContainer, TableHead, TableBody, TableRow, TableCell, Paper, getImageListItemBarUtilityClass } from '@mui/material';
+import { Table, TableContainer, TableHead, TableBody, TableRow, TableCell, Paper } from '@mui/material';
 import { dateCreateFormat } from '../global/helperFunctions';
 
    const ShoutOutWidget = ({listOfPunishments }) => {

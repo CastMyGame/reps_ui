@@ -82,7 +82,7 @@ function MyForm() {
         setListOfStudents(response.data);
       })
       .catch(function (error) {
-        console.log(error);
+        console.error(error);
       });
   }, []);
 
@@ -150,7 +150,7 @@ function MyForm() {
              console.log(res)
          })
             .catch(function (error){
-             console.log(error)
+             console.error(error);
              const errorMessage = error.response.status === 500 ? "Bad Request": "Other Error";
              setErrorDisplay(true)
              setErrorMessage(errorMessage)

@@ -1,4 +1,4 @@
-import react from 'react'
+import React from 'react'
 import { useState,useEffect } from 'react';
 import Typography from '@mui/material/Typography';
 import axios from "axios";
@@ -21,11 +21,6 @@ const CreateNewStudentPanel = () => {
     const [successDisplay, setSuccessDisplay] = useState(false);
     const [successMessage, setSuccessMessage] = useState("");
     const [listOfStudents, setListOfStudents] = useState([]);
-    const [studentSelected, setStudentSelect] = useState();
-    const [infractionSelected, setInfractionSelected] = useState();
-    const [infractionPeriodSelected, setInfractionPeriodSelected] = useState();
-    const [teacherEmailSelected, setTeacherEmailSelected] = useState();
-    const [infractionDescriptionSelected,setInfractionDescriptionSelected] = useState();
   
 const [studentForm, setStudentForm] = useState(	{
   firstName: "",
@@ -80,7 +75,7 @@ const [studentForm, setStudentForm] = useState(	{
           setListOfStudents(response.data);
         })
         .catch(function (error) {
-          console.log(error);
+          console.error(error);
         });
     }, []);
   
@@ -126,7 +121,7 @@ const [studentForm, setStudentForm] = useState(	{
                resetForm();
            })
 .catch(function (error){
-               console.log(error)
+               console.error(error);
                const errorMessage = error.response.status === 500 ? "Bad Request": "Other Error";
                setErrorDisplay(true)
                setErrorMessage(errorMessage)
