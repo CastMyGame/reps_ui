@@ -82,12 +82,6 @@ const TeacherShoutOutWidget = ({ data = [] }) => {
               </TableCell>
               <TableCell
                 variant="head"
-                style={{ fontWeight: "bold", width: "20%", fontSize: 18 }}
-              >
-                Student Email
-              </TableCell>
-              <TableCell
-                variant="head"
                 style={{ fontWeight: "bold", width: "30%", fontSize: 18 }}
               >
                 Shout Outs
@@ -109,9 +103,6 @@ const TeacherShoutOutWidget = ({ data = [] }) => {
                   </TableCell>
                   <TableCell style={{ width: "20%", fontSize: 14 }}>
                     {x.studentFirstName } {x.studentLastName }{" "}
-                  </TableCell>
-                  <TableCell style={{ width: "20%", fontSize: 14 }}>
-                    {x.studentEmail}{" "}
                   </TableCell>
                   <TableCell style={{ width: "30%", fontSize: 14 }}>
                     {x.infractionDescription}

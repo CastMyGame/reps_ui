@@ -16,7 +16,8 @@ export const IncidentByTeacherPieChart = ({ data = [], teacherData = [] }) => {
     );
     if (filteredData.length > 0) {
       teachersWithIncidentsList.push({
-        teacherEmail: teacher.email,
+        firstName: teacher.firstName,
+        lastName: teacher.lastName,
         incidents: filteredData.length, // Use the length of filteredData as incidents
         percent: ((filteredData.length / totalIncidents) * 100).toFixed(2),
       });
@@ -49,7 +50,7 @@ export const IncidentByTeacherPieChart = ({ data = [], teacherData = [] }) => {
               data: teachersWithIncidentsList.map((teacher, index) => ({
                 id: index,
                 value: parseFloat(teacher.percent),
-                label: `${teacher.teacherEmail.split("@")[0]} (${teacher.incidents})`,
+                label: `${teacher.firstName} ${teacher.lastName} (${teacher.incidents})`,
               })),
               arcLabel: (item) => `(${item.value}%)`,
               arcLabelMinAngle: 45,
@@ -73,7 +74,7 @@ export const IncidentByTeacherPieChart = ({ data = [], teacherData = [] }) => {
                 className={`legend-color legend-color-${index + 1}`}
                 style={{ backgroundColor: generateLegendColor(index) }}
               ></div>
-              <span>{`${teacher.teacherEmail.split("@")[0]} (${teacher.incidents})`}</span>
+              <span>{`${teacher.firstName} ${teacher.lastName}`}</span>
             </div>
           ))}
         </div>
