@@ -126,5 +126,4 @@ const AdminOverviewPanel = ({
 };
 
 export default AdminOverviewPanel;
-    export default AdminOverviewPanel;
 
