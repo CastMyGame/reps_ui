@@ -1,5 +1,5 @@
-import react, {useState,useEffect} from 'react'
-import { Table, TableContainer, TableHead, TableBody, TableRow, TableCell, Paper, getImageListItemBarUtilityClass } from '@mui/material';
+import React, {useState} from 'react'
+import { Table, TableContainer, TableHead, TableBody, TableRow, TableCell } from '@mui/material';
 import { dateCreateFormat } from '../../../../global/helperFunctions';
 import ArrowDropDownCircleIcon from '@mui/icons-material/ArrowDropDownCircle';
   
@@ -8,12 +8,10 @@ const AdminShoutOut = ({data = []}) => {
   
     //We need to fix the cfr issues
     console.log("shoutout", data)
-	  const shoutOutData = data
-    .filter(punish => punish.punishment.infractionName === "Positive Behavior Shout Out!");
       
-    const hasScroll = shoutOutData.length > 2;
+    const hasScroll = data.length > 2;
 
-    shoutOutData.sort((a,b) => b.punishment.timeCreated - a.punishment.timeCreated ? 1 : -1)
+    data.sort((a,b) => b.timeCreated - a.timeCreated ? 1 : -1)
 
     return (
 !barOpen ?  
@@ -63,15 +61,15 @@ onClick={() => setBarOpen(false)}
       </TableRow>
     </TableHead>
     <TableBody>
-      {shoutOutData.length > 0 ? (
-        shoutOutData.map((x, key) => (
+      {data.length > 0 ? (
+        data.map((x, key) => (
           <TableRow key={key}>
-            <TableCell style={{ width: '20%', fontSize: '1.25rem' }}>{dateCreateFormat(x.punishment.timeCreated)}</TableCell>
-            <TableCell style={{ width: '20%', fontSize: '1.25rem' }}>{x.firstName} {x.lastName}</TableCell>
+            <TableCell style={{ width: '20%', fontSize: '1.25rem' }}>{dateCreateFormat(x.timeCreated)}</TableCell>
+            <TableCell style={{ width: '20%', fontSize: '1.25rem' }}>{x.studentFirstName} {x.studentLastName}</TableCell>
             <TableCell style={{ width: '30%', fontSize: '1.25rem' }}>
-  {x.punishment.infractionDescription}
+  {x.infractionDescription}
 </TableCell>            
-<TableCell style={{ width: '30%', fontSize: '1.25rem' }}>{x.punishment.teacherEmail}</TableCell>
+<TableCell style={{ width: '30%', fontSize: '1.25rem' }}>{x.teacherEmail}</TableCell>
           </TableRow>
         ))
       ) : (

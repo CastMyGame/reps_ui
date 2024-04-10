@@ -74,10 +74,10 @@ const RecentContacts = ({data = []}) => {
         <TableBody>
         {filteredData.sort((a, b) => new Date(a.timeCreated) - new Date(b.timeCreated)).slice(0, 10).map((record, index) => (
             <TableRow key={index}>
-              <TableCell style={{ fontSize: '1.25rem'}}>{record.studentFirstName} {record.studentLastName}</TableCell>
-              <TableCell style={{ fontSize: '1.25rem'}}>{dateCreateFormat(record.timeCreated)}</TableCell>
-              <TableCell style={{ fontSize: '1.25rem'}}>{record.infractionName}</TableCell> 
-              <TableCell style={{ fontSize: '1.25rem'}}>{record.infractionDescription[0]}</TableCell> 
+              <TableCell style={{ fontSize: '1.5rem'}}>{record.studentFirstName} {record.studentLastName}</TableCell>
+              <TableCell style={{ fontSize: '1.5rem'}}>{dateCreateFormat(record.timeCreated)}</TableCell>
+              <TableCell style={{ fontSize: '1.5rem'}}>{record.infractionName}</TableCell> 
+              <TableCell style={{ fontSize: '1.5rem'}}>{record.infractionDescription[0]}</TableCell> 
 
             </TableRow>
           ))}

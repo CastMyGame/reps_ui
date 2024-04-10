@@ -13,14 +13,14 @@ import {
 const IncidentsByStudentTable = ({ writeUps = [] }) => {
   const uniqueStudents = {};
   const totalIncidents = writeUps.length;
-  const[searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
   const [filteredData, setFilteredData] = useState([]);
 
   useEffect(() => {
     // Filter the data based on the search query
     const filteredRecords = writeUps.filter((record) => {
       const fullName =
-        `${record.firstName} ${record.lastName}`.toLowerCase();
+        `${record.studentFirstName} ${record.studentLastName}`.toLowerCase();
 
       return (
         fullName.includes(searchQuery.toLowerCase()) ||
@@ -67,10 +67,10 @@ const IncidentsByStudentTable = ({ writeUps = [] }) => {
         (item) => item.studentEmail === studentEmail
       );
 
-      const firstName = studentRecord.firstName || studentRecord.studentFirstName;
-      const lastName = studentRecord.lastName || studentRecord.studentFirstName;
-      console.log("answer",incidents)
-
+      const firstName =
+        studentRecord.firstName || studentRecord.studentFirstName;
+      const lastName = studentRecord.lastName || studentRecord.studentLastName;
+      console.log("answer", incidents);
 
       return {
         studentEmail,
@@ -96,22 +96,27 @@ const IncidentsByStudentTable = ({ writeUps = [] }) => {
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell style={{ fontSize: 18 }}>Name</TableCell>
-            <TableCell style={{ fontSize: 18 }}>Write-ups</TableCell>
-            <TableCell style={{ fontSize: 18 }}>Percent of Write-ups</TableCell>
+            <TableCell style={{ fontSize: "2rem" }}>Name</TableCell>
+            <TableCell style={{ fontSize: "2rem" }}>Write-ups</TableCell>
+            <TableCell style={{ fontSize: "2rem" }}>
+              Percent of Write-ups
+            </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {filteredData.map((record, index) => (
-              <TableRow key={index}>
-                <TableCell style={{ fontSize: 14 }}>
-                  {record.firstName} {record.lastName}
-                </TableCell>
-                <TableCell style={{ fontSize: 14 }}>{record.incidents}</TableCell>
-                <TableCell style={{ fontSize: 14 }}>{record.percent}%</TableCell>
-              </TableRow>
-            )
-          )}
+            <TableRow key={index}>
+              <TableCell style={{ fontSize: "1.5rem" }}>
+                {record.firstName} {record.lastName}
+              </TableCell>
+              <TableCell style={{ fontSize: "1.5rem" }}>
+                {record.incidents}
+              </TableCell>
+              <TableCell style={{ fontSize: "1.5rem" }}>
+                {record.percent}%
+              </TableCell>
+            </TableRow>
+          ))}
         </TableBody>
       </Table>
     </TableContainer>

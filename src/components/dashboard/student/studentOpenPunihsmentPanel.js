@@ -105,28 +105,43 @@ const StudentOpenPunishmentPanel = ({
                 style={{ fontWeight: "bold" }}
               ></TableCell>
 
-              <TableCell variant="head" style={{ fontWeight: "bold" }}>
+              <TableCell
+                variant="head"
+                style={{ fontWeight: "bold", fontSize: "2rem" }}
+              >
                 Infraction Name
               </TableCell>
-              <TableCell variant="head" style={{ fontWeight: "bold" }}>
+              <TableCell
+                variant="head"
+                style={{ fontWeight: "bold", fontSize: "2rem" }}
+              >
                 Description
               </TableCell>
               <TableCell
                 variant="head"
-                style={{ fontWeight: "bold", width: "5%" }}
+                style={{ fontWeight: "bold", fontSize: "2rem", width: "5%" }}
               >
                 Level
               </TableCell>
               {/* <TableCell variant="head" style={{ fontWeight: 'bold' }}>
              Status
             </TableCell> */}
-              <TableCell variant="head" style={{ fontWeight: "bold" }}>
+              <TableCell
+                variant="head"
+                style={{ fontWeight: "bold", fontSize: "2rem" }}
+              >
                 Created By
               </TableCell>
-              <TableCell variant="head" style={{ fontWeight: "bold" }}>
+              <TableCell
+                variant="head"
+                style={{ fontWeight: "bold", fontSize: "2rem" }}
+              >
                 Created On
               </TableCell>
-              <TableCell variant="head" style={{ fontWeight: "bold" }}>
+              <TableCell
+                variant="head"
+                style={{ fontWeight: "bold", fontSize: "2rem" }}
+              >
                 Consequence if not Completed by Tomorrow
               </TableCell>
             </TableRow>
@@ -159,19 +174,27 @@ const StudentOpenPunishmentPanel = ({
                       )}
                     </Tooltip>
                   </TableCell>
-                  <TableCell>{x.infractionName}</TableCell>
-                  <TableCell>{x.infractionDescription[0]}</TableCell>
-                  <TableCell>{x.infractionLevel}</TableCell>
+                  <TableCell style={{ fontSize: "1.5rem" }}>
+                    {x.infractionName}
+                  </TableCell>
+                  <TableCell style={{ fontSize: "1.5rem" }}>
+                    {x.infractionDescription[0]}
+                  </TableCell>
+                  <TableCell style={{ fontSize: "1.5rem" }}>
+                    {x.infractionLevel}
+                  </TableCell>
                   {/* <TableCell>{x.status}</TableCell> */}
-                  <TableCell>{x.teacherEmail}</TableCell>
+                  <TableCell style={{ fontSize: "1.5rem" }}>
+                    {x.teacherEmail}
+                  </TableCell>
 
-                  <TableCell>
+                  <TableCell style={{ fontSize: "1.5rem" }}>
                     <div style={{ display: "flex" }}>
                       {" "}
                       {dateCreateFormat(x.timeCreated)}
                     </div>
                   </TableCell>
-                  <TableCell>
+                  <TableCell style={{ fontSize: "1.5rem" }}>
                     <div style={{ display: "flex" }}>
                       {" "}
                       {x.status === "PENDING" ? "" : calculateImportance(x)}

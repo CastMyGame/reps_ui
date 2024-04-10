@@ -15,11 +15,10 @@ const TeacherShoutOutWidget = ({ data = [] }) => {
 
   //We need to fix the cfr issues
   console.log("shoutout", data);
-  const shoutOutData = data
 
-  const hasScroll = shoutOutData.length > 2;
+  const hasScroll = data.length > 2;
 
-  shoutOutData.sort((a, b) => (b.timeCreated - a.timeCreated ? 1 : -1));
+  data.sort((a, b) => (b.timeCreated - a.timeCreated ? 1 : -1));
 
   return !barOpen ? (
     <div className="shout-out-bar-container">
@@ -82,12 +81,6 @@ const TeacherShoutOutWidget = ({ data = [] }) => {
               </TableCell>
               <TableCell
                 variant="head"
-                style={{ fontWeight: "bold", width: "20%", fontSize: 18 }}
-              >
-                Student Email
-              </TableCell>
-              <TableCell
-                variant="head"
                 style={{ fontWeight: "bold", width: "30%", fontSize: 18 }}
               >
                 Shout Outs
@@ -101,17 +94,14 @@ const TeacherShoutOutWidget = ({ data = [] }) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {shoutOutData.length > 0 ? (
-              shoutOutData.map((x, key) => (
+            {data.length > 0 ? (
+              data.map((x, key) => (
                 <TableRow key={key}>
                   <TableCell style={{ width: "20%", fontSize: 14 }}>
-                    {dateCreateFormat(x.timeCreated )}
+                    {dateCreateFormat(x.timeCreated)}
                   </TableCell>
                   <TableCell style={{ width: "20%", fontSize: 14 }}>
-                    {x.studentFirstName } {x.studentLastName }{" "}
-                  </TableCell>
-                  <TableCell style={{ width: "20%", fontSize: 14 }}>
-                    {x.studentEmail}{" "}
+                    {x.studentFirstName} {x.studentLastName}{" "}
                   </TableCell>
                   <TableCell style={{ width: "30%", fontSize: 14 }}>
                     {x.infractionDescription}

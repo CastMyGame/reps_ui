@@ -10,12 +10,13 @@ import { Top5TeacherRatioTable } from "./widget/top-5-ratio-table";
 import { WorseClassTable } from "./widget/top-class-with-write-up";
 import { IncidentByStudentPieChart } from "./widget/incident-by-student-pie-chart";
 import "./admin.css";
-import AdminShoutOut from "../teacher/teacherPanels/charts/tables/adminShoutOutWidget copy";
+import AdminShoutOut from "../teacher/teacherPanels/charts/tables/adminShoutOutWidget";
 
 const AdminOverviewPanel = ({
   data = [],
   teacherData = [],
   writeUpData = [],
+  shoutOutData = [],
 }) => {
   //Fetch Data to Prop Drill to Componetns
 
@@ -28,15 +29,11 @@ const AdminOverviewPanel = ({
     return itemDate > sevenDaysAgo;
   });
 
-  let punishmentData = [];
-
-  data.forEach((x) => punishmentData.push(x.punishment));
-
   return (
     <>
       <div className="teacher-overview-first">
         <Card variant="outlined">
-          <AdminShoutOut data={data} />
+          <AdminShoutOut data={shoutOutData} />
         </Card>
       </div>
 
@@ -79,7 +76,7 @@ const AdminOverviewPanel = ({
       <div className="overview-row">
         <div className="card-overview-third">
           <IncidentByTeacherPieChart
-            data={punishmentData}
+            data={writeUpData}
             teacherData={teacherData}
           />
         </div>
@@ -87,14 +84,14 @@ const AdminOverviewPanel = ({
         <div className="card-overview-third">
           {teacherData && (
             <Top5TeacherRatioTable
-              data={punishmentData}
+              data={data}
               teacherData={teacherData}
             />
           )}
         </div>
 
         <div className="card-overview-third">
-          <WorseClassTable data={punishmentData} teacherData={teacherData} />
+          <WorseClassTable data={data} teacherData={teacherData} />
         </div>
       </div>
 
@@ -110,15 +107,15 @@ const AdminOverviewPanel = ({
 
       <div className="overview-row">
         <div className="card-overview-third">
-          <TotalReferralByWeek data={punishmentData} />
+          <TotalReferralByWeek data={data} />
         </div>
 
         <div className="card-overview-third">
-          <TotalStudentReferredByWeek data={punishmentData} />
+          <TotalStudentReferredByWeek data={data} />
         </div>
 
         <div className="card-overview-third">
-          <ReferralByBehavior data={punishmentData} />
+          <ReferralByBehavior data={data} />
         </div>
       </div>
     </>
