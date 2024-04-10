@@ -16,14 +16,14 @@ export const IncidentByStudentPieChart = ({ writeUps = [] }) => {
 
   const studentsWithIncidentsList = Object.entries(uniqueStudents).map(
     ([studentEmail, incidents]) => {
-      const { firstName, lastName } = writeUps.find(
+      const { studentFirstName, studentLastName } = writeUps.find(
         (item) => item.studentEmail === studentEmail
       );
 
       return {
         studentEmail,
-        firstName,
-        lastName,
+        studentFirstName,
+        studentLastName,
         incidents,
         percent: ((incidents / totalIncidents) * 100).toFixed(2),
       };
@@ -42,7 +42,7 @@ export const IncidentByStudentPieChart = ({ writeUps = [] }) => {
     {
       studentId: "001",
       studentFirstName: "Other",
-      studentLastName: "",
+      studentLastName: "Students",
       incidents: otherNotMeetingTreshold
         .reduce((acc, student) => {
           return acc + student.incidents;
@@ -85,7 +85,7 @@ export const IncidentByStudentPieChart = ({ writeUps = [] }) => {
               data: modifiedList.map((student, index) => ({
                 id: index,
                 value: parseFloat(student.percent),
-                label: `${student.firstName} ${student.lastName}`,
+                label: `${student.studentFirstName} ${student.studentLastName}`,
               })),
               arcLabel: (item) => `(${parseFloat(item.value)}%)`,
               arcLabelMinAngle: 45,
@@ -114,7 +114,7 @@ export const IncidentByStudentPieChart = ({ writeUps = [] }) => {
                 className={`legend-color legend-color-${index + 1}`}
                 style={{ backgroundColor: generateLegendColor(index) }}
               ></div>
-              <span>{`${student.firstName} ${student.lastName}`}</span>
+              <span>{`${student.studentFirstName} ${student.studentLastName}`}</span>
             </div>
           ))}
         </div>
