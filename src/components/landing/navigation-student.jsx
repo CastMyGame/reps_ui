@@ -1,7 +1,5 @@
-import React, {useState} from "react";
+import React from "react";
 import "./landing.css"
-import ChatIcon from '@mui/icons-material/Chat';
-import NotificationsIcon from '@mui/icons-material/Notifications';
 
 
 
@@ -49,18 +47,6 @@ export const NavigationStudent = (props) => {
                 Contact History             
                 </div>
             </li>
-            <li>
-              <div 
-                onClick={()=>dropdownHandler("closedAssignments")}
-                className="page-scroll">
-                  Resources             
-                </div>
-            </li>
-            
-
-
- 
-      
             <li>
               <button className="login-btn page-scroll"
               onClick={()=>props.setLogin()}>
