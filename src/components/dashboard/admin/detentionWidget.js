@@ -48,8 +48,8 @@ const DetentionWidget = () => {
       head: [["Student Id", "Last Name", "First Name"]],
       body: studentData.map((student) => [
         student.studentEmail.split("@")[0],
-        student.lastName,
-        student.firstName,
+        student.studentLastName,
+        student.studentFirstName,
       ]),
     });
 
@@ -87,7 +87,6 @@ const DetentionWidget = () => {
           <tr className="widget-table-tr">
             {" "}
             {/* Moved the header row to thead */}
-            <th>Student Username</th>
             <th>First Name</th>
             <th>Last Name</th>
             <th>Infraction Period</th>
@@ -103,14 +102,7 @@ const DetentionWidget = () => {
                   <td style={{ paddingRight: "15px" }}>
                     <div style={{ display: "flex", alignItems: "center" }}>
                       <span style={{ textAlign: "center", fontSize: "150%" }}>
-                        {x.punishment.studentEmail?.split("@")[0]}
-                      </span>
-                    </div>
-                  </td>
-                  <td style={{ paddingRight: "15px" }}>
-                    <div style={{ display: "flex", alignItems: "center" }}>
-                      <span style={{ textAlign: "center", fontSize: "150%" }}>
-                        {x.firstName}
+                        {x.studentFirstName}
                       </span>
                     </div>
                   </td>
@@ -118,7 +110,7 @@ const DetentionWidget = () => {
                     <div style={{ display: "flex", alignItems: "center" }}>
                       <span style={{ textAlign: "center", fontSize: "150%" }}>
                         {" "}
-                        {x.lastName}
+                        {x.studentLastName}
                       </span>
                     </div>
                   </td>
