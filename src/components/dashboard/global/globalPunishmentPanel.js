@@ -403,7 +403,7 @@ const GlobalPunishmentPanel = ({ roleType }) => {
                               fontSize: 14,
                             }}
                           >
-                            {x.firstName} {x.lastName}
+                            {x.studentFirstName} {x.studentLastName}
                           </span>
                         </div>
                       </TableCell>
