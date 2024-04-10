@@ -52,7 +52,7 @@ const TeacherInfractionOverPeriodBarChart = ({ data = [] }) => {
     <div>
       <Typography
         marginLeft={"25%"}
-        marginTop={"10px"}
+        alignContent={"justify"}
         style={{ fontSize: "2rem" }}
       >
         Referral Overview
@@ -63,12 +63,22 @@ const TeacherInfractionOverPeriodBarChart = ({ data = [] }) => {
         slotProps={{
           legend: {
             labelStyle: {
-              fontSize: "1.5rem"
-            }
+              fontSize: "1.5rem",
+            },
           },
         }}
         xAxis={[
-          { scaleType: "band", dataKey: "behavior", categoryGapRatio: 0.5 },
+          {
+            scaleType: "band",
+            width: 1200,
+            dataKey: "behavior",
+            categoryGapRatio: 0.0005,
+            tickLabelStyle: {
+              angle: 25,
+              textAnchor: "start",
+              fontSize: 12,
+            },
+          },
         ]}
         series={[{ dataKey: "incidents", label: "Referrals" }]}
         sx={{
