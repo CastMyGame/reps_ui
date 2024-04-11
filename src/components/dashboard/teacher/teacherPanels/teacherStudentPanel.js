@@ -115,7 +115,7 @@ const TeacherStudentPanel = ({ setPanelName, data = [] }) => {
 
   return (
     <>
-      {studentDisplay && studentData.length == 0 && (
+      {studentDisplay && studentData.length === 0 && (
         <div
           style={{
             display: "flex",
