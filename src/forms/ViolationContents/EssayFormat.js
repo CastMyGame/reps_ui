@@ -53,7 +53,7 @@ const shuffleArray = (array) => {
           <h4  className="question-header">{essay.question}</h4>
           <div>
             {shuffledKeys.map((key) => (
-              <label style={{color:"black"}}  key={key} className="radio-label">
+              <label style={{color:"black"}}  key={key} >
                 <input
                   type="radio"
                   id={key}
