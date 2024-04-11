@@ -61,7 +61,7 @@ const shuffleArray = (array) => {
                   value={essay.radioAnswers[key].value}
                   onChange={handleRadioChange}
                 />
-                {essay.radioAnswers[key].label}
+                {` ${essay.radioAnswers[key].label}`}
               </label>
             ))}
           </div>
