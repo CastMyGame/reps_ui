@@ -1,3 +1,5 @@
+import { TextareaAutosize } from "@material-ui/core";
+import { Textarea } from "@mui/joy";
 import {React, useEffect, useState} from "react";
 
 
@@ -114,10 +116,11 @@ return image;      };
               <textarea
                 id="copyText"
                 name="copyText"
+                style={{minWidth:"600px", minHeight:"200px"}}
                 value={copyText}
                 onChange={(e) => setCopyText(e.target.value)}
                 required
-              ></textarea>
+              />
             </div>
             <div className="button-container">
               <button type="button" onClick={() => checkWork()}>Check Work</button>
