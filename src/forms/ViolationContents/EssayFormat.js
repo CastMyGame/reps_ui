@@ -18,15 +18,7 @@ const shuffleArray = (array) => {
 };
 
   function EssayFactory({essay, handleRadioChange,sectionName,saveAnswerAndProgress}) {
-    const essayStyles = {
-        fontFamily: 'Arial, sans-serif',
-        fontSize: '18px',
-        lineHeight: '1.6', // Increase line height for more space between lines
-        color: '#333',
-        textAlign: 'left', // Align text to the left',
-      /* Add more CSS styles as needed */
-    };
-
+  
 
     const [shuffledKeys, setShuffledKeys] = useState([]);
 
