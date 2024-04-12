@@ -13,6 +13,7 @@ import { get } from "../../../utils/api/api.js";
 import LoadingWheelPanel from "../student/blankPanelForTest.js";
 import "../teacher/teacherPanels/teacher.css";
 import { NavigationLoggedIn } from "../../landing/navigation-loggedIn.jsx";
+import { MessageBox } from "../../../secuirty/messageBox.js";
 
 const TeacherDashboard = () => {
   const [loggedIn, setLoggedIn] = useState(true);
@@ -76,6 +77,8 @@ const TeacherDashboard = () => {
           {modalType === "contact" && (
             <ContactUsModal setContactUsDisplayModal={setModalType} />
           )}
+
+{true && <MessageBox/>}
 
           <NavigationLoggedIn
             toggleNotificationDrawer={toggleNotificationDrawer}
