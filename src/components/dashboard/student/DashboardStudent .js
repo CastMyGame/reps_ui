@@ -13,6 +13,7 @@ import { get } from '../../../utils/api/api';
 import LoadingWheelPanel from './blankPanelForTest';
 import { ContactUsModal } from '../../../secuirty/contactUsModal';
 import { NavigationStudent } from '../../landing/navigation-student';
+import { handleLogout } from '../../../utils/helperFunctions';
 
 
 
@@ -27,13 +28,7 @@ const StudentDashboard = () => {
   const [studentDetails,setStudentDetails] = useState();
 
 
-  const handleLogout = () => {
-    sessionStorage.removeItem('Authorization');
-    sessionStorage.removeItem('userName');
-    sessionStorage.removeItem('schoolName');
-    sessionStorage.removeItem('email');
-    window.location.href = '/login';
-  };
+
 
   useEffect(() => {
     if (sessionStorage.getItem('Authorization') === null) {
