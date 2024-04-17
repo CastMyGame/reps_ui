@@ -58,13 +58,13 @@ const TeacherDashboard = () => {
     setOpenNotificationDrawer(open);
   };
 
-  const openDropdown = (field) => {
-    setIsDropdownOpen({});
-    setIsDropdownOpen((prev) => ({
-      ...prev,
-      [field]: !isDropdownOpen[field],
-    }));
-  };
+  // const openDropdown = (field) => {
+  //   setIsDropdownOpen({});
+  //   setIsDropdownOpen((prev) => ({
+  //     ...prev,
+  //     [field]: !isDropdownOpen[field],
+  //   }));
+  // };
 
   return (
     loggedIn && (
@@ -74,7 +74,7 @@ const TeacherDashboard = () => {
             <ContactUsModal setContactUsDisplayModal={setModalType} />
           )}
 
-{true && <MessageBox/>}
+
 
           <NavigationLoggedIn
             toggleNotificationDrawer={toggleNotificationDrawer}
