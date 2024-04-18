@@ -13,6 +13,10 @@ import { get } from "../../../utils/api/api.js";
 import LoadingWheelPanel from "../student/blankPanelForTest.js";
 import "../teacher/teacherPanels/teacher.css";
 import { NavigationLoggedIn } from "../../landing/navigation-loggedIn.jsx";
+import { MessageBox } from "../../../secuirty/messageBox.js";
+import axios from "axios";
+import { baseUrl } from "../../../utils/jsonData.js";
+import { handleLogout } from "../../../utils/helperFunctions.js";
 
 const TeacherDashboard = () => {
   const [loggedIn, setLoggedIn] = useState(true);
@@ -24,15 +28,9 @@ const TeacherDashboard = () => {
 
   const [punishmentFilter, setPunishmentFilter] = useState("OPEN");
 
-  const handleLogout = () => {
-    sessionStorage.removeItem("Authorization");
-    sessionStorage.removeItem("userName");
-    sessionStorage.removeItem("schoolName");
-    sessionStorage.removeItem("email");
-    sessionStorage.removeItem("role");
-    window.location.href = "/login";
-  };
 
+
+ 
   useEffect(() => {
     if (sessionStorage.getItem("Authorization") === null) {
       window.location.href = "/login";
@@ -41,7 +39,6 @@ const TeacherDashboard = () => {
     }
   }, []);
 
-  const loggedInUser = sessionStorage.getItem("email");
 
   useEffect(() => {
     const fetchPunishmentData = async () => {
@@ -61,13 +58,13 @@ const TeacherDashboard = () => {
     setOpenNotificationDrawer(open);
   };
 
-  const openDropdown = (field) => {
-    setIsDropdownOpen({});
-    setIsDropdownOpen((prev) => ({
-      ...prev,
-      [field]: !isDropdownOpen[field],
-    }));
-  };
+  // const openDropdown = (field) => {
+  //   setIsDropdownOpen({});
+  //   setIsDropdownOpen((prev) => ({
+  //     ...prev,
+  //     [field]: !isDropdownOpen[field],
+  //   }));
+  // };
 
   return (
     loggedIn && (
@@ -76,6 +73,8 @@ const TeacherDashboard = () => {
           {modalType === "contact" && (
             <ContactUsModal setContactUsDisplayModal={setModalType} />
           )}
+
+
 
           <NavigationLoggedIn
             toggleNotificationDrawer={toggleNotificationDrawer}
