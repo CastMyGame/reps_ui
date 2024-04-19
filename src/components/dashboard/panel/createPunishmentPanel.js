@@ -59,7 +59,6 @@ const CreatePunishmentPanel = () => {
     message: "",
     buttonType: "",
   });
-  const [submitPayload, setSubmitPayload] = useState(null);
 
   useEffect(() => {
     setTeacherEmailSelected(sessionStorage.getItem("email"));
@@ -161,15 +160,10 @@ const CreatePunishmentPanel = () => {
     setInfractionDescriptionSelected("");
   };
 
-  const handleChange = (event) => {
-    const {
-      target: { value },
-    } = event;
-    setStudentNames(
-      // On autofill we get a stringified value.
-      typeof value === "string" ? value.split(",") : value
-    );
-  };
+
+
+
+
 
   //Mapping selected students pushing indivdual payloads to post
   const handleSubmit = (event) => {
@@ -177,8 +171,8 @@ const CreatePunishmentPanel = () => {
     setLoading(true);
     setOpenModal({ display: false, message: "" });
     const payloadContent = [];
+    console.log("std names", studentNames)
     studentNames.map((student) => {
-      console.log(student + "This is the student!");
       const studentPayload = {
         firstName: "Placeholder 1",
         lastName: "Placeholder 2",
@@ -187,6 +181,7 @@ const CreatePunishmentPanel = () => {
         infractionPeriod: infractionPeriodSelected,
         infractionName: infractionTypeSelected,
         infractionDescription: infractionDescriptionSelected,
+        points:currency
       };
       payloadContent.push(studentPayload);
     });
@@ -461,7 +456,7 @@ const CreatePunishmentPanel = () => {
                       <NumberInput
                         aria-label="Positive Currency Input"
                         placeholder="Type how much you want to give..."
-                        value={value}
+                        value={currency}
                         onChange={(event, val) => setCurrency(val)}
                         slots={{
                           root: StyledInputRoot,
@@ -577,7 +572,6 @@ const CreatePunishmentPanel = () => {
                               "Warning! You are currently writing up multiple students simultaneously. If this is your intent make sure you have not included any student identifiers including names or pronouns. If you wish to continue press Submit, to go back press cancel.",
                             buttonType: "submit",
                           });
-                          setSubmitPayload();
                         }}
                         fullWidth
                         variant="contained"
