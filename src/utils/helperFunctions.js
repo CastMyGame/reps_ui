@@ -9,15 +9,22 @@ export const handleLogout = async()=>{
         const res = await axios.post(`${baseUrl}/v1/logout`, [],{headers});
         const response = res;
         console.log(response)
-        sessionStorage.removeItem("Authorization");
-        sessionStorage.removeItem("userName");
-        sessionStorage.removeItem("schoolName");
-        sessionStorage.removeItem("email");
-        sessionStorage.removeItem("role");
+       clearSessionStorage();
         window.location.href = "/login";
 
     }catch{
+//for edge case where app is restared while in session, so log out still happens
+        clearSessionStorage();
+        window.location.href = "/login";
 
 
     }
 }
+
+const clearSessionStorage = () => {
+    ["Authorization", "userName", "schoolName", "email", "role"].forEach(
+      (key) => {
+        sessionStorage.removeItem(key);
+      }
+    );
+  };

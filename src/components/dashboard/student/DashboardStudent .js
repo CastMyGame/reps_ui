@@ -26,6 +26,7 @@ const StudentDashboard = () => {
   const [panelName,setPanelName] = useState("openAssignments")
   const [selectAssignmentToStart,setSelectAssignmentToStart] = useState();
   const [studentDetails,setStudentDetails] = useState();
+  const [school, setSchool] = useState();
 
 
 
@@ -45,6 +46,7 @@ const StudentDashboard = () => {
         const response = await get(`DTO/v1/StudentOverviewData`)
         setData(response.punishments)
         setStudentDetails(response.student)
+        setSchool(response.school)
       }catch(err){
         console.error(err)
       }
@@ -105,7 +107,7 @@ const StudentDashboard = () => {
         </div>
         <div className='student-overview-second'>
         <Card style={{height:"200px"}}variant="outlined">
-          <TotalPositivePoints data={studentDetails}/>
+          <TotalPositivePoints data={studentDetails} school={school}/>
           </Card>
         </div>
 
