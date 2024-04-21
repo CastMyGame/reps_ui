@@ -7,17 +7,15 @@ import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { Autocomplete, Box, CircularProgress } from "@mui/material";
+import { Autocomplete, Box, CircularProgress, Input } from "@mui/material";
 import Container from "@mui/material/Container";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 
-import { Unstable_NumberInput as NumberInput, numberInputClasses } from "@mui/base/Unstable_NumberInput";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import Chip from "@mui/material/Chip";
-import { styled } from "@mui/system";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -109,7 +107,7 @@ const CreatePunishmentPanel = () => {
     "Failure to Complete Work":
       "Please provide a description of the overdue assignment, its original due date, and include a hyperlink to the assignment if accessible. Additionally, explain the impact the missing assignment is currently having on their overall grade and the points the student can earn by completing the work.",
     "Positive Behavior Shout Out!":
-      "Thank you for celebrating the positive behavior of a student. Please include a description of the students behavior below. Refrain from using any other student’s name in this description",
+    "",
   };
 
   const titles = {
@@ -324,7 +322,6 @@ const CreatePunishmentPanel = () => {
                     <TextField
                       {...params}
                       label="Select Students"
-                      variant="outlined"
                       sx={{ width: "100%" }}
                     />
                   )}
@@ -453,27 +450,41 @@ const CreatePunishmentPanel = () => {
                   <div>
                     {infractionTypeSelected ===
                       "Positive Behavior Shout Out!" && (
-                      <NumberInput
-                        aria-label="Positive Currency Input"
-                        placeholder="Type how much you want to give..."
+                        <div style={{display:"flex", flexDirection:"row"}}>
+                        <TextField
+                        type="number"
+                        margin="normal"
+                        required
+                        onChange={(event) => {
+                          const enteredValue = event.target.value;
+                          setCurrency(enteredValue);
+                        }}
+                        id="currency"
+                        placeholder="Enter The Amount Points you want to Add"
+                        name="currency"
+                        autoFocus
                         value={currency}
-                        onChange={(event, val) => setCurrency(val)}
-                        slots={{
-                          root: StyledInputRoot,
-                          input: StyledInputElement,
-                          incrementButton: StyledButton,
-                          decrementButton: StyledButton,
+                        InputLabelProps={{
+                          sx: {
+                            "&.Mui-focused": {
+                              color: "white",
+                              marginTop: "-10px",
+                              width:"30%"
+                            },
+                          },
                         }}
-                        slotProps={{
-                          input: { className: "my-num-input" },
-                          incrementButton: { direction: "UP" },
-                          decrementButton: { direction: "DOWN" },
-                        }}
+                        
                       />
+                          <div style={{width:"80%",marginLeft:"20px",backgroundColor:"#D3D3D3",padding:"10px 10px 0 10px"}} >
+                            <h5>Thank you for celebrating the positive behavior of a student. Please include a description of the students behavior below. Refrain from using any other student’s name in this description</h5>
+                          </div>
+                      </div>
                     )}
+                     
                   </div>
                 </div>
                 <div>
+              
                   <TextField
                     margin="normal"
                     required
@@ -608,150 +619,187 @@ const CreatePunishmentPanel = () => {
 };
 export default CreatePunishmentPanel;
 
-export function NumberInputBasic() {
-  const [value, setValue] = React.useState(null);
-  return (
-    <NumberInput
-      aria-label="Demo number input"
-      placeholder="Type a number…"
-      value={value}
-      onChange={(event, val) => setValue(val)}
-    />
-  );
-}
+// export function NumberInputBasic() {
+//   const [value, setValue] = React.useState(null);
+//   return (
+//     <NumberInput
+//       aria-label="Demo number input"
+//       placeholder="Type a number…"
+//       value={value}
+//       onChange={(event, val) => setValue(val)}
+//     />
+//   );
+// }
 
-const blue = {
-  100: '#DAECFF',
-  200: '#80BFFF',
-  400: '#3399FF',
-  500: '#007FFF',
-  600: '#0072E5',
-};
+// const blue = {
+//   100: '#DAECFF',
+//   200: '#80BFFF',
+//   400: '#3399FF',
+//   500: '#007FFF',
+//   600: '#0072E5',
+// };
 
-const grey = {
-  50: '#F3F6F9',
-  100: '#E5EAF2',
-  200: '#DAE2ED',
-  300: '#C7D0DD',
-  400: '#B0B8C4',
-  500: '#9DA8B7',
-  600: '#6B7A90',
-  700: '#434D5B',
-  800: '#303740',
-  900: '#1C2025',
-};
-const StyledInputRoot = styled('div')(
-  ({ theme }) => `
-  font-family: 'IBM Plex Sans', sans-serif;
-  font-weight: 400;
-  border-radius: 8px;
-  color: ${theme.palette.mode === 'dark' ? grey[300] : grey[900]};
-  background: ${theme.palette.mode === 'dark' ? grey[900] : '#fff'};
-  border: 1px solid ${theme.palette.mode === 'dark' ? grey[700] : grey[200]};
-  box-shadow: 0px 2px 2px ${theme.palette.mode === 'dark' ? grey[900] : grey[50]};
-  display: grid;
-  grid-template-columns: 1fr 19px;
-  grid-template-rows: 1fr 1fr;
-  overflow: hidden;
-  column-gap: 8px;
-  padding: 4px;
+// const grey = {
+//   50: '#F3F6F9',
+//   100: '#E5EAF2',
+//   200: '#DAE2ED',
+//   300: '#C7D0DD',
+//   400: '#B0B8C4',
+//   500: '#9DA8B7',
+//   600: '#6B7A90',
+//   700: '#434D5B',
+//   800: '#303740',
+//   900: '#1C2025',
+// };
+// const StyledInputRoot = styled('div')(
+//   ({ theme }) => `
+//   font-family: 'IBM Plex Sans', sans-serif;
+//   font-weight: 400;
+//   border-radius: 8px;
+//   color: ${theme.palette.mode === 'dark' ? grey[300] : grey[900]};
+//   background: ${theme.palette.mode === 'dark' ? grey[900] : '#fff'};
+//   border: 1px solid ${theme.palette.mode === 'dark' ? grey[700] : grey[200]};
+//   box-shadow: 0px 2px 2px ${theme.palette.mode === 'dark' ? grey[900] : grey[50]};
+//   display: grid;
+//   grid-template-columns: 1fr 19px;
+//   grid-template-rows: 1fr 1fr;
+//   overflow: hidden;
+//   column-gap: 8px;
+//   padding: 4px;
 
-  &.${numberInputClasses.focused} {
-    border-color: ${blue[400]};
-    box-shadow: 0 0 0 3px ${theme.palette.mode === 'dark' ? blue[600] : blue[200]};
-  }
+//   &.${numberInputClasses.focused} {
+//     border-color: ${blue[400]};
+//     box-shadow: 0 0 0 3px ${theme.palette.mode === 'dark' ? blue[600] : blue[200]};
+//   }
 
-  &:hover {
-    border-color: ${blue[400]};
-  }
+//   &:hover {
+//     border-color: ${blue[400]};
+//   }
 
-  // firefox
-  &:focus-visible {
-    outline: 0;
-  }
-`,
-);
+//   // firefox
+//   &:focus-visible {
+//     outline: 0;
+//   }
+// `,
+// );
 
-const StyledInputElement = styled('input')(
-  ({ theme }) => `
-  font-size: 0.875rem;
-  font-family: inherit;
-  font-weight: 400;
-  line-height: 1.5;
-  grid-column: 1/2;
-  grid-row: 1/3;
-  color: ${theme.palette.mode === 'dark' ? grey[300] : grey[900]};
-  background: inherit;
-  border: none;
-  border-radius: inherit;
-  padding: 8px 12px;
-  outline: 0;
-`,
-);
+// const StyledInputElement = styled('input')(
+//   ({ theme }) => `
+//   font-size: 0.875rem;
+//   font-family: inherit;
+//   font-weight: 400;
+//   line-height: 1.5;
+//   grid-column: 1/2;
+//   grid-row: 1/3;
+//   color: ${theme.palette.mode === 'dark' ? grey[300] : grey[900]};
+//   background: inherit;
+//   border: none;
+//   border-radius: inherit;
+//   padding: 8px 12px;
+//   outline: 0;
+// `,
+// );
 
-const StyledButton = styled('button')(
-  ({ theme }) => `
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: center;
-  align-items: center;
-  appearance: none;
-  padding: 0;
-  width: 19px;
-  height: 19px;
-  font-family: system-ui, sans-serif;
-  font-size: 0.875rem;
-  line-height: 1;
-  box-sizing: border-box;
-  background: ${theme.palette.mode === 'dark' ? grey[900] : '#fff'};
-  border: 0;
-  color: ${theme.palette.mode === 'dark' ? grey[300] : grey[900]};
-  transition-property: all;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  transition-duration: 120ms;
+// const StyledButton = styled('button')(
+//   ({ theme }) => `
+//   display: flex;
+//   flex-flow: row nowrap;
+//   justify-content: center;
+//   align-items: center;
+//   appearance: none;
+//   padding: 0;
+//   width: 19px;
+//   height: 19px;
+//   font-family: system-ui, sans-serif;
+//   font-size: 0.875rem;
+//   line-height: 1;
+//   box-sizing: border-box;
+//   background: ${theme.palette.mode === 'dark' ? grey[900] : '#fff'};
+//   border: 0;
+//   color: ${theme.palette.mode === 'dark' ? grey[300] : grey[900]};
+//   transition-property: all;
+//   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+//   transition-duration: 120ms;
 
-  &:hover {
-    background: ${theme.palette.mode === 'dark' ? grey[800] : grey[50]};
-    border-color: ${theme.palette.mode === 'dark' ? grey[600] : grey[300]};
-    cursor: pointer;
-  }
+//   &:hover {
+//     background: ${theme.palette.mode === 'dark' ? grey[800] : grey[50]};
+//     border-color: ${theme.palette.mode === 'dark' ? grey[600] : grey[300]};
+//     cursor: pointer;
+//   }
 
-  &.${numberInputClasses.incrementButton} {
-    grid-column: 2/3;
-    grid-row: 1/2;
-    border-top-left-radius: 4px;
-    border-top-right-radius: 4px;
-    border: 1px solid;
-    border-bottom: 0;
-    &:hover {
-      cursor: pointer;
-      background: ${blue[400]};
-      color: ${grey[50]};
-    }
+//   &.${numberInputClasses.incrementButton} {
+//     grid-column: 2/3;
+//     grid-row: 1/2;
+//     border-top-left-radius: 4px;
+//     border-top-right-radius: 4px;
+//     border: 1px solid;
+//     border-bottom: 0;
+//     &:hover {
+//       cursor: pointer;
+//       background: ${blue[400]};
+//       color: ${grey[50]};
+//     }
 
-  border-color: ${theme.palette.mode === 'dark' ? grey[800] : grey[200]};
-  background: ${theme.palette.mode === 'dark' ? grey[900] : grey[50]};
-  color: ${theme.palette.mode === 'dark' ? grey[200] : grey[900]};
-  }
+//     border-color: ${theme.palette.mode === 'dark' ? grey[800] : grey[200]};
+//     background: ${theme.palette.mode === 'dark' ? grey[900] : grey[50]};
+//     color: ${theme.palette.mode === 'dark' ? grey[200] : grey[900]};
 
-  &.${numberInputClasses.decrementButton} {
-    grid-column: 2/3;
-    grid-row: 2/3;
-    border-bottom-left-radius: 4px;
-    border-bottom-right-radius: 4px;
-    border: 1px solid;
-    &:hover {
-      cursor: pointer;
-      background: ${blue[400]};
-      color: ${grey[50]};
-    }
+//     // Add styles to prevent event propagation
+//     &:focus {
+//       outline: none; // Remove default focus outline
+//     }
 
-  border-color: ${theme.palette.mode === 'dark' ? grey[800] : grey[200]};
-  background: ${theme.palette.mode === 'dark' ? grey[900] : grey[50]};
-  color: ${theme.palette.mode === 'dark' ? grey[200] : grey[900]};
-  }
-  & .arrow {
-    transform: translateY(-1px);
-  }
-`,
-);
+//     &:focus:not(:focus-visible) {
+//       outline: none; // Remove focus outline for non-keyboard focus
+//     }
+
+//     &:focus-visible {
+//       outline: none; // Remove focus outline for keyboard focus
+//     }
+
+//     &:active {
+//       outline: none; // Remove outline on button click
+//       pointer-events: none; // Disable pointer events to prevent event propagation
+//     }
+//   }
+
+//   &.${numberInputClasses.decrementButton} {
+//     grid-column: 2/3;
+//     grid-row: 2/3;
+//     border-bottom-left-radius: 4px;
+//     border-bottom-right-radius: 4px;
+//     border: 1px solid;
+//     &:hover {
+//       cursor: pointer;
+//       background: ${blue[400]};
+//       color: ${grey[50]};
+//     }
+
+//     border-color: ${theme.palette.mode === 'dark' ? grey[800] : grey[200]};
+//     background: ${theme.palette.mode === 'dark' ? grey[900] : grey[50]};
+//     color: ${theme.palette.mode === 'dark' ? grey[200] : grey[900]};
+
+//     // Add styles to prevent event propagation
+//     &:focus {
+//       outline: none; // Remove default focus outline
+//     }
+
+//     &:focus:not(:focus-visible) {
+//       outline: none; // Remove focus outline for non-keyboard focus
+//     }
+
+//     &:focus-visible {
+//       outline: none; // Remove focus outline for keyboard focus
+//     }
+
+//     &:active {
+//       outline: none; // Remove outline on button click
+//       pointer-events: none; // Disable pointer events to prevent event propagation
+//     }
+//   }
+
+//   & .arrow {
+//     transform: translateY(-1px);
+//   }
+// `,
+// );
