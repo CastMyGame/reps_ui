@@ -132,11 +132,9 @@ input[type="email"],
 select {
   width: 100%;
   /* padding: 10px; */
-  border: 1px solid blue;
   background-color: white;
   border-radius: 5px;
   font-size: 16px;
-  /* margin-top: 5px; */
   outline: none;
   
 }
@@ -1044,3 +1042,4 @@ button:hover {
 .page-scroll {
   cursor: pointer;
 }
+
