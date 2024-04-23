@@ -152,7 +152,7 @@ select {
 
 /* Style for the submit button */
 button[type="submit"] {
-  background-color: #007bff;
+  background-color: "grey";
   color: #fff;
   border: none;
   padding: 10px 20px;
@@ -1078,10 +1078,22 @@ margin-bottom: -10px;
 .shout-message{
   padding: 0 25px 0 25px;
   background-color:#efeff0 ;
-  height: 70%
+  height: 70%;
 
 }
 
 .shout-message >p{
+  font-size: large;
+}
+
+.student-dropdown {
+  font-size: large;
+}
+
+.MuiAutocomplete-listbox {
+  font-size: large;
+}
+
+.MuiInputBase-root {
   font-size: large;
 }

@@ -15,8 +15,8 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import Chip from "@mui/material/Chip";
-import KeyboardDoubleArrowUpIcon from '@mui/icons-material/KeyboardDoubleArrowUp';
-import KeyboardDoubleArrowDownIcon from '@mui/icons-material/KeyboardDoubleArrowDown';
+import KeyboardDoubleArrowUpIcon from "@mui/icons-material/KeyboardDoubleArrowUp";
+import KeyboardDoubleArrowDownIcon from "@mui/icons-material/KeyboardDoubleArrowDown";
 
 import {
   StyledInputRoot,
@@ -111,8 +111,7 @@ const CreatePunishmentPanel = ({ data = [] }) => {
   const descriptions = {
     "Failure to Complete Work":
       "Please provide a description of the overdue assignment, its original due date, and include a hyperlink to the assignment if accessible. Additionally, explain the impact the missing assignment is currently having on their overall grade and the points the student can earn by completing the work.",
-    "Positive Behavior Shout Out!":
-      "",
+    "Positive Behavior Shout Out!": "",
   };
 
   const getDescription = (selectedOption) => {
@@ -137,7 +136,7 @@ const CreatePunishmentPanel = ({ data = [] }) => {
       .catch(function (error) {
         console.error(error);
       });
-  },[]);
+  }, []);
 
   const selectOptions = listOfStudents.map((student) => ({
     value: student.studentEmail, // Use a unique value for each option
@@ -213,7 +212,7 @@ const CreatePunishmentPanel = ({ data = [] }) => {
       setCurrency(enteredValue); // Update the state if it meets the validation criteria
     } else {
       // Optionally, you can show an error message or handle the invalid input in some way
-      console.log('Invalid input: Value must be greater than or equal to 0');
+      console.log("Invalid input: Value must be greater than or equal to 0");
     }
   };
 
@@ -315,19 +314,17 @@ const CreatePunishmentPanel = ({ data = [] }) => {
 
                 <Autocomplete
                   multiple
+                  className="student-dropdown"
                   id="demo-multiple-chip"
                   value={studentNames}
                   onChange={(event, newValue) => setStudentNames(newValue)}
                   options={selectOptions} // Pass the selectOptions array here
                   getOptionLabel={(option) => option.label}
-                  sx={{
-                    ".MuiAutocomplete-option": {
-                      fontSize: 18,
-                    },
-                  }}
+                  inputLabelProps={{ style: { fontSize: 18 } }}
                   renderInput={(params) => (
                     <TextField
                       {...params}
+                      className="student-dropdown"
                       inputLabelProps={{ style: { fontSize: 18 } }}
                       label="Select Students"
                       variant="outlined"
@@ -345,7 +342,6 @@ const CreatePunishmentPanel = ({ data = [] }) => {
                     ))
                   }
                 />
-
                 <div style={{ height: "5px" }}></div>
                 <div
                   style={{
@@ -360,7 +356,7 @@ const CreatePunishmentPanel = ({ data = [] }) => {
                     </InputLabel>
 
                     <Select
-                      sx={{ width: "100%" }}
+                      sx={{ width: "100%", fontSize: 18 }}
                       labelId="infractionPeriod"
                       value={infractionPeriodSelected}
                       onChange={handleInfractionPeriodChange}
@@ -379,7 +375,11 @@ const CreatePunishmentPanel = ({ data = [] }) => {
                             }}
                           >
                             {selectedArray.map((value) => (
-                              <Chip key={value} label={value} />
+                              <Chip
+                                key={value}
+                                label={value}
+                                sx={{ fontSize: 18 }}
+                              />
                             ))}
                           </Box>
                         );
@@ -397,7 +397,9 @@ const CreatePunishmentPanel = ({ data = [] }) => {
                       ))}
                     </Select>
                   </div>
-                  <div style={{ width: "50%", marginLeft: "10px" }}>
+                  <div
+                    style={{ width: "50%", marginLeft: "10px", fontSize: 18 }}
+                  >
                     <InputLabel id="infractionType" style={{ fontSize: 24 }}>
                       Infraction Type/Positive Shoutout
                     </InputLabel>
@@ -422,7 +424,11 @@ const CreatePunishmentPanel = ({ data = [] }) => {
                             }}
                           >
                             {selectedArray.map((value) => (
-                              <Chip key={value} label={value} />
+                              <Chip
+                                key={value}
+                                label={value}
+                                sx={{ fontSize: 18 }}
+                              />
                             ))}
                           </Box>
                         );
@@ -454,37 +460,57 @@ const CreatePunishmentPanel = ({ data = [] }) => {
                     {infractionTypeSelected ===
                       "Positive Behavior Shout Out!" && (
                       <div className="points-container">
-                      
                         <div className="point-field">
                           <div className="wallet-after">
-                          <p>
-                          {" "}
-                          Wallet after shout out:{" "}
-                          {difference ? difference : data.teacher.currency}
-                        </p>
+                            <p>
+                              {" "}
+                              Wallet after shout out:{" "}
+                              {difference ? difference : data.teacher.currency}
+                            </p>
                           </div>
-                        <TextField
-                        type="numeric"
-                        margin="normal"
-                        inputProps={{style: {fontSize: 15}, min: 0}} // font size of input text
-                        className="points-input"
-                        required
-                        onChange={handleCurrencyChange}
-                        id="currency"
-                        placeholder="Enter The Amount Points you want to Add"
-                        name="currency"
-                        autoFocus
-                        value={currency}  
-                      />
-
-                      </div>
-                      <div style={{ display: "flex", flexDirection: "column", marginTop: "1%" }} className="points-arrow">
-                        <KeyboardDoubleArrowUpIcon onClick={()=>setCurrency(prev=>prev+1)} sx={{ fontSize: 40 }}/>
-                        <KeyboardDoubleArrowDownIcon onClick={() => setCurrency(prev => prev > 0 ? prev - 1 : prev)} sx={{ fontSize: 40 }} />
-                      </div>
-                      <div className="shout-message">
-                        <p>Thank you for celebrating the positive behavior of a student. Please include a description of the students behavior below. Refrain from using any other student’s name in this description</p>
-                      </div>
+                          <TextField
+                            type="numeric"
+                            margin="normal"
+                            inputProps={{ style: { fontSize: 15 }, min: 0 }} // font size of input text
+                            className="points-input"
+                            required
+                            onChange={handleCurrencyChange}
+                            id="currency"
+                            placeholder="Enter Amount"
+                            name="currency"
+                            autoFocus
+                            value={currency}
+                          />
+                        </div>
+                        <div
+                          style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            marginTop: "1%",
+                          }}
+                          className="points-arrow"
+                        >
+                          <KeyboardDoubleArrowUpIcon
+                            onClick={() => setCurrency((prev) => prev + 1)}
+                            sx={{ fontSize: 40 }}
+                          />
+                          <KeyboardDoubleArrowDownIcon
+                            onClick={() =>
+                              setCurrency((prev) =>
+                                prev > 0 ? prev - 1 : prev
+                              )
+                            }
+                            sx={{ fontSize: 40 }}
+                          />
+                        </div>
+                        <div className="shout-message">
+                          <p>
+                            Thank you for celebrating the positive behavior of a
+                            student. Please include a description of the
+                            students behavior below. Refrain from using any
+                            other student’s name in this description
+                          </p>
+                        </div>
                       </div>
                     )}
                   </div>
@@ -505,6 +531,7 @@ const CreatePunishmentPanel = ({ data = [] }) => {
                     name="offenseDescription"
                     autoFocus
                     value={infractionDescriptionSelected}
+                    inputProps={{ style: { fontSize: 15 }, min: 0 }} // font size of input text
                     InputLabelProps={{
                       sx: {
                         "&.Mui-focused": {
@@ -514,7 +541,6 @@ const CreatePunishmentPanel = ({ data = [] }) => {
                       },
                     }}
                     sx={{ fontSize: 40 }} // Increase the font size of the input text
-
                     onKeyDown={(e) => {
                       if (e.key === "Enter") {
                         e.preventDefault(); // Prevent form submission on Enter key
@@ -564,12 +590,11 @@ const CreatePunishmentPanel = ({ data = [] }) => {
                         resetForm();
                       }}
                       sx={{
-                        height: "100%", // Set explicit height
-                        backgroundColor: "green", // Set background color to green
-                        fontSize: 18,
+                        height: "100%", 
+                        backgroundColor: "grey",
+                        fontSize: 16,
                         "&:hover": {
-                          backgroundColor: "darkgreen", // Darken the color on hover if desired
-                          fontSize: 18,
+                          backgroundColor: "red", // Darken the color on hover if desired
                         },
                       }}
                     >
@@ -595,7 +620,7 @@ const CreatePunishmentPanel = ({ data = [] }) => {
                         }}
                         fullWidth
                         variant="contained"
-                        sx={{ height: "100%" }} // Set explicit height
+                        sx={{ height: "100%", fontSize: 18 }} // Set explicit height
                       >
                         Submit Multiple
                       </Button>
@@ -610,7 +635,13 @@ const CreatePunishmentPanel = ({ data = [] }) => {
                         type="submit"
                         fullWidth
                         variant="contained"
-                        sx={{ height: "100%" }} // Set explicit height
+                        sx={{
+                          height: "100%",
+                          "&:hover": {
+                            backgroundColor: "blue", // Darken the color on hover if desired
+                            fontSize: 16,
+                          },
+                        }} // Set explicit height
                       >
                         Submit
                       </Button>
