@@ -478,7 +478,7 @@ const CreatePunishmentPanel = ({ data = [] }) => {
                       />
 
                       </div>
-                      <div style={{ display: "flex", flexDirection: "column", marginTop: "3%" }} className="points-arrow">
+                      <div style={{ display: "flex", flexDirection: "column", marginTop: "1%" }} className="points-arrow">
                         <KeyboardDoubleArrowUpIcon onClick={()=>setCurrency(prev=>prev+1)} sx={{ fontSize: 40 }}/>
                         <KeyboardDoubleArrowDownIcon onClick={() => setCurrency(prev => prev > 0 ? prev - 1 : prev)} sx={{ fontSize: 40 }} />
                       </div>
