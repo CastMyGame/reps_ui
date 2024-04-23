@@ -2,7 +2,6 @@ import React from "react";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { baseUrl } from "../../../utils/jsonData";
-
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
@@ -11,13 +10,16 @@ import { Autocomplete, Box, CircularProgress } from "@mui/material";
 import Container from "@mui/material/Container";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
-
-import { Unstable_NumberInput as NumberInput, numberInputClasses } from "@mui/base/Unstable_NumberInput";
+import { Unstable_NumberInput as NumberInput } from "@mui/base/Unstable_NumberInput";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import Chip from "@mui/material/Chip";
-import { styled } from "@mui/system";
+import {
+  StyledInputRoot,
+  StyledButton,
+  StyledInputElement,
+} from "./numberInputBasic";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -39,20 +41,19 @@ function getStyles(name, studentNames, theme) {
   };
 }
 
-const CreatePunishmentPanel = () => {
+const CreatePunishmentPanel = ({ data = [] }) => {
   const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
   });
 
   const [listOfStudents, setListOfStudents] = useState([]);
-  const [studentSelected, setStudentSelect] = useState();
   const [infractionTypeSelected, setInfractionTypeSelected] = useState("");
   const [infractionPeriodSelected, setInfractionPeriodSelected] = useState("");
   const [teacherEmailSelected, setTeacherEmailSelected] = useState();
   const [infractionDescriptionSelected, setInfractionDescriptionSelected] =
     useState("");
   const [toast, setToast] = useState({ display: false, message: "" });
-  const [studentNames, setStudentNames] = React.useState([]);
+  const [studentNames, setStudentNames] = useState([]);
   const [loading, setLoading] = useState(false);
   const [openModal, setOpenModal] = useState({
     display: false,
@@ -64,8 +65,7 @@ const CreatePunishmentPanel = () => {
     setTeacherEmailSelected(sessionStorage.getItem("email"));
   }, []);
 
-  const [value, setValue] = React.useState(null);
-  const [currency, setCurrency] = React.useState(null);
+  const [currency, setCurrency] = useState(0);
 
   const defaultTheme = createTheme();
 
@@ -160,18 +160,13 @@ const CreatePunishmentPanel = () => {
     setInfractionDescriptionSelected("");
   };
 
-
-
-
-
-
   //Mapping selected students pushing indivdual payloads to post
   const handleSubmit = (event) => {
     event.preventDefault();
     setLoading(true);
     setOpenModal({ display: false, message: "" });
     const payloadContent = [];
-    console.log("std names", studentNames)
+    console.log("std names", studentNames);
     studentNames.map((student) => {
       const studentPayload = {
         firstName: "Placeholder 1",
@@ -181,7 +176,7 @@ const CreatePunishmentPanel = () => {
         infractionPeriod: infractionPeriodSelected,
         infractionName: infractionTypeSelected,
         infractionDescription: infractionDescriptionSelected,
-        points:currency
+        points: currency,
       };
       payloadContent.push(studentPayload);
     });
@@ -435,14 +430,6 @@ const CreatePunishmentPanel = () => {
 
                 {console.log(infractionTypeSelected)}
                 <div className="question-container-text-area">
-                  {/* Do we need this for any particular reason?
-  <label htmlFor="offenseDescription">
-    {(infractionTypeSelected === "Failure to Complete Work" ||
-    infractionTypeSelected === "Positive Behavior Shout Out!" ||
-    infractionTypeSelected === "Behavioral Concern")
-      ? getTitle(infractionTypeSelected)
-      : "For all offenses other than positive behavior shout out and failure to complete work"} *
-  </label> */}
                   <p>
                     {infractionTypeSelected === "Failure to Complete Work" ||
                     infractionTypeSelected === "Positive Behavior Shout Out!" ||
@@ -453,23 +440,26 @@ const CreatePunishmentPanel = () => {
                   <div>
                     {infractionTypeSelected ===
                       "Positive Behavior Shout Out!" && (
-                      <NumberInput
-                        aria-label="Positive Currency Input"
-                        placeholder="Type how much you want to give..."
-                        value={currency}
-                        onChange={(event, val) => setCurrency(val)}
-                        slots={{
-                          root: StyledInputRoot,
-                          input: StyledInputElement,
-                          incrementButton: StyledButton,
-                          decrementButton: StyledButton,
-                        }}
-                        slotProps={{
-                          input: { className: "my-num-input" },
-                          incrementButton: { direction: "UP" },
-                          decrementButton: { direction: "DOWN" },
-                        }}
-                      />
+                      <div>
+                        <p>{data.teacher.currency}</p>
+                        <NumberInput
+                          aria-label="Positive Currency Input"
+                          placeholder="Type how much you want to give..."
+                          value={currency}
+                          onChange={(event, val) => setCurrency(val)}
+                          slots={{
+                            root: StyledInputRoot,
+                            input: StyledInputElement,
+                            incrementButton: StyledButton,
+                            decrementButton: StyledButton,
+                          }}
+                          slotProps={{
+                            input: { className: "my-num-input" },
+                            incrementButton: { direction: "UP" },
+                            decrementButton: { direction: "DOWN" },
+                          }}
+                        />
+                      </div>
                     )}
                   </div>
                 </div>
@@ -607,151 +597,3 @@ const CreatePunishmentPanel = () => {
   );
 };
 export default CreatePunishmentPanel;
-
-export function NumberInputBasic() {
-  const [value, setValue] = React.useState(null);
-  return (
-    <NumberInput
-      aria-label="Demo number input"
-      placeholder="Type a number…"
-      value={value}
-      onChange={(event, val) => setValue(val)}
-    />
-  );
-}
-
-const blue = {
-  100: '#DAECFF',
-  200: '#80BFFF',
-  400: '#3399FF',
-  500: '#007FFF',
-  600: '#0072E5',
-};
-
-const grey = {
-  50: '#F3F6F9',
-  100: '#E5EAF2',
-  200: '#DAE2ED',
-  300: '#C7D0DD',
-  400: '#B0B8C4',
-  500: '#9DA8B7',
-  600: '#6B7A90',
-  700: '#434D5B',
-  800: '#303740',
-  900: '#1C2025',
-};
-const StyledInputRoot = styled('div')(
-  ({ theme }) => `
-  font-family: 'IBM Plex Sans', sans-serif;
-  font-weight: 400;
-  border-radius: 8px;
-  color: ${theme.palette.mode === 'dark' ? grey[300] : grey[900]};
-  background: ${theme.palette.mode === 'dark' ? grey[900] : '#fff'};
-  border: 1px solid ${theme.palette.mode === 'dark' ? grey[700] : grey[200]};
-  box-shadow: 0px 2px 2px ${theme.palette.mode === 'dark' ? grey[900] : grey[50]};
-  display: grid;
-  grid-template-columns: 1fr 19px;
-  grid-template-rows: 1fr 1fr;
-  overflow: hidden;
-  column-gap: 8px;
-  padding: 4px;
-
-  &.${numberInputClasses.focused} {
-    border-color: ${blue[400]};
-    box-shadow: 0 0 0 3px ${theme.palette.mode === 'dark' ? blue[600] : blue[200]};
-  }
-
-  &:hover {
-    border-color: ${blue[400]};
-  }
-
-  // firefox
-  &:focus-visible {
-    outline: 0;
-  }
-`,
-);
-
-const StyledInputElement = styled('input')(
-  ({ theme }) => `
-  font-size: 0.875rem;
-  font-family: inherit;
-  font-weight: 400;
-  line-height: 1.5;
-  grid-column: 1/2;
-  grid-row: 1/3;
-  color: ${theme.palette.mode === 'dark' ? grey[300] : grey[900]};
-  background: inherit;
-  border: none;
-  border-radius: inherit;
-  padding: 8px 12px;
-  outline: 0;
-`,
-);
-
-const StyledButton = styled('button')(
-  ({ theme }) => `
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: center;
-  align-items: center;
-  appearance: none;
-  padding: 0;
-  width: 19px;
-  height: 19px;
-  font-family: system-ui, sans-serif;
-  font-size: 0.875rem;
-  line-height: 1;
-  box-sizing: border-box;
-  background: ${theme.palette.mode === 'dark' ? grey[900] : '#fff'};
-  border: 0;
-  color: ${theme.palette.mode === 'dark' ? grey[300] : grey[900]};
-  transition-property: all;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  transition-duration: 120ms;
-
-  &:hover {
-    background: ${theme.palette.mode === 'dark' ? grey[800] : grey[50]};
-    border-color: ${theme.palette.mode === 'dark' ? grey[600] : grey[300]};
-    cursor: pointer;
-  }
-
-  &.${numberInputClasses.incrementButton} {
-    grid-column: 2/3;
-    grid-row: 1/2;
-    border-top-left-radius: 4px;
-    border-top-right-radius: 4px;
-    border: 1px solid;
-    border-bottom: 0;
-    &:hover {
-      cursor: pointer;
-      background: ${blue[400]};
-      color: ${grey[50]};
-    }
-
-  border-color: ${theme.palette.mode === 'dark' ? grey[800] : grey[200]};
-  background: ${theme.palette.mode === 'dark' ? grey[900] : grey[50]};
-  color: ${theme.palette.mode === 'dark' ? grey[200] : grey[900]};
-  }
-
-  &.${numberInputClasses.decrementButton} {
-    grid-column: 2/3;
-    grid-row: 2/3;
-    border-bottom-left-radius: 4px;
-    border-bottom-right-radius: 4px;
-    border: 1px solid;
-    &:hover {
-      cursor: pointer;
-      background: ${blue[400]};
-      color: ${grey[50]};
-    }
-
-  border-color: ${theme.palette.mode === 'dark' ? grey[800] : grey[200]};
-  background: ${theme.palette.mode === 'dark' ? grey[900] : grey[50]};
-  color: ${theme.palette.mode === 'dark' ? grey[200] : grey[900]};
-  }
-  & .arrow {
-    transform: translateY(-1px);
-  }
-`,
-);
