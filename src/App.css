@@ -132,7 +132,6 @@ input[type="email"],
 select {
   width: 100%;
   /* padding: 10px; */
-  border: 1px solid blue;
   background-color: white;
   border-radius: 5px;
   font-size: 2rem;
@@ -1044,4 +1043,46 @@ button:hover {
 
 .page-scroll {
   cursor: pointer;
+}
+
+.points-container{
+  display: flex;
+  flex-direction: row;
+  height: max-content;
+  border: grey solid 2px;
+  background-color:#efeff0 ;
+
+}
+
+
+
+.wallet-after{
+font-size: large;
+font-weight: bold;
+background-color: lightblue;
+padding: 3px;
+margin-bottom: -10px;
+}
+
+.points-input{
+  color: white;
+  width:200px;
+  background-color: white;
+}
+
+.points-arrows{
+  background-color: blue;
+  height: 100%;
+
+}
+
+.shout-message{
+  padding: 0 25px 0 25px;
+  background-color:#efeff0 ;
+  height: 70%
+
+}
+
+.shout-message >p{
+  font-size: large;
 }

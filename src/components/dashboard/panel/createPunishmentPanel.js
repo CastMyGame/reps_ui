@@ -15,6 +15,9 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import Chip from "@mui/material/Chip";
+import KeyboardDoubleArrowUpIcon from '@mui/icons-material/KeyboardDoubleArrowUp';
+import KeyboardDoubleArrowDownIcon from '@mui/icons-material/KeyboardDoubleArrowDown';
+
 import {
   StyledInputRoot,
   StyledButton,
@@ -109,7 +112,7 @@ const CreatePunishmentPanel = ({ data = [] }) => {
     "Failure to Complete Work":
       "Please provide a description of the overdue assignment, its original due date, and include a hyperlink to the assignment if accessible. Additionally, explain the impact the missing assignment is currently having on their overall grade and the points the student can earn by completing the work.",
     "Positive Behavior Shout Out!":
-      "Thank you for celebrating the positive behavior of a student. Please include a description of the students behavior below. Refrain from using any other student’s name in this description",
+      "",
   };
 
   const getDescription = (selectedOption) => {
@@ -201,6 +204,17 @@ const CreatePunishmentPanel = ({ data = [] }) => {
 
   const handleInfractionTypeChange = (event) => {
     setInfractionTypeSelected(event.target.value);
+  };
+
+  const handleCurrencyChange = (event) => {
+    const enteredValue = event.target.value;
+    // Check if the entered value is greater than or equal to the minimum value
+    if (enteredValue >= 0) {
+      setCurrency(enteredValue); // Update the state if it meets the validation criteria
+    } else {
+      // Optionally, you can show an error message or handle the invalid input in some way
+      console.log('Invalid input: Value must be greater than or equal to 0');
+    }
   };
 
   const handleClose = (event, reason) => {
@@ -439,30 +453,38 @@ const CreatePunishmentPanel = ({ data = [] }) => {
                   <div>
                     {infractionTypeSelected ===
                       "Positive Behavior Shout Out!" && (
-                      <div>
-                        <p>
+                      <div className="points-container">
+                      
+                        <div className="point-field">
+                          <div className="wallet-after">
+                          <p>
                           {" "}
                           Wallet after shout out:{" "}
                           {difference ? difference : data.teacher.currency}
                         </p>
-                        <NumberInput
-                          aria-label="Positive Currency Input"
-                          placeholder="Type how much you want to give..."
-                          defaultValue={0}
-                          value={currency}
-                          onChange={(event, val) => setCurrency(val)}
-                          slots={{
-                            root: StyledInputRoot,
-                            input: StyledInputElement,
-                            incrementButton: StyledButton,
-                            decrementButton: StyledButton,
-                          }}
-                          slotProps={{
-                            input: { className: "my-num-input" },
-                            incrementButton: { direction: "UP" },
-                            decrementButton: { direction: "DOWN" },
-                          }}
-                        />
+                          </div>
+                        <TextField
+                        type="numeric"
+                        margin="normal"
+                        inputProps={{style: {fontSize: 15}, min: 0}} // font size of input text
+                        className="points-input"
+                        required
+                        onChange={handleCurrencyChange}
+                        id="currency"
+                        placeholder="Enter The Amount Points you want to Add"
+                        name="currency"
+                        autoFocus
+                        value={currency}  
+                      />
+
+                      </div>
+                      <div style={{ display: "flex", flexDirection: "column", marginTop: "3%" }} className="points-arrow">
+                        <KeyboardDoubleArrowUpIcon onClick={()=>setCurrency(prev=>prev+1)} sx={{ fontSize: 40 }}/>
+                        <KeyboardDoubleArrowDownIcon onClick={() => setCurrency(prev => prev > 0 ? prev - 1 : prev)} sx={{ fontSize: 40 }} />
+                      </div>
+                      <div className="shout-message">
+                        <p>Thank you for celebrating the positive behavior of a student. Please include a description of the students behavior below. Refrain from using any other student’s name in this description</p>
+                      </div>
                       </div>
                     )}
                   </div>
