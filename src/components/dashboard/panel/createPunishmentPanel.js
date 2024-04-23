@@ -134,7 +134,7 @@ const CreatePunishmentPanel = ({ data = [] }) => {
       .catch(function (error) {
         console.error(error);
       });
-  });
+  },[]);
 
   const selectOptions = listOfStudents.map((student) => ({
     value: student.studentEmail, // Use a unique value for each option
@@ -210,6 +210,8 @@ const CreatePunishmentPanel = ({ data = [] }) => {
 
     setToast({ display: false, message: "" });
   };
+
+  let difference = data.teacher.currency - currency;
 
   return (
     <>
@@ -438,10 +440,15 @@ const CreatePunishmentPanel = ({ data = [] }) => {
                     {infractionTypeSelected ===
                       "Positive Behavior Shout Out!" && (
                       <div>
-                        <p>{data.teacher.currency}</p>
+                        <p>
+                          {" "}
+                          Wallet after shout out:{" "}
+                          {difference ? difference : data.teacher.currency}
+                        </p>
                         <NumberInput
                           aria-label="Positive Currency Input"
                           placeholder="Type how much you want to give..."
+                          defaultValue={0}
                           value={currency}
                           onChange={(event, val) => setCurrency(val)}
                           slots={{
@@ -463,7 +470,6 @@ const CreatePunishmentPanel = ({ data = [] }) => {
                 <div>
                   <TextField
                     margin="normal"
-                    type="text"
                     required
                     fullWidth
                     multiline
@@ -477,12 +483,12 @@ const CreatePunishmentPanel = ({ data = [] }) => {
                     name="offenseDescription"
                     autoFocus
                     value={infractionDescriptionSelected}
-                    inputProps={{ fontSize: 16 }}
                     InputLabelProps={{
                       sx: {
                         "&.Mui-focused": {
                           color: "white",
                           marginTop: "-10px",
+                          fontSize: 18,
                         },
                       },
                     }}
