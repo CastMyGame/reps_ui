@@ -142,9 +142,10 @@ select {
 
 /* Style for the description input field */
 #offenseDescription {
+  padding: 1px;
   height: 500px; /* Adjust the height as needed */
   resize: vertical;
-  font-size: 18;
+  font-size: 20px;
 }
 
 

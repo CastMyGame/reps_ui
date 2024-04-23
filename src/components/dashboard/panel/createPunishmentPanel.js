@@ -510,10 +510,11 @@ const CreatePunishmentPanel = ({ data = [] }) => {
                         "&.Mui-focused": {
                           color: "white",
                           marginTop: "-10px",
-                          fontSize: 18,
                         },
                       },
                     }}
+                    sx={{ fontSize: 40 }} // Increase the font size of the input text
+
                     onKeyDown={(e) => {
                       if (e.key === "Enter") {
                         e.preventDefault(); // Prevent form submission on Enter key
