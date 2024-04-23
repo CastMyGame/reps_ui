@@ -463,6 +463,7 @@ const CreatePunishmentPanel = ({ data = [] }) => {
                 <div>
                   <TextField
                     margin="normal"
+                    type="text"
                     required
                     fullWidth
                     multiline
