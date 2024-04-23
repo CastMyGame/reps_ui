@@ -112,22 +112,10 @@ const CreatePunishmentPanel = ({ data = [] }) => {
       "Thank you for celebrating the positive behavior of a student. Please include a description of the students behavior below. Refrain from using any other student’s name in this description",
   };
 
-  const titles = {
-    "Failure to Complete Work": "Failure to Complete Work",
-    "Positive Behavior Shout Out!": "Positive Behavior Shout Out!",
-  };
-
   const getDescription = (selectedOption) => {
     return (
       descriptions[selectedOption] ||
       "Description of Behavior/Event. This will be sent directly to the student and guardian so be sure to provide accurate and objective facts."
-    );
-  };
-
-  const getTitle = (selectedOption) => {
-    return (
-      titles[selectedOption] ||
-      "For all offenses other than positive behavior shout out and failure to complete work."
     );
   };
 
@@ -146,7 +134,7 @@ const CreatePunishmentPanel = ({ data = [] }) => {
       .catch(function (error) {
         console.error(error);
       });
-  }, []);
+  });
 
   const selectOptions = listOfStudents.map((student) => ({
     value: student.studentEmail, // Use a unique value for each option
@@ -179,6 +167,7 @@ const CreatePunishmentPanel = ({ data = [] }) => {
         points: currency,
       };
       payloadContent.push(studentPayload);
+      return payloadContent;
     });
 
     const payload = payloadContent;
@@ -315,9 +304,15 @@ const CreatePunishmentPanel = ({ data = [] }) => {
                   onChange={(event, newValue) => setStudentNames(newValue)}
                   options={selectOptions} // Pass the selectOptions array here
                   getOptionLabel={(option) => option.label}
+                  sx={{
+                    ".MuiAutocomplete-option": {
+                      fontSize: 18,
+                    },
+                  }}
                   renderInput={(params) => (
                     <TextField
                       {...params}
+                      inputLabelProps={{ style: { fontSize: 18 } }}
                       label="Select Students"
                       variant="outlined"
                       sx={{ width: "100%" }}
@@ -328,6 +323,7 @@ const CreatePunishmentPanel = ({ data = [] }) => {
                       <Chip
                         key={option.value}
                         label={option.label}
+                        sx={{ fontSize: 18 }}
                         {...getTagProps({ index })}
                       />
                     ))
@@ -343,7 +339,9 @@ const CreatePunishmentPanel = ({ data = [] }) => {
                   }}
                 >
                   <div style={{ width: "50%" }}>
-                    <InputLabel id="infractionPeriod">Class Period</InputLabel>
+                    <InputLabel id="infractionPeriod" style={{ fontSize: 24 }}>
+                      Class Period
+                    </InputLabel>
 
                     <Select
                       sx={{ width: "100%" }}
@@ -376,7 +374,7 @@ const CreatePunishmentPanel = ({ data = [] }) => {
                         <MenuItem
                           key={name.value}
                           value={name.value}
-                          style={getStyles(name, studentNames, defaultTheme)}
+                          sx={{ fontSize: 18 }}
                         >
                           {name.label}
                         </MenuItem>
@@ -384,7 +382,7 @@ const CreatePunishmentPanel = ({ data = [] }) => {
                     </Select>
                   </div>
                   <div style={{ width: "50%", marginLeft: "10px" }}>
-                    <InputLabel id="infractionType">
+                    <InputLabel id="infractionType" style={{ fontSize: 24 }}>
                       Infraction Type/Positive Shoutout
                     </InputLabel>
 
@@ -420,6 +418,7 @@ const CreatePunishmentPanel = ({ data = [] }) => {
                           key={name.value}
                           value={name.value}
                           style={getStyles(name, studentNames, defaultTheme)}
+                          sx={{ fontSize: 18 }}
                         >
                           {name.label}
                         </MenuItem>
@@ -427,10 +426,8 @@ const CreatePunishmentPanel = ({ data = [] }) => {
                     </Select>
                   </div>
                 </div>
-
-                {console.log(infractionTypeSelected)}
                 <div className="question-container-text-area">
-                  <p>
+                  <p style={{ fontSize: 24 }}>
                     {infractionTypeSelected === "Failure to Complete Work" ||
                     infractionTypeSelected === "Positive Behavior Shout Out!" ||
                     infractionTypeSelected === "Behavioral Concern"
@@ -479,6 +476,7 @@ const CreatePunishmentPanel = ({ data = [] }) => {
                     name="offenseDescription"
                     autoFocus
                     value={infractionDescriptionSelected}
+                    inputProps={{ fontSize: 16 }}
                     InputLabelProps={{
                       sx: {
                         "&.Mui-focused": {
@@ -538,8 +536,10 @@ const CreatePunishmentPanel = ({ data = [] }) => {
                       sx={{
                         height: "100%", // Set explicit height
                         backgroundColor: "green", // Set background color to green
+                        fontSize: 18,
                         "&:hover": {
                           backgroundColor: "darkgreen", // Darken the color on hover if desired
+                          fontSize: 18,
                         },
                       }}
                     >
