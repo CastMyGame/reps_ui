@@ -239,7 +239,22 @@ const CreatePunishmentPanel = ({ data = [] }) => {
     const enteredValue = event.target.value;
     // Check if the entered value is greater than or equal to the minimum value
     if (enteredValue >= 0) {
+      // Fix this to display toast if difference is negative
+
+      // if (difference < 0) {
+      //   setToast({
+      //     display: true,
+      //     message:
+      //       "You do not have enough currency to give out that much please change your amount",
+      //   });
+      //   setTimeout(() => {
+      //     setLoading(false);
+      //     setToast({ display: false, message: "" });
+      //   }, 2000);
+      //   setCurrency(0);
+      // } else {
       setCurrency(enteredValue); // Update the state if it meets the validation criteria
+      // }
     } else {
       // Optionally, you can show an error message or handle the invalid input in some way
       console.log("Invalid input: Value must be greater than or equal to 0");
