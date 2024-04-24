@@ -13,9 +13,6 @@ import { get } from "../../../utils/api/api.js";
 import LoadingWheelPanel from "../student/blankPanelForTest.js";
 import "../teacher/teacherPanels/teacher.css";
 import { NavigationLoggedIn } from "../../landing/navigation-loggedIn.jsx";
-import { MessageBox } from "../../../secuirty/messageBox.js";
-import axios from "axios";
-import { baseUrl } from "../../../utils/jsonData.js";
 import { handleLogout } from "../../../utils/helperFunctions.js";
 
 const TeacherDashboard = () => {
@@ -28,9 +25,6 @@ const TeacherDashboard = () => {
 
   const [punishmentFilter, setPunishmentFilter] = useState("OPEN");
 
-
-
- 
   useEffect(() => {
     if (sessionStorage.getItem("Authorization") === null) {
       window.location.href = "/login";
@@ -38,7 +32,6 @@ const TeacherDashboard = () => {
       setLoggedIn(true);
     }
   }, []);
-
 
   useEffect(() => {
     const fetchPunishmentData = async () => {
@@ -58,14 +51,6 @@ const TeacherDashboard = () => {
     setOpenNotificationDrawer(open);
   };
 
-  // const openDropdown = (field) => {
-  //   setIsDropdownOpen({});
-  //   setIsDropdownOpen((prev) => ({
-  //     ...prev,
-  //     [field]: !isDropdownOpen[field],
-  //   }));
-  // };
-
   return (
     loggedIn && (
       <div>
@@ -73,8 +58,6 @@ const TeacherDashboard = () => {
           {modalType === "contact" && (
             <ContactUsModal setContactUsDisplayModal={setModalType} />
           )}
-
-
 
           <NavigationLoggedIn
             toggleNotificationDrawer={toggleNotificationDrawer}
@@ -112,7 +95,10 @@ const TeacherDashboard = () => {
                     />
                   )}
                   {panelName === "createPunishment" && (
-                    <CreatePunishmentPanel />
+                    <CreatePunishmentPanel
+                      setPanelName={setPanelName}
+                      data={data}
+                    />
                   )}
                   {panelName === "ftc" && <TeacherFTCPanel />}
                   {panelName === "levelThree" && <LevelThreePanel />}

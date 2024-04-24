@@ -10,7 +10,7 @@ import {
 import { dateCreateFormat } from "../../../../global/helperFunctions";
 import ArrowDropDownCircleIcon from "@mui/icons-material/ArrowDropDownCircle";
 
-const TeacherShoutOutWidget = ({ data = [] }) => {
+const TeacherShoutOutWidget = ({ data = [], school = [], teacher = [] }) => {
   const [barOpen, setBarOpen] = useState(true);
 
   //We need to fix the cfr issues
@@ -33,9 +33,15 @@ const TeacherShoutOutWidget = ({ data = [] }) => {
           }}
           onClick={() => setBarOpen(true)}
         />{" "}
-        <h5 style={{ marginLeft: "20px", fontSize: 24, fontWeight: "bold" }}>
-          Positive Behavior
-        </h5>{" "}
+        <h5
+          style={{
+            marginLeft: "20px",
+            fontSize: 24,
+            fontWeight: "bold",
+          }}
+        >
+          Positive Behavior | Wallet: {teacher.currency} {school.currency}
+        </h5>
       </div>
     </div>
   ) : (
@@ -53,7 +59,7 @@ const TeacherShoutOutWidget = ({ data = [] }) => {
             onClick={() => setBarOpen(false)}
           />{" "}
           <h5 style={{ marginLeft: "20px", fontSize: 24, fontWeight: "bold" }}>
-            Positive Behavior
+            Positive Behavior | Wallet: {teacher.currency} {school.currency}
           </h5>{" "}
         </div>
       </div>

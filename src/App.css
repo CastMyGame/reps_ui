@@ -134,22 +134,26 @@ select {
   /* padding: 10px; */
   background-color: white;
   border-radius: 5px;
-  font-size: 16px;
+  font-size: 2rem;
+  /* margin-top: 5px; */
+
   outline: none;
   
 }
 
 /* Style for the description input field */
 #offenseDescription {
-  height: 100px; /* Adjust the height as needed */
+  padding: 1px;
+  height: 500px; /* Adjust the height as needed */
   resize: vertical;
+  font-size: 20px;
 }
 
 
 
 /* Style for the submit button */
 button[type="submit"] {
-  background-color: #007bff;
+  background-color: "grey";
   color: #fff;
   border: none;
   padding: 10px 20px;
@@ -1043,3 +1047,54 @@ button:hover {
   cursor: pointer;
 }
 
+.points-container{
+  display: flex;
+  flex-direction: row;
+  height: max-content;
+  border: grey solid 2px;
+  background-color:#efeff0 ;
+
+}
+
+
+
+.wallet-after{
+font-size: large;
+font-weight: bold;
+background-color: lightblue;
+padding: 3px;
+margin-bottom: -10px;
+}
+
+.points-input{
+  color: white;
+  width:200px;
+  background-color: white;
+}
+
+.points-arrows{
+
+}
+
+.shout-message{
+  padding: 0 25px 0 25px;
+  background-color:#efeff0 ;
+  height: 70%;
+
+}
+
+.shout-message >p{
+  font-size: large;
+}
+
+.student-dropdown {
+  font-size: large;
+}
+
+.MuiAutocomplete-listbox {
+  font-size: large;
+}
+
+.MuiInputBase-root {
+  font-size: large;
+}
