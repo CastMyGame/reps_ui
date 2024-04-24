@@ -275,7 +275,7 @@ const CreatePunishmentPanel = ({ data = [] }) => {
     setToast({ display: false, message: "" });
   };
 
-  let difference = data.teacher.currency - currency * studentNames.length;
+  let difference = data.teacher.currency - currency * (studentNames.length ? studentNames.length : 0);
 
   return (
     <>
@@ -312,7 +312,8 @@ const CreatePunishmentPanel = ({ data = [] }) => {
                     !infractionPeriodSelected ||
                     !infractionTypeSelected ||
                     !infractionDescriptionSelected ||
-                    studentNames.length === 0
+                    studentNames.length === 0 ||
+                    difference < 0
                   }
                   type="submit"
                   onClick={handleSubmit}
@@ -561,6 +562,7 @@ const CreatePunishmentPanel = ({ data = [] }) => {
                             students behavior below. Refrain from using any
                             other student’s name in this description unless they
                             were also involved in what caused this shout out.
+                            Remember you can not give away more currency than you have in your wallet!
                           </p>
                         </div>
                       </div>
