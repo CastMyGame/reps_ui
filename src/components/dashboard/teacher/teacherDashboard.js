@@ -17,6 +17,7 @@ import { MessageBox } from "../../../secuirty/messageBox.js";
 import axios from "axios";
 import { baseUrl } from "../../../utils/jsonData.js";
 import { handleLogout } from "../../../utils/helperFunctions.js";
+import SpendPage from "./teacherPanels/spend-page/spend-page.js";
 
 const TeacherDashboard = () => {
   const [loggedIn, setLoggedIn] = useState(true);
@@ -116,6 +117,7 @@ const TeacherDashboard = () => {
                   )}
                   {panelName === "ftc" && <TeacherFTCPanel />}
                   {panelName === "levelThree" && <LevelThreePanel />}
+                  {panelName === "spendPoints" && <SpendPage />}
                 </div>
               </div>
             </div>
