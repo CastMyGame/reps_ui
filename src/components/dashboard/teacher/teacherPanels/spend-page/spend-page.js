@@ -86,9 +86,12 @@ const headers = {
   }, 0);
 
 
+
+  const payload = [{studentEmail:studentSelect,currencyTransferred:totalPoints}]
+
   // Send the POST request with the requestData object
   axios
-  .post(`${baseUrl}/student/v1/points/delete?studentEmail=${studentSelect}&points=${totalPoints}`, null, {
+  .put(`${baseUrl}/employees/v1/currency/spend`, payload, {
     headers: headers,
   })
   .then(function (res) {
