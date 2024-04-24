@@ -562,7 +562,8 @@ const CreatePunishmentPanel = ({ data = [] }) => {
                             students behavior below. Refrain from using any
                             other student’s name in this description unless they
                             were also involved in what caused this shout out.
-                            Remember you can not give away more currency than you have in your wallet!
+                            Remember you can not give away more currency than you have in your wallet
+                            and it does not replenish!
                           </p>
                         </div>
                       </div>
