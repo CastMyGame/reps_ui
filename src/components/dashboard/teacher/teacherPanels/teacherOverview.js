@@ -9,7 +9,6 @@ import TeacherInfractionOverPeriodBarChart from "./charts/barChart/teacherInfrac
 import { PieChartParentCommunication } from "./charts/pieCharts/pieChartParentCommunication.js";
 import RecentIncidents from "./charts/tables/studentRecentContacts.js";
 import TeacherShoutOutWidget from "./charts/tables/teacherShoutOutWidget.js";
-import Button from "@mui/material/Button";
 
 const TeacherOverviewPanel = ({ setPanelName, data = [] }) => {
   const [openModal, setOpenModal] = useState({
@@ -88,7 +87,7 @@ const TeacherOverviewPanel = ({ setPanelName, data = [] }) => {
       )}
       <div className="teacher-overview-first">
         <Card variant="outlined">
-          <TeacherShoutOutWidget data={data.shoutOutsResponse} />
+          <TeacherShoutOutWidget data={data.shoutOutsResponse} school={data.school} teacher={data.teacher}/>
         </Card>
       </div>
 

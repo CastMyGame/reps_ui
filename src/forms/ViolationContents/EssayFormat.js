@@ -18,15 +18,7 @@ const shuffleArray = (array) => {
 };
 
   function EssayFactory({essay, handleRadioChange,sectionName,saveAnswerAndProgress}) {
-    const essayStyles = {
-        fontFamily: 'Arial, sans-serif',
-        fontSize: '18px',
-        lineHeight: '1.6', // Increase line height for more space between lines
-        color: '#333',
-        textAlign: 'left', // Align text to the left',
-      /* Add more CSS styles as needed */
-    };
-
+  
 
     const [shuffledKeys, setShuffledKeys] = useState([]);
 
@@ -61,7 +53,7 @@ const shuffleArray = (array) => {
           <h4  className="question-header">{essay.question}</h4>
           <div>
             {shuffledKeys.map((key) => (
-              <label style={{color:"black"}}  key={key} className="radio-label">
+              <label style={{color:"black"}}  key={key} >
                 <input
                   type="radio"
                   id={key}
@@ -69,7 +61,7 @@ const shuffleArray = (array) => {
                   value={essay.radioAnswers[key].value}
                   onChange={handleRadioChange}
                 />
-                {essay.radioAnswers[key].label}
+                {` ${essay.radioAnswers[key].label}`}
               </label>
             ))}
           </div>

@@ -13,6 +13,7 @@ import { get } from "../../../utils/api/api.js";
 import LoadingWheelPanel from "../student/blankPanelForTest.js";
 import "../teacher/teacherPanels/teacher.css";
 import { NavigationLoggedIn } from "../../landing/navigation-loggedIn.jsx";
+import { handleLogout } from "../../../utils/helperFunctions.js";
 
 const TeacherDashboard = () => {
   const [loggedIn, setLoggedIn] = useState(true);
@@ -24,15 +25,6 @@ const TeacherDashboard = () => {
 
   const [punishmentFilter, setPunishmentFilter] = useState("OPEN");
 
-  const handleLogout = () => {
-    sessionStorage.removeItem("Authorization");
-    sessionStorage.removeItem("userName");
-    sessionStorage.removeItem("schoolName");
-    sessionStorage.removeItem("email");
-    sessionStorage.removeItem("role");
-    window.location.href = "/login";
-  };
-
   useEffect(() => {
     if (sessionStorage.getItem("Authorization") === null) {
       window.location.href = "/login";
@@ -40,8 +32,6 @@ const TeacherDashboard = () => {
       setLoggedIn(true);
     }
   }, []);
-
-  const loggedInUser = sessionStorage.getItem("email");
 
   useEffect(() => {
     const fetchPunishmentData = async () => {
@@ -59,14 +49,6 @@ const TeacherDashboard = () => {
 
   const toggleNotificationDrawer = (open) => {
     setOpenNotificationDrawer(open);
-  };
-
-  const openDropdown = (field) => {
-    setIsDropdownOpen({});
-    setIsDropdownOpen((prev) => ({
-      ...prev,
-      [field]: !isDropdownOpen[field],
-    }));
   };
 
   return (
@@ -113,7 +95,10 @@ const TeacherDashboard = () => {
                     />
                   )}
                   {panelName === "createPunishment" && (
-                    <CreatePunishmentPanel />
+                    <CreatePunishmentPanel
+                      setPanelName={setPanelName}
+                      data={data}
+                    />
                   )}
                   {panelName === "ftc" && <TeacherFTCPanel />}
                   {panelName === "levelThree" && <LevelThreePanel />}

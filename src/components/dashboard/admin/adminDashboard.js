@@ -15,6 +15,7 @@ import { get } from "../../../utils/api/api";
 import LoadingWheelPanel from "../student/blankPanelForTest";
 import { ContactUsModal } from "../../../secuirty/contactUsModal";
 import { NavigationAdmin } from "../../landing/navigation-admin";
+import { handleLogout } from "../../../utils/helperFunctions";
 
 //New Code
 
@@ -34,18 +35,6 @@ const AdminDashboard = () => {
   //   window.open('/forms/report', '_blank'); // '_blank' will open the URL in a new tab/window
   // };
 
-  const handleLogout = () => {
-    clearSessionStorage();
-    window.location.href = "/login";
-  };
-
-  const clearSessionStorage = () => {
-    ["Authorization", "userName", "schoolName", "email", "role"].forEach(
-      (key) => {
-        sessionStorage.removeItem(key);
-      }
-    );
-  };
 
   useEffect(() => {
     if (sessionStorage.getItem("Authorization") === null) {

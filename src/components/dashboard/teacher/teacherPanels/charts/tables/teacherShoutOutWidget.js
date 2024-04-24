@@ -1,4 +1,4 @@
-import react, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   Table,
   TableContainer,
@@ -10,15 +10,13 @@ import {
 import { dateCreateFormat } from "../../../../global/helperFunctions";
 import ArrowDropDownCircleIcon from "@mui/icons-material/ArrowDropDownCircle";
 
-const TeacherShoutOutWidget = ({ data = [] }) => {
+const TeacherShoutOutWidget = ({ data = [], school = [], teacher = [] }) => {
   const [barOpen, setBarOpen] = useState(true);
 
   //We need to fix the cfr issues
   console.log("shoutout", data);
 
   const hasScroll = data.length > 2;
-
-  data.sort((a, b) => (b.timeCreated - a.timeCreated ? 1 : -1));
 
   return !barOpen ? (
     <div className="shout-out-bar-container">
@@ -33,9 +31,15 @@ const TeacherShoutOutWidget = ({ data = [] }) => {
           }}
           onClick={() => setBarOpen(true)}
         />{" "}
-        <h5 style={{ marginLeft: "20px", fontSize: 24, fontWeight: "bold" }}>
-          Positive Behavior
-        </h5>{" "}
+        <h5
+          style={{
+            marginLeft: "20px",
+            fontSize: 24,
+            fontWeight: "bold",
+          }}
+        >
+          Positive Behavior | Wallet: {teacher.currency} {school.currency}
+        </h5>
       </div>
     </div>
   ) : (
@@ -53,7 +57,7 @@ const TeacherShoutOutWidget = ({ data = [] }) => {
             onClick={() => setBarOpen(false)}
           />{" "}
           <h5 style={{ marginLeft: "20px", fontSize: 24, fontWeight: "bold" }}>
-            Positive Behavior
+            Positive Behavior | Wallet: {teacher.currency} {school.currency}
           </h5>{" "}
         </div>
       </div>
@@ -70,6 +74,7 @@ const TeacherShoutOutWidget = ({ data = [] }) => {
               <TableCell
                 variant="head"
                 style={{ fontWeight: "bold", width: "20%", fontSize: 18 }}
+                sortDirection="desc"
               >
                 Created On
               </TableCell>
@@ -95,9 +100,13 @@ const TeacherShoutOutWidget = ({ data = [] }) => {
           </TableHead>
           <TableBody>
             {data.length > 0 ? (
+              (data.sort((a, b) => (a.timeCreated - b.timeCreated ? 1 : -1)),
               data.map((x, key) => (
                 <TableRow key={key}>
-                  <TableCell style={{ width: "20%", fontSize: 14 }}>
+                  <TableCell
+                    style={{ width: "20%", fontSize: 14 }}
+                    sortDirection="desc"
+                  >
                     {dateCreateFormat(x.timeCreated)}
                   </TableCell>
                   <TableCell style={{ width: "20%", fontSize: 14 }}>
@@ -110,7 +119,7 @@ const TeacherShoutOutWidget = ({ data = [] }) => {
                     {x.teacherEmail}
                   </TableCell>
                 </TableRow>
-              ))
+              )))
             ) : (
               <TableRow>
                 <TableCell

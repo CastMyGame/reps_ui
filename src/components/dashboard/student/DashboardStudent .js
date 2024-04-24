@@ -13,6 +13,7 @@ import { get } from '../../../utils/api/api';
 import LoadingWheelPanel from './blankPanelForTest';
 import { ContactUsModal } from '../../../secuirty/contactUsModal';
 import { NavigationStudent } from '../../landing/navigation-student';
+import { handleLogout } from '../../../utils/helperFunctions';
 
 
 
@@ -25,15 +26,10 @@ const StudentDashboard = () => {
   const [panelName,setPanelName] = useState("openAssignments")
   const [selectAssignmentToStart,setSelectAssignmentToStart] = useState();
   const [studentDetails,setStudentDetails] = useState();
+  const [school, setSchool] = useState();
 
 
-  const handleLogout = () => {
-    sessionStorage.removeItem('Authorization');
-    sessionStorage.removeItem('userName');
-    sessionStorage.removeItem('schoolName');
-    sessionStorage.removeItem('email');
-    window.location.href = '/login';
-  };
+
 
   useEffect(() => {
     if (sessionStorage.getItem('Authorization') === null) {
@@ -50,6 +46,7 @@ const StudentDashboard = () => {
         const response = await get(`DTO/v1/StudentOverviewData`)
         setData(response.punishments)
         setStudentDetails(response.student)
+        setSchool(response.school)
       }catch(err){
         console.error(err)
       }
@@ -110,7 +107,7 @@ const StudentDashboard = () => {
         </div>
         <div className='student-overview-second'>
         <Card style={{height:"200px"}}variant="outlined">
-          <TotalPositivePoints data={studentDetails}/>
+          <TotalPositivePoints data={studentDetails} school={school}/>
           </Card>
         </div>
 

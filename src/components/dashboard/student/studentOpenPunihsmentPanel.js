@@ -183,7 +183,6 @@ const StudentOpenPunishmentPanel = ({
                   <TableCell style={{ fontSize: "1.5rem" }}>
                     {x.infractionLevel}
                   </TableCell>
-                  {/* <TableCell>{x.status}</TableCell> */}
                   <TableCell style={{ fontSize: "1.5rem" }}>
                     {x.teacherEmail}
                   </TableCell>

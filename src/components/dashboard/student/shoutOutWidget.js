@@ -47,27 +47,21 @@ import { dateCreateFormat } from '../global/helperFunctions';
               {data.length > 0 ? (
                 data.map((x, key) => (
                   <TableRow key={key}>
-                    <TableCell
-                      style={{ fontSize: "1.25rem" }}
-                    >
+                    <TableCell style={{ fontSize: "1.5rem" }}>
                       {dateCreateFormat(x.timeCreated)}
                     </TableCell>
 
-                    <TableCell
-                      style={{ fontSize: "1.25rem" }}
-                    >
+                    <TableCell style={{ fontSize: "1.5rem" }}>
                       {x.infractionDescription}
                     </TableCell>
-                    <TableCell
-                      style={{ fontSize: "1.25rem" }}
-                    >
+                    <TableCell style={{ fontSize: "1.5rem" }}>
                       {x.teacherEmail}
                     </TableCell>
                   </TableRow>
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan="5">
+                  <TableCell colSpan="5" style={{ fontSize: "1.5rem" }}>
                     No Shout Out Yet, but im sure its coming!.
                   </TableCell>
                 </TableRow>
