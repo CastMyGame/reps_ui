@@ -26,12 +26,13 @@ import axios from 'axios';
 
 const url = `${baseUrl}/student/v1/allStudents`; // Replace with your actual API endpoint
 
-const headers = {
-  Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
-};
 
 //Get list Of Students
 useEffect(() => {
+  
+const headers = {
+  Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
+};
   axios
     .get(url, { headers }) // Pass the headers option with the JWT token
     .then(function (response) {
@@ -48,15 +49,19 @@ const selectOptions = listOfStudents.map((student) => ({
 }));
 
 //Grab Select Student Info to Get Points
+
 useEffect(() => {
+  
+const headers = {
+  Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
+};
   if(studentSelect !==null){
     console.log(studentSelect,"studentselect")
     const selectStudentUrl = `${baseUrl}/student/v1/email/${studentSelect}`; // Replace with your actual API endpoint
     axios
       .get(selectStudentUrl, { headers }) // Pass the headers option with the JWT token
       .then(function (response) {
-        setStudentPoints(response.data.points);
-        console.log(response.data)
+        setStudentPoints(response.data.currency);
       })
       .catch(function (error) {
         console.error(error);
@@ -64,13 +69,17 @@ useEffect(() => {
   
 
   }
-}, [headers, studentSelect]);
+}, [ studentSelect]);
 
 //calculate shopping list points
 
 
 //Submit Post 
 const handleSubmit = () => {
+  
+const headers = {
+  Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
+};
   // Calculate the total points
   const totalPoints = shoppingList.reduce((accu, curr) => {
     return accu + Number(curr.amount);

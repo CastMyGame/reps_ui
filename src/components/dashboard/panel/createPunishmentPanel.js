@@ -165,7 +165,7 @@ const CreatePunishmentPanel = ({ data = [] }) => {
         infractionPeriod: infractionPeriodSelected,
         infractionName: infractionTypeSelected,
         infractionDescription: infractionDescriptionSelected,
-        points: currency,
+        currency: currency,
       };
       payloadContent.push(studentPayload);
       return payloadContent;
