@@ -130,7 +130,7 @@ const handleSubmit = () => {
         </Select>
 
 <h3 className='center'>Avaiable Points</h3>
-<div className={`points-container ${studentPoints ? 'spin' : ''}`}>
+<div className={`spend-points-container ${studentPoints ? 'spin' : ''}`}>
   {studentPoints ? studentPoints: ""}</div>
 
 {studentSelect && <div className='redemption-input-box'>
