@@ -18,8 +18,6 @@ const TeacherShoutOutWidget = ({ data = [], school = [], teacher = [] }) => {
 
   const hasScroll = data.length > 2;
 
-  data.sort((a, b) => (b.timeCreated - a.timeCreated ? 1 : -1));
-
   return !barOpen ? (
     <div className="shout-out-bar-container">
       <div className="bar-content">
@@ -76,6 +74,7 @@ const TeacherShoutOutWidget = ({ data = [], school = [], teacher = [] }) => {
               <TableCell
                 variant="head"
                 style={{ fontWeight: "bold", width: "20%", fontSize: 18 }}
+                sortDirection="desc"
               >
                 Created On
               </TableCell>
@@ -101,9 +100,13 @@ const TeacherShoutOutWidget = ({ data = [], school = [], teacher = [] }) => {
           </TableHead>
           <TableBody>
             {data.length > 0 ? (
+              (data.sort((a, b) => (a.timeCreated - b.timeCreated ? 1 : -1)),
               data.map((x, key) => (
                 <TableRow key={key}>
-                  <TableCell style={{ width: "20%", fontSize: 14 }}>
+                  <TableCell
+                    style={{ width: "20%", fontSize: 14 }}
+                    sortDirection="desc"
+                  >
                     {dateCreateFormat(x.timeCreated)}
                   </TableCell>
                   <TableCell style={{ width: "20%", fontSize: 14 }}>
@@ -116,7 +119,7 @@ const TeacherShoutOutWidget = ({ data = [], school = [], teacher = [] }) => {
                     {x.teacherEmail}
                   </TableCell>
                 </TableRow>
-              ))
+              )))
             ) : (
               <TableRow>
                 <TableCell
