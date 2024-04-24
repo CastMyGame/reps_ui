@@ -96,6 +96,8 @@ const headers = {
   })
   .then(function (res) {
     window.alert("Points Have Been Redeemed");
+    setShoppingList([])
+    studentSelect(null)
   })
   .catch(function (error) {
     window.alert("Error Redeeming Points");
@@ -140,10 +142,10 @@ const headers = {
             </MenuItem>
           ))}
         </Select>
-
-<h3 className='center'>Avaiable Points</h3>
-<div className={`spend-points-container ${studentPoints ? 'spin' : ''}`}>
-  {studentPoints ? studentPoints: ""}</div>
+        {studentSelect &&<>
+<h3 className='center'>Available Points</h3>
+ <div className={`spend-points-container ${studentPoints ? 'spin' : ''}`}>
+  {studentPoints ? studentPoints: 0}</div> </>}
 
 {studentSelect && <div className='redemption-input-box'>
 <h3 className='center'>Redemption</h3>
