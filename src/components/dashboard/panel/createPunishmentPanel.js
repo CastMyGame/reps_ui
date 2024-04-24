@@ -104,7 +104,13 @@ const CreatePunishmentPanel = ({ data = [] }) => {
   const descriptions = {
     "Failure to Complete Work":
       "Please provide a description of the overdue assignment, its original due date, and include a hyperlink to the assignment if accessible. Additionally, explain the impact the missing assignment is currently having on their overall grade and the points the student can earn by completing the work.",
+
     "Positive Behavior Shout Out!": "",
+  };
+
+  const titles = {
+    "Failure to Complete Work": "Failure to Complete Work",
+    "Positive Behavior Shout Out!": "Positive Behavior Shout Out!",
   };
 
   const getDescription = (selectedOption) => {
@@ -372,7 +378,6 @@ const CreatePunishmentPanel = ({ data = [] }) => {
                       className="student-dropdown"
                       inputLabelProps={{ style: { fontSize: 18 } }}
                       label="Select Students"
-                      variant="outlined"
                       sx={{ width: "100%" }}
                     />
                   )}
@@ -494,6 +499,7 @@ const CreatePunishmentPanel = ({ data = [] }) => {
                   </div>
                 </div>
                 <div className="question-container-text-area">
+
                   <p style={{ fontSize: 24 }}>
                     {infractionTypeSelected === "Failure to Complete Work" ||
                     infractionTypeSelected === "Positive Behavior Shout Out!" ||
@@ -559,9 +565,11 @@ const CreatePunishmentPanel = ({ data = [] }) => {
                         </div>
                       </div>
                     )}
+                     
                   </div>
                 </div>
                 <div>
+              
                   <TextField
                     margin="normal"
                     required
