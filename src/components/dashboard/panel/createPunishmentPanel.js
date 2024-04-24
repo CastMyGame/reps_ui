@@ -2,7 +2,6 @@ import React from "react";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { baseUrl } from "../../../utils/jsonData";
-
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
@@ -11,11 +10,12 @@ import { Autocomplete, Box, CircularProgress } from "@mui/material";
 import Container from "@mui/material/Container";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
-
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import Chip from "@mui/material/Chip";
+import KeyboardDoubleArrowUpIcon from "@mui/icons-material/KeyboardDoubleArrowUp";
+import KeyboardDoubleArrowDownIcon from "@mui/icons-material/KeyboardDoubleArrowDown";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -37,20 +37,19 @@ function getStyles(name, studentNames, theme) {
   };
 }
 
-const CreatePunishmentPanel = () => {
+const CreatePunishmentPanel = ({ data = [] }) => {
   const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
   });
 
   const [listOfStudents, setListOfStudents] = useState([]);
-  const [studentSelected, setStudentSelect] = useState();
   const [infractionTypeSelected, setInfractionTypeSelected] = useState("");
   const [infractionPeriodSelected, setInfractionPeriodSelected] = useState("");
   const [teacherEmailSelected, setTeacherEmailSelected] = useState();
   const [infractionDescriptionSelected, setInfractionDescriptionSelected] =
     useState("");
   const [toast, setToast] = useState({ display: false, message: "" });
-  const [studentNames, setStudentNames] = React.useState([]);
+  const [studentNames, setStudentNames] = useState([]);
   const [loading, setLoading] = useState(false);
   const [openModal, setOpenModal] = useState({
     display: false,
@@ -62,8 +61,7 @@ const CreatePunishmentPanel = () => {
     setTeacherEmailSelected(sessionStorage.getItem("email"));
   }, []);
 
-  const [value, setValue] = React.useState(null);
-  const [currency, setCurrency] = React.useState(null);
+  const [currency, setCurrency] = useState(0);
 
   const defaultTheme = createTheme();
 
@@ -106,8 +104,8 @@ const CreatePunishmentPanel = () => {
   const descriptions = {
     "Failure to Complete Work":
       "Please provide a description of the overdue assignment, its original due date, and include a hyperlink to the assignment if accessible. Additionally, explain the impact the missing assignment is currently having on their overall grade and the points the student can earn by completing the work.",
-    "Positive Behavior Shout Out!":
-    "",
+
+    "Positive Behavior Shout Out!": "",
   };
 
   const titles = {
@@ -119,13 +117,6 @@ const CreatePunishmentPanel = () => {
     return (
       descriptions[selectedOption] ||
       "Description of Behavior/Event. This will be sent directly to the student and guardian so be sure to provide accurate and objective facts."
-    );
-  };
-
-  const getTitle = (selectedOption) => {
-    return (
-      titles[selectedOption] ||
-      "For all offenses other than positive behavior shout out and failure to complete work."
     );
   };
 
@@ -158,18 +149,13 @@ const CreatePunishmentPanel = () => {
     setInfractionDescriptionSelected("");
   };
 
-
-
-
-
-
   //Mapping selected students pushing indivdual payloads to post
   const handleSubmit = (event) => {
     event.preventDefault();
     setLoading(true);
     setOpenModal({ display: false, message: "" });
     const payloadContent = [];
-    console.log("std names", studentNames)
+    console.log("std names", studentNames);
     studentNames.map((student) => {
       const studentPayload = {
         firstName: "Placeholder 1",
@@ -179,9 +165,10 @@ const CreatePunishmentPanel = () => {
         infractionPeriod: infractionPeriodSelected,
         infractionName: infractionTypeSelected,
         infractionDescription: infractionDescriptionSelected,
-        points:currency
+        points: currency,
       };
       payloadContent.push(studentPayload);
+      return payloadContent;
     });
 
     const payload = payloadContent;
@@ -207,6 +194,43 @@ const CreatePunishmentPanel = () => {
           setToast({ display: false, message: "" });
         }, 2000);
       });
+
+    if (currency > 0) {
+      const currencyContent = [];
+      studentNames.map((student) => {
+        const studentPayload = {
+          teacherEmail: teacherEmailSelected,
+          studentEmail: student.value,
+          currencyTransferred: parseInt(currency),
+        };
+        currencyContent.push(studentPayload);
+        return currencyContent;
+      });
+      axios
+        .put(`${baseUrl}/employees/v1/currency/transfer`, currencyContent, {
+          headers: headers,
+        })
+        .then(function (res) {
+          setToast({
+            display: true,
+            message: "Currency Successfully transferred",
+          });
+          setTimeout(() => {
+            setLoading(false);
+            setToast({ display: false, message: "" });
+          }, 1000);
+          resetForm();
+          setInfractionDescriptionSelected("");
+        })
+        .catch(function (error) {
+          console.error(error);
+          setToast({ display: true, message: "Something Went Wrong" });
+          setTimeout(() => {
+            setLoading(false);
+            setToast({ display: false, message: "" });
+          }, 2000);
+        });
+    }
   };
 
   const handleInfractionPeriodChange = (event) => {
@@ -217,6 +241,32 @@ const CreatePunishmentPanel = () => {
     setInfractionTypeSelected(event.target.value);
   };
 
+  const handleCurrencyChange = (event) => {
+    const enteredValue = event.target.value;
+    // Check if the entered value is greater than or equal to the minimum value
+    if (enteredValue >= 0) {
+      // Fix this to display toast if difference is negative
+
+      // if (difference < 0) {
+      //   setToast({
+      //     display: true,
+      //     message:
+      //       "You do not have enough currency to give out that much please change your amount",
+      //   });
+      //   setTimeout(() => {
+      //     setLoading(false);
+      //     setToast({ display: false, message: "" });
+      //   }, 2000);
+      //   setCurrency(0);
+      // } else {
+      setCurrency(enteredValue); // Update the state if it meets the validation criteria
+      // }
+    } else {
+      // Optionally, you can show an error message or handle the invalid input in some way
+      console.log("Invalid input: Value must be greater than or equal to 0");
+    }
+  };
+
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
       return;
@@ -224,6 +274,8 @@ const CreatePunishmentPanel = () => {
 
     setToast({ display: false, message: "" });
   };
+
+  let difference = data.teacher.currency - currency * (studentNames.length ? studentNames.length : 0);
 
   return (
     <>
@@ -260,7 +312,8 @@ const CreatePunishmentPanel = () => {
                     !infractionPeriodSelected ||
                     !infractionTypeSelected ||
                     !infractionDescriptionSelected ||
-                    studentNames.length === 0
+                    studentNames.length === 0 ||
+                    difference < 0
                   }
                   type="submit"
                   onClick={handleSubmit}
@@ -313,14 +366,18 @@ const CreatePunishmentPanel = () => {
 
                 <Autocomplete
                   multiple
+                  className="student-dropdown"
                   id="demo-multiple-chip"
                   value={studentNames}
                   onChange={(event, newValue) => setStudentNames(newValue)}
                   options={selectOptions} // Pass the selectOptions array here
                   getOptionLabel={(option) => option.label}
+                  inputLabelProps={{ style: { fontSize: 18 } }}
                   renderInput={(params) => (
                     <TextField
                       {...params}
+                      className="student-dropdown"
+                      inputLabelProps={{ style: { fontSize: 18 } }}
                       label="Select Students"
                       sx={{ width: "100%" }}
                     />
@@ -330,12 +387,12 @@ const CreatePunishmentPanel = () => {
                       <Chip
                         key={option.value}
                         label={option.label}
+                        sx={{ fontSize: 18 }}
                         {...getTagProps({ index })}
                       />
                     ))
                   }
                 />
-
                 <div style={{ height: "5px" }}></div>
                 <div
                   style={{
@@ -345,10 +402,12 @@ const CreatePunishmentPanel = () => {
                   }}
                 >
                   <div style={{ width: "50%" }}>
-                    <InputLabel id="infractionPeriod">Class Period</InputLabel>
+                    <InputLabel id="infractionPeriod" style={{ fontSize: 24 }}>
+                      Class Period
+                    </InputLabel>
 
                     <Select
-                      sx={{ width: "100%" }}
+                      sx={{ width: "100%", fontSize: 18 }}
                       labelId="infractionPeriod"
                       value={infractionPeriodSelected}
                       onChange={handleInfractionPeriodChange}
@@ -367,7 +426,11 @@ const CreatePunishmentPanel = () => {
                             }}
                           >
                             {selectedArray.map((value) => (
-                              <Chip key={value} label={value} />
+                              <Chip
+                                key={value}
+                                label={value}
+                                sx={{ fontSize: 18 }}
+                              />
                             ))}
                           </Box>
                         );
@@ -378,15 +441,17 @@ const CreatePunishmentPanel = () => {
                         <MenuItem
                           key={name.value}
                           value={name.value}
-                          style={getStyles(name, studentNames, defaultTheme)}
+                          sx={{ fontSize: 18 }}
                         >
                           {name.label}
                         </MenuItem>
                       ))}
                     </Select>
                   </div>
-                  <div style={{ width: "50%", marginLeft: "10px" }}>
-                    <InputLabel id="infractionType">
+                  <div
+                    style={{ width: "50%", marginLeft: "10px", fontSize: 18 }}
+                  >
+                    <InputLabel id="infractionType" style={{ fontSize: 24 }}>
                       Infraction Type/Positive Shoutout
                     </InputLabel>
 
@@ -410,7 +475,11 @@ const CreatePunishmentPanel = () => {
                             }}
                           >
                             {selectedArray.map((value) => (
-                              <Chip key={value} label={value} />
+                              <Chip
+                                key={value}
+                                label={value}
+                                sx={{ fontSize: 18 }}
+                              />
                             ))}
                           </Box>
                         );
@@ -422,6 +491,7 @@ const CreatePunishmentPanel = () => {
                           key={name.value}
                           value={name.value}
                           style={getStyles(name, studentNames, defaultTheme)}
+                          sx={{ fontSize: 18 }}
                         >
                           {name.label}
                         </MenuItem>
@@ -429,10 +499,9 @@ const CreatePunishmentPanel = () => {
                     </Select>
                   </div>
                 </div>
-
-                {console.log(infractionTypeSelected)}
                 <div className="question-container-text-area">
-                  <p>
+
+                  <p style={{ fontSize: 24 }}>
                     {infractionTypeSelected === "Failure to Complete Work" ||
                     infractionTypeSelected === "Positive Behavior Shout Out!" ||
                     infractionTypeSelected === "Behavioral Concern"
@@ -442,34 +511,61 @@ const CreatePunishmentPanel = () => {
                   <div>
                     {infractionTypeSelected ===
                       "Positive Behavior Shout Out!" && (
-                        <div style={{display:"flex", flexDirection:"row"}}>
-                        <TextField
-                        type="number"
-                        margin="normal"
-                        required
-                        onChange={(event) => {
-                          const enteredValue = event.target.value;
-                          setCurrency(enteredValue);
-                        }}
-                        id="currency"
-                        placeholder="Enter The Amount Points you want to Add"
-                        name="currency"
-                        autoFocus
-                        value={currency}
-                        InputLabelProps={{
-                          sx: {
-                            "&.Mui-focused": {
-                              color: "white",
-                              marginTop: "-10px",
-                              width:"30%"
-                            },
-                          },
-                        }}
-                        
-                      />
-                          <div style={{width:"80%",marginLeft:"20px",backgroundColor:"#D3D3D3",padding:"10px 10px 0 10px"}} >
-                            <h5>Thank you for celebrating the positive behavior of a student. Please include a description of the students behavior below. Refrain from using any other student’s name in this description</h5>
+                      <div className="points-container">
+                        <div className="point-field">
+                          <div className="wallet-after">
+                            <p>
+                              {" "}
+                              Wallet after shout out:{" "}
+                              {difference ? difference : 0}
+                            </p>
                           </div>
+                          <TextField
+                            type="numeric"
+                            margin="normal"
+                            inputProps={{ style: { fontSize: 15 }, min: 0 }} // font size of input text
+                            className="points-input"
+                            required
+                            onChange={handleCurrencyChange}
+                            id="currency"
+                            placeholder="Enter Amount"
+                            name="currency"
+                            autoFocus
+                            value={currency}
+                          />
+                        </div>
+                        <div
+                          style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            marginTop: "1%",
+                          }}
+                          className="points-arrow"
+                        >
+                          <KeyboardDoubleArrowUpIcon
+                            onClick={() => setCurrency((prev) => prev + 1)}
+                            sx={{ fontSize: 40 }}
+                          />
+                          <KeyboardDoubleArrowDownIcon
+                            onClick={() =>
+                              setCurrency((prev) =>
+                                prev > 0 ? prev - 1 : prev
+                              )
+                            }
+                            sx={{ fontSize: 40 }}
+                          />
+                        </div>
+                        <div className="shout-message">
+                          <p>
+                            Thank you for celebrating the positive behavior of a
+                            student. Please include a description of the
+                            students behavior below. Refrain from using any
+                            other student’s name in this description unless they
+                            were also involved in what caused this shout out.
+                            Remember you can not give away more currency than you have in your wallet
+                            and it does not replenish!
+                          </p>
+                        </div>
                       </div>
                     )}
                      
@@ -492,6 +588,7 @@ const CreatePunishmentPanel = () => {
                     name="offenseDescription"
                     autoFocus
                     value={infractionDescriptionSelected}
+                    inputProps={{ style: { fontSize: 15 }, min: 0 }} // font size of input text
                     InputLabelProps={{
                       sx: {
                         "&.Mui-focused": {
@@ -500,6 +597,7 @@ const CreatePunishmentPanel = () => {
                         },
                       },
                     }}
+                    sx={{ fontSize: 40 }} // Increase the font size of the input text
                     onKeyDown={(e) => {
                       if (e.key === "Enter") {
                         e.preventDefault(); // Prevent form submission on Enter key
@@ -549,10 +647,11 @@ const CreatePunishmentPanel = () => {
                         resetForm();
                       }}
                       sx={{
-                        height: "100%", // Set explicit height
-                        backgroundColor: "green", // Set background color to green
+                        height: "100%",
+                        backgroundColor: "grey",
+                        fontSize: 16,
                         "&:hover": {
-                          backgroundColor: "darkgreen", // Darken the color on hover if desired
+                          backgroundColor: "red", // Darken the color on hover if desired
                         },
                       }}
                     >
@@ -566,7 +665,8 @@ const CreatePunishmentPanel = () => {
                           !infractionPeriodSelected ||
                           !infractionTypeSelected ||
                           !infractionDescriptionSelected ||
-                          studentNames.length === 0
+                          studentNames.length === 0 ||
+                          difference < 0
                         }
                         onClick={() => {
                           setOpenModal({
@@ -578,7 +678,7 @@ const CreatePunishmentPanel = () => {
                         }}
                         fullWidth
                         variant="contained"
-                        sx={{ height: "100%" }} // Set explicit height
+                        sx={{ height: "100%", fontSize: 18 }} // Set explicit height
                       >
                         Submit Multiple
                       </Button>
@@ -588,12 +688,19 @@ const CreatePunishmentPanel = () => {
                           !infractionPeriodSelected ||
                           !infractionTypeSelected ||
                           !infractionDescriptionSelected ||
-                          studentNames.length === 0
+                          studentNames.length === 0 ||
+                          difference < 0
                         }
                         type="submit"
                         fullWidth
                         variant="contained"
-                        sx={{ height: "100%" }} // Set explicit height
+                        sx={{
+                          height: "100%",
+                          "&:hover": {
+                            backgroundColor: "blue", // Darken the color on hover if desired
+                            fontSize: 16,
+                          },
+                        }} // Set explicit height
                       >
                         Submit
                       </Button>
@@ -610,5 +717,3 @@ const CreatePunishmentPanel = () => {
   );
 };
 export default CreatePunishmentPanel;
-
-
