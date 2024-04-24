@@ -74,7 +74,6 @@ const TeacherShoutOutWidget = ({ data = [], school = [], teacher = [] }) => {
               <TableCell
                 variant="head"
                 style={{ fontWeight: "bold", width: "20%", fontSize: 18 }}
-                sortDirection="desc"
               >
                 Created On
               </TableCell>
@@ -100,12 +99,10 @@ const TeacherShoutOutWidget = ({ data = [], school = [], teacher = [] }) => {
           </TableHead>
           <TableBody>
             {data.length > 0 ? (
-              (data.sort((a, b) => (a.timeCreated - b.timeCreated ? 1 : -1)),
-              data.map((x, key) => (
+              (data.map((x, key) => (
                 <TableRow key={key}>
                   <TableCell
                     style={{ width: "20%", fontSize: 14 }}
-                    sortDirection="desc"
                   >
                     {dateCreateFormat(x.timeCreated)}
                   </TableCell>
