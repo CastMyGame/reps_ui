@@ -10,19 +10,12 @@ import { Autocomplete, Box, CircularProgress } from "@mui/material";
 import Container from "@mui/material/Container";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
-import { Unstable_NumberInput as NumberInput } from "@mui/base/Unstable_NumberInput";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import Chip from "@mui/material/Chip";
 import KeyboardDoubleArrowUpIcon from "@mui/icons-material/KeyboardDoubleArrowUp";
 import KeyboardDoubleArrowDownIcon from "@mui/icons-material/KeyboardDoubleArrowDown";
-
-import {
-  StyledInputRoot,
-  StyledButton,
-  StyledInputElement,
-} from "./numberInputBasic";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -195,6 +188,43 @@ const CreatePunishmentPanel = ({ data = [] }) => {
           setToast({ display: false, message: "" });
         }, 2000);
       });
+
+    if (currency > 0) {
+      const currencyContent = [];
+      studentNames.map((student) => {
+        const studentPayload = {
+          teacherEmail: teacherEmailSelected,
+          studentEmail: student.value,
+          currencyTransferred: parseInt(currency),
+        };
+        currencyContent.push(studentPayload);
+        return currencyContent;
+      });
+      axios
+        .put(`${baseUrl}/employees/v1/currency/transfer`, currencyContent, {
+          headers: headers,
+        })
+        .then(function (res) {
+          setToast({
+            display: true,
+            message: "Currency Successfully transferred",
+          });
+          setTimeout(() => {
+            setLoading(false);
+            setToast({ display: false, message: "" });
+          }, 1000);
+          resetForm();
+          setInfractionDescriptionSelected("");
+        })
+        .catch(function (error) {
+          console.error(error);
+          setToast({ display: true, message: "Something Went Wrong" });
+          setTimeout(() => {
+            setLoading(false);
+            setToast({ display: false, message: "" });
+          }, 2000);
+        });
+    }
   };
 
   const handleInfractionPeriodChange = (event) => {
@@ -224,7 +254,7 @@ const CreatePunishmentPanel = ({ data = [] }) => {
     setToast({ display: false, message: "" });
   };
 
-  let difference = data.teacher.currency - currency;
+  let difference = data.teacher.currency - currency * studentNames.length;
 
   return (
     <>
@@ -465,7 +495,7 @@ const CreatePunishmentPanel = ({ data = [] }) => {
                             <p>
                               {" "}
                               Wallet after shout out:{" "}
-                              {difference ? difference : data.teacher.currency}
+                              {difference ? difference : 0}
                             </p>
                           </div>
                           <TextField
@@ -508,7 +538,8 @@ const CreatePunishmentPanel = ({ data = [] }) => {
                             Thank you for celebrating the positive behavior of a
                             student. Please include a description of the
                             students behavior below. Refrain from using any
-                            other student’s name in this description
+                            other student’s name in this description unless they
+                            were also involved in what caused this shout out.
                           </p>
                         </div>
                       </div>
@@ -590,7 +621,7 @@ const CreatePunishmentPanel = ({ data = [] }) => {
                         resetForm();
                       }}
                       sx={{
-                        height: "100%", 
+                        height: "100%",
                         backgroundColor: "grey",
                         fontSize: 16,
                         "&:hover": {
@@ -608,7 +639,8 @@ const CreatePunishmentPanel = ({ data = [] }) => {
                           !infractionPeriodSelected ||
                           !infractionTypeSelected ||
                           !infractionDescriptionSelected ||
-                          studentNames.length === 0
+                          studentNames.length === 0 ||
+                          difference < 0
                         }
                         onClick={() => {
                           setOpenModal({
@@ -630,7 +662,8 @@ const CreatePunishmentPanel = ({ data = [] }) => {
                           !infractionPeriodSelected ||
                           !infractionTypeSelected ||
                           !infractionDescriptionSelected ||
-                          studentNames.length === 0
+                          studentNames.length === 0 ||
+                          difference < 0
                         }
                         type="submit"
                         fullWidth
