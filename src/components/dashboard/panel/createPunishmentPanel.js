@@ -194,43 +194,6 @@ const CreatePunishmentPanel = ({ data = [] }) => {
           setToast({ display: false, message: "" });
         }, 2000);
       });
-
-    if (currency > 0) {
-      const currencyContent = [];
-      studentNames.map((student) => {
-        const studentPayload = {
-          teacherEmail: teacherEmailSelected,
-          studentEmail: student.value,
-          currencyTransferred: parseInt(currency),
-        };
-        currencyContent.push(studentPayload);
-        return currencyContent;
-      });
-      axios
-        .put(`${baseUrl}/employees/v1/currency/transfer`, currencyContent, {
-          headers: headers,
-        })
-        .then(function (res) {
-          setToast({
-            display: true,
-            message: "Currency Successfully transferred",
-          });
-          setTimeout(() => {
-            setLoading(false);
-            setToast({ display: false, message: "" });
-          }, 1000);
-          resetForm();
-          setInfractionDescriptionSelected("");
-        })
-        .catch(function (error) {
-          console.error(error);
-          setToast({ display: true, message: "Something Went Wrong" });
-          setTimeout(() => {
-            setLoading(false);
-            setToast({ display: false, message: "" });
-          }, 2000);
-        });
-    }
   };
 
   const handleInfractionPeriodChange = (event) => {
