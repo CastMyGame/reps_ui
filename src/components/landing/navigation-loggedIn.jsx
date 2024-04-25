@@ -96,7 +96,7 @@ export const NavigationLoggedIn = (props) => {
                 props.setPanelName("spendPoints")
               }}
               >
-              Points Redemption
+              Currency Redemption
               </div>
             </li>
            
