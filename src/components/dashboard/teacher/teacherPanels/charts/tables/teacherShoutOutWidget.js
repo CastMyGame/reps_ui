@@ -7,7 +7,6 @@ import {
   TableRow,
   TableCell,
 } from "@mui/material";
-import { dateCreateFormat } from "../../../../global/helperFunctions";
 import ArrowDropDownCircleIcon from "@mui/icons-material/ArrowDropDownCircle";
 
 const TeacherShoutOutWidget = ({ data = [], school = [], teacher = [] }) => {
@@ -104,7 +103,7 @@ const TeacherShoutOutWidget = ({ data = [], school = [], teacher = [] }) => {
               data.map((x, key) => (
                 <TableRow key={key}>
                   <TableCell style={{ width: "20%", fontSize: 14 }}>
-                    {dateCreateFormat(x.timeCreated)}
+                    {x.timeCreated}
                   </TableCell>
                   <TableCell style={{ width: "20%", fontSize: 14 }}>
                     {x.studentFirstName} {x.studentLastName}{" "}

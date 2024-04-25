@@ -89,6 +89,16 @@ export const NavigationLoggedIn = (props) => {
               Detention/ISS List
               </div>
             </li>
+            <li>
+              <div 
+              className="page-scroll"
+              onClick={()=>{
+                props.setPanelName("spendPoints")
+              }}
+              >
+              Points Redemption
+              </div>
+            </li>
            
             <li>
               <button className="login-btn page-scroll"
