@@ -1,5 +1,4 @@
-import react, {useState,useEffect} from 'react'
-import * as React from 'react';
+import React, {useState,useEffect} from 'react'
 import { baseUrl } from '../../../../../utils/jsonData'
 import "./spend-page.css"
 import { Button, MenuItem, Select, TextField } from '@mui/material';
@@ -8,7 +7,7 @@ import axios from 'axios';
 
 
 
-   const SpendPage = () => {
+   const SpendPage = ({ data = []}) => {
     const [shoppingList,setShoppingList] = useState([])
     const [description,setDescription] = useState();
     const [amount,setAmount] = useState();
@@ -21,7 +20,7 @@ import axios from 'axios';
 
 
 
-//Gets Stduents
+//Gets Students
 
 
 const url = `${baseUrl}/student/v1/allStudents`; // Replace with your actual API endpoint
@@ -95,12 +94,12 @@ const headers = {
     headers: headers,
   })
   .then(function (res) {
-    window.alert("Points Have Been Redeemed");
+    window.alert("Redemption Successful");
     setShoppingList([])
     studentSelect(null)
   })
   .catch(function (error) {
-    window.alert("Error Redeeming Points");
+    window.alert("Error Redeeming");
   });
 }
 
@@ -143,7 +142,7 @@ const headers = {
           ))}
         </Select>
         {studentSelect &&<>
-<h3 className='center'>Available Points</h3>
+<h3 className='center'>Available ${data.school.currency}</h3>
  <div className={`spend-points-container ${studentPoints ? 'spin' : ''}`}>
   {studentPoints ? studentPoints: 0}</div> </>}
 
@@ -191,13 +190,13 @@ const headers = {
                     setDescription(enteredValue);
                   }}                  inputProps={{
                     style: {
-                      fontSize: "1.5rem", // Font size for the input
+                      fontSize: 24, // Font size for the input
                       fontWeight:"bold",
                     },
                   }}
                   InputLabelProps={{
                     sx: {
-                      fontSize: "1.5rem",
+                      fontSize: 24,
                    
                     }     
 

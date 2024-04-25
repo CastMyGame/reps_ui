@@ -103,7 +103,7 @@ const TeacherDashboard = () => {
                   )}
                   {panelName === "ftc" && <TeacherFTCPanel />}
                   {panelName === "levelThree" && <LevelThreePanel />}
-                  {panelName === "spendPoints" && <SpendPage />}
+                  {panelName === "spendPoints" && <SpendPage data={data}/>}
                 </div>
               </div>
             </div>
