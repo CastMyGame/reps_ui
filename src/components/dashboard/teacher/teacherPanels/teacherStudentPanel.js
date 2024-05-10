@@ -351,12 +351,12 @@ const TeacherStudentPanel = ({ setPanelName, data = [] }) => {
               >
                 Grade
               </TableCell>
-              <TableCell
+              {/* <TableCell
                 variant="head"
                 style={{ fontWeight: "bold", fontSize: 24 }}
               >
-                Phone Number
-              </TableCell>
+              //   Phone Number 
+              // </TableCell>
               {/* <TableCell variant="head" style={{ fontWeight: 'bold' }}>
              Actions
             </TableCell> */}
@@ -403,13 +403,13 @@ const TeacherStudentPanel = ({ setPanelName, data = [] }) => {
                   >
                     {x.grade}
                   </TableCell>
-                  <TableCell
+                  {/* <TableCell
                     style={{
                       fontSize: 18,
                     }}
                   >
                     {x.studentPhoneNumber}
-                  </TableCell>
+                  </TableCell> */}
                 </TableRow>
               ))
             ) : (
