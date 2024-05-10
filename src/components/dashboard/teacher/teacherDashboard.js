@@ -14,6 +14,7 @@ import LoadingWheelPanel from "../student/blankPanelForTest.js";
 import "../teacher/teacherPanels/teacher.css";
 import { NavigationLoggedIn } from "../../landing/navigation-loggedIn.jsx";
 import { handleLogout } from "../../../utils/helperFunctions.js";
+import SpendPage from "./teacherPanels/spend-page/spend-page.js";
 
 const TeacherDashboard = () => {
   const [loggedIn, setLoggedIn] = useState(true);
@@ -102,6 +103,7 @@ const TeacherDashboard = () => {
                   )}
                   {panelName === "ftc" && <TeacherFTCPanel />}
                   {panelName === "levelThree" && <LevelThreePanel />}
+                  {panelName === "spendPoints" && <SpendPage data={data}/>}
                 </div>
               </div>
             </div>
