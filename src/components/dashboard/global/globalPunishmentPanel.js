@@ -519,7 +519,7 @@ const GlobalPunishmentPanel = ({ roleType }) => {
                                   Delete Referral
                                 </p>
                                 {loadingPunihsmentId.id ===
-                                  x.punishment.punishmentId &&
+                                  x.punishmentId &&
                                 loadingPunihsmentId.buttonType === "delete" ? (
                                   <CircularProgress
                                     style={{ height: "20px", width: "20px" }}
