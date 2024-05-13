@@ -167,7 +167,7 @@ const GlobalPunishmentPanel = ({ roleType }) => {
 
   const handleClosePunishment = (obj) => {
     setLoadingPunishmentId({ id: obj.punishmentId, buttonType: "close" });
-    const url = `${baseUrl}/punish/v1/close/${obj.punishmentId}`;
+    const url = `${baseUrl}/punish/v1/close/${obj.punishment.punishmentId}`;
     axios
       .post(url, [textareaValue], { headers }) // Pass the headers option with the JWT token
       .then(function (response) {
@@ -187,9 +187,9 @@ const GlobalPunishmentPanel = ({ roleType }) => {
 
   //Delete has been changed to archived api
   const handleDeletePunishment = (obj) => {
-    setLoadingPunishmentId({ id: obj.punishmentId, buttonType: "delete" });
+    setLoadingPunishmentId({ id: obj.punishment.punishmentId, buttonType: "delete" });
 
-    const url = `${baseUrl}/punish/v1/archived/${sessionStorage.getItem("email")}/${obj.punishmentId}`;
+    const url = `${baseUrl}/punish/v1/archived/${sessionStorage.getItem("email")}/${obj.punishment.punishmentId}`;
     axios
       .put(url, [textareaValue], { headers: headers }) // Pass the headers option with the JWT token
       .then(function (response) {
@@ -483,7 +483,7 @@ const GlobalPunishmentPanel = ({ roleType }) => {
                                 >
                                   Close Referral
                                 </p>
-                                {loadingPunihsmentId.id === x.punishmentId &&
+                                {loadingPunihsmentId.id === x.punishment.punishmentId &&
                                 loadingPunihsmentId.buttonType === "close" ? (
                                   <CircularProgress
                                     style={{ height: "20px", width: "20px" }}
