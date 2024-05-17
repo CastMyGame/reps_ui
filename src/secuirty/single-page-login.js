@@ -20,7 +20,6 @@ import { ContactUsModal } from './contactUsModal';
 import ChatIcon from '@mui/icons-material/Chat';
 import "./modal.css"
 import ForgotPassword from './forgotPassword';
-import LoadingWheelPanel from '../components/dashboard/student/blankPanelForTest';
 import { CircularProgress } from '@mui/material';
 
 
@@ -56,7 +55,7 @@ function Copyright(props) {
 const defaultTheme = createTheme();
 
 export default function SinglePageSignIn() {
-  const [warningToast,setWarningToast] = useState(true)
+  const [warningToast,setWarningToast] = useState(false)
   const [loading, setLoading] = useState(false)
 
   
@@ -170,7 +169,7 @@ const [login,setLogin] = useState(true);
   fontSize:"40px",
   backgroundColor: "rgba(192, 192, 192, 0.5)" // semi-transparent silver background
 }}>
-  Welcome {studentName || "Student Name"}
+   {studentName ? `Welcome ${studentName}` : "Welcome"}
 </h1>
 
         <Box
