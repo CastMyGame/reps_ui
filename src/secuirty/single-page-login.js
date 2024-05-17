@@ -16,18 +16,11 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import axios from 'axios';
 import { baseUrl } from '../utils/jsonData';
 import {  useNavigate } from 'react-router-dom';
-import CircularProgress from '@mui/material/CircularProgress';
 import { ContactUsModal } from './contactUsModal';
 import ChatIcon from '@mui/icons-material/Chat';
-import JsonData from '../utils/data.json';
-import { Navigation } from '../components/landing/navigation';
-import { Header } from '../components/landing/header';
-import { Features } from '../components/landing/features';
-import { About } from '../components/landing/about';
-import { Testimonials } from '../components/landing/testimonials';
 import "./modal.css"
 import ForgotPassword from './forgotPassword';
-import CloseIcon from '@mui/icons-material/Close';
+import { CircularProgress } from '@mui/material';
 
 
 
@@ -46,7 +39,7 @@ function Copyright(props) {
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}
-      version 5.17.24-1
+      version 5.13.24-1
     </Typography>
   );
 }
@@ -61,7 +54,7 @@ function Copyright(props) {
 
 const defaultTheme = createTheme();
 
-export default function SignIn() {
+export default function SinglePageSignIn() {
   const [warningToast,setWarningToast] = useState(false)
   const [loading, setLoading] = useState(false)
 
@@ -86,11 +79,8 @@ export default function SignIn() {
   }
 
   const [modalType,setModalType] = useState("login");
-  const [formData, setFormData] = useState({
-    username: '',
-    password: '',
-  });
-const [login,setLogin] = useState(false);
+
+const [login,setLogin] = useState(true);
 
   const handleClose = (event, reason) => {
     if (reason === 'clickaway') {
@@ -100,12 +90,8 @@ const [login,setLogin] = useState(false);
     setWarningToast(false);
   };
 
-  const [landingPageData, setLandingPageData] = useState({});
-  useEffect(() => {
-    setLandingPageData(JsonData);
-  }, []);
 
-  
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -159,51 +145,57 @@ const [login,setLogin] = useState(false);
   };
 
 
+  const queryString = window.location.search;
+  const urlParams = new URLSearchParams(queryString);
+  const studentUser = urlParams.get('username');
+  const studentName = urlParams.get("firstName");
 
-  // const setContactUsDisplayModal= () =>{
-  //   setModalType("contact")
 
-  // }
 
 
 
   return (
     <ThemeProvider theme={defaultTheme}>
-      <div>
-      <Navigation setLogin={setLogin} />
-      <Header data={landingPageData.Header} />
-      <Features data={landingPageData.Features} />
-      <About data={landingPageData.About} />
-      <Testimonials data={landingPageData.Testimonials} />
-    </div>
-      <Container component="main" maxWidth="xs" >
+      <div style={{ height:"100vh",  background:" url(../img/classroom-image.jpg) center 50% "}}>
+   
+      <Container style={{position:"relative"}} component="main" maxWidth="md" >
+      <h1 style={{
+  position: "absolute",
+  padding:"50px, 50px",
+  width:"70%",
+  marginTop: "10%",
+  marginLeft:"20%",
+  textAlign:"center",
+  fontSize:"40px",
+  backgroundColor: "rgba(192, 192, 192, 0.5)" // semi-transparent silver background
+}}>
+   {studentName ? `Welcome ${studentName}` : "Welcome"}
+</h1>
 
-        <CssBaseline />
         <Box
-        className={login ? `pop-modal` : `none`}
-     
+
+     style={{position:"absolute",height:"700px", width:"70%",backgroundColor:"whitesmoke",padding:"50px 50px", marginTop:"18%", marginLeft:"20%"}}
+    
         >
-           <CloseIcon
-            size="large" // Set size to large
-            sx={{ position: 'absolute', top: 10, right: 10,width:"15px" }}
-             onClick={()=>{
-              setLogin(false);
-            setModalType("login")}}
-          ></CloseIcon>
-          { modalType ==="login" && <div className='box-content'>
+          {loading ? <CircularProgress style={{marginLeft:"40%",marginTop:"50%"}} color="inherit" size={70} />
+ :
+
+        
+        <div className='box-content'>
           <Avatar sx={{ m: 1, bgcolor: 'grey' }}>
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
             Sign in
           </Typography>
-          {loading ? <CircularProgress style={{marginTop:"10px"}}  color="secondary" /> :
+
 
           <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
             <TextField
               margin="normal"
               required
               fullWidth
+              defaultValue={studentUser||""}
               id="username"
               label="Email Address"
               name="username"
@@ -255,14 +247,10 @@ const [login,setLogin] = useState(false);
                   Forgot password?
                 </p>
               </Grid>
-              <Grid item>
-                <Link href="/register" variant="body2" style={{color:"grey"}}>
-                  {"Don't have an account? Sign Up"}
-                </Link>
-
-              </Grid>
+          
             </Grid>
-          </Box>}
+          </Box>
+
           <div><ChatIcon onClick={()=>setModalType("contact")} sx={{color:"black",marginTop:"50px",fontSize:"50px"}}/></div>
         <div style={{color:"white"}}>Contact Us</div>
         </div>}
@@ -272,10 +260,13 @@ const [login,setLogin] = useState(false);
         }
         {modalType === "reset" &&   <ForgotPassword setResetModalDisplay={setModalType} />
 }
+
         </Box>
+
         <Copyright sx={{ mt: 8, mb: 4 }} /> 
-       
+
       </Container>
+      </div>
     </ThemeProvider>
   );
 }

@@ -15,6 +15,7 @@ import ResetPassword from './secuirty/Reset';
 import ForgotPassword from './secuirty/forgotPassword';
 import { useState } from 'react';
 import IdleTimerContainer from './secuirty/IdleTimerContainer';
+import SinglePageSignIn from './secuirty/single-page-login';
 
 function App() {
   const [isLoggedOut, setIsLoggedOut] = useState(false);
@@ -30,6 +31,7 @@ function App() {
     <Router>
       <div>
       <Routes>
+      <Route path="/student-login" element={<SinglePageSignIn />} />
         <Route path="/login" element={<Login />} />
         <Route path="/reset-password/:token" element={<ResetPassword />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
