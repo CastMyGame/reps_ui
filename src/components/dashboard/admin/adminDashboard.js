@@ -108,6 +108,8 @@ const AdminDashboard = () => {
                           teacherData={teacherData}
                           writeUpData={writeUpData}
                           shoutOutData={shoutOutData}
+                          teacher={data.teacher}
+                          school={data.school}
                         />
                       )
                     )}

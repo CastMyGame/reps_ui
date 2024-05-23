@@ -17,6 +17,8 @@ const AdminOverviewPanel = ({
   teacherData = [],
   writeUpData = [],
   shoutOutData = [],
+  teacher = [],
+  school = [],
 }) => {
   //Fetch Data to Prop Drill to Componetns
 
@@ -33,7 +35,7 @@ const AdminOverviewPanel = ({
     <>
       <div className="teacher-overview-first">
         <Card variant="outlined">
-          <AdminShoutOut data={shoutOutData} />
+          <AdminShoutOut data={shoutOutData} school={school} teacher={teacher}/>
         </Card>
       </div>
 

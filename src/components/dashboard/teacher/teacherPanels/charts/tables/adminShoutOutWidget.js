@@ -1,8 +1,15 @@
-import React, {useState} from 'react'
-import { Table, TableContainer, TableHead, TableBody, TableRow, TableCell } from '@mui/material';
-import { dateCreateFormat } from '../../../../global/helperFunctions';
-import ArrowDropDownCircleIcon from '@mui/icons-material/ArrowDropDownCircle';
-  
+import React, { useState } from "react";
+import {
+  Table,
+  TableContainer,
+  TableHead,
+  TableBody,
+  TableRow,
+  TableCell,
+} from "@mui/material";
+import { dateCreateFormat } from "../../../../global/helperFunctions";
+import ArrowDropDownCircleIcon from "@mui/icons-material/ArrowDropDownCircle";
+
 const AdminShoutOut = ({ data = [], school = [], teacher = [] }) => {
   const [barOpen, setBarOpen] = useState(true);
 
@@ -25,7 +32,7 @@ const AdminShoutOut = ({ data = [], school = [], teacher = [] }) => {
           }}
           onClick={() => setBarOpen(true)}
         />{" "}
-        <h5 style={{ marginLeft: "20px" }}>
+        <h5 style={{ marginLeft: "20px", fontSize: 24, fontWeight: "bold" }}>
           Positive Behavior | Wallet: {teacher.currency} {school.currency}
         </h5>{" "}
       </div>
@@ -116,6 +123,4 @@ const AdminShoutOut = ({ data = [], school = [], teacher = [] }) => {
   );
 };
 
-    export default AdminShoutOut;
-
-
+export default AdminShoutOut;
