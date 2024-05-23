@@ -16,6 +16,7 @@ import LoadingWheelPanel from "../student/blankPanelForTest";
 import { ContactUsModal } from "../../../secuirty/contactUsModal";
 import { NavigationAdmin } from "../../landing/navigation-admin";
 import { handleLogout } from "../../../utils/helperFunctions";
+import SpendPage from "../teacher/teacherPanels/spend-page/spend-page";
 
 //New Code
 
@@ -28,6 +29,7 @@ const AdminDashboard = () => {
   const [teacherData, setTeacherData] = useState([]);
   const [shoutOutData, setShoutOutData] = useState([]);
   const [modalType, setModalType] = useState("");
+  const [data, setData] = useState([]);
 
   const [isDropdownOpen, setIsDropdownOpen] = useState("");
 
@@ -58,6 +60,7 @@ const AdminDashboard = () => {
         setTeacherData(result.teachers);
         setWriteUpData(result.writeUps);
         setShoutOutData(result.shoutOuts);
+        setData(result);
       } catch (err) {
         console.error("Error Fetching Data: ", err);
       }
@@ -106,6 +109,8 @@ const AdminDashboard = () => {
                           teacherData={teacherData}
                           writeUpData={writeUpData}
                           shoutOutData={shoutOutData}
+                          teacher={data.teacher}
+                          school={data.school}
                         />
                       )
                     )}
@@ -113,7 +118,10 @@ const AdminDashboard = () => {
                     {panelName === "student" && <TeacherStudentPanel />}
                     {panelName === "punishment" && <GlobalPunishmentPanel />}
                     {panelName === "createPunishment" && (
-                      <CreatePunishmentPanel />
+                      <CreatePunishmentPanel
+                        setPanelName={setPanelName}
+                        data={data}
+                      />
                     )}
                     {panelName === "createNewStudent" && (
                       <CreateNewStudentPanel />
@@ -125,6 +133,7 @@ const AdminDashboard = () => {
                     {panelName === "createEditAssignments" && (
                       <AssignmentManager />
                     )}
+                    {panelName === "spendPoints" && <SpendPage data={data} />}
                   </div>
                 </div>
               </div>
