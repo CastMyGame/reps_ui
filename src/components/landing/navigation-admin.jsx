@@ -154,6 +154,16 @@ export const NavigationAdmin = (props) => {
               </div>
             </li>
             <li>
+              <div 
+              className="page-scroll"
+              onClick={()=>{
+                props.setPanelName("spendPoints")
+              }}
+              >
+              Store Redeem
+              </div>
+            </li>
+            <li>
               <button className="login-btn page-scroll" onClick={() => props.setLogin()}>
                 Logout
               </button>

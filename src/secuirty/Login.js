@@ -46,7 +46,7 @@ function Copyright(props) {
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}
-      version 5.13.24-1
+      version 5.17.24-1
     </Typography>
   );
 }
