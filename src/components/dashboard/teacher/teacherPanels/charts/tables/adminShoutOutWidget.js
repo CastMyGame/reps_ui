@@ -7,11 +7,17 @@ import {
   TableRow,
   TableCell,
 } from "@mui/material";
-import { dateCreateFormat } from "../../../../global/helperFunctions";
+import { DateTime } from "luxon";
 import ArrowDropDownCircleIcon from "@mui/icons-material/ArrowDropDownCircle";
 
 const AdminShoutOut = ({ data = [], school = [], teacher = [] }) => {
   const [barOpen, setBarOpen] = useState(true);
+
+  function parseISOString(s) {
+    const date = new DateTime(s);
+    var formatted = date.toLocaleString();
+    return formatted;
+  }
 
   //We need to fix the cfr issues
   console.log("shoutout", data);
@@ -93,10 +99,10 @@ const AdminShoutOut = ({ data = [], school = [], teacher = [] }) => {
           </TableHead>
           <TableBody>
             {data.length > 0 ? (
-              data.map((x, key) => (
+              (data.map((x, key) => (
                 <TableRow key={key}>
                   <TableCell style={{ width: "20%", fontSize: "1.25rem" }}>
-                    {dateCreateFormat(x.timeCreated)}
+                    {parseISOString(x.timeCreated)}
                   </TableCell>
                   <TableCell style={{ width: "20%", fontSize: "1.25rem" }}>
                     {x.studentFirstName} {x.studentLastName}
@@ -108,7 +114,7 @@ const AdminShoutOut = ({ data = [], school = [], teacher = [] }) => {
                     {x.teacherEmail}
                   </TableCell>
                 </TableRow>
-              ))
+              )))
             ) : (
               <TableRow>
                 <TableCell colSpan="4">

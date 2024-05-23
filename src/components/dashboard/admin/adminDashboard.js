@@ -16,6 +16,7 @@ import LoadingWheelPanel from "../student/blankPanelForTest";
 import { ContactUsModal } from "../../../secuirty/contactUsModal";
 import { NavigationAdmin } from "../../landing/navigation-admin";
 import { handleLogout } from "../../../utils/helperFunctions";
+import SpendPage from "../teacher/teacherPanels/spend-page/spend-page";
 
 //New Code
 
@@ -132,6 +133,7 @@ const AdminDashboard = () => {
                     {panelName === "createEditAssignments" && (
                       <AssignmentManager />
                     )}
+                    {panelName === "spendPoints" && <SpendPage data={data} />}
                   </div>
                 </div>
               </div>
