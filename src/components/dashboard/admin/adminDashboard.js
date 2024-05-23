@@ -28,6 +28,7 @@ const AdminDashboard = () => {
   const [teacherData, setTeacherData] = useState([]);
   const [shoutOutData, setShoutOutData] = useState([]);
   const [modalType, setModalType] = useState("");
+  const [data, setData] = useState([]);
 
   const [isDropdownOpen, setIsDropdownOpen] = useState("");
 
@@ -58,6 +59,7 @@ const AdminDashboard = () => {
         setTeacherData(result.teachers);
         setWriteUpData(result.writeUps);
         setShoutOutData(result.shoutOuts);
+        setData(result);
       } catch (err) {
         console.error("Error Fetching Data: ", err);
       }
@@ -113,7 +115,10 @@ const AdminDashboard = () => {
                     {panelName === "student" && <TeacherStudentPanel />}
                     {panelName === "punishment" && <GlobalPunishmentPanel />}
                     {panelName === "createPunishment" && (
-                      <CreatePunishmentPanel />
+                      <CreatePunishmentPanel
+                        setPanelName={setPanelName}
+                        data={data}
+                      />
                     )}
                     {panelName === "createNewStudent" && (
                       <CreateNewStudentPanel />
