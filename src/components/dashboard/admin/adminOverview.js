@@ -10,7 +10,7 @@ import { Top5TeacherRatioTable } from "./widget/top-5-ratio-table";
 import { WorseClassTable } from "./widget/top-class-with-write-up";
 import { IncidentByStudentPieChart } from "./widget/incident-by-student-pie-chart";
 import "./admin.css";
-import AdminShoutOut from "../teacher/teacherPanels/charts/tables/adminShoutOutWidget";
+import GeneralShoutOut from "../../globalComponents/widget-shout-out.tsx";
 
 const AdminOverviewPanel = ({
   data = [],
@@ -35,7 +35,7 @@ const AdminOverviewPanel = ({
     <>
       <div className="teacher-overview-first">
         <Card variant="outlined">
-          <AdminShoutOut data={shoutOutData} school={school} teacher={teacher}/>
+          <GeneralShoutOut data={shoutOutData} school={school} teacher={teacher}/>
         </Card>
       </div>
 
