@@ -1,0 +1,157 @@
+
+.panel-container{
+    width: 100%;
+    padding: 10px 10px;
+}
+
+.main-panel-title{
+    text-align: center;
+    background-color: silver;
+    padding: 10px 10px;
+}
+
+.task-panel{
+    width: 60%;
+    background-color: lightblue;
+    padding: 20px 20px;
+
+}
+
+.task-card{
+    height: 50px;
+    width:100%;
+    margin-bottom:10px;
+    display: flex;
+
+
+}
+
+.task-card:hover{
+    background-color: lightgrey;
+}
+
+.tag{
+    display: flex;
+    
+}
+
+.tag-content{
+    margin-left: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+.color-stripe{
+    background-color: orange;
+    height: 100%;
+    width: 7px;
+    border-radius: 5px;
+
+}
+
+.index{
+    font-size: large;
+    font-weight: bold;
+    text-align: center;
+}
+
+.date{
+    font-size: x-small;
+    font-weight:100;
+    text-align: center;
+    color: black;
+}
+
+.card-body{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    text-align: center;
+    height: 60px;
+}
+
+.card-body-title{
+    text-align: center;
+    font-weight: 800;
+
+}
+
+.card-body-description{
+    font-size: smaller;
+    
+
+}
+
+.card-actions{
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-right: 2%;
+
+}
+
+.card-action-title{
+    width: max-content;
+    font-size: 10px;
+ 
+
+}
+
+.check-box{
+    background-color: whitesmoke;
+    border: 2px black solid;
+    width: 20px;
+    height: 20px;
+
+
+}
+
+.clock-icon{
+    width: 20px;
+    height: 20px;
+
+}
+
+.secondary-panel{
+    width: 40%;
+    background-color: lightgray;
+    padding: 20px 20px;
+    overflow: auto;
+
+}
+
+.details-container{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: max-content;
+    background-color: orange;
+    padding: 20px 10px;
+    border-radius: 10px;
+
+
+}
+
+.thread-container{
+    overflow-y: auto;
+
+}
+
+.thread-card{
+    margin-top: 10px;
+    width: 100%;
+    height: 120px;
+    background-color: white;
+    padding: 10px 10px;
+    border-radius: 10px;
+    overflow-y: auto;
+
+
+}
+
+.thread-card:hover{
+    background-color: grey;
+}
+
+
