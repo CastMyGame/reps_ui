@@ -10,19 +10,19 @@ import {
 import ArrowDropDownCircleIcon from "@mui/icons-material/ArrowDropDownCircle";
 import { DateTime } from "luxon";
 
-const TeacherShoutOutWidget = ({ data = [], school = [], teacher = [] }) => {
+const ShoutOuts = ({ data = [] }) => {
   const [barOpen, setBarOpen] = useState(true);
 
   function parseISOString(s) {
-    const date = new DateTime(s);
-    var formatted = date.toLocaleString();
-    return formatted;
+    let date = DateTime.fromISO(s);
+    let stringer = date.toJSDate();
+    return stringer;
   }
 
   //We need to fix the cfr issues
   console.log("shoutout", data);
 
-  const hasScroll = data.length > 2;
+  const hasScroll = data.shoutOutsResponse.length > 2;
 
   return !barOpen ? (
     <div className="shout-out-bar-container">
@@ -44,7 +44,8 @@ const TeacherShoutOutWidget = ({ data = [], school = [], teacher = [] }) => {
             fontWeight: "bold",
           }}
         >
-          Positive Behavior | Wallet: {teacher.currency} {school.currency}
+          Positive Behavior | Wallet: {data.teacher.currency}{" "}
+          {data.school.currency}
         </h5>
       </div>
     </div>
@@ -63,7 +64,8 @@ const TeacherShoutOutWidget = ({ data = [], school = [], teacher = [] }) => {
             onClick={() => setBarOpen(false)}
           />{" "}
           <h5 style={{ marginLeft: "20px", fontSize: 24, fontWeight: "bold" }}>
-            Positive Behavior | Wallet: {teacher.currency} {school.currency}
+            Positive Behavior | Wallet: {data.teacher.currency}{" "}
+            {data.school.currency}
           </h5>{" "}
         </div>
       </div>
@@ -104,11 +106,11 @@ const TeacherShoutOutWidget = ({ data = [], school = [], teacher = [] }) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {data.length > 0 ? (
-              (data.map((x, key) => (
+            {data.shoutOutsResponse.length > 0 ? (
+              data.shoutOutsResponse.map((x, key) => (
                 <TableRow key={key}>
                   <TableCell style={{ width: "20%", fontSize: 14 }}>
-                    {parseISOString(x.timeCreated)}
+                    {x.timeCreated}
                   </TableCell>
                   <TableCell style={{ width: "20%", fontSize: 14 }}>
                     {x.studentFirstName} {x.studentLastName}{" "}
@@ -120,7 +122,7 @@ const TeacherShoutOutWidget = ({ data = [], school = [], teacher = [] }) => {
                     {x.teacherEmail}
                   </TableCell>
                 </TableRow>
-              )))
+              ))
             ) : (
               <TableRow>
                 <TableCell
@@ -142,4 +144,4 @@ const TeacherShoutOutWidget = ({ data = [], school = [], teacher = [] }) => {
   );
 };
 
-export default TeacherShoutOutWidget;
+export default ShoutOuts;
