@@ -10,19 +10,17 @@ import { Top5TeacherRatioTable } from "./widget/top-5-ratio-table";
 import { WorseClassTable } from "./widget/top-class-with-write-up";
 import { IncidentByStudentPieChart } from "./widget/incident-by-student-pie-chart";
 import "./admin.css";
-import AdminShoutOut from "../teacher/teacherPanels/charts/tables/adminShoutOutWidget";
+import ShoutOuts from "../../globalComponents/shoutOuts";
 
 const AdminOverviewPanel = ({
   data = [],
-  teacherData = [],
-  writeUpData = [],
-  shoutOutData = [],
-  teacher = [],
-  school = [],
 }) => {
   //Fetch Data to Prop Drill to Componetns
 
-  const weeklyDataIncSOBxConcern = data.filter((x) => {
+  let punishments = data.punishmentResponse
+  let teacherData = data.teachers;
+
+  const weeklyDataIncSOBxConcern = punishments.filter((x) => {
     const currentDate = new Date();
     const itemDate = new Date(x.timeCreated);
     const sevenDaysAgo = new Date(
@@ -35,7 +33,7 @@ const AdminOverviewPanel = ({
     <>
       <div className="teacher-overview-first">
         <Card variant="outlined">
-          <AdminShoutOut data={shoutOutData} school={school} teacher={teacher}/>
+          <ShoutOuts data={data} />
         </Card>
       </div>
 
@@ -51,11 +49,11 @@ const AdminOverviewPanel = ({
 
       <div className="overview-row">
         <div className="card-overview-third">
-          <IncidentByStudentPieChart writeUps={writeUpData} />
+          <IncidentByStudentPieChart writeUps={data.writeUpResponse} />
         </div>
 
         <div className="card-overview-third">
-          <IncidentsByStudentTable writeUps={writeUpData} />
+          <IncidentsByStudentTable writeUps={data.writeUpResponse} />
         </div>
 
         <div className="card-overview-third">
@@ -78,22 +76,22 @@ const AdminOverviewPanel = ({
       <div className="overview-row">
         <div className="card-overview-third">
           <IncidentByTeacherPieChart
-            data={writeUpData}
+            data={data.writeUpResponse}
             teacherData={teacherData}
           />
         </div>
 
         <div className="card-overview-third">
-          {teacherData && (
+          {data.teachers && (
             <Top5TeacherRatioTable
-              data={data}
+              data={punishments}
               teacherData={teacherData}
             />
           )}
         </div>
 
         <div className="card-overview-third">
-          <WorseClassTable data={data} teacherData={teacherData} />
+          <WorseClassTable data={punishments} teacherData={teacherData} />
         </div>
       </div>
 
@@ -109,15 +107,15 @@ const AdminOverviewPanel = ({
 
       <div className="overview-row">
         <div className="card-overview-third">
-          <TotalReferralByWeek data={data} />
+          <TotalReferralByWeek data={punishments} />
         </div>
 
         <div className="card-overview-third">
-          <TotalStudentReferredByWeek data={data} />
+          <TotalStudentReferredByWeek data={punishments} />
         </div>
 
         <div className="card-overview-third">
-          <ReferralByBehavior data={data} />
+          <ReferralByBehavior data={punishments} />
         </div>
       </div>
     </>

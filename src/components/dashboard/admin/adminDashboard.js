@@ -25,18 +25,10 @@ const AdminDashboard = () => {
   const [openNotificationDrawer, setOpenNotificationDrawer] = useState(false);
   const [panelName, setPanelName] = useState("overview");
   const [punishmentData, setPunishmentData] = useState([]);
-  const [writeUpData, setWriteUpData] = useState([]);
-  const [teacherData, setTeacherData] = useState([]);
-  const [shoutOutData, setShoutOutData] = useState([]);
   const [modalType, setModalType] = useState("");
   const [data, setData] = useState([]);
 
   const [isDropdownOpen, setIsDropdownOpen] = useState("");
-
-  // const handleGeneratePDF = () => {
-  //   window.open('/forms/report', '_blank'); // '_blank' will open the URL in a new tab/window
-  // };
-
 
   useEffect(() => {
     if (sessionStorage.getItem("Authorization") === null) {
@@ -56,10 +48,7 @@ const AdminDashboard = () => {
     const fetchPunishmentData = async () => {
       try {
         const result = await get("DTO/v1/AdminOverviewData");
-        setPunishmentData(result.punishments);
-        setTeacherData(result.teachers);
-        setWriteUpData(result.writeUps);
-        setShoutOutData(result.shoutOuts);
+        setPunishmentData(result.punishmentResponse);
         setData(result);
       } catch (err) {
         console.error("Error Fetching Data: ", err);
@@ -104,14 +93,7 @@ const AdminDashboard = () => {
                       <LoadingWheelPanel />
                     ) : (
                       panelName === "overview" && (
-                        <AdminOverviewPanel
-                          data={punishmentData}
-                          teacherData={teacherData}
-                          writeUpData={writeUpData}
-                          shoutOutData={shoutOutData}
-                          teacher={data.teacher}
-                          school={data.school}
-                        />
+                        <AdminOverviewPanel data={data} />
                       )
                     )}
                     {panelName === "viewTeacher" && <AdminTeacherPanel />}

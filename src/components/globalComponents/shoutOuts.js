@@ -8,16 +8,10 @@ import {
   TableCell,
 } from "@mui/material";
 import ArrowDropDownCircleIcon from "@mui/icons-material/ArrowDropDownCircle";
-import { DateTime } from "luxon";
+import { dateCreateFormat } from "../dashboard/global/helperFunctions";
 
 const ShoutOuts = ({ data = [] }) => {
   const [barOpen, setBarOpen] = useState(true);
-
-  function parseISOString(s) {
-    let date = DateTime.fromISO(s);
-    let stringer = date.toJSDate();
-    return stringer;
-  }
 
   //We need to fix the cfr issues
   console.log("shoutout", data);
@@ -110,7 +104,7 @@ const ShoutOuts = ({ data = [] }) => {
               data.shoutOutsResponse.map((x, key) => (
                 <TableRow key={key}>
                   <TableCell style={{ width: "20%", fontSize: 14 }}>
-                    {x.timeCreated}
+                    {dateCreateFormat(x.timeCreated)}
                   </TableCell>
                   <TableCell style={{ width: "20%", fontSize: 14 }}>
                     {x.studentFirstName} {x.studentLastName}{" "}
