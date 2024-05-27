@@ -1,30 +1,35 @@
-import React, { useState } from 'react';
-import { StaticDatePicker } from '@mui/x-date-pickers/StaticDatePicker';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import dayjs, { Dayjs } from 'dayjs';
+import React, { useState,useEffect } from 'react';
+import { StaticDatePicker } from '@mui/x-date-pickers';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
+import { DateTime } from 'luxon';
 import './scheduler.css';
 
 const SchedulerComponent = () => {
-    const [selectedDate, setSelectedDate] = useState<Dayjs>(dayjs());
+    const [selectedDate, setSelectedDate] = useState<DateTime | null>(DateTime.now());
+
+
 
     return (
         <div className='generic-modal-container'>
-            <h1>What date would you like to reschedule this task for?</h1>
+            <h3>Set the Date To Follow Up this Task On</h3>
+
             <div className='calendar'>
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <LocalizationProvider dateAdapter={AdapterLuxon}>
                     <StaticDatePicker
+                        disablePast={true}
                         displayStaticWrapperAs="desktop"
                         openTo="day"
                         value={selectedDate}
-                        onChange={(newValue) => {
-                            if (newValue !== null) {
-                                setSelectedDate(newValue);
-                            }
-                        }}
+                        onChange={(newValue) => setSelectedDate(newValue)}
                     />
                 </LocalizationProvider>
             </div>
+            <div className="btn-container">
+            <p>{selectedDate?.toFormat('LLL dd yyyy')}</p>
+            <button className='time-set-button'  >Set</button>
+            </div>
+         
         </div>
     );
 }
