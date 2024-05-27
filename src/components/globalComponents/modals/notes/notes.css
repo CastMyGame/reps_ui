@@ -17,19 +17,13 @@
 }
 
 
-.calendar {
+.notes-container {
     position: relative;
     width: 100%;
     display: flex;
     justify-content: center;
 }
 
-.close-icon{
-
-}
-
-.id-num{
-}
 
 .header{
     display: flex;
@@ -40,7 +34,8 @@
 
 }
 
-.time-set-button{
+.submit-button{
+    margin-top: 10px;
     position: relative;
     background-color: cornflowerblue;
 }

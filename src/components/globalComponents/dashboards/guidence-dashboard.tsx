@@ -6,14 +6,24 @@ import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import NoteAddIcon from '@mui/icons-material/NoteAdd';
 import SendIcon from '@mui/icons-material/Send';
 import SchedulerComponent from "../modals/scheduler/scheduler";
+import NotesComponent from "../modals/notes/notes";
+import SendResourcesComponent from "../modals/resources/resources";
 
 const GuidenceDashboard = () =>{
     const [modalType, setModalType] = useState<string>("schedule");
+    const [displayPicker,setDisplayPicker] = useState(false)
+    const [displayNotes,setDisplayNotes] =useState(false)
+    const [displayResources, setDisplayResources] = useState(false)
+    
+
     const[activeIndex,setActiveIndex] = useState<number|null>(null);
+    const[activeTask,setActiveTask] = useState<string |null>(null);
+    
 
 
     const items = [
         {
+            _id:"343j43kj343",
             studentId: "S12345",
             studentName: "John Doe",
             createdBy: "exampleTeacher@fakeemail.com",
@@ -30,6 +40,7 @@ const GuidenceDashboard = () =>{
             ]
         },
         {
+            _id:"88888888",
             studentId: "S67890",
             studentName: "Jane Smith",
             createdBy: "exampleTeacher@fakeemail.com",
@@ -46,6 +57,7 @@ const GuidenceDashboard = () =>{
             ]
         },
         {
+            _id:"0000099988",
             studentId: "S11223",
             studentName: "Alice Johnson",
             createdBy: "exampleTeacher@fakeemail.com",
@@ -62,6 +74,7 @@ const GuidenceDashboard = () =>{
             ]
         },
         {
+            _id:"gjh8777",
             studentId: "S33445",
             studentName: "Bob Brown",
             createdBy: "exampleTeacher@fakeemail.com",
@@ -89,13 +102,29 @@ const GuidenceDashboard = () =>{
 
 
     <div>
-    {modalType === "contact" && (
+    {/* {modalType === "contact" && (
       <ContactUsModal setContactUsDisplayModal={true} contactUsDisplayModal={false} />
+    )} */}
+
+{displayPicker  && (
+      <SchedulerComponent   
+      setDisplayModal={setDisplayPicker}
+      activeTask={activeTask}  />
     )}
 
-{modalType === "schedule" && (
-      <SchedulerComponent  />
+{displayNotes  && (
+      <NotesComponent   
+      setDisplayModal={setDisplayNotes}
+      activeTask={activeTask}  />
     )}
+
+
+{displayResources  && (
+      <SendResourcesComponent   
+      setDisplayModal={setDisplayResources}
+      activeTask={activeTask}  />
+    )}
+
 
 
 
@@ -155,7 +184,12 @@ const GuidenceDashboard = () =>{
                             <div className="card-action-title">
                             Follow Up
                             </div>
-                            <div className="clock-icon">
+                            <div className="clock-icon"
+                          onClick={() => {
+                            setDisplayPicker(prevState => !prevState); // Toggle the state
+                            setActiveTask(item._id);
+                        }}
+                            >
                                 <AccessTimeIcon sx={{fontSize:"20px",fontWeight:"bold"}}/>
                             </div>
                             </div>
@@ -163,7 +197,12 @@ const GuidenceDashboard = () =>{
                             <div className="card-action-title">
                             Notes
                             </div>
-                            <div className="clock-icon">
+                            <div className="clock-icon"
+                            onClick={() => {
+                                setDisplayNotes(prevState => !prevState); // Toggle the state
+                                setActiveTask(item._id);
+                            }}                            >
+                                
                                 <NoteAddIcon sx={{fontSize:"20px",fontWeight:"bold"}}/>
                             </div>
                             </div>
@@ -171,7 +210,12 @@ const GuidenceDashboard = () =>{
                             <div className="card-action-title">
                             Resources
                             </div>
-                            <div className="clock-icon">
+                            <div className="clock-icon"
+                                 onClick={() => {
+                                    setDisplayResources(prevState => !prevState); // Toggle the state
+                                    setActiveTask(item._id);
+                                }}   
+                            >
                                 <SendIcon sx={{fontSize:"20px",fontWeight:"bold"}}/>
                             </div>
                             </div>

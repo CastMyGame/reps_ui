@@ -5,13 +5,22 @@ import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
 import { DateTime } from 'luxon';
 import './scheduler.css';
 
-const SchedulerComponent = () => {
+const SchedulerComponent = (props:any) => {
     const [selectedDate, setSelectedDate] = useState<DateTime | null>(DateTime.now());
 
+//Add PUT controller to update followup date
+const handleSetDate = () =>{
+    props.setDisplayModal(false);
 
+}
 
     return (
         <div className='generic-modal-container'>
+            <div className='header'>
+            <div className='close-icon' onClick={()=>props.setDisplayModal(false)}>[x]</div>
+            <div className='id-num'>Id:{props.activeTask}</div>
+            </div>
+         
             <h3>Set the Date To Follow Up this Task On</h3>
 
             <div className='calendar'>
@@ -27,7 +36,7 @@ const SchedulerComponent = () => {
             </div>
             <div className="btn-container">
             <p>{selectedDate?.toFormat('LLL dd yyyy')}</p>
-            <button className='time-set-button'  >Set</button>
+            <button onClick={handleSetDate} className='time-set-button'  >Set</button>
             </div>
          
         </div>

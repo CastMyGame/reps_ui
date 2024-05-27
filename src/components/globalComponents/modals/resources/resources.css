@@ -3,8 +3,8 @@
     top: 50%;
     left: 50%;
     width: 50%;
-    height: fit-content;
-    z-index: 9999;
+    height: 500px;
+    z-index: 9998;
     background-color: white;
     transform: translate(-50%, -50%);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -14,24 +14,23 @@
     align-items: center;
     justify-content: center;
     border-radius: 8px;
+    
 }
 
 
-.calendar {
-    position: relative;
+.select-container {
+    position: fixed;
     width: 100%;
     display: flex;
     justify-content: center;
+    z-index: 9999;
 }
 
-.close-icon{
-
-}
-
-.id-num{
-}
 
 .header{
+    position: fixed;
+    top: 3%;
+    padding:10px 10px;
     display: flex;
     flex-direction: row-reverse;
     justify-content: space-between;
@@ -40,7 +39,8 @@
 
 }
 
-.time-set-button{
+.submit-button{
+    margin-top: 10px;
     position: relative;
     background-color: cornflowerblue;
 }
