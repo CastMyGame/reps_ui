@@ -18,19 +18,20 @@ const handleSetDate = () => {
       };
 
     const url =`${baseUrl}/punish/v1/guidance/followup/${props.activeTask}`
-    axios.put(url, {"followUpdate":selectedDate?.toFormat("yyyyMMdd")},{headers})
+    axios.put(url, {"followUpDate":selectedDate?.toFormat("yyyyMMdd")},{headers})
     .then(response => {
       console.log(response.data);
+      setTimeout(()=>{
+        props.setUpdatePage((prev: any) => !prev);
+
+    },500)
     })
     .catch(error => {
       console.error(error);
     });
 
     props.setDisplayModal(false);
-    setTimeout(()=>{
-        props.setUpdatePage((prev: any) => !prev);
-
-    },500)
+   
 
       };
     
