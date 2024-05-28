@@ -1,19 +1,35 @@
 import React, { useState,useEffect } from 'react';
 import './notes.css';
 import { TextField } from '@mui/material';
+import axios from 'axios';
+import { baseUrl } from 'src/utils/jsonData';
 
 const NotesComponent = (props:any) => {
-    const [noteText, setNoteText] = useState('');
+    const [noteText, setNoteText] = useState({event:"Notes", content:""});
 
-
+    const headers = {
+        Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
+      };
 //Add PUT controller to update followup date
     const handleSubmitNotes = () => {
-        props.setDisplayModal(false);
-    }
+    const url =`${baseUrl}/punish/v1/updateGuidance/notes/${props.activeTask}`
+    axios.put(url, noteText,{headers})
+    .then(response => {
+      console.log(response.data);
+    })
+    .catch(error => {
+      console.error(error);
+    });
+
+    props.setDisplayModal(false);
+
+        // You can use the finalPayload as needed (e.g., send it to an API)
+      };
+    
+
 
     const handleNoteChange = (event:any) => {
-        setNoteText(event.target.value);
-        console.log(noteText)
+        setNoteText({event:"Notes", content: event.target.value});
     }
 
     return (
@@ -33,7 +49,7 @@ const NotesComponent = (props:any) => {
           fullWidth
           minRows={8}
           maxRows={8}
-          value={noteText}
+          value={noteText.content}
           onChange={handleNoteChange}
 
 
