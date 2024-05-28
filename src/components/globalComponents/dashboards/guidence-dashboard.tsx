@@ -39,15 +39,14 @@ const GuidenceDashboard = () =>{
     
     },[]);
 
-    const formatDate = (dateString) => {
-        if (typeof dateString !== 'string' || dateString.length !== 7) {
+    const formatDate = (dateString:any) => {
+        if (!dateString) {
             return '';
         }
     
         try {
-            // Handle date parsing, assuming format is either yyyyMdd or yyyyMd
-            const pattern = dateString.length === 7 ? 'yyyyMd' : 'yyyyMdd';
-            const date = DateTime.fromFormat(dateString, pattern);
+            // Parse the ISO 8601 date string and format it to MM-dd-yyyy
+            const date = DateTime.fromISO(dateString);
             if (date.isValid) {
                 return date.toFormat('MM-dd-yyyy');
             } else {
