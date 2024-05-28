@@ -25,7 +25,7 @@ const SendResourcesComponent = (props:any) => {
 
     return (
         <div className='generic-modal-container'>
-            <div className='header'>
+            <div className='resource-header'>
             <div className='close-icon' onClick={()=>props.setDisplayModal(false)}>[x]</div>
             <div className='id-num'>Id:{props.activeTask}</div>
             </div>

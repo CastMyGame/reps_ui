@@ -18,16 +18,10 @@
 }
 
 
-.select-container {
-    position: fixed;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    z-index: 9999;
-}
 
 
-.header{
+
+.resources-header{
     position: fixed;
     top: 3%;
     padding:10px 10px;
