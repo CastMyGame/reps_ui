@@ -10,6 +10,7 @@ import NotesComponent from "../modals/notes/notes";
 import SendResourcesComponent from "../modals/resources/resources";
 import axios from "axios";
 import { baseUrl } from "src/utils/jsonData";
+import { DateTime } from "luxon";
 
 const GuidenceDashboard = () =>{
     const [modalType, setModalType] = useState<string>("schedule");
@@ -37,6 +38,26 @@ const GuidenceDashboard = () =>{
         })
     
     },[]);
+
+    const formatDate = (dateString) => {
+        if (typeof dateString !== 'string' || dateString.length !== 7) {
+            return '';
+        }
+    
+        try {
+            // Handle date parsing, assuming format is either yyyyMdd or yyyyMd
+            const pattern = dateString.length === 7 ? 'yyyyMd' : 'yyyyMdd';
+            const date = DateTime.fromFormat(dateString, pattern);
+            if (date.isValid) {
+                return date.toFormat('MM-dd-yyyy');
+            } else {
+                return dateString;
+            }
+        } catch (error) {
+            console.error('Error parsing date:', error);
+            return dateString;
+        }
+    };
     
     
     
@@ -111,7 +132,7 @@ const GuidenceDashboard = () =>{
                             <div className="color-stripe" ></div>
                             <div className="tag-content">
                             <div className="index">  {index +1}</div>
-                            <div className="date">  {item?.followUpDate || item?.timeCreated}</div>
+                            <div className="date">  {formatDate(item?.followUpDate) ||formatDate(item?.timeCreated)}</div>
                             </div>
                             </div>
 
@@ -188,7 +209,7 @@ const GuidenceDashboard = () =>{
                  
                         <div className="details-container">
                         <p>{openTask[activeIndex]?.guidanceTitle}</p>
-                        <p>{openTask[activeIndex]?.createdDate}</p>
+                        <p>{formatDate(openTask[activeIndex]?.createdDate)}</p>
                         <p>{openTask[activeIndex]?.studentId}</p>
                         <p>{openTask[activeIndex]?.studentEmail}</p>
                         <p>{openTask[activeIndex]?.teacherEmail}</p>
