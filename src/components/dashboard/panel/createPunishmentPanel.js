@@ -56,6 +56,8 @@ const CreatePunishmentPanel = ({ data = [] }) => {
     message: "",
     buttonType: "",
   });
+  const [guidanceBoolean, setGuidanceBoolean] = useState(false);
+  const [guidanceData, setGuidanceData] = useState({title:"",description:""})
 
   useEffect(() => {
     setTeacherEmailSelected(sessionStorage.getItem("email"));

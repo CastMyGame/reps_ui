@@ -28,7 +28,7 @@ const GuidenceDashboard = () =>{
     const[activeTask,setActiveTask] = useState<any |null>(null);
 
     //Toggles
-    const [taskType,setTaskType] = useState("Open")
+    const [taskType,setTaskType] = useState("OPEN")
 
 
     const handleUpdatePage =() =>{
@@ -171,14 +171,14 @@ const handleStatusChange = (status:any,id:string) =>{
       onChange={handleTaskTypeChange}
       aria-label="Task Type"
     >
-      <ToggleButton value="Open">Open</ToggleButton>
+      <ToggleButton value="OPEN">Open</ToggleButton>
       <ToggleButton value="CLOSED">Closed</ToggleButton>
       <ToggleButton value="All">All</ToggleButton>
     </ToggleButtonGroup>
                 </div>
                 <h1 className="main-panel-title">Active Referals</h1>
                 {openTask.map((item:any,index:any)=>{
-                    const markStatus = item.status === "CLOSED"? "Open":"CLOSED";
+                    const markStatus = item.status === "CLOSED"? "OPEN":"CLOSED";
                     return(
                         <div className="task-card"
                         onClick={()=>setActiveIndex(index)}
