@@ -12,7 +12,7 @@ const NotesComponent = (props:any) => {
       };
 //Add PUT controller to update followup date
     const handleSubmitNotes = () => {
-    const url =`${baseUrl}/punish/v1/updateGuidance/notes/${props.activeTask}`
+    const url =`${baseUrl}/punish/v1/guidance/notes/${props.activeTask}`
     axios.put(url, noteText,{headers})
     .then(response => {
       console.log(response.data);
@@ -22,8 +22,12 @@ const NotesComponent = (props:any) => {
     });
 
     props.setDisplayModal(false);
+    setTimeout(()=>{
+        props.setUpdatePage((prev: any) => !prev);
 
-        // You can use the finalPayload as needed (e.g., send it to an API)
+    },500)
+
+
       };
     
 

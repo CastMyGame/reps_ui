@@ -11,33 +11,78 @@ import SendResourcesComponent from "../modals/resources/resources";
 import axios from "axios";
 import { baseUrl } from "src/utils/jsonData";
 import { DateTime } from "luxon";
+import { ToggleButton, ToggleButtonGroup } from "@mui/material";
+import { handleLogout } from "src/utils/helperFunctions";
 
 const GuidenceDashboard = () =>{
     const [modalType, setModalType] = useState<string>("schedule");
     const [displayPicker,setDisplayPicker] = useState(false)
     const [displayNotes,setDisplayNotes] =useState(false)
-    const [displayResources, setDisplayResources] = useState(false)
-    
+    const [displayResources, setDisplayResources] = useState(false);
 
+    const [updatePage, setUpdatePage] = useState(false);
+    
+    
     const [openTask,setOpenTask] = useState<any>([])
     const[activeIndex,setActiveIndex] = useState<number|null>(null);
     const[activeTask,setActiveTask] = useState<any |null>(null);
+
+    //Toggles
+    const [taskType,setTaskType] = useState("Open")
+
+
+    const handleUpdatePage =() =>{
+        setTimeout(()=>{
+            setUpdatePage((prev:any)=>!prev)
+        },500)
+    }
     
+
+    const handleTaskTypeChange = (event:any, newTaskType:string) => {
+        if (newTaskType !== null) {
+          setTaskType(newTaskType);
+        }
+      };
+
+
+//Status Change Actions for Closing and Scheduling Task
+const handleStatusChange = (status:any,id:string) =>{
+
+    const payload = {status:status};
 
     const headers = {
         Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
       };
       
+      const url =`${baseUrl}/punish/v1/guidance/status/${id}`
+      axios.put(url, payload,{headers})
+      .then(response => {
+        console.log(response.data);
+        handleUpdatePage();
+      })
+      .catch(error => {
+        console.error(error);
+      });
+    
+
+
+} 
+
+
       
     useEffect(()=>{
-        axios.get(`${baseUrl}/punish/v1/guidance/Open`,{headers})
+        const headers = {
+            Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
+          };
+          
+        axios.get(`${baseUrl}/punish/v1/guidance/${taskType}`,{headers})
         .then(function(response){
             setOpenTask(response.data)
         }).catch(function (error){
             console.error(error)
         })
     
-    },[]);
+    },[taskType, updatePage]);
 
     const formatDate = (dateString:any) => {
         if (!dateString) {
@@ -59,12 +104,6 @@ const GuidenceDashboard = () =>{
     };
     
     
-    
-    useEffect(()=>{
-        console.log("active",activeTask)
-    },[activeTask])
-
-
     return(
     <>
 
@@ -80,13 +119,16 @@ const GuidenceDashboard = () =>{
 {displayPicker  && (
       <SchedulerComponent   
       setDisplayModal={setDisplayPicker}
-      activeTask={activeTask}  />
+      activeTask={activeTask}
+      setUpdatePage={setUpdatePage}
+        />
     )}
 
 {displayNotes  && (
       <NotesComponent   
       setDisplayModal={setDisplayNotes}
-      activeTask={activeTask}  />
+      activeTask={activeTask}
+      setUpdatePage={setUpdatePage}  />
     )}
 
 
@@ -105,7 +147,7 @@ const GuidenceDashboard = () =>{
       setPanelName={"setPanelName"}
       setDropdown={"setIsDropdownOpen"}
       isDropdownOpen={"isDropdownOpen"}
-      setLogin={"handleLogout"}
+      setLogin={handleLogout}
     />
   </div>
 
@@ -121,8 +163,22 @@ const GuidenceDashboard = () =>{
             <div 
            
             className="task-panel">
+                <div className="toggles">
+                <ToggleButtonGroup
+      color="primary"
+      value={taskType}
+      exclusive
+      onChange={handleTaskTypeChange}
+      aria-label="Task Type"
+    >
+      <ToggleButton value="Open">Open</ToggleButton>
+      <ToggleButton value="CLOSED">Closed</ToggleButton>
+      <ToggleButton value="All">All</ToggleButton>
+    </ToggleButtonGroup>
+                </div>
                 <h1 className="main-panel-title">Active Referals</h1>
-                {openTask.filter((x:any)=> x?.status === "Open").map((item:any,index:any)=>{
+                {openTask.map((item:any,index:any)=>{
+                    const markStatus = item.status === "CLOSED"? "Open":"CLOSED";
                     return(
                         <div className="task-card"
                         onClick={()=>setActiveIndex(index)}
@@ -144,10 +200,14 @@ const GuidenceDashboard = () =>{
                             </div>
                             </div>
                             <div className="card-actions">
-                            <div className="card-action-title">
-                            Mark Complete
+                            <div 
+                            className="card-action-title">
+                            {item.status === "CLOSED"? "Restore":"Mark Complete"}
                             </div>
-                            <div className="check-box">
+                            <div 
+                             onClick={()=>handleStatusChange(markStatus,item.punishmentId)}
+
+                            className="check-box">
                           
                             </div>
                             </div>
@@ -224,8 +284,8 @@ const GuidenceDashboard = () =>{
 
 
                 {
-    (activeIndex != null && activeIndex >= 0 && openTask.filter((x: any) => x.status === "Open")[activeIndex]?.notesArray?.length > 0) &&
-    openTask.filter((x: any) => x.status === "Open")[activeIndex].notesArray.map((thread: any, index: number) => {
+    (activeIndex != null && activeIndex >= 0 && openTask[activeIndex]?.notesArray?.length > 0) &&
+    openTask[activeIndex].notesArray.map((thread: any, index: number) => {
         return (
             <div className="thread-card" key={index}>
                 <p>Event: {thread.event}</p>
