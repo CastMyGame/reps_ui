@@ -8,7 +8,7 @@ import ReferralByBehavior from "./charts/lineCharts/referralsByBehavior.js";
 import TeacherInfractionOverPeriodBarChart from "./charts/barChart/teacherInfractionPeriodBarChart.js";
 import { PieChartParentCommunication } from "./charts/pieCharts/pieChartParentCommunication.js";
 import RecentIncidents from "./charts/tables/studentRecentContacts.js";
-import GeneralShoutOut from "../../../globalComponents/widget-shout-out.tsx";
+import ShoutOuts from "../../../globalComponents/shoutOuts.js";
 
 const TeacherOverviewPanel = ({ setPanelName, data = [] }) => {
   const [openModal, setOpenModal] = useState({
@@ -87,7 +87,7 @@ const TeacherOverviewPanel = ({ setPanelName, data = [] }) => {
       )}
       <div className="teacher-overview-first">
         <Card variant="outlined">
-          <GeneralShoutOut data={data.shoutOutsResponse} school={data.school} teacher={data.teacher}/>
+          <ShoutOuts data={data}/>
         </Card>
       </div>
 
