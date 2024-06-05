@@ -11,7 +11,7 @@ import SendResourcesComponent from "../modals/resources/resources";
 import axios from "axios";
 import { baseUrl } from "src/utils/jsonData";
 import { DateTime } from "luxon";
-import { ToggleButton, ToggleButtonGroup } from "@mui/material";
+import { FormControlLabel, Switch, ToggleButton, ToggleButtonGroup } from "@mui/material";
 import { handleLogout } from "src/utils/helperFunctions";
 
 const GuidenceDashboard = () =>{
@@ -26,7 +26,7 @@ const GuidenceDashboard = () =>{
     const [openTask,setOpenTask] = useState<any>([])
     const[activeIndex,setActiveIndex] = useState<number|null>(null);
     const[activeTask,setActiveTask] = useState<any |null>(null);
-
+const [guidanceFilter,setGuidanceFilter] = useState<boolean>(true);
     //Toggles
     const [taskType,setTaskType] = useState("OPEN")
 
@@ -43,6 +43,19 @@ const GuidenceDashboard = () =>{
           setTaskType(newTaskType);
         }
       };
+
+
+      const handleReferralFilterChange = ( filterBoolean:boolean) => {
+        if (filterBoolean !== null) {
+          setGuidanceFilter(filterBoolean);
+          setUpdatePage(prev=>!prev)
+        }
+      };
+
+      const handleChange = (event:any) => {
+        handleReferralFilterChange(event.target.checked);
+      };
+    
 
 
 //Status Change Actions for Closing and Scheduling Task
@@ -75,7 +88,7 @@ const handleStatusChange = (status:any,id:string) =>{
             Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
           };
           
-        axios.get(`${baseUrl}/punish/v1/guidance/${taskType}`,{headers})
+        axios.get(`${baseUrl}/punish/v1/guidance/${taskType}/${guidanceFilter}`,{headers})
         .then(function(response){
             setOpenTask(response.data)
         }).catch(function (error){
@@ -163,7 +176,7 @@ const handleStatusChange = (status:any,id:string) =>{
             <div 
            
             className="task-panel">
-                <div className="toggles">
+                <div style={{display:"flex",justifyContent:"space-between"}}className="toggles">
                 <ToggleButtonGroup
       color="primary"
       value={taskType}
@@ -174,8 +187,20 @@ const handleStatusChange = (status:any,id:string) =>{
       <ToggleButton value="OPEN">Open</ToggleButton>
       <ToggleButton value="CLOSED">Closed</ToggleButton>
       <ToggleButton value="DORMANT">Dormant</ToggleButton>
-      <ToggleButton value="All">All</ToggleButton>
     </ToggleButtonGroup>
+<div>
+    <FormControlLabel
+      control={
+        <Switch
+          color="primary"
+          checked={guidanceFilter}
+          onChange={handleChange}
+          aria-label="Referral Filter"
+        />
+      }
+      label={guidanceFilter ? 'My Referrals' : 'All Referrals'}
+    />
+    </div>
                 </div>
                 <h1 className="main-panel-title">Active Referals</h1>
                 {openTask.map((item:any,index:any)=>{
