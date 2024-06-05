@@ -81,6 +81,11 @@ export default function SignIn() {
       let path = "/dashboard/admin";
       navigate(path)
     }
+    if(role ==="GUIDANCE"){
+
+      let path = "/dashboard/guidance";
+      navigate(path)
+    }
     
   
   }
