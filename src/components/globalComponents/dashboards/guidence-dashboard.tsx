@@ -13,6 +13,7 @@ import { baseUrl } from "src/utils/jsonData";
 import { DateTime } from "luxon";
 import { FormControlLabel, Switch, ToggleButton, ToggleButtonGroup } from "@mui/material";
 import { handleLogout } from "src/utils/helperFunctions";
+import { dateCreateFormat } from "src/components/dashboard/global/helperFunctions";
 
 const GuidenceDashboard = () =>{
     const [modalType, setModalType] = useState<string>("schedule");
@@ -202,9 +203,10 @@ const handleStatusChange = (status:any,id:string) =>{
     />
     </div>
                 </div>
-                <h1 className="main-panel-title">Active Referals</h1>
+                <h1 className="main-panel-title">Active Referrals</h1>
                 {openTask.map((item:any,index:any)=>{
                     const markStatus = item.guidanceStatus === "CLOSED"? "OPEN":"CLOSED";
+                    const notes = item.notesArray
                     return(
                         <div className="task-card"
                         onClick={()=>setActiveIndex(index)}
@@ -213,7 +215,7 @@ const handleStatusChange = (status:any,id:string) =>{
                             <div className="color-stripe" ></div>
                             <div className="tag-content">
                             <div className="index">  {index +1}</div>
-                            <div className="date">  {formatDate(item?.followUpDate) ||formatDate(item?.timeCreated)}</div>
+                            <div className="date">  {dateCreateFormat(item?.followUpDate) ||dateCreateFormat(item?.timeCreated)}</div>
                             </div>
                             </div>
 
@@ -222,7 +224,7 @@ const handleStatusChange = (status:any,id:string) =>{
                             {item.infractionName}
                             </div>
                             <div className="card-body-description">
-                          {item.infractionDescription}
+                          {item.notesArray[0].content}
                             </div>
                             </div>
                             <div className="card-actions">
@@ -294,7 +296,7 @@ const handleStatusChange = (status:any,id:string) =>{
                  
                         <div className="details-container">
                         <p>{openTask[activeIndex]?.guidanceTitle}</p>
-                        <p>{formatDate(openTask[activeIndex]?.createdDate)}</p>
+                        <p>{dateCreateFormat(openTask[activeIndex]?.createdDate)}</p>
                         <p>{openTask[activeIndex]?.studentId}</p>
                         <p>{openTask[activeIndex]?.studentEmail}</p>
                         <p>{openTask[activeIndex]?.teacherEmail}</p>
@@ -315,7 +317,7 @@ const handleStatusChange = (status:any,id:string) =>{
         return (
             <div className="thread-card" key={index}>
                 <p>Event: {thread.event}</p>
-                <p>Date: {thread.date}</p>
+                <p>Date: {dateCreateFormat(thread.date)}</p>
                 <p>Content: {thread.content}</p>
             </div>
         );
