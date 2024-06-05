@@ -74,6 +74,12 @@ export default function SinglePageSignIn() {
       let path = "/dashboard/admin";
       navigate(path)
     }
+    if(role ==="GUIDANCE"){
+      console.log("nav o guidence")
+
+      let path = "/dashboard/teacher";
+      navigate(path)
+    }
     
   
   }
