@@ -18,7 +18,7 @@ const handleSetDate = () => {
       };
 
     const url =`${baseUrl}/punish/v1/guidance/followup/${props.activeTask}`
-    axios.put(url, {"followUpDate":selectedDate?.toFormat("yyyyMMdd")},{headers})
+    axios.put(url, {"followUpDate":selectedDate?.toFormat("yyyyMMdd"),"guidanceStatus":"DORMANT"},{headers})
     .then(response => {
       console.log(response.data);
       setTimeout(()=>{

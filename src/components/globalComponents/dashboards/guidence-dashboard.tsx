@@ -173,12 +173,13 @@ const handleStatusChange = (status:any,id:string) =>{
     >
       <ToggleButton value="OPEN">Open</ToggleButton>
       <ToggleButton value="CLOSED">Closed</ToggleButton>
+      <ToggleButton value="DORMANT">Dormant</ToggleButton>
       <ToggleButton value="All">All</ToggleButton>
     </ToggleButtonGroup>
                 </div>
                 <h1 className="main-panel-title">Active Referals</h1>
                 {openTask.map((item:any,index:any)=>{
-                    const markStatus = item.status === "CLOSED"? "OPEN":"CLOSED";
+                    const markStatus = item.guidanceStatus === "CLOSED"? "OPEN":"CLOSED";
                     return(
                         <div className="task-card"
                         onClick={()=>setActiveIndex(index)}
@@ -193,7 +194,7 @@ const handleStatusChange = (status:any,id:string) =>{
 
                             <div className="card-body">
                             <div className="card-body-title">
-                            {item.guidanceTitle}
+                            {item.infractionName}
                             </div>
                             <div className="card-body-description">
                           {item.infractionDescription}
@@ -202,7 +203,7 @@ const handleStatusChange = (status:any,id:string) =>{
                             <div className="card-actions">
                             <div 
                             className="card-action-title">
-                            {item.status === "CLOSED"? "Restore":"Mark Complete"}
+                            {item.guidanceStatus === "CLOSED"? "Restore":"Mark Complete"}
                             </div>
                             <div 
                              onClick={()=>handleStatusChange(markStatus,item.punishmentId)}
