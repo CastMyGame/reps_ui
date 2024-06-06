@@ -13,6 +13,7 @@ import { baseUrl } from "src/utils/jsonData";
 import { DateTime } from "luxon";
 import { FormControlLabel, Switch, ToggleButton, ToggleButtonGroup } from "@mui/material";
 import { handleLogout } from "src/utils/helperFunctions";
+import { generateCategoricalChart } from "recharts/types/chart/generateCategoricalChart";
 
 const GuidenceDashboard = () =>{
     const [modalType, setModalType] = useState<string>("schedule");
@@ -57,7 +58,11 @@ const [guidanceFilter,setGuidanceFilter] = useState<boolean>(true);
       };
     
 
-
+      //CONSTANTS
+      const CLERICAL = ["Grade Change Request", "Schedule Change Request"];
+      const BEHAVIORAL = ["Tardy", "Unauthorized Device/Cell Phone","Disruptive Behavior","Horseplay","Dress Code","Behavioral Concern","Failure to Complete Work","Guidance Referral"];
+    
+    
 //Status Change Actions for Closing and Scheduling Task
 const handleStatusChange = (status:any,id:string) =>{
 
@@ -116,6 +121,19 @@ const handleStatusChange = (status:any,id:string) =>{
         }
     };
     
+
+const categoryBadgeGenerator = (infractionName :string)=>{
+    if(CLERICAL.includes(infractionName)){
+        return <div style={{backgroundColor:"gold"}} className="cat-badge">Clerical</div>
+    }
+
+    if(BEHAVIORAL.includes(infractionName)){
+        return <div  className="cat-badge">Behavioral</div>
+
+    }
+
+}
+
     
     return(
     <>
@@ -224,6 +242,7 @@ const handleStatusChange = (status:any,id:string) =>{
                             <div className="card-body-description">
                           {item.infractionDescription}
                             </div>
+                            {categoryBadgeGenerator(item.infractionName)}
                             </div>
                             <div className="card-actions">
                             <div 
