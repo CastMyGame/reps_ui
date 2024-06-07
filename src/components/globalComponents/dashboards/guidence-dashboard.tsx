@@ -14,11 +14,13 @@ import { DateTime } from "luxon";
 import { FormControlLabel, Switch, ToggleButton, ToggleButtonGroup } from "@mui/material";
 import { handleLogout } from "src/utils/helperFunctions";
 import { dateCreateFormat } from "src/components/dashboard/global/helperFunctions";
+import { Category } from "@mui/icons-material";
 
 const GuidenceDashboard = () =>{
     const [displayPicker,setDisplayPicker] = useState(false)
     const [displayNotes,setDisplayNotes] =useState(false)
     const [displayResources, setDisplayResources] = useState(false);
+    const [categoryFilter, setCategoryFilter] =useState("");
 
     const [updatePage, setUpdatePage] = useState(false);
     
@@ -43,6 +45,12 @@ const [guidanceFilter,setGuidanceFilter] = useState<boolean>(true);
           setTaskType(newTaskType);
         }
       };
+
+     const handleCategoryChange = (event:any , category:string) =>{
+        if (category !== null) {
+            setCategoryFilter(category);
+          }
+     }
 
 
       const handleReferralFilterChange = ( filterBoolean:boolean) => {
@@ -86,6 +94,9 @@ const handleStatusChange = (status:any,id:string) =>{
 } 
 
 
+
+
+
       
     useEffect(()=>{
         const headers = {
@@ -94,12 +105,20 @@ const handleStatusChange = (status:any,id:string) =>{
           
         axios.get(`${baseUrl}/punish/v1/guidance/${taskType}/${guidanceFilter}`,{headers})
         .then(function(response){
-            setOpenTask(response.data)
+            if(categoryFilter === "CLERICAL"){
+                setOpenTask(response.data.filter((item: { infractionName: string; }) => CLERICAL.includes(item.infractionName)));
+            } else 
+            if(categoryFilter === "BEHAVIORAL"){
+                setOpenTask(response.data.filter((item: { infractionName: string; }) => BEHAVIORAL.includes(item.infractionName)));
+            }else{
+                setOpenTask(response.data);
+
+            }
         }).catch(function (error){
             console.error(error)
         })
     
-    },[taskType, updatePage]);
+    },[taskType, updatePage,categoryFilter]);
 
     const formatDate = (dateString:any) => {
         if (!dateString) {
@@ -190,21 +209,39 @@ const categoryBadgeGenerator = (infractionName :string)=>{
         }}
         
         className="panel-container">
-            <div 
-           
-            className="task-panel">
-                <div style={{display:"flex",justifyContent:"space-between"}}className="toggles">
-                <ToggleButtonGroup
+            <div  className="task-panel">
+                <div  style={{display:"flex",justifyContent:"space-between"}} className="toggles">
+                    <div className = "toggle-groups">
+                    <ToggleButtonGroup
       color="primary"
       value={taskType}
       exclusive
       onChange={handleTaskTypeChange}
       aria-label="Task Type"
+      sx={{ '& .MuiToggleButton-root': { height: 30, width:70 } }} // Custom height
+
     >
       <ToggleButton value="OPEN">Open</ToggleButton>
       <ToggleButton value="CLOSED">Closed</ToggleButton>
       <ToggleButton value="DORMANT">Dormant</ToggleButton>
     </ToggleButtonGroup>
+
+    <ToggleButtonGroup
+      color="primary"
+      value={categoryFilter}
+      exclusive
+      onChange={handleCategoryChange}
+      aria-label="Category"
+      sx={{ '& .MuiToggleButton-root': { height: 30, width:70, marginTop:2 } }} // Custom height
+
+    >
+      <ToggleButton value="CLERICAL">Clerical</ToggleButton>
+      <ToggleButton value="BEHAVIORAL">Behavioral</ToggleButton>
+      <ToggleButton value="">All</ToggleButton>
+    </ToggleButtonGroup>
+
+                    </div>
+       
 <div>
     <FormControlLabel
       control={

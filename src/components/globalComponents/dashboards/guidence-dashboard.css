@@ -172,3 +172,8 @@
     font-size: 10px;
 }
 
+
+.toggle-groups{
+    display: flex;
+    flex-direction: column;
+}
