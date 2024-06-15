@@ -187,7 +187,10 @@ const GlobalPunishmentPanel = ({ roleType }) => {
 
   //Delete has been changed to archived api
   const handleDeletePunishment = (obj) => {
-    setLoadingPunishmentId({ id: obj.punishment.punishmentId, buttonType: "delete" });
+    setLoadingPunishmentId({
+      id: obj.punishment.punishmentId,
+      buttonType: "delete",
+    });
 
     const url = `${baseUrl}/punish/v1/archived/${sessionStorage.getItem("email")}/${obj.punishment.punishmentId}`;
     axios
@@ -345,12 +348,22 @@ const GlobalPunishmentPanel = ({ roleType }) => {
               >
                 Description
               </TableCell>
-              <TableCell
-                variant="head"
-                style={{ fontWeight: "bold", fontSize: 18 }}
-              >
-                Level
-              </TableCell>
+              {roleType === "admin" ? (
+                <TableCell
+                  variant="head"
+                  style={{ fontWeight: "bold", fontSize: 18 }}
+                >
+                  Created By
+                </TableCell>
+              ) : (
+                <TableCell
+                  variant="head"
+                  style={{ fontWeight: "bold", fontSize: 18 }}
+                >
+                  Level
+                </TableCell>
+              )}
+
               <TableCell
                 variant="head"
                 style={{ fontWeight: "bold", fontSize: 18 }}
@@ -424,14 +437,26 @@ const GlobalPunishmentPanel = ({ roleType }) => {
                       >
                         {x.punishment.infractionDescription[0]}
                       </TableCell>
-                      <TableCell
-                        style={{
-                          fontSize: 14,
-                          textAlign: "auto",
-                        }}
-                      >
-                        {x.punishment.infractionLevel}
-                      </TableCell>
+                      {roleType === "admin" ? (
+                        <TableCell
+                          style={{
+                            fontSize: 14,
+                            textAlign: "auto",
+                          }}
+                        >
+                          {x.punishment.teacherEmail}
+                        </TableCell>
+                      ) : (
+                        <TableCell
+                          style={{
+                            fontSize: 14,
+                            textAlign: "auto",
+                          }}
+                        >
+                          {x.punishment.infractionLevel}
+                        </TableCell>
+                      )}
+
                       <TableCell
                         style={{
                           fontSize: 14,
@@ -483,7 +508,8 @@ const GlobalPunishmentPanel = ({ roleType }) => {
                                 >
                                   Close Referral
                                 </p>
-                                {loadingPunihsmentId.id === x.punishment.punishmentId &&
+                                {loadingPunihsmentId.id ===
+                                  x.punishment.punishmentId &&
                                 loadingPunihsmentId.buttonType === "close" ? (
                                   <CircularProgress
                                     style={{ height: "20px", width: "20px" }}
