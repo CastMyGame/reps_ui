@@ -177,3 +177,54 @@
     display: flex;
     flex-direction: column;
 }
+
+.search-bar-resources{
+margin-top: 10px;
+width:98%;
+height:40px;
+background-color: white;
+color:black;
+
+}
+
+.selected-answers {
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    height: max-content;
+    min-height: 100px;
+    width: 98%;
+    border: 2px black solid;
+}
+
+.resource-chip {
+    border: 1px black solid;
+    border-radius: 5px;
+    white-space: nowrap;
+    margin-right: 1px;
+    height: fit-content;
+    padding: 2px 5px; /* Adding some padding for better appearance */
+    box-sizing: border-box; /* Ensure the padding and border are included in the width calculation */
+}
+
+.resource-container{
+    position: absolute;
+    padding: 5px 5px;
+    height: 98%;
+    width: 98%;
+
+
+}
+.mapped-items{
+
+    overflow: auto;
+    height: 200px;
+    width: 98%;
+}
+
+.resource-submit-btn{
+    position: absolute;
+    background-color: cornflowerblue;
+    top:90%
+
+}

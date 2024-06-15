@@ -1,6 +1,5 @@
 import {useEffect, useState} from "react"
 import { NavigationLoggedIn } from "../../landing/navigation-loggedIn";
-import { ContactUsModal } from "../../../secuirty/contactUsModal";
 import "./guidence-dashboard.css"
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import NoteAddIcon from '@mui/icons-material/NoteAdd';
@@ -14,7 +13,7 @@ import { DateTime } from "luxon";
 import { FormControlLabel, Switch, ToggleButton, ToggleButtonGroup } from "@mui/material";
 import { handleLogout } from "src/utils/helperFunctions";
 import { dateCreateFormat } from "src/components/dashboard/global/helperFunctions";
-import { Category } from "@mui/icons-material";
+
 
 const GuidenceDashboard = () =>{
     const [displayPicker,setDisplayPicker] = useState(false)
@@ -69,7 +68,10 @@ const [guidanceFilter,setGuidanceFilter] = useState<boolean>(true);
       const CLERICAL = ["Grade Change Request", "Schedule Change Request"];
       const BEHAVIORAL = ["Tardy", "Unauthorized Device/Cell Phone","Disruptive Behavior","Horseplay","Dress Code","Behavioral Concern","Failure to Complete Work","Guidance Referral"];
     
+
     
+
+
 //Status Change Actions for Closing and Scheduling Task
 const handleStatusChange = (status:any,id:string) =>{
 
@@ -92,8 +94,6 @@ const handleStatusChange = (status:any,id:string) =>{
 
 
 } 
-
-
 
 
 
@@ -184,7 +184,8 @@ const categoryBadgeGenerator = (infractionName :string)=>{
 {displayResources  && (
       <SendResourcesComponent   
       setDisplayModal={setDisplayResources}
-      activeTask={activeTask}  />
+      activeTask={activeTask} 
+      setUpdatePage={setUpdatePage} />
     )}
 
 
