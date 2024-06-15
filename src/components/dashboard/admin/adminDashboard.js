@@ -62,78 +62,78 @@ const AdminDashboard = () => {
 
   return (
     loggedIn && (
-      <>
+      <div>
         <div>
-          <div>
-            {modalType === "contact" && (
-              <ContactUsModal setContactUsDisplayModal={setModalType} />
-            )}
+          {modalType === "contact" && (
+            <ContactUsModal setContactUsDisplayModal={setModalType} />
+          )}
 
-            <NavigationAdmin
-              toggleNotificationDrawer={toggleNotificationDrawer}
-              setModalType={setModalType}
-              setPanelName={setPanelName}
-              setDropdown={setIsDropdownOpen}
-              isDropdownOpen={isDropdownOpen}
-              setLogin={handleLogout}
-            />
-          </div>
+          <NavigationAdmin
+            toggleNotificationDrawer={toggleNotificationDrawer}
+            setModalType={setModalType}
+            setPanelName={setPanelName}
+            setDropdown={setIsDropdownOpen}
+            isDropdownOpen={isDropdownOpen}
+            setLogin={handleLogout}
+          />
+        </div>
 
-          <div className="header">
-            {punishmentData.length === 0 ? (
-              <LoadingWheelPanel />
-            ) : (
-              <div className="">
-                <div
-                  style={{ width: false ? "70%" : "100%" }}
-                  className="left-main"
-                >
-                  <div className="main-content-panel">
-                    {punishmentData.length === 0 ? (
-                      <LoadingWheelPanel />
-                    ) : (
-                      panelName === "overview" && (
-                        <AdminOverviewPanel data={data} />
-                      )
-                    )}
-                    {panelName === "viewTeacher" && <AdminTeacherPanel />}
-                    {panelName === "student" && <TeacherStudentPanel />}
-                    {panelName === "punishment" && <GlobalPunishmentPanel />}
-                    {panelName === "createPunishment" && (
-                      <CreatePunishmentPanel
-                        setPanelName={setPanelName}
-                        data={data}
-                      />
-                    )}
-                    {panelName === "createNewStudent" && (
-                      <CreateNewStudentPanel />
-                    )}
-                    {panelName === "userManagement" && <AddTeacherForm />}
-                    {panelName === "archived" && (
-                      <GlobalArchivedPunishmentPanel />
-                    )}
-                    {panelName === "createEditAssignments" && (
-                      <AssignmentManager />
-                    )}
-                    {panelName === "spendPoints" && <SpendPage data={data} />}
-                  </div>
+        <div className="header">
+          {punishmentData.length === 0 ? (
+            <LoadingWheelPanel />
+          ) : (
+            <div className="">
+              <div
+                style={{ width: false ? "70%" : "100%" }}
+                className="left-main"
+              >
+                <div className="main-content-panel">
+                  {punishmentData.length === 0 ? (
+                    <LoadingWheelPanel />
+                  ) : (
+                    panelName === "overview" && (
+                      <AdminOverviewPanel data={data} />
+                    )
+                  )}
+                  {panelName === "viewTeacher" && <AdminTeacherPanel />}
+                  {panelName === "student" && <TeacherStudentPanel />}
+                  {panelName === "punishment" && (
+                    <GlobalPunishmentPanel roleType={"admin"} />
+                  )}
+                  {panelName === "createPunishment" && (
+                    <CreatePunishmentPanel
+                      setPanelName={setPanelName}
+                      data={data}
+                    />
+                  )}
+                  {panelName === "createNewStudent" && (
+                    <CreateNewStudentPanel />
+                  )}
+                  {panelName === "userManagement" && <AddTeacherForm />}
+                  {panelName === "archived" && (
+                    <GlobalArchivedPunishmentPanel />
+                  )}
+                  {panelName === "createEditAssignments" && (
+                    <AssignmentManager />
+                  )}
+                  {panelName === "spendPoints" && <SpendPage data={data} />}
                 </div>
               </div>
-            )}
-          </div>
-
-          <Drawer
-            anchor="right"
-            open={openNotificationDrawer}
-            onClose={() => toggleNotificationDrawer(false)}
-          >
-            {/* <NotificationBar notificationData={data}/> */}
-            <DetentionWidget />
-
-            <ISSWidget />
-          </Drawer>
+            </div>
+          )}
         </div>
-      </>
+
+        <Drawer
+          anchor="right"
+          open={openNotificationDrawer}
+          onClose={() => toggleNotificationDrawer(false)}
+        >
+          {/* <NotificationBar notificationData={data}/> */}
+          <DetentionWidget />
+
+          <ISSWidget />
+        </Drawer>
+      </div>
     )
   );
 };
