@@ -16,7 +16,7 @@ import ForgotPassword from './secuirty/forgotPassword';
 import { useState } from 'react';
 import IdleTimerContainer from './secuirty/IdleTimerContainer';
 import SinglePageSignIn from './secuirty/single-page-login';
-import GuidenceDashboard from './components/globalComponents/dashboards/guidence-dashboard';
+import GuidenceDashboard from './components/globalComponents/dashboards/guidance-dashboard';
 
 function App() {
   const [isLoggedOut, setIsLoggedOut] = useState(false);

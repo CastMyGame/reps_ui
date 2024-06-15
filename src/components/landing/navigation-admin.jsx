@@ -1,6 +1,5 @@
 import React from "react";
 import "./landing.css";
-import { Diversity2 } from "@mui/icons-material";
 
 export const NavigationAdmin = (props) => {
   const dropdownHandler = (panel) => {

@@ -8,17 +8,21 @@
     text-align: center;
     background-color: silver;
     padding: 10px 10px;
+    position: sticky;
+    top: 0;
 }
 
 .task-panel{
     width: 60%;
     background-color: lightblue;
     padding: 20px 20px;
+    height: 100%;
+    overflow-y: scroll;
 
 }
 
 .task-card{
-    height: 50px;
+    height: 80px;
     width:100%;
     margin-bottom:10px;
     display: flex;
@@ -68,6 +72,7 @@
     width: 100%;
     text-align: center;
     height: 60px;
+    align-items: center;
 }
 
 .card-body-title{
@@ -160,3 +165,19 @@
 
 }
 
+.cat-badge {
+    margin-top: 5px;
+    border-radius: 5px;
+    height: 14px;
+    width: 70px;
+    background-color: purple;
+    opacity: 50%;
+    color: white;
+    font-size: 10px;
+}
+
+
+.toggle-groups{
+    display: flex;
+    flex-direction: column;
+}
