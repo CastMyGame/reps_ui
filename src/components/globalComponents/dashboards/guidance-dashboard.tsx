@@ -189,6 +189,8 @@ const GuidanceDashboard = () => {
           <SendResourcesComponent
             setDisplayModal={setDisplayResources}
             activeTask={activeTask}
+            setUpdatePage={setUpdatePage}
+
           />
         )}
 
