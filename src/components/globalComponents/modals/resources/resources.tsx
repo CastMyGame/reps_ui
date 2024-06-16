@@ -36,8 +36,8 @@ const SendResourcesComponent = (props:any) => {
       })
 
       const payload = {
-        event: {event:"Notes", content:`Resources sent: ${labelsSent.join(",")}`},
-        urls:urlSent
+       
+        resourceOptionList: selectedItems
 
       }
 
