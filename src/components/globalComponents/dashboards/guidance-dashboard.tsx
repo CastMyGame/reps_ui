@@ -190,7 +190,6 @@ const GuidanceDashboard = () => {
             setDisplayModal={setDisplayResources}
             activeTask={activeTask}
             setUpdatePage={setUpdatePage}
-
           />
         )}
 
