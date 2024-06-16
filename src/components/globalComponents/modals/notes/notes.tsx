@@ -6,6 +6,9 @@ import { baseUrl } from 'src/utils/jsonData';
 
 const NotesComponent = (props:any) => {
     const [noteText, setNoteText] = useState({event:"Notes", content:""});
+    const [toastMessage, setToastMessage] = useState("");
+    const [isToast, setIsToast] = useState(false);
+    const [toastType, setToastType] = useState("")
 
     const headers = {
         Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
@@ -15,17 +18,35 @@ const NotesComponent = (props:any) => {
     const url =`${baseUrl}/punish/v1/guidance/notes/${props.activeTask}`
     axios.put(url, noteText,{headers})
     .then(response => {
-      console.log(response.data);
-    })
-    .catch(error => {
-      console.error(error);
-    });
-
-    props.setDisplayModal(false);
-    setTimeout(()=>{
+      setToastType("success-toast")
+      setIsToast(true)
+      setToastMessage("Notes Has Been Submitted")
+      
+      setTimeout(()=>{
+        setIsToast(false)
+        setToastMessage("");
+        setToastType("")
+        props.setDisplayModal(false);
         props.setUpdatePage((prev: any) => !prev);
 
-    },500)
+      },3000)
+    })
+    .catch(error => {
+      setToastType("warning-toast")
+      setIsToast(true)
+      setToastMessage("Something Went Wrong, Try Again")
+      
+      setTimeout(()=>{
+        setIsToast(false)
+        setToastMessage("");
+        setToastType("")
+
+  
+      },3000)
+
+    });
+
+  
 
 
       };
@@ -38,6 +59,8 @@ const NotesComponent = (props:any) => {
 
     return (
         <div className='generic-modal-container'>
+           {isToast && <div className={toastType}>{toastMessage}</div>} 
+
             <div className='header'>
             <div className='close-icon' onClick={()=>props.setDisplayModal(false)}>[x]</div>
             <div className='id-num'>Id:{props.activeTask}</div>

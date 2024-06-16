@@ -13,6 +13,11 @@ interface ResourceOption {
   }
 
 const SendResourcesComponent = (props:any) => {
+  const [filter,setFilter] = useState<string>("")
+
+  const [toastMessage, setToastMessage] = useState("");
+  const [isToast, setIsToast] = useState(false);
+  const [toastType, setToastType] = useState("")
   const headers = {
     Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
   };
@@ -24,44 +29,53 @@ const SendResourcesComponent = (props:any) => {
 //Add PUT controller to update followup date
     const handleSubmitResources = () => {
 
-      const labelsSent: string[] = [];
-      selectedItems.forEach((item)=>{
-        labelsSent.push(item.label)
-      })
-
-      const urlSent:string[] = []
-      selectedItems.forEach((item)=>{
-        urlSent.push(item.url)
-
-      })
-
       const payload = {
-       
         resourceOptionList: selectedItems
-
       }
 
   
       const url =`${baseUrl}/punish/v1/guidance/resources/${props.activeTask}`
       axios.put(url, payload,{headers})
       .then(response => {
-        console.log(response.data);
+        setToastType("success-toast")
+        setIsToast(true)
+        setToastMessage("Resources Has Been Sent")
+        
+        setTimeout(()=>{
+          setIsToast(false)
+          setToastMessage("");
+          setToastType("")
+          props.setDisplayModal(false);
+          props.setUpdatePage((prev: any) => !prev);
+
+
+
+    
+        },3000)
+ 
       })
       .catch(error => {
-        console.error(error);
+        setToastType("warning-toast")
+        setIsToast(true)
+        setToastMessage("Something Went Wrong, Try Again")
+        
+        setTimeout(()=>{
+          setIsToast(false)
+          setToastMessage("");
+          setToastType("")
+
+    
+        },3000)
+ 
       });
   
-      props.setDisplayModal(false);
-      setTimeout(()=>{
-          props.setUpdatePage((prev: any) => !prev);
-      },500)
+   
 
  
       console.log(selectedItems)
         // props.setDisplayModal(false);
     }
 
-    const [filter,setFilter] = useState<string>("")
 
 
     const RESOURCESOPTIONS: ResourceOption[] = [
@@ -111,8 +125,10 @@ const [selectedItems, setSelectedItems] = useState<ResourceOption[]>([]);
 
 
 
+
     return (
         <div className='generic-modal-container'>
+         {isToast && <div className={toastType}>{toastMessage}</div>} 
             <div className='resource-container'>
             <div className='resource-header'>
             <div className='close-icon' onClick={()=>props.setDisplayModal(false)}>[x]</div>
@@ -136,6 +152,7 @@ const [selectedItems, setSelectedItems] = useState<ResourceOption[]>([]);
         />
       ))}
                 </FormGroup>
+      
 
 
             </div>

@@ -232,3 +232,25 @@ color:black;
     top:90%
 
 }
+
+.success-toast{
+    position: fixed;
+    width: max-content;
+    padding: 5px 5px;
+    border: 1px solid black;
+    background-color: #22BB33;
+    opacity: 1; /* Initial opacity */
+    transition: opacity 0.5s ease-in-out; /* Transition effect */
+
+}
+
+.warning-toast{
+    width: max-content;
+    padding: 5px 5px;
+    border: 1px solid black;
+    background-color: #bb2124;
+    color: white;
+    opacity: 1; /* Initial opacity */
+    transition: opacity 0.5s ease-in-out; /* Transition effect */
+
+}
