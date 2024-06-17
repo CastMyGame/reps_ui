@@ -48,9 +48,6 @@ const SendResourcesComponent = (props:any) => {
           props.setDisplayModal(false);
           props.setUpdatePage((prev: any) => !prev);
 
-
-
-    
         },3000)
  
       })

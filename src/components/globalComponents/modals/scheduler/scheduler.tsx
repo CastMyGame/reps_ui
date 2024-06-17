@@ -9,7 +9,9 @@ import axios from 'axios';
 
 const SchedulerComponent = (props:any) => {
     const [selectedDate, setSelectedDate] = useState<DateTime | null>(DateTime.now());
-
+    const [toastMessage, setToastMessage] = useState("");
+    const [isToast, setIsToast] = useState(true);
+    const [toastType, setToastType] = useState("success-toast")
 //Add PUT controller to update followup date
 //Add PUT controller to update followup date
 const handleSetDate = () => {
@@ -20,23 +22,41 @@ const handleSetDate = () => {
     const url =`${baseUrl}/punish/v1/guidance/followup/${props.activeTask}`
     axios.put(url, {"followUpDate":selectedDate?.toFormat("yyyyMMdd"),"guidanceStatus":"DORMANT"},{headers})
     .then(response => {
-      console.log(response.data);
+      setToastType("success-toast")
+      setIsToast(true)
+      setToastMessage("Reminder for Task has been Sent")
+      
       setTimeout(()=>{
+        setIsToast(false)
+        setToastMessage("");
+        setToastType("")
+        props.setDisplayModal(false);
         props.setUpdatePage((prev: any) => !prev);
 
-    },500)
+      },3000)
+ 
     })
     .catch(error => {
-      console.error(error);
-    });
+      setToastType("warning-toast")
+      setIsToast(true)
+      setToastMessage("Something Went Wrong, Try Again")
+      
+      setTimeout(()=>{
+        setIsToast(false)
+        setToastMessage("");
+        setToastType("")
 
-    props.setDisplayModal(false);
+  
+      },3000)    });
+
    
 
       };
     
     return (
         <div className='generic-modal-container'>
+                   {isToast && <div className={toastType}>{toastMessage}</div>} 
+
             <div className='header'>
             <div className='close-icon' onClick={()=>props.setDisplayModal(false)}>[x]</div>
             <div className='id-num'></div>
