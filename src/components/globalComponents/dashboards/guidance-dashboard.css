@@ -276,3 +276,15 @@ color:black;
     padding: 10px;
 
 }
+
+.hide{
+    display :none;
+}
+
+.full{
+    width: 100%;
+}
+
+.two-third{
+    width: 66%;
+}

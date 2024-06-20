@@ -20,6 +20,7 @@ import {
 import { handleLogout } from "src/utils/helperFunctions";
 import { dateCreateFormat } from "src/components/dashboard/global/helperFunctions";
 import { get } from "src/utils/api/api";
+import { StudentDetailsModal } from "../components/modals/studentDetailsModal";
 
 const GuidanceDashboard = () => {
   const [displayPicker, setDisplayPicker] = useState(false);
@@ -153,6 +154,17 @@ const GuidanceDashboard = () => {
     }
   }, [taskType,updatePage]);
 
+
+  const fetchStudentsData = useCallback(async () => {
+         try {
+        const response = await get("student/v1/allStudents"); // Pass the headers option with the JWT token
+        // setData(response);
+        console.log(response)
+      } catch (error) {
+        console.error(error);
+      }
+  }, [updatePage]);
+
   const fetchActiveReferrals = useCallback(async () => {
     try {
       const result = await get(`punish/v1/guidance/${taskType}/${guidanceFilter}`);
@@ -201,7 +213,10 @@ const GuidanceDashboard = () => {
     } else if (panelName === "overview") {
       fetchActiveReferrals();
     }
-  }, [panelName, taskType, categoryFilter, guidanceFilter,updatePage, fetchPunishmentData, fetchActiveReferrals]);
+  else if (panelName === "student") {
+    fetchStudentsData();
+  }
+  }, [panelName, taskType, categoryFilter, guidanceFilter,updatePage, fetchPunishmentData, fetchActiveReferrals,fetchStudentsData]);
 
 
   useEffect(()=>{
@@ -335,7 +350,7 @@ const GuidanceDashboard = () => {
           }}
           className="panel-container"
         >
-          <div className="task-panel">
+          <div className={`task-panel ${panelName !=="overview"? "full":"two-third"}`}>
             <div
               style={{ display: "flex", justifyContent: "space-between" }}
               className="toggles"
@@ -493,7 +508,11 @@ const GuidanceDashboard = () => {
               );
             })}
           </div>                  
-                    } 
+           } 
+
+{/* MAINPAGE */}
+
+
            { panelName === "overview" && <div className="guidance-panel">
            <div> <h1 className="main-panel-title">Active Referrals</h1></div>
             {data.map((item: any, index: any) => {
@@ -588,12 +607,109 @@ const GuidanceDashboard = () => {
             })}
           </div>}
 
+      {/* STUDENT PANEL */}
+      { panelName === "student" && <div className="guidance-panel">
+           <div> <h1 className="main-panel-title">Student Records</h1></div>
+            {data.map((item: any, index: any) => {
+              const markStatus =
+                item.guidanceStatus === "CLOSED" ? "OPEN" : "CLOSED";
+              return (
+                <div
+                  className="task-card"
+                  onClick={() => setActiveIndex(index)}
+                  key={index}
+                >
+                  <div className="tag">
+                    <div className="color-stripe"></div>
+                    <div className="tag-content">
+                      <div className="index"> {index + 1}</div>
+                      <div className="date">
+                        {" "}
+                        {dateCreateFormat(item?.followUpDate) ||
+                          dateCreateFormat(item?.timeCreated)}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="card-body">
+                    <div className="card-body-title">{item.infractionName}</div>
+                    <div className="card-body-description">
+                      {item.notesArray[0].content}
+                    </div>
+                    {categoryBadgeGenerator(item.infractionName)}
+                  </div>
+                  <div className="card-body">
+                    <div className="card-body-title">Created By</div>
+                    <div className="card-body-description">
+                      {item.teacherEmail}
+                    </div>
+                  </div>
+                  <div className="card-actions">
+                    <div className="card-action-title">
+                      {item.guidanceStatus === "CLOSED"
+                        ? "Restore"
+                        : "Mark Complete"}
+                    </div>
+                    <div
+                      onClick={() =>
+                        handleStatusChange(markStatus, item.punishmentId)
+                      }
+                      className="check-box"
+                    ></div>
+                  </div>
+                  <div className="card-actions">
+                    <div className="card-action-title">Follow Up</div>
+                    <div
+                      className="clock-icon"
+                      onClick={() => {
+                        setDisplayPicker((prevState) => !prevState); // Toggle the state
+                        setActiveTask(item.punishmentId);
+                      }}
+                    >
+                      <AccessTimeIcon
+                        sx={{ fontSize: "20px", fontWeight: "bold" }}
+                      />
+                    </div>
+                  </div>
+                  <div className="card-actions">
+                    <div className="card-action-title">Notes</div>
+                    <div
+                      className="clock-icon"
+                      onClick={() => {
+                        setDisplayNotes((prevState) => !prevState); // Toggle the state
+                        setActiveTask(item.punishmentId);
+                      }}
+                    >
+                      <NoteAddIcon
+                        sx={{ fontSize: "20px", fontWeight: "bold" }}
+                      />
+                    </div>
+                  </div>
+                  <div className="card-actions">
+                    <div className="card-action-title">Resources</div>
+                    <div
+                      className="clock-icon"
+                      onClick={() => {
+                        setDisplayResources((prevState) => !prevState); // Toggle the state
+                        setActiveTask(item.punishmentId);
+                      }}
+                    >
+                      <SendIcon sx={{ fontSize: "20px", fontWeight: "bold" }} />
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>}
+
 
             </div>
-           
+
+            
+           <StudentDetailsModal studentEmail="exampleStudent@fakeEmail.com"/>
 
           {/* NOTES AND DETAILS SECTION */}
-          <div className="secondary-panel">
+          <div className={`secondary-panel ${panelName !== "overview" ? "hide" : ""}`}>
             <h1 className="main-panel-title">Threads</h1>
             {activeIndex != null && activeIndex >= 0 && (
               <div className="details-container">
