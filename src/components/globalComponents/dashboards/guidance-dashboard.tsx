@@ -144,6 +144,27 @@ const GuidanceDashboard = () => {
     }
   }, [taskType, guidanceFilter, categoryFilter,updatePage]);
 
+  //Handle Functions
+  const deleteRecord = (punishment:any) => {
+    const headers = {
+      Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
+    };
+    const url = `${baseUrl}/punish/v1/delete`;
+
+    axios
+      .delete(url, {data:punishment, headers }) // Pass the headers option with the JWT token
+      .then(function (response) {
+        console.log(response.data);
+        setUpdatePage((prev) => !prev);
+        window.alert(
+          `You have Deleted Record: ${punishment.infractionName} ${punishment.studentEmail}`
+        );
+      })
+      .catch(function (error) {
+        console.error(error);
+      });
+  };
+
   
   useEffect(() => {
     if (panelName === "punishment") {
@@ -188,6 +209,8 @@ const GuidanceDashboard = () => {
     }
   };
 
+
+  //Badge Generatores
   const categoryBadgeGenerator = (infractionName: string) => {
     if (CLERICAL.includes(infractionName)) {
       return (
@@ -424,7 +447,7 @@ const GuidanceDashboard = () => {
                       className="clock-icon"
                       onClick={() => {
                         // setDisplayNotes((prevState) => !prevState); // Toggle the state
-                        // setActiveTask(item.punishmentId);
+                        deleteRecord(item)
                       }}
                     >
                       <DeleteForeverIcon  sx={{ fontSize: "20px", fontWeight: "bold" }} />
