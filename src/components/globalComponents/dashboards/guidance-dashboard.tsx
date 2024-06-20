@@ -494,7 +494,7 @@ const GuidanceDashboard = () => {
             })}
           </div>                  
                     } 
-           { panelName === "overview" && <div className="guidence-panel">
+           { panelName === "overview" && <div className="guidance-panel">
            <div> <h1 className="main-panel-title">Active Referrals</h1></div>
             {data.map((item: any, index: any) => {
               const markStatus =

@@ -32,7 +32,7 @@ export default function AddTeacherForm(props) {
     parentEmail: false,
     grade: false,
     address: false,
-    guidenceEmail: false,
+    guidanceEmail: false,
   });
 
   const [registrationSuccessMessage, setRegistrationSuccessMessage] =
@@ -64,7 +64,7 @@ export default function AddTeacherForm(props) {
       parentEmail: false,
       grade: false,
       address: false,
-      guidenceEmail: false,
+      guidanceEmail: false,
     };
 
     // Check for empty fields and set errors
@@ -80,8 +80,8 @@ export default function AddTeacherForm(props) {
     if (data.get("parentEmail") === "") {
       errors.parentEmail = true;
     }
-    if (data.get("guidenceEmail") === "") {
-      errors.guidenceEmail = true;
+    if (data.get("guidanceEmail") === "") {
+      errors.guidanceEmail = true;
     }
     if (data.get("schoolName") === "") {
       errors.schoolName = true;
@@ -116,7 +116,7 @@ export default function AddTeacherForm(props) {
           parentEmail: false,
           grade: false,
           address: false,
-          guidenceEmail: false,
+          guidanceEmail: false,
         });
       }, 2000);
       return;
@@ -135,7 +135,7 @@ export default function AddTeacherForm(props) {
         parentPhoneNumber: data.get("parentPhoneNumber"),
         studentPhoneNumber: data.get("studentPhoneNumber"),
         address: data.get("address"),
-        guidenceEmail: data.get("guidenceEmail"),
+        guidanceEmail: data.get("guidanceEmail"),
         school: data.get("schoolName"),
       };
     }
@@ -299,13 +299,13 @@ export default function AddTeacherForm(props) {
                     <TextField
                       required
                       fullWidth
-                      id="guidenceEmail"
-                      label="Guidence Email Address"
-                      name="guidenceEmail"
+                      id="guidanceEmail"
+                      label="Guidance Email Address"
+                      name="guidanceEmail"
                       // autoComplete="email"
-                      error={formErrors.guidenceEmail} // Add error prop
+                      error={formErrors.guidanceEmail} // Add error prop
                       helperText={
-                        formErrors.guidenceEmail && "Email is required"
+                        formErrors.guidanceEmail && "Email is required"
                       } // Add error message
                     />
                   </Grid>

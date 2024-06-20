@@ -44,7 +44,7 @@ function App() {
         {/* Use AuthRoute for role-based access control */}
         <Route path="/dashboard/admin" element={<AdminDashboard/>} allowedRoles={["ADMIN"]} />
         <Route path="/dashboard/student" element={<StudentDashboard />} allowedRoles={["STUDENT"]} />
-        <Route path="/dashboard/guidance" element={<GuidanceDashboard />} allowedRoles={["GUIDENCE"]} />
+        <Route path="/dashboard/guidance" element={<GuidanceDashboard />} allowedRoles={["GUIDANCE"]} />
         <Route path="/dashboard/teacher" element={<TeacherDashboard />} allowedRoles={["TEACHER"]} />
         <Route path="/forms/start-punishment" element={<MyForm />} />
         <Route path="/forms/ftc-closure" element={<FailureToComplete />} />
