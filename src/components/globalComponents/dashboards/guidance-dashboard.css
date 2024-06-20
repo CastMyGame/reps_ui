@@ -10,12 +10,16 @@
     padding: 10px 10px;
     position: sticky;
     top: 0;
+    position: sticky;
+    top: 0;
 }
 
 .task-panel{
     width: 60%;
     background-color: lightblue;
     padding: 20px 20px;
+    height: 100%;
+    overflow-y: scroll;
     height: 100%;
     overflow-y: scroll;
 
@@ -112,6 +116,16 @@
 
 }
 
+.check-box:hover{
+    background-color: grey;
+}
+
+.checked-fill{
+    background-color: grey;
+    border: 2px white solid;
+    padding: 10% 10%
+}
+
 .clock-icon{
     width: 20px;
     height: 20px;
@@ -180,4 +194,85 @@
 .toggle-groups{
     display: flex;
     flex-direction: column;
+}
+
+.search-bar-resources{
+margin-top: 10px;
+width:98%;
+height:40px;
+background-color: white;
+color:black;
+
+}
+
+.selected-answers {
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    height: max-content;
+    min-height: 100px;
+    width: 98%;
+    border: 2px black solid;
+}
+
+.resource-chip {
+    border: 1px black solid;
+    border-radius: 5px;
+    white-space: nowrap;
+    margin-right: 1px;
+    height: fit-content;
+    padding: 2px 5px; /* Adding some padding for better appearance */
+    box-sizing: border-box; /* Ensure the padding and border are included in the width calculation */
+}
+
+.resource-container{
+    position: absolute;
+    padding: 5px 5px;
+    height: 98%;
+    width: 98%;
+
+
+}
+.mapped-items{
+
+    overflow: auto;
+    height: 200px;
+    width: 98%;
+}
+
+.resource-submit-btn{
+    position: absolute;
+    background-color: cornflowerblue;
+    top:90%
+
+}
+
+.success-toast{
+    position: fixed;
+    width: max-content;
+    padding: 5px 5px;
+    border: 1px solid black;
+    background-color: #22BB33;
+    opacity: 1; /* Initial opacity */
+    transition: opacity 0.5s ease-in-out; /* Transition effect */
+
+}
+
+.warning-toast{
+    width: max-content;
+    padding: 5px 5px;
+    border: 1px solid black;
+    background-color: #bb2124;
+    color: white;
+    opacity: 1; /* Initial opacity */
+    transition: opacity 0.5s ease-in-out; /* Transition effect */
+
+}
+
+.action-container{
+    display: flex;
+    justify-content: space-between;
+    width: 60%;
+    padding: 10px;
+
 }
