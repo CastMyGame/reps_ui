@@ -89,7 +89,6 @@ const GuidanceDashboard = () => {
   //Status Change Actions for Closing and Scheduling Task
   const handleStatusChange = (status: any, id: string) => {
     const payload = { status: status };
-
     const headers = {
       Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
     };
@@ -97,6 +96,24 @@ const GuidanceDashboard = () => {
     const url = `${baseUrl}/punish/v1/guidance/status/${id}`;
     axios
       .put(url, payload, { headers })
+      .then((response) => {
+        console.log(response.data);
+        handleUpdatePage();
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
+  const handlePunishmentClose = ( id: string) => {
+  
+    const headers = {
+      Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
+    };
+
+    const url = `${baseUrl}/punish/v1/close/${id}`;
+    axios
+      .post(url, [], { headers })
       .then((response) => {
         console.log(response.data);
         handleUpdatePage();
@@ -164,6 +181,7 @@ const GuidanceDashboard = () => {
         console.error(error);
       });
   };
+
 
   
   useEffect(() => {
@@ -421,9 +439,9 @@ const GuidanceDashboard = () => {
                         : " Complete"}
                     </div>
                     <div
-                      // onClick={() =>
-                      //   handleStatusChange(markStatus, item.punishmentId)
-                      // }
+                      onClick={() =>
+                        handlePunishmentClose(item.punishmentId)
+                      }
                       className="check-box"
                     ></div>
                   </div>
