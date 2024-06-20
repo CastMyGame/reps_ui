@@ -29,7 +29,7 @@ const GuidanceDashboard = () => {
 
   const [updatePage, setUpdatePage] = useState(false);
   const [modalType, setModalType] = useState("");
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<any>([]);
     const [punishmentData,setPunishmentData] = useState<any>([]);
   const [panelName, setPanelName] = useState("overview")
 
@@ -117,22 +117,24 @@ const GuidanceDashboard = () => {
       } else {
         result = await get(`punish/v1/punishStatus/${taskType}`);
       }
-      setPunishmentData(result);
+      setData(result.filter((item:any)=>{
+        return !item.guidance 
+      }));
     } catch (err) {
       console.error("Error Fetching Data: ", err);
     }
-  }, [taskType]);
+  }, [taskType,updatePage]);
 
   const fetchActiveReferrals = useCallback(async () => {
     try {
       const result = await get(`punish/v1/guidance/${taskType}/${guidanceFilter}`);
       if (Array.isArray(result)) {
         if (categoryFilter === "CLERICAL") {
-          setOpenTask(result.filter((item: { infractionName: string }) => CLERICAL.includes(item.infractionName)));
+          setData(result.filter((item: { infractionName: string }) => CLERICAL.includes(item.infractionName)));
         } else if (categoryFilter === "BEHAVIORAL") {
-          setOpenTask(result.filter((item: { infractionName: string }) => BEHAVIORAL.includes(item.infractionName)));
+          setData(result.filter((item: { infractionName: string }) => BEHAVIORAL.includes(item.infractionName)));
         } else {
-          setOpenTask(result);
+          setData(result);
         }
       } else {
         console.error("Fetched data is not an array.");
@@ -140,7 +142,7 @@ const GuidanceDashboard = () => {
     } catch (error) {
       console.error(error);
     }
-  }, [taskType, guidanceFilter, categoryFilter]);
+  }, [taskType, guidanceFilter, categoryFilter,updatePage]);
 
   
   useEffect(() => {
@@ -149,7 +151,7 @@ const GuidanceDashboard = () => {
     } else if (panelName === "overview") {
       fetchActiveReferrals();
     }
-  }, [panelName, taskType, categoryFilter, guidanceFilter, fetchPunishmentData, fetchActiveReferrals]);
+  }, [panelName, taskType, categoryFilter, guidanceFilter,updatePage, fetchPunishmentData, fetchActiveReferrals]);
 
 
   useEffect(()=>{
@@ -355,7 +357,7 @@ const GuidanceDashboard = () => {
             </div>
            {panelName === "punishment" &&  <div className="parent-contact-panel">
            <div> <h1 className="main-panel-title">Parent Contacts</h1></div>
-            {punishmentData.map((item: any, index: any) => {
+            {data.map((item: any, index: any) => {
       
               return (
                 <div
@@ -442,7 +444,7 @@ const GuidanceDashboard = () => {
                     } 
            { panelName === "overview" && <div className="guidence-panel">
            <div> <h1 className="main-panel-title">Active Referrals</h1></div>
-            {openTask.map((item: any, index: any) => {
+            {data.map((item: any, index: any) => {
               const markStatus =
                 item.guidanceStatus === "CLOSED" ? "OPEN" : "CLOSED";
               return (
@@ -543,19 +545,18 @@ const GuidanceDashboard = () => {
             <h1 className="main-panel-title">Threads</h1>
             {activeIndex != null && activeIndex >= 0 && (
               <div className="details-container">
-                <p>{openTask[activeIndex]?.guidanceTitle}</p>
+                <p>{data[activeIndex]?.guidanceTitle}</p>
                 <p>{dateCreateFormat(openTask[activeIndex]?.createdDate)}</p>
-                <p>{openTask[activeIndex]?.studentId}</p>
-                <p>{openTask[activeIndex]?.studentEmail}</p>
-                <p>{openTask[activeIndex]?.teacherEmail}</p>
+                <p>{data[activeIndex]?.studentId}</p>
+                <p>{data[activeIndex]?.studentEmail}</p>
+                <p>{data[activeIndex]?.teacherEmail}</p>
               </div>
             )}
-
             <div className="thread-container">
               {activeIndex != null &&
                 activeIndex >= 0 &&
-                openTask[activeIndex]?.notesArray?.length > 0 &&
-                openTask[activeIndex].notesArray.map(
+                data[activeIndex]?.notesArray?.length > 0 &&
+                data[activeIndex].notesArray.map(
                   (thread: any, index: number) => {
                     return (
                       <div className="thread-card" key={index}>
