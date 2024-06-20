@@ -116,6 +116,16 @@
 
 }
 
+.check-box:hover{
+    background-color: grey;
+}
+
+.checked-fill{
+    background-color: grey;
+    border: 2px white solid;
+    padding: 10% 10%
+}
+
 .clock-icon{
     width: 20px;
     height: 20px;

@@ -33,6 +33,10 @@ const GuidanceDashboard = () => {
     const [punishmentData,setPunishmentData] = useState<any>([]);
   const [panelName, setPanelName] = useState("overview")
 
+  //Indicators - UI display of processing e.g. loading wheel
+  const [ closeIndicator, setCloseIndicator] =useState(false)
+
+
 
   const [isDropdownOpen, setIsDropdownOpen] = useState("");
 
@@ -86,6 +90,8 @@ const GuidanceDashboard = () => {
   ];
 
 
+
+
   //Status Change Actions for Closing and Scheduling Task
   const handleStatusChange = (status: any, id: string) => {
     const payload = { status: status };
@@ -106,6 +112,7 @@ const GuidanceDashboard = () => {
   };
 
   const handlePunishmentClose = ( id: string) => {
+    setCloseIndicator(true)
   
     const headers = {
       Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
@@ -116,7 +123,11 @@ const GuidanceDashboard = () => {
       .post(url, [], { headers })
       .then((response) => {
         console.log(response.data);
+        setCloseIndicator(false)
         handleUpdatePage();
+        window.alert(
+          `You have Closed Record: ${id} `
+        );
       })
       .catch((error) => {
         console.error(error);
@@ -438,11 +449,11 @@ const GuidanceDashboard = () => {
                         ? "Restore"
                         : " Complete"}
                     </div>
-                    <div
+                 <div
                       onClick={() =>
                         handlePunishmentClose(item.punishmentId)
                       }
-                      className="check-box"
+                      className={closeIndicator && activeIndex === index ? 'check-box checked-fill ': `check-box`}
                     ></div>
                   </div>
                   <div className="card-actions">
