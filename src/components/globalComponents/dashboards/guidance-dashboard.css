@@ -254,3 +254,11 @@ color:black;
     transition: opacity 0.5s ease-in-out; /* Transition effect */
 
 }
+
+.action-container{
+    display: flex;
+    justify-content: space-between;
+    width: 60%;
+    padding: 10px;
+
+}
