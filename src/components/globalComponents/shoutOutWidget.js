@@ -7,7 +7,7 @@ import {
   TableCell,
   Paper,
 } from "@mui/material";
-import { dateCreateFormat } from "../../components/globalComponents/global/helperFunctions";
+import { dateCreateFormat } from "../../helperFunctions/helperFunctions";
 
 const ShoutOutWidget = ({ listOfPunishments }) => {
   const loggedInUser = sessionStorage.getItem("email");

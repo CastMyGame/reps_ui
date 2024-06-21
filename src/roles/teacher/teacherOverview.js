@@ -1,14 +1,14 @@
 import { useState, useEffect } from "react";
 import Typography from "@mui/material/Typography";
-import IncidentsByStudentTable from "./charts/tables/incidentsByStudentTable.js";
+import IncidentsByStudentTable from "../../components/globalComponents/dataDisplay/incidentsByStudentTable.js";
 import TotalReferralByWeek from "./charts/lineCharts/referralsByWeek.js";
 import TotalStudentReferredByWeek from "./charts/lineCharts/numberOfStudentReferralsByWeek.js";
 import Card from "@mui/material/Card";
 import ReferralByBehavior from "./charts/lineCharts/referralsByBehavior.js";
 import TeacherInfractionOverPeriodBarChart from "./charts/barChart/teacherInfractionPeriodBarChart.js";
-import { PieChartParentCommunication } from "./charts/pieCharts/pieChartParentCommunication.js";
+import { PieChartParentCommunication } from "../../components/globalComponents/dataDisplay/pieChartParentCommunication.js";
 import RecentIncidents from "./charts/tables/studentRecentContacts.js";
-import ShoutOuts from "../../../components/globalComponents/shoutOuts.js";
+import ShoutOuts from "../../components/globalComponents/shoutOuts.js";
 
 const TeacherOverviewPanel = ({ setPanelName, data = [] }) => {
   const [openModal, setOpenModal] = useState({

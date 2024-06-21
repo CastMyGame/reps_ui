@@ -10,7 +10,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { dateCreateFormat } from "../../../../../components/globalComponents/global/helperFunctions";
+import { dateCreateFormat } from "../../../../../components/globalComponents/helperFunctions";
 
 const RecentContacts = ({ data = [] }) => {
   const [searchQuery, setSearchQuery] = useState("");

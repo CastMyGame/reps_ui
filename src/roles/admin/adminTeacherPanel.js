@@ -14,8 +14,8 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 
-import { IncidentByStudentPieChart } from "./widget/incident-by-student-pie-chart";
-import IncidentsByStudentTable from "../teacher/teacherPanels/charts/tables/incidentsByStudentTable";
+import { IncidentByStudentPieChart } from "../../components/globalComponents/dataDisplay/incident-by-student-pie-chart";
+import IncidentsByStudentTable from "../../components/globalComponents/dataDisplay/incidentsByStudentTable";
 import { get } from "../../utils/api/api";
 
 const AdminTeacherPanel = () => {

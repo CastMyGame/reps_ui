@@ -4,7 +4,7 @@ import { PieChart, pieArcLabelClasses } from "@mui/x-charts/PieChart";
 import {
   filterPunishementsByLoggedInUser,
   getIncidentByBehavior,
-} from "../../../../../components/globalComponents/global/helperFunctions";
+} from "../../../helperFunctions/helperFunctions";
 
 export const PieChartParentCommunication = ({ data = [] }) => {
   const numShoutout = getIncidentByBehavior(

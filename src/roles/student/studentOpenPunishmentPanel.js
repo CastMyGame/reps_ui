@@ -13,7 +13,7 @@ import Typography from "@mui/material/Typography";
 import Tooltip from "@mui/material/Tooltip";
 import WarningIcon from "@mui/icons-material/Warning";
 import AssignmentIcon from "@mui/icons-material/Assignment";
-import { dateCreateFormat } from "../../components/globalComponents/global/helperFunctions";
+import { dateCreateFormat } from "../../helperFunctions/helperFunctions";
 
 const StudentOpenPunishmentPanel = ({
   listOfPunishments,

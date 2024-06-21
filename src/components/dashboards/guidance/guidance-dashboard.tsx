@@ -18,7 +18,7 @@ import {
   ToggleButtonGroup,
 } from "@mui/material";
 import { handleLogout } from "src/utils/helperFunctions";
-import { dateCreateFormat } from "src/components/globalComponents/global/helperFunctions";
+import { dateCreateFormat } from "src/helperFunctions/helperFunctions";
 import { get } from "src/utils/api/api";
 
 const GuidanceDashboard = () => {

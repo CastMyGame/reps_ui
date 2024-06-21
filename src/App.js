@@ -3,19 +3,19 @@ import MyForm from "./forms/RepsForm";
 import ViolationPage from "./forms/ViolationPage";
 import FailureToComplete from "./forms/FailureToComplete";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Login from "./secuirty/Login";
-import Register from "./secuirty/Register";
+import Login from "./security/Login";
+import Register from "./security/Register";
 import StudentDashboard from "./components/dashboards/student/DashboardStudent ";
 import AdminDashboard from "./components/dashboards/admin/adminDashboard";
 import PDFReport from "./roles/admin/reports/PDFReport";
 import { PDFViewer } from "@react-pdf/renderer";
 import TeacherDashboard from "./components/dashboards/teacher/teacherDashboard";
-import GlobalArchivedPunishmentPanel from "./components/globalComponents/global/globalArchivedPunishmentPanel";
-import ResetPassword from "./secuirty/Reset";
-import ForgotPassword from "./secuirty/forgotPassword";
+import GlobalArchivedPunishmentPanel from "./components/globalComponents/referrals/globalArchivedPunishmentPanel";
+import ResetPassword from "./security/Reset";
+import ForgotPassword from "./security/forgotPassword";
 import { useState } from "react";
-import IdleTimerContainer from "./secuirty/IdleTimerContainer";
-import SinglePageSignIn from "./secuirty/single-page-login";
+import IdleTimerContainer from "./security/IdleTimerContainer";
+import SinglePageSignIn from "./security/single-page-login";
 import GuidanceDashboard from "./components/dashboards/guidance/guidance-dashboard";
 
 function App() {

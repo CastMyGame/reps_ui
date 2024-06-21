@@ -11,7 +11,7 @@ import {
 import Typography from "@mui/material/Typography";
 import axios from "axios";
 import { baseUrl } from "../../utils/jsonData";
-import { dateCreateFormat } from "../../components/globalComponents/global/helperFunctions";
+import { dateCreateFormat } from "../../helperFunctions/helperFunctions";
 
 const ShoutOutReport = () => {
   const loggedInUser = sessionStorage.getItem("email");

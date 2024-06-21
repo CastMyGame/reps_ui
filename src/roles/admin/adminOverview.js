@@ -3,12 +3,12 @@ import Card from "@mui/material/Card";
 import TotalReferralByWeek from "../teacher/teacherPanels/charts/lineCharts/referralsByWeek";
 import TotalStudentReferredByWeek from "../teacher/teacherPanels/charts/lineCharts/numberOfStudentReferralsByWeek";
 import ReferralByBehavior from "../teacher/teacherPanels/charts/lineCharts/referralsByBehavior";
-import IncidentsByStudentTable from "../teacher/teacherPanels/charts/tables/incidentsByStudentTable";
+import IncidentsByStudentTable from "../../components/globalComponents/dataDisplay/incidentsByStudentTable";
 import TeacherInfractionOverPeriodBarChart from "../teacher/teacherPanels/charts/barChart/teacherInfractionPeriodBarChart";
-import { IncidentByTeacherPieChart } from "./widget/incident-by-teacher-pie-chart";
-import { Top5TeacherRatioTable } from "./widget/top-5-ratio-table";
-import { WorseClassTable } from "./widget/top-class-with-write-up";
-import { IncidentByStudentPieChart } from "./widget/incident-by-student-pie-chart";
+import { IncidentByTeacherPieChart } from "../../components/globalComponents/dataDisplay/incident-by-teacher-pie-chart";
+import { Top5TeacherRatioTable } from "../../components/globalComponents/dataDisplay/top-5-ratio-table";
+import { WorseClassTable } from "../../components/globalComponents/dataDisplay/top-class-with-write-up";
+import { IncidentByStudentPieChart } from "../../components/globalComponents/dataDisplay/incident-by-student-pie-chart";
 import "./admin.css";
 import ShoutOuts from "../../components/globalComponents/shoutOuts";
 

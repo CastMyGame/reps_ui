@@ -12,7 +12,7 @@ import {
 import Typography from "@mui/material/Typography";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import axios from "axios";
-import { baseUrl } from "../../utils/jsonData";
+import { baseUrl } from "../../../utils/jsonData";
 import MenuItem from "@mui/material/MenuItem";
 import DeleteIcon from "@mui/icons-material/Delete";
 

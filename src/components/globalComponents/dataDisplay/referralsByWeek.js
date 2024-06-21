@@ -5,7 +5,7 @@ import {
   extractDataByWeekFirstDay,
   getCurrentWeekOfYear,
   getFirstDayOfWeek,
-} from "../../../../../components/globalComponents/global/helperFunctions";
+} from "../../../../../components/globalComponents/helperFunctions";
 import { useState } from "react";
 
 export default function TotalReferralByWeek({ data = [] }) {

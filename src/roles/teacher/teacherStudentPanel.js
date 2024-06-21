@@ -15,7 +15,7 @@ import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 import { IncidentByTypePieChart } from "./charts/pieCharts/incidentsByType";
-import { get } from "../../../utils/api/api";
+import { get } from "../../utils/api/api";
 
 const TeacherStudentPanel = ({ setPanelName, data = [] }) => {
   const [listOfStudents, setListOfStudents] = useState([]);
