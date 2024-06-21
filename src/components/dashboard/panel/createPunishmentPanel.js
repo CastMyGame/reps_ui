@@ -6,7 +6,7 @@ import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { Autocomplete, Box, CircularProgress } from "@mui/material";
+import { Autocomplete, Box, CircularProgress, FormControlLabel, FormGroup } from "@mui/material";
 import Container from "@mui/material/Container";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
@@ -16,6 +16,9 @@ import Select from "@mui/material/Select";
 import Chip from "@mui/material/Chip";
 import KeyboardDoubleArrowUpIcon from "@mui/icons-material/KeyboardDoubleArrowUp";
 import KeyboardDoubleArrowDownIcon from "@mui/icons-material/KeyboardDoubleArrowDown";
+import Checkbox from "@mui/material/Checkbox";
+
+
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -62,6 +65,8 @@ const CreatePunishmentPanel = ({ data = [] }) => {
   }, []);
 
   const [currency, setCurrency] = useState(0);
+
+  const [isGuidance,setIsGuidance] = useState({isGuidanceBoolean:false,guidanceDescription:""});
 
   const defaultTheme = createTheme();
 
@@ -147,6 +152,7 @@ const CreatePunishmentPanel = ({ data = [] }) => {
     setInfractionPeriodSelected(null);
     setInfractionTypeSelected(null);
     setInfractionDescriptionSelected("");
+    setIsGuidance({isGuidanceBoolean:false,guidanceDescription:""})
   };
 
   //Mapping selected students pushing indivdual payloads to post
@@ -166,6 +172,8 @@ const CreatePunishmentPanel = ({ data = [] }) => {
         infractionName: infractionTypeSelected,
         infractionDescription: infractionDescriptionSelected,
         currency: currency,
+        guidanceDescription: isGuidance.guidanceDescription || ""
+
       };
       payloadContent.push(studentPayload);
       return payloadContent;
@@ -239,6 +247,22 @@ const CreatePunishmentPanel = ({ data = [] }) => {
   };
 
   let difference = data.teacher.currency - currency * (studentNames.length ? studentNames.length : 0);
+
+  const handleGuidanceChange = (event) => {
+    const { name, value } = event.target;
+    setIsGuidance((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
+
+  const handleGuidanceCheckboxChange = (event) => {
+    const { checked } = event.target;
+    setIsGuidance((prevState) => ({
+      ...prevState,
+      isGuidanceBoolean: checked,
+    }));
+  };
 
   return (
     <>
@@ -472,6 +496,28 @@ const CreatePunishmentPanel = ({ data = [] }) => {
                       : "Description of Behavior/Event. This will be sent directly to the student and guardian so be sure to provide accurate and objective facts as well as do NOT include the names of any other students."}
                   </p>
                   <div>
+                  <div className="guidance-box">
+                  <FormGroup>
+                  <FormControlLabel
+  style={{ color: "black" }}
+  componentsProps={{ typography: { variant: 'h4' } }}
+  value="end"
+  labelPlacement="end"
+  control={
+    <Checkbox
+      color="primary"
+      checked={isGuidance.isGuidanceBoolean }
+      sx={{ "& .MuiSvgIcon-root": { fontSize: 28 } }}
+      onChange={handleGuidanceCheckboxChange}
+      name="isGuidanceBoolean"
+    />
+  }
+  label="Create Guidance Referral"
+/>
+      {isGuidance.isGuidanceBoolean && <h4>Description goes here</h4>}
+    </FormGroup>
+
+                  </div>
                     {infractionTypeSelected ===
                       "Positive Behavior Shout Out!" && (
                       <div className="points-container">
@@ -547,7 +593,7 @@ const CreatePunishmentPanel = ({ data = [] }) => {
                       setInfractionDescriptionSelected(enteredValue);
                     }}
                     id="offenseDescription"
-                    placeholder="Please Type Short Description of Infraction"
+                    label="Brief Infraction Description"
                     name="offenseDescription"
                     autoFocus
                     value={infractionDescriptionSelected}
@@ -591,6 +637,18 @@ const CreatePunishmentPanel = ({ data = [] }) => {
                     }}
                   />
                 </div>
+                {isGuidance.isGuidanceBoolean && (
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                id="guidanceDescription"
+                label="Brief Guidance Description"
+                name="guidanceDescription"
+                value={isGuidance.guidanceDescription}
+                onChange={handleGuidanceChange}
+              />
+            )}
                 {/* <br/> */}
 
                 <div

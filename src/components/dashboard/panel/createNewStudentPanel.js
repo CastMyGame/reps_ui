@@ -36,17 +36,6 @@ const [studentForm, setStudentForm] = useState(	{
 })
   
   
-    // const tardyDescription = "Description of Behavior/Event. This will be sent directly to the student and guardian so be sure to provide accurate and objective facts."
-    // const cellPhoneDescription = "Description of Behavior/Event. This will be sent directly to the student and guardian so be sure to provide accurate and objective facts."
-    // const disruptiveBehavioralDescription = "Description of Behavior/Event. This will be sent directly to the student and guardian so be sure to provide accurate and objective facts."
-    // const HorseplayDescription = "Description of Behavior/Event. This will be sent directly to the student and guardian so be sure to provide accurate and objective facts."
-    // const failureToCompleteWorkDescription = "Provide a brief description of the missing assignment (Name of assignment in Powerschool, link to the assignment if possible, the impact it is having on the students grade and the possible points they can regain upon completion.)"
-    // const dressCodeDescription = "Description of Behavior/Event. This will be sent directly to the student and guardian so be sure to provide accurate and objective facts."
-    // const positiveBehaviorDescription = "Needs Text"
-    // const failureToCompleteWorkTitle = "Failure to complete Work"
-    // const otherTitle = "For all offenses other than positive behavior shout out and failure to complete work."
-    // const behaviorShoutTitle = "Shout Comment"
-  
     const defaultTheme = createTheme();
 
     

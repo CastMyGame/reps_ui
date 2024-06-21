@@ -16,6 +16,7 @@ import ForgotPassword from './secuirty/forgotPassword';
 import { useState } from 'react';
 import IdleTimerContainer from './secuirty/IdleTimerContainer';
 import SinglePageSignIn from './secuirty/single-page-login';
+import GuidanceDashboard from './components/globalComponents/dashboards/guidance-dashboard';
 
 function App() {
   const [isLoggedOut, setIsLoggedOut] = useState(false);
@@ -43,6 +44,7 @@ function App() {
         {/* Use AuthRoute for role-based access control */}
         <Route path="/dashboard/admin" element={<AdminDashboard/>} allowedRoles={["ADMIN"]} />
         <Route path="/dashboard/student" element={<StudentDashboard />} allowedRoles={["STUDENT"]} />
+        <Route path="/dashboard/guidance" element={<GuidanceDashboard />} allowedRoles={["GUIDANCE"]} />
         <Route path="/dashboard/teacher" element={<TeacherDashboard />} allowedRoles={["TEACHER"]} />
         <Route path="/forms/start-punishment" element={<MyForm />} />
         <Route path="/forms/ftc-closure" element={<FailureToComplete />} />
