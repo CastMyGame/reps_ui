@@ -18,8 +18,6 @@ import { NavigationAdmin } from "../../landing/navigation-admin";
 import { handleLogout } from "../../../utils/helperFunctions";
 import SpendPage from "../teacher/teacherPanels/spend-page/spend-page";
 
-//New Code
-
 const AdminDashboard = () => {
   const [loggedIn, setLoggedIn] = useState(true);
   const [openNotificationDrawer, setOpenNotificationDrawer] = useState(false);
@@ -102,6 +100,12 @@ const AdminDashboard = () => {
                   )}
                   {panelName === "createPunishment" && (
                     <CreatePunishmentPanel
+                      setPanelName={setPanelName}
+                      data={data}
+                    />
+                  )}
+                  {panelName === "createOfficeRef" && (
+                    <CreateOfficeReferral
                       setPanelName={setPanelName}
                       data={data}
                     />
