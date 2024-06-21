@@ -30,6 +30,7 @@ const GuidanceDashboard = () => {
 
   const [updatePage, setUpdatePage] = useState(false);
   const [modalType, setModalType] = useState("");
+  const [displayStudentModal, setDisplayStudentModal] = useState<boolean>(false)
   const [data, setData] = useState<any>([]);
     const [punishmentData,setPunishmentData] = useState<any>([]);
   const [panelName, setPanelName] = useState("overview")
@@ -136,6 +137,9 @@ const GuidanceDashboard = () => {
   };
 
 
+  useEffect(()=>{
+    console.log(activeTask)
+  },[activeTask])
 
   //CALLBACKS
   const fetchPunishmentData = useCallback(async () => {
@@ -158,12 +162,14 @@ const GuidanceDashboard = () => {
   const fetchStudentsData = useCallback(async () => {
          try {
         const response = await get("student/v1/allStudents"); // Pass the headers option with the JWT token
-        // setData(response);
+        setData(response);
         console.log(response)
       } catch (error) {
         console.error(error);
       }
   }, [updatePage]);
+
+
 
   const fetchActiveReferrals = useCallback(async () => {
     try {
@@ -608,97 +614,98 @@ const GuidanceDashboard = () => {
           </div>}
 
       {/* STUDENT PANEL */}
-      { panelName === "student" && <div className="guidance-panel">
+      { panelName === "student" &&  <div className="guidance-panel">
            <div> <h1 className="main-panel-title">Student Records</h1></div>
-            {data.map((item: any, index: any) => {
-              const markStatus =
-                item.guidanceStatus === "CLOSED" ? "OPEN" : "CLOSED";
-              return (
-                <div
-                  className="task-card"
-                  onClick={() => setActiveIndex(index)}
-                  key={index}
-                >
-                  <div className="tag">
-                    <div className="color-stripe"></div>
-                    <div className="tag-content">
-                      <div className="index"> {index + 1}</div>
-                      <div className="date">
-                        {" "}
-                        {dateCreateFormat(item?.followUpDate) ||
-                          dateCreateFormat(item?.timeCreated)}
-                      </div>
-                    </div>
-                  </div>
+            {data?.map((item: any, index: any) => {
+              return <div>Comming Sono</div>
+             
+              // return (
+              //   <div
+              //     className="task-card"
+              //     onClick={() =>
+              //     {setActiveTask(item)
+              //       setDisplayStudentModal(true)
+              //       setActiveIndex(index)}}
+              //     key={index}
+              //   >
+              //     <div className="tag">
+              //       <div className="color-stripe"></div>
+              //       <div className="tag-content">
+              //         <div className="index"> {index + 1}</div>
+              //         <div className="date">
+              //           {" "}
+              //           {dateCreateFormat(item?.followUpDate) ||
+              //             dateCreateFormat(item?.timeCreated)}
+              //         </div>
+              //       </div>
+              //     </div>
 
-                  <div className="card-body">
-                    <div className="card-body-title">{item.infractionName}</div>
-                    <div className="card-body-description">
-                      {item.notesArray[0].content}
-                    </div>
-                    {categoryBadgeGenerator(item.infractionName)}
-                  </div>
-                  <div className="card-body">
-                    <div className="card-body-title">Created By</div>
-                    <div className="card-body-description">
-                      {item.teacherEmail}
-                    </div>
-                  </div>
-                  <div className="card-actions">
-                    <div className="card-action-title">
-                      {item.guidanceStatus === "CLOSED"
-                        ? "Restore"
-                        : "Mark Complete"}
-                    </div>
-                    <div
-                      onClick={() =>
-                        handleStatusChange(markStatus, item.punishmentId)
-                      }
-                      className="check-box"
-                    ></div>
-                  </div>
-                  <div className="card-actions">
-                    <div className="card-action-title">Follow Up</div>
-                    <div
-                      className="clock-icon"
-                      onClick={() => {
-                        setDisplayPicker((prevState) => !prevState); // Toggle the state
-                        setActiveTask(item.punishmentId);
-                      }}
-                    >
-                      <AccessTimeIcon
-                        sx={{ fontSize: "20px", fontWeight: "bold" }}
-                      />
-                    </div>
-                  </div>
-                  <div className="card-actions">
-                    <div className="card-action-title">Notes</div>
-                    <div
-                      className="clock-icon"
-                      onClick={() => {
-                        setDisplayNotes((prevState) => !prevState); // Toggle the state
-                        setActiveTask(item.punishmentId);
-                      }}
-                    >
-                      <NoteAddIcon
-                        sx={{ fontSize: "20px", fontWeight: "bold" }}
-                      />
-                    </div>
-                  </div>
-                  <div className="card-actions">
-                    <div className="card-action-title">Resources</div>
-                    <div
-                      className="clock-icon"
-                      onClick={() => {
-                        setDisplayResources((prevState) => !prevState); // Toggle the state
-                        setActiveTask(item.punishmentId);
-                      }}
-                    >
-                      <SendIcon sx={{ fontSize: "20px", fontWeight: "bold" }} />
-                    </div>
-                  </div>
-                </div>
-              );
+              //     <div className="card-body">
+              //       <div className="card-body-title">{item.infractionName}</div>
+              //       <div className="card-body-description">
+              //         {item.notesArray[0].content}
+              //       </div>
+              //       {categoryBadgeGenerator(item.infractionName)}
+              //     </div>
+              //     <div className="card-body">
+              //       <div className="card-body-title">Created By</div>
+              //       <div className="card-body-description">
+              //         {item.teacherEmail}
+              //       </div>
+              //     </div>
+              //     <div className="card-actions">
+              //       <div className="card-action-title">
+              //         {item.guidanceStatus === "CLOSED"
+              //           ? "Restore"
+              //           : "Mark Complete"}
+              //       </div>
+              //       <div
+              
+              //         className="check-box"
+              //       ></div>
+              //     </div>
+              //     <div className="card-actions">
+              //       <div className="card-action-title">Follow Up</div>
+              //       <div
+              //         className="clock-icon"
+              //         onClick={() => {
+              //           setDisplayPicker((prevState) => !prevState); // Toggle the state
+              //           setActiveTask(item.punishmentId);
+              //         }}
+              //       >
+              //         <AccessTimeIcon
+              //           sx={{ fontSize: "20px", fontWeight: "bold" }}
+              //         />
+              //       </div>
+              //     </div>
+              //     <div className="card-actions">
+              //       <div className="card-action-title">Notes</div>
+              //       <div
+              //         className="clock-icon"
+              //         onClick={() => {
+              //           setDisplayNotes((prevState) => !prevState); // Toggle the state
+              //           setActiveTask(item.punishmentId);
+              //         }}
+              //       >
+              //         <NoteAddIcon
+              //           sx={{ fontSize: "20px", fontWeight: "bold" }}
+              //         />
+              //       </div>
+              //     </div>
+              //     <div className="card-actions">
+              //       <div className="card-action-title">Resources</div>
+              //       <div
+              //         className="clock-icon"
+              //         onClick={() => {
+              //           setDisplayResources((prevState) => !prevState); // Toggle the state
+              //           setActiveTask(item.punishmentId);
+              //         }}
+              //       >
+              //         <SendIcon sx={{ fontSize: "20px", fontWeight: "bold" }} />
+              //       </div>
+              //     </div>
+              //   </div>
+              // );
             })}
           </div>}
 
@@ -706,7 +713,9 @@ const GuidanceDashboard = () => {
             </div>
 
             
-           <StudentDetailsModal studentEmail="exampleStudent@fakeEmail.com"/>
+     {  displayStudentModal &&   <StudentDetailsModal studentEmail={activeTask.studentEmail}
+     setDisplayModal={setDisplayStudentModal}
+     />}
 
           {/* NOTES AND DETAILS SECTION */}
           <div className={`secondary-panel ${panelName !== "overview" ? "hide" : ""}`}>

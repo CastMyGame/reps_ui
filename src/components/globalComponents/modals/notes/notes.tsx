@@ -58,10 +58,10 @@ const NotesComponent = (props:any) => {
     }
 
     return (
-        <div className='generic-modal-container'>
+        <div className='nm-modal-container'>
            {isToast && <div className={toastType}>{toastMessage}</div>} 
 
-            <div className='header'>
+            <div className='nm-header'>
             <div className='close-icon' onClick={()=>props.setDisplayModal(false)}>[x]</div>
             <div className='id-num'>Id:{props.activeTask}</div>
             </div>

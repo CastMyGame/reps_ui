@@ -1,10 +1,13 @@
 import { useCallback, useEffect, useState } from "react";
 import "./studentDetailsModal.css"
 import { get } from "src/utils/api/api";
+import NotesComponent from "../../modals/notes/notes";
+import GuidanceRequestModal from "../../modals/requestModal/guidanceRequestModal";
 
 
 interface StudentDetailsModalProps {
-    studentEmail:string
+    studentEmail:string;
+    setDisplayModal:any
 }
 
 interface StudentReferralObj {
@@ -27,9 +30,13 @@ interface studentObj{
     
 }
 
-export const StudentDetailsModal:React.FC<StudentDetailsModalProps> = ({studentEmail}) =>{
+export const StudentDetailsModal:React.FC<StudentDetailsModalProps> = ({studentEmail,setDisplayModal}) =>{
     const [data,setData] = useState([])
     const [studentData,setStudentData] = useState<studentObj>()
+    const [noteModal,setNoteModal] = useState<boolean>(false)
+    const [requestModal,setRequestModal] = useState<boolean>(false)
+
+    const [updatePage,setUpdatePage] = useState<boolean>(false)
 
 
 
@@ -67,6 +74,19 @@ export const StudentDetailsModal:React.FC<StudentDetailsModalProps> = ({studentE
 
     return(
         <div className="student-details-modal">
+               { noteModal &&  <NotesComponent
+               activeTask="23456"
+               setDisplayModal={setNoteModal}
+               setUpdatePage={setUpdatePage}
+
+               /> }
+                   { requestModal &&  <GuidanceRequestModal
+               activeTask="23456"
+               setDisplayModal={setRequestModal}
+               setUpdatePage={setUpdatePage}
+
+               /> }
+
             <div className="sdm-header">
                 <div className="sdm-title"> <p style={{fontSize:"25px"}}>Student Details</p></div>
                 <div className="sdm-student-details">
@@ -80,6 +100,7 @@ export const StudentDetailsModal:React.FC<StudentDetailsModalProps> = ({studentE
                                       
 
                 </div>
+                <div onClick={setDisplayModal(false)}>[X]</div>
 
              
                                         
@@ -134,14 +155,20 @@ return(
 
 )
 }) }  
-         </div>           
+         </div>   
+       
+
+
 
 
                 </div>
 
 
-
-                 
+<div className="sdm-button-container">
+        <button onClick={()=> setNoteModal(true)}>Notes</button>
+        <button onClick={()=>setRequestModal(true)}>Guidance Request</button>
+</div>        
+                  
             
 
                  
