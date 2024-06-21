@@ -1,8 +1,8 @@
 import { Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { PieChart, pieArcLabelClasses } from "@mui/x-charts/PieChart";
-import "../../../../../../roles/admin/widget/CustomPieChart.css";
-import { get } from "../../../../../utils/api/api";
+import "../dataDisplay/CustomPieChart.css";
+import { get } from "../../../utils/api/api";
 
 export const IncidentByTypePieChart = ({ data = [] }) => {
   const [writeUps, setWriteUps] = useState([]);

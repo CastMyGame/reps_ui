@@ -1,20 +1,20 @@
 import React, { useEffect, useState } from "react";
 import Drawer from "@mui/material/Drawer";
-import CreatePunishmentPanel from "../../globalComponents/referrals/createPunishmentPanel.js/index.js";
-import TeacherStudentPanel from "../../../roles/teacher/teacherStudentPanel.js";
-import TeacherFTCPanel from "../../../roles/teacher/FTCpanel.js";
-import GlobalPunishmentPanel from "../../globalComponents/referrals/globalPunishmentPanel.js";
-import TeacherOverviewPanel from "../../../roles/teacher/teacherOverview.js/index.js";
-import DetentionWidget from "../../globalComponents/detentionWidget.js";
-import ISSWidget from "../../globalComponents/issWidget.js";
-import LevelThreePanel from "../../globalComponents/referrals/levelThreePanel.js";
+import CreatePunishmentPanel from "src/components/globalComponents/referrals/createPunishmentPanel.js";
+import TeacherStudentPanel from "src/roles/teacher/teacherStudentPanel.js";
+import TeacherFTCPanel from "src/roles/teacher/FTCpanel.js";
+import GlobalPunishmentPanel from "src/components/globalComponents/referrals/globalPunishmentPanel.js";
+import TeacherOverviewPanel from "src/roles/teacher/teacherOverview.js";
+import DetentionWidget from "src/components/globalComponents/detentionWidget.js";
+import ISSWidget from "src/components/globalComponents/issWidget.js";
+import LevelThreePanel from "src/components/globalComponents/referrals/levelThreePanel.js";
 import { ContactUsModal } from "../../../security/contactUsModal.js";
 import { get } from "../../../utils/api/api.js";
-import LoadingWheelPanel from "../../../roles/student/blankPanelForTest.js";
-import "./teacherPanels/teacher.css";
-import { NavigationLoggedIn } from "../../landing/navigation-loggedIn.jsx";
-import { handleLogout } from "../../../utils/helperFunctions.js";
-import SpendPage from "../../../roles/teacher/teacherPanels/spend-page/spend-page.js";
+import LoadingWheelPanel from "src/roles/student/blankPanelForTest.js";
+import "../../../roles/teacher/teacher.css";
+import { NavigationLoggedIn } from "src/components/landing/navigation-loggedIn.jsx";
+import { handleLogout } from "src/utils/helperFunctions.js";
+import SpendPage from "src/components/globalComponents/spend-page/spend-page.js";
 
 const TeacherDashboard = () => {
   const [loggedIn, setLoggedIn] = useState(true);

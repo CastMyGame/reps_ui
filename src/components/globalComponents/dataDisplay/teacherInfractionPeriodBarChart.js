@@ -2,7 +2,7 @@ import React from "react";
 import { BarChart } from "@mui/x-charts/BarChart";
 import Typography from "@mui/material/Typography";
 import { axisClasses } from "@mui/x-charts";
-import { getIncidentByBehavior } from "../../../../../components/globalComponents/helperFunctions";
+import { getIncidentByBehavior } from "src/helperFunctions/helperFunctions";
 
 const TeacherInfractionOverPeriodBarChart = ({ data = [] }) => {
   const chartSetting = {

@@ -6,7 +6,7 @@ import {
   getCurrentWeekOfYear,
   getFirstDayOfWeek,
   getUniqueStudentIdFromList,
-} from "../../../../../components/globalComponents/helperFunctions";
+} from "../../../helperFunctions/helperFunctions";
 import { useState } from "react";
 
 export default function TotalStudentReferredByWeek({ data = [] }) {

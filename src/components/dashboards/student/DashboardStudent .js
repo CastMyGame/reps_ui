@@ -1,19 +1,18 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import Drawer from "@mui/material/Drawer";
-import NotificationBar from "../../notification-bar/NotificationBar";
-import StudentClosedPunishmentPanel from "../../../roles/student/studentClosePunishmentPanel";
-import StudentOpenPunishmentPanel from "../../../roles/student/studentOpenPunishmentPanel";
-import ShoutOutWidget from "../../globalComponents/shoutOutWidget";
-import TotalPositivePoints from "../../globalComponents/users/positivePointsComponents";
+import NotificationBar from "src/components/notification-bar/NotificationBar";
+import StudentClosedPunishmentPanel from "src/roles/student/studentClosePunishmentPanel";
+import StudentOpenPunishmentPanel from "src/roles/student/studentOpenPunishmentPanel";
+import ShoutOutWidget from "src/components/globalComponents/shoutOutWidget";
+import TotalPositivePoints from "src/components/globalComponents/users/positivePointsComponents";
 import Card from "@mui/material/Card";
 // import BlankPanelForTest from './blankPanelForTest';
-import ViolationPage from "../../../forms/ViolationPage";
+import ViolationPage from "src/forms/ViolationPage";
 import { get } from "../../../utils/api/api";
-import LoadingWheelPanel from "../../../roles/student/blankPanelForTest";
-import { ContactUsModal } from "../../../security/contactUsModal";
-import { NavigationStudent } from "../../landing/navigation-student";
-import { handleLogout } from "../../../utils/helperFunctions";
+import LoadingWheelPanel from "src/roles/student/blankPanelForTest";
+import { ContactUsModal } from "src/security/contactUsModal";
+import { NavigationStudent } from "src/components/landing/navigation-student";
+import { handleLogout } from "src/utils/helperFunctions";
 
 const StudentDashboard = () => {
   const [loggedIn, setLoggedIn] = useState(true);

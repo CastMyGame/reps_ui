@@ -1,14 +1,14 @@
 import { useState, useEffect } from "react";
 import Typography from "@mui/material/Typography";
-import IncidentsByStudentTable from "../../components/globalComponents/dataDisplay/incidentsByStudentTable.js";
-import TotalReferralByWeek from "./charts/lineCharts/referralsByWeek.js";
-import TotalStudentReferredByWeek from "./charts/lineCharts/numberOfStudentReferralsByWeek.js";
+import IncidentsByStudentTable from "src/components/globalComponents/dataDisplay/incidentsByStudentTable.js";
+import TotalReferralByWeek from "src/components/globalComponents/dataDisplay/referralsByWeek.js";
+import TotalStudentReferredByWeek from "src/components/globalComponents/dataDisplay/numberOfStudentReferralsByWeek.js";
 import Card from "@mui/material/Card";
-import ReferralByBehavior from "./charts/lineCharts/referralsByBehavior.js";
-import TeacherInfractionOverPeriodBarChart from "./charts/barChart/teacherInfractionPeriodBarChart.js";
-import { PieChartParentCommunication } from "../../components/globalComponents/dataDisplay/pieChartParentCommunication.js";
-import RecentIncidents from "./charts/tables/studentRecentContacts.js";
-import ShoutOuts from "../../components/globalComponents/shoutOuts.js";
+import ReferralByBehavior from "src/components/globalComponents/dataDisplay/referralsByBehavior.js";
+import TeacherInfractionOverPeriodBarChart from "src/components/globalComponents/dataDisplay/teacherInfractionPeriodBarChart.js";
+import { PieChartParentCommunication } from "src/components/globalComponents/dataDisplay/pieChartParentCommunication.js";
+import RecentIncidents from "src/components/globalComponents/dataDisplay/studentRecentContacts.js";
+import ShoutOuts from "src/components/globalComponents/shoutOuts";
 
 const TeacherOverviewPanel = ({ setPanelName, data = [] }) => {
   const [openModal, setOpenModal] = useState({

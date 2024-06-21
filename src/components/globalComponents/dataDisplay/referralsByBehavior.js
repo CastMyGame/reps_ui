@@ -4,7 +4,7 @@ import {
   findDataByWeekAndByPunishment,
   getCurrentWeekOfYear,
   getFirstDayOfWeek,
-} from "../../../../../components/globalComponents/helperFunctions";
+} from "../../../helperFunctions/helperFunctions";
 import { useState } from "react";
 
 export default function ReferralByBehavior({ data = [] }) {

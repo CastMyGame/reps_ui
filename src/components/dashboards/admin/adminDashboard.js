@@ -1,22 +1,22 @@
 import React, { useEffect, useState } from "react";
 import Drawer from "@mui/material/Drawer";
-import CreatePunishmentPanel from "../../globalComponents/referrals/createPunishmentPanel";
-import CreateNewStudentPanel from "../../globalComponents/users/createNewStudentPanel";
-import ISSWidget from "../../globalComponents/issWidget";
-import DetentionWidget from "../../globalComponents/detentionWidget";
-import AdminTeacherPanel from "../../../roles/admin/adminTeacherPanel";
-import GlobalPunishmentPanel from "../../globalComponents/referrals/globalPunishmentPanel";
-import GlobalArchivedPunishmentPanel from "../../globalComponents/referrals/globalArchivedPunishmentPanel";
-import AdminOverviewPanel from "../../../roles/admin/adminOverview";
-import AssignmentManager from "../../../utils/EssayForm";
-import TeacherStudentPanel from "../../../roles/teacher/teacherStudentPanel";
-import AddTeacherForm from "../../../roles/admin/addTeacherForm";
+import CreatePunishmentPanel from "src/components/globalComponents/referrals/createPunishmentPanel";
+import CreateNewStudentPanel from "src/components/globalComponents/users/createNewStudentPanel";
+import ISSWidget from "src/components/globalComponents/issWidget";
+import DetentionWidget from "src/components/globalComponents/detentionWidget";
+import AdminTeacherPanel from "src/roles/admin/adminTeacherPanel";
+import GlobalPunishmentPanel from "src/components/globalComponents/referrals/globalPunishmentPanel";
+import GlobalArchivedPunishmentPanel from "src/components/globalComponents/referrals/globalArchivedPunishmentPanel";
+import AdminOverviewPanel from "src/roles/admin/adminOverview";
+import AssignmentManager from "src/utils/EssayForm";
+import TeacherStudentPanel from "src/roles/teacher/teacherStudentPanel";
+import AddTeacherForm from "src/components/globalComponents/users/addTeacherForm";
 import { get } from "../../../utils/api/api";
-import LoadingWheelPanel from "../../components/dashboards/student/blankPanelForTest";
-import { ContactUsModal } from "../../../security/contactUsModal";
-import { NavigationAdmin } from "../../landing/navigation-admin";
-import { handleLogout } from "../../../utils/helperFunctions";
-import SpendPage from "../../../roles/teacher/teacherPanels/spend-page/spend-page";
+import LoadingWheelPanel from "src/roles/student/blankPanelForTest";
+import { ContactUsModal } from "src/security/contactUsModal";
+import { NavigationAdmin } from "src/components/landing/navigation-admin";
+import { handleLogout } from "src/utils/helperFunctions";
+import SpendPage from "src/components/globalComponents/spend-page/spend-page";
 
 const AdminDashboard = () => {
   const [loggedIn, setLoggedIn] = useState(true);
@@ -104,12 +104,12 @@ const AdminDashboard = () => {
                       data={data}
                     />
                   )}
-                  {panelName === "createOfficeRef" && (
+                  {/* {panelName === "createOfficeRef" && (
                     <CreateOfficeReferral
                       setPanelName={setPanelName}
                       data={data}
                     />
-                  )}
+                  )} */}
                   {panelName === "createNewStudent" && (
                     <CreateNewStudentPanel />
                   )}

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { baseUrl } from "../../../../utils/jsonData";
+import { baseUrl } from "../../../utils/jsonData";
 import "./spend-page.css";
 import { Button, MenuItem, Select, TextField } from "@mui/material";
 import axios from "axios";
