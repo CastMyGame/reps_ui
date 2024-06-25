@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import React,{ useCallback, useEffect, useState } from "react";
 import { NavigationLoggedIn } from "../../landing/navigation-loggedIn";
 import "./guidance-dashboard.css";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
@@ -9,7 +9,6 @@ import NotesComponent from "../modals/notes/notes";
 import SendResourcesComponent from "../modals/resources/resources";
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import axios from "axios";
-import { baseUrl } from "src/utils/jsonData";
 import { DateTime } from "luxon";
 import {
   FormControlLabel,
@@ -17,16 +16,21 @@ import {
   ToggleButton,
   ToggleButtonGroup,
 } from "@mui/material";
-import { handleLogout } from "src/utils/helperFunctions";
-import { dateCreateFormat } from "src/components/dashboard/global/helperFunctions";
-import { get } from "src/utils/api/api";
+import { get } from "../../../utils/api/api"
+import { baseUrl } from "../../../utils/jsonData";
+import { dateCreateFormat } from "../../../helperFunctions/helperFunctions";
+import { handleLogout } from "../../../utils/helperFunctions";
 import { StudentDetailsModal } from "../components/modals/studentDetailsModal";
+
+
 
 const GuidanceDashboard = () => {
   const [displayPicker, setDisplayPicker] = useState(false);
   const [displayNotes, setDisplayNotes] = useState(false);
   const [displayResources, setDisplayResources] = useState(false);
   const [categoryFilter, setCategoryFilter] = useState("");
+
+
 
   const [updatePage, setUpdatePage] = useState(false);
   const [modalType, setModalType] = useState("");

@@ -1,8 +1,11 @@
-import { useCallback, useEffect, useState } from "react";
+import React,{ useCallback, useEffect, useState } from "react";
 import "./studentDetailsModal.css"
-import { get } from "src/utils/api/api";
+import { get } from "../../../../utils/api/api";
 import NotesComponent from "../../modals/notes/notes";
 import GuidanceRequestModal from "../../modals/requestModal/guidanceRequestModal";
+
+
+
 
 
 interface StudentDetailsModalProps {

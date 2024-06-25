@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import './guidanceRequestModal.css';
 import { Box, Chip, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from '@mui/material';
 import axios from 'axios';
-import { baseUrl } from 'src/utils/jsonData';
+import { baseUrl } from '../../../../utils/jsonData';
 
 const GuidanceRequestModal = (props: any) => {
     const [noteText, setNoteText] = useState({ event: "Notes", content: "" });

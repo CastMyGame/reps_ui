@@ -8,7 +8,7 @@ import {
   TableCell,
 } from "@mui/material";
 import ArrowDropDownCircleIcon from "@mui/icons-material/ArrowDropDownCircle";
-import { dateCreateFormat } from "../dashboard/global/helperFunctions";
+import { dateCreateFormat } from "../../helperFunctions/helperFunctions";
 
 const ShoutOuts = ({ data = [] }) => {
   const [barOpen, setBarOpen] = useState(true);
