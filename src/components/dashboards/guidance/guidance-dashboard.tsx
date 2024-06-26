@@ -628,8 +628,8 @@ const GuidanceDashboard = () => {
                         <div
                           className="clock-icon"
                           onClick={() => {
-                            // setDisplayResources((prevState) => !prevState); // Toggle the state
-                            // setActiveTask(item.guidanceId);
+                            setDisplayResources((prevState) => !prevState); // Toggle the state
+                            setActiveTask(item.guidanceId);
                           }}
                         >
                           <SendIcon
