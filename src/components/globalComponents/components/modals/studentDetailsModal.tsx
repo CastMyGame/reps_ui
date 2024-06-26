@@ -34,6 +34,7 @@ interface studentObj{
 }
 
 export const StudentDetailsModal:React.FC<StudentDetailsModalProps> = ({studentEmail,setDisplayModal}) =>{
+    console.log(studentEmail)
     const [data,setData] = useState([])
     const [studentData,setStudentData] = useState<studentObj>()
     const [noteModal,setNoteModal] = useState<boolean>(false)
@@ -44,6 +45,7 @@ export const StudentDetailsModal:React.FC<StudentDetailsModalProps> = ({studentE
 
 
         const fetchPunishmentData = useCallback(async () => {
+
             try {
               const result = await get(
                 `punish/v1/student/punishments/${studentEmail}`
@@ -103,7 +105,7 @@ export const StudentDetailsModal:React.FC<StudentDetailsModalProps> = ({studentE
                                       
 
                 </div>
-                <div onClick={setDisplayModal(false)}>[X]</div>
+                <div onClick={()=>setDisplayModal(false)}>[X]</div>
 
              
                                         

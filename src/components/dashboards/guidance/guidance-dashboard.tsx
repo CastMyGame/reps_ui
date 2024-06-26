@@ -78,7 +78,7 @@ const GuidanceDashboard = () => {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [activeTask, setActiveTask] = useState<any | null>(null);
   const [guidanceFilter, setGuidanceFilter] = useState<boolean>(false);
-  const [displayStudentModal, setDisplayStudentModal] = useState<boolean>(false)
+  const [displayStudentModal, setDisplayStudentModal] = useState(false)
   //Toggles
   const [taskType, setTaskType] = useState("OPEN");
 
@@ -371,8 +371,15 @@ const GuidanceDashboard = () => {
             setDisplayModal={setDisplayNotes}
             activeTask={activeTask}
             setUpdatePage={setUpdatePage}
+            panelName = {panelName}
           />
         )}
+
+
+
+{  displayStudentModal &&  <StudentDetailsModal studentEmail={activeTask}
+setDisplayModal={setDisplayStudentModal}
+/>}
 
         {displayResources && (
           <SendResourcesComponent
@@ -680,77 +687,47 @@ const GuidanceDashboard = () => {
             {/* STUDENT PANEL */}
   { panelName === "student" &&  <div className="guidance-panel">
   <div> <h1 className="main-panel-title">Student Records</h1></div>
-   {data?.map((item: any, index: any) => {
+   {data?.map((item: StudentResponse, index: any) => {
     
+  
      return (
        <div
          className="task-card"
          onClick={() =>
-         {setActiveTask(item)
-           setDisplayStudentModal(true)
+         {setActiveTask(item.studentEmail)
+           setDisplayStudentModal((prevState) => !prevState)
            setActiveIndex(index)}}
          key={index}
        >
          <div className="tag">
            <div className="color-stripe"></div>
            <div className="tag-content">
-             <div className="index"> {index + 1}</div>
-             <div className="date">
+             <div className="index"> Grade {item.grade}</div>
+             <div className="grade">
                {" "}
-               {/* {dateCreateFormat(item?.followUpDate) ||
-                 dateCreateFormat(item?.timeCreated)} */}
+       
              </div>
            </div>
          </div>
 
          <div className="card-body">
-           <div className="card-body-title">
+           <div className="card-body-name">
             {item.firstName} {item.lastName}
             </div>
-           <div className="card-body-description">
-             {/* {item.notesArray[0].content} */}
-           </div>
-           {/* {categoryBadgeGenerator(item.infractionName)} */}
-         </div>
-         <div className="card-body">
-           <div className="card-body-title">Created By</div>
-           <div className="card-body-description">
-             {/* {item.teacherEmail} */}
+           <div className="card-body-email">
+             {item.studentEmail}
            </div>
          </div>
-         <div className="card-actions">
-           <div className="card-action-title">
-             {/* {item.guidanceStatus === "CLOSED"
-               ? "Restore"
-               : "Mark Complete"} */}
-           </div>
-           <div
-     
-             className="check-box"
-           ></div>
-         </div>
-         <div className="card-actions">
-           <div className="card-action-title">Follow Up</div>
-           <div
-             className="clock-icon"
-            //  onClick={() => {
-            //    setDisplayPicker((prevState) => !prevState); // Toggle the state
-            //    setActiveTask(item.punishmentId);
-            //  }}
-           >
-             <AccessTimeIcon
-               sx={{ fontSize: "20px", fontWeight: "bold" }}
-             />
-           </div>
-         </div>
+      
+      
+      
          <div className="card-actions">
            <div className="card-action-title">Notes</div>
            <div
              className="clock-icon"
-            //  onClick={() => {
-            //    setDisplayNotes((prevState) => !prevState); // Toggle the state
-            //    setActiveTask(item.punishmentId);
-            //  }}
+             onClick={() => {
+               setDisplayNotes((prevState) => !prevState); // Toggle the state
+               setActiveTask(item.studentIdNumber);             }}
            >
              <NoteAddIcon
                sx={{ fontSize: "20px", fontWeight: "bold" }}
@@ -763,7 +740,7 @@ const GuidanceDashboard = () => {
              className="clock-icon"
             //  onClick={() => {
             //    setDisplayResources((prevState) => !prevState); // Toggle the state
-            //    setActiveTask(item.punishmentId);
+            //    setActiveTask(item.studentIdNumber);
             //  }}
            >
              <SendIcon sx={{ fontSize: "20px", fontWeight: "bold" }} />
@@ -779,9 +756,7 @@ const GuidanceDashboard = () => {
 
 
   
-{  displayStudentModal &&  <StudentDetailsModal studentEmail={activeTask.studentEmail}
-setDisplayModal={setDisplayStudentModal}
-/>}
+
 
 
           {/* NOTES AND DETAILS SECTION */}

@@ -13,9 +13,11 @@ const NotesComponent = (props:any) => {
     const headers = {
         Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
       };
+
+
 //Add PUT controller to update followup date
     const handleSubmitNotes = () => {
-    const url =`${baseUrl}/punish/v1/guidance/notes/${props.activeTask}`
+      let url = props.panelName === "overview"? `${baseUrl}/punish/v1/guidance/notes/${props.activeTask}` : `${baseUrl}/student/v1/notes/${props.activeTask}`
     axios.put(url, noteText,{headers})
     .then(response => {
       setToastType("success-toast")
