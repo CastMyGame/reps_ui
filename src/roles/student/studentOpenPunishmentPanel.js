@@ -36,6 +36,7 @@ const StudentOpenPunishmentPanel = ({
 
   const handleAssignmentClick = (x) => {
     handleStartAssignment(x);
+    console.log(x);
   };
 
   const calculateImportance = (x) => {
@@ -183,7 +184,7 @@ const StudentOpenPunishmentPanel = ({
                           size="small"
                           color="success"
                           variant="contained"
-                          onClick={() => handleAssignmentClick("Office Referral")}
+                          onClick={() => handleAssignmentClick(x)}
                         >
                           Start Assignment
                         </Button>
