@@ -20,6 +20,7 @@ import {
 import { handleLogout } from "src/utils/helperFunctions";
 import { dateCreateFormat } from "src/helperFunctions/helperFunctions";
 import { get } from "src/utils/api/api";
+import { StudentDetailsModal } from "src/components/globalComponents/components/modals/studentDetailsModal";
 
 interface GuidanceResponse{
   
@@ -34,6 +35,25 @@ interface GuidanceResponse{
     notesArray: null | [];
     linkToPunishment: null | string,
     followUpDate: null | []
+
+}
+
+interface StudentResponse{
+  
+  studentIdNumber: string;
+  address: string;
+  schoolName: string;
+  adminEmail: string | null;
+  firstName: string;
+  lastName: string;
+  grade: string;
+  notesArray: null | [];
+  parentPhoneNumber: string;
+  studentPhoneNumber: string;
+  studentEmail:string;
+  points:number;
+
+ 
 
 }
 
@@ -58,6 +78,7 @@ const GuidanceDashboard = () => {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [activeTask, setActiveTask] = useState<any | null>(null);
   const [guidanceFilter, setGuidanceFilter] = useState<boolean>(false);
+  const [displayStudentModal, setDisplayStudentModal] = useState<boolean>(false)
   //Toggles
   const [taskType, setTaskType] = useState("OPEN");
 
@@ -163,6 +184,15 @@ const GuidanceDashboard = () => {
     }
   }, [taskType, updatePage]);
 
+  const fetchStudentData = useCallback(async () => {
+    try {
+       let result = await get("student/v1/allStudents/");
+      setData(result);
+    } catch (err) {
+      console.error("Error Fetching Data: ", err);
+    }
+  }, [taskType, updatePage]);
+
   const fetchActiveReferrals = useCallback(async () => {
     try {
       const result = await get(
@@ -218,6 +248,8 @@ const GuidanceDashboard = () => {
       fetchPunishmentData();
     } else if (panelName === "overview") {
       fetchActiveReferrals();
+    } else if( panelName === "student"){
+      fetchStudentData();
     }
   }, [
     panelName,
@@ -227,6 +259,7 @@ const GuidanceDashboard = () => {
     updatePage,
     fetchPunishmentData,
     fetchActiveReferrals,
+    fetchStudentData
   ]);
 
   useEffect(() => {
@@ -369,7 +402,7 @@ const GuidanceDashboard = () => {
           }}
           className="panel-container"
         >
-          <div className="task-panel">
+          <div className={`task-panel ${panelName !== "overview" && "full"}`}>
             <div
               style={{ display: "flex", justifyContent: "space-between" }}
               className="toggles"
@@ -642,10 +675,117 @@ const GuidanceDashboard = () => {
                 })}
               </div>
             )}
-          </div>
+      
+
+            {/* STUDENT PANEL */}
+  { panelName === "student" &&  <div className="guidance-panel">
+  <div> <h1 className="main-panel-title">Student Records</h1></div>
+   {data?.map((item: any, index: any) => {
+    
+     return (
+       <div
+         className="task-card"
+         onClick={() =>
+         {setActiveTask(item)
+           setDisplayStudentModal(true)
+           setActiveIndex(index)}}
+         key={index}
+       >
+         <div className="tag">
+           <div className="color-stripe"></div>
+           <div className="tag-content">
+             <div className="index"> {index + 1}</div>
+             <div className="date">
+               {" "}
+               {/* {dateCreateFormat(item?.followUpDate) ||
+                 dateCreateFormat(item?.timeCreated)} */}
+             </div>
+           </div>
+         </div>
+
+         <div className="card-body">
+           <div className="card-body-title">
+            {item.firstName} {item.lastName}
+            </div>
+           <div className="card-body-description">
+             {/* {item.notesArray[0].content} */}
+           </div>
+           {/* {categoryBadgeGenerator(item.infractionName)} */}
+         </div>
+         <div className="card-body">
+           <div className="card-body-title">Created By</div>
+           <div className="card-body-description">
+             {/* {item.teacherEmail} */}
+           </div>
+         </div>
+         <div className="card-actions">
+           <div className="card-action-title">
+             {/* {item.guidanceStatus === "CLOSED"
+               ? "Restore"
+               : "Mark Complete"} */}
+           </div>
+           <div
+     
+             className="check-box"
+           ></div>
+         </div>
+         <div className="card-actions">
+           <div className="card-action-title">Follow Up</div>
+           <div
+             className="clock-icon"
+            //  onClick={() => {
+            //    setDisplayPicker((prevState) => !prevState); // Toggle the state
+            //    setActiveTask(item.punishmentId);
+            //  }}
+           >
+             <AccessTimeIcon
+               sx={{ fontSize: "20px", fontWeight: "bold" }}
+             />
+           </div>
+         </div>
+         <div className="card-actions">
+           <div className="card-action-title">Notes</div>
+           <div
+             className="clock-icon"
+            //  onClick={() => {
+            //    setDisplayNotes((prevState) => !prevState); // Toggle the state
+            //    setActiveTask(item.punishmentId);
+            //  }}
+           >
+             <NoteAddIcon
+               sx={{ fontSize: "20px", fontWeight: "bold" }}
+             />
+           </div>
+         </div>
+         <div className="card-actions">
+           <div className="card-action-title">Resources</div>
+           <div
+             className="clock-icon"
+            //  onClick={() => {
+            //    setDisplayResources((prevState) => !prevState); // Toggle the state
+            //    setActiveTask(item.punishmentId);
+            //  }}
+           >
+             <SendIcon sx={{ fontSize: "20px", fontWeight: "bold" }} />
+           </div>
+         </div>
+       </div>
+     );
+   })}
+ </div>}
+
+ </div>
+
+
+
+  
+{  displayStudentModal &&  <StudentDetailsModal studentEmail={activeTask.studentEmail}
+setDisplayModal={setDisplayStudentModal}
+/>}
+
 
           {/* NOTES AND DETAILS SECTION */}
-          <div className="secondary-panel">
+          <div className={`secondary-panel ${panelName !== "overview" && "hide"}`}>
             <h1 className="main-panel-title">Threads</h1>
             {activeIndex != null && activeIndex >= 0 && (
               <div className="details-container">
