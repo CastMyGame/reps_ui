@@ -6,7 +6,11 @@ import GuidanceRequestModal from "../../modals/requestModal/guidanceRequestModal
 
 
 
-
+interface EventThreadObj{
+    event: string;
+    date: string;
+    content:string;
+}
 
 interface StudentDetailsModalProps {
     studentEmail:string;
@@ -29,7 +33,8 @@ interface studentObj{
     grade:string|undefined;
     parentPhoneNumber:string|undefined; 
     studentPhoneNumber:string|undefined;
-    points:number
+    points:number;
+    notesArray:[EventThreadObj]
     
 }
 
@@ -39,7 +44,7 @@ export const StudentDetailsModal:React.FC<StudentDetailsModalProps> = ({studentE
     const [studentData,setStudentData] = useState<studentObj>()
     const [noteModal,setNoteModal] = useState<boolean>(false)
     const [requestModal,setRequestModal] = useState<boolean>(false)
-
+    
     const [updatePage,setUpdatePage] = useState<boolean>(false)
 
 
@@ -65,7 +70,7 @@ export const StudentDetailsModal:React.FC<StudentDetailsModalProps> = ({studentE
             } catch (err) {
               console.error("Error Fetching Data: ", err);
             }
-          }, []);
+          }, [updatePage]);
 
     
 
@@ -75,12 +80,13 @@ export const StudentDetailsModal:React.FC<StudentDetailsModalProps> = ({studentE
     },[fetchPunishmentData,fetchStudentData])
 
 
+    console.log(studentData?.notesArray)
 
 
     return(
         <div className="student-details-modal">
                { noteModal &&  <NotesComponent
-               activeTask="23456"
+               activeTask={studentData?.studentIdNumber}
                setDisplayModal={setNoteModal}
                setUpdatePage={setUpdatePage}
 
@@ -89,6 +95,7 @@ export const StudentDetailsModal:React.FC<StudentDetailsModalProps> = ({studentE
                activeTask="23456"
                setDisplayModal={setRequestModal}
                setUpdatePage={setUpdatePage}
+               studentEmail = {studentEmail}
 
                /> }
 
@@ -148,13 +155,15 @@ export const StudentDetailsModal:React.FC<StudentDetailsModalProps> = ({studentE
                 </div>
                 <div style={{padding:"5px 5px",backgroundColor:"tan"}} className="sdm-table-half">
                          
-                {      [1,2,3,4,5].map(index =>{
+
+                {  studentData !==undefined &&    studentData?.notesArray.map((item:any ,index:number) =>{
+                    console.log(item)
 
 return(
     <div className="thread-card" key={index}>
-    <p>Event: Sample</p>
-    <p>Date: 01/23/24</p>
-    <p>Content: Samples </p>
+    <p>Event: {item.event}</p>
+    <p>Date: {item.date}</p>
+    <p>Content: {item.content} </p>
     </div>
 
 
@@ -170,7 +179,10 @@ return(
 
 
 <div className="sdm-button-container">
-        <button onClick={()=> setNoteModal(true)}>Notes</button>
+        <button onClick={()=> {
+            setNoteModal(true)
+            setUpdatePage(prev=>!prev)
+            }}>Notes</button>
         <button onClick={()=>setRequestModal(true)}>Guidance Request</button>
 </div>        
                   

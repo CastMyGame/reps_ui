@@ -16,33 +16,38 @@ const GuidanceRequestModal = (props: any) => {
     };
 
     const handleSubmitNotes = () => {
-        const url = `${baseUrl}/punish/v1/guidance/notes/${props.activeTask}`;
-        // axios.put(url, noteText, { headers })
-        //     .then(response => {
-        //         setToastType("success-toast");
-        //         setIsToast(true);
-        //         setToastMessage("Notes Has Been Submitted");
+    let  payload = [{
+        guidance:{
+          studentEmail: props.studentEmail,
+          referralDescription: [selectValue],
+        },
+        linkToPunishment: null,
+      }]
 
-        //         setTimeout(() => {
-        //             setIsToast(false);
-        //             setToastMessage("");
-        //             setToastType("");
-        //             props.setDisplayModal(false);
-        //             props.setUpdatePage((prev: any) => !prev);
-        //         }, 3000);
-        //     })
-        //     .catch(error => {
-        //         setToastType("warning-toast");
-        //         setIsToast(true);
-        //         setToastMessage("Something Went Wrong, Try Again");
-
-        //         setTimeout(() => {
-        //             setIsToast(false);
-        //             setToastMessage("");
-        //             setToastType("");
-        //         }, 3000);
-        //     });
-    };
+      axios
+      .post(`${baseUrl}/punish/v1/guidance/formList`, payload, {
+        headers: headers,
+      })
+      .then(function (res) {
+        window.alert(`${selectValue} has been created`)
+        // setToast({ display: true, message: "Referral Succesfuly Created" });
+        // setTimeout(() => {
+        //   setLoading(false);
+        //   setToast({ display: false, message: "" });
+        // }, 1000);
+        // resetForm();
+        // setInfractionDescriptionSelected("");
+        props.setDisplayModal(false)
+      })
+      .catch(function (error) {
+        console.error(error);
+        // setToast({ display: true, message: "Something Went Wrong" });
+        // setTimeout(() => {
+        //   setLoading(false);
+        //   setToast({ display: false, message: "" });
+        // }, 2000);
+      });
+  };
 
     const handleChange = (event: SelectChangeEvent) => {
         setSelectValue(event.target.value);
