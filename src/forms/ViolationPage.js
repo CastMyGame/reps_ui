@@ -125,11 +125,13 @@ export default function ViolationPage(props) {
       timeClosed: Date.now,
     };
 
+    console.log(payload)
+
     if (formattedInfraction === "Office Referral") {
       let url = `${baseUrl}/officeReferral/v1/submit/${props.data.officeReferralId}`;
 
       axios
-        .post(url, { headers })
+        .post(url, payload, { headers })
         .then(function (res) {
           window.alert(
             `You Work Has been Recorded for ${payload.studentEmail}`
