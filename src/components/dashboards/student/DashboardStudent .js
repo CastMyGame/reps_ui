@@ -16,7 +16,8 @@ import { handleLogout } from "src/utils/helperFunctions";
 
 const StudentDashboard = () => {
   const [loggedIn, setLoggedIn] = useState(true);
-  const [data, setData] = useState([]);
+  const [punishments, setPunishments] = useState([]);
+  const [referrals, setReferrals] = useState([]);
   const [modalType, setModalType] = useState("");
   const [isDropdownOpen, setIsDropdownOpen] = useState("");
   const [openNotificationDrawer, setOpenNotificationDrawer] = useState(false);
@@ -37,9 +38,10 @@ const StudentDashboard = () => {
     const fetchData = async () => {
       try {
         const response = await get(`DTO/v1/StudentOverviewData`);
-        setData(response.punishments);
+        setPunishments(response.punishments);
         setStudentDetails(response.student);
         setSchool(response.school);
+        setReferrals(response.officeReferrals)
       } catch (err) {
         console.error(err);
       }
@@ -80,7 +82,7 @@ const StudentDashboard = () => {
               <div>Student Dashboard</div>
             </div>
 
-            {data.length === 0 ? (
+            {punishments.length === 0 ? (
               <div
                 style={{
                   backgroundColor: "white",
@@ -101,7 +103,7 @@ const StudentDashboard = () => {
                 >
                   <div className="student-overview-first">
                     <Card variant="outlined">
-                      <ShoutOutWidget listOfPunishments={data} />
+                      <ShoutOutWidget listOfPunishments={punishments} />
                     </Card>
                   </div>
                   <div className="student-overview-second">
@@ -116,11 +118,12 @@ const StudentDashboard = () => {
 
                 <div style={{ height: "80vh" }} className="student-panel">
                   {panelName === "closedAssignments" && (
-                    <StudentClosedPunishmentPanel listOfPunishments={data} />
+                    <StudentClosedPunishmentPanel listOfPunishments={punishments} />
                   )}
                   {panelName === "openAssignments" && (
                     <StudentOpenPunishmentPanel
-                      listOfPunishments={data}
+                    listOfReferrals={referrals}
+                      listOfPunishments={punishments}
                       handleStartAssignment={handleStartAssignment}
                     />
                   )}

@@ -16,12 +16,19 @@ import AssignmentIcon from "@mui/icons-material/Assignment";
 import { dateCreateFormat } from "src/helperFunctions/helperFunctions";
 
 const StudentOpenPunishmentPanel = ({
+  listOfReferrals,
   listOfPunishments,
   handleStartAssignment,
 }) => {
   const loggedInUser = sessionStorage.getItem("email");
 
-  const sortedData = listOfPunishments.sort((a, b) => {
+  const sortedPunishments = listOfPunishments.sort((a, b) => {
+    const dateA = new Date(a.timeCreated);
+    const dateB = new Date(b.timeCreated);
+    return dateA - dateB; //descending order
+  });
+
+  const sortedReferrals = listOfReferrals.sort((a, b) => {
     const dateA = new Date(a.timeCreated);
     const dateB = new Date(b.timeCreated);
     return dateA - dateB; //descending order
@@ -29,6 +36,7 @@ const StudentOpenPunishmentPanel = ({
 
   const handleAssignmentClick = (x) => {
     handleStartAssignment(x);
+    console.log(x);
   };
 
   const calculateImportance = (x) => {
@@ -62,7 +70,7 @@ const StudentOpenPunishmentPanel = ({
     return null;
   };
 
-  const data = sortedData
+  const punishmentData = sortedPunishments
     .filter(
       (user) => user.studentEmail.toLowerCase() === loggedInUser.toLowerCase()
     )
@@ -70,7 +78,15 @@ const StudentOpenPunishmentPanel = ({
       (punish) => punish.status === "OPEN" || punish.status === "PENDING"
     );
 
-  const hasScroll = data.length > 10;
+  const referralData = sortedReferrals
+    .filter(
+      (user) => user.studentEmail.toLowerCase() === loggedInUser.toLowerCase()
+    )
+    .filter(
+      (punish) => punish.status === "OPEN" || punish.status === "PENDING"
+    );
+
+  const hasScroll = punishmentData.length + referralData.length > 10;
 
   return (
     <>
@@ -147,8 +163,66 @@ const StudentOpenPunishmentPanel = ({
             </TableRow>
           </TableHead>
           <TableBody>
-            {data.length > 0 ? (
-              data.map((x, key) => (
+            {referralData.length > 0 ? (
+              referralData.map((x, key) => (
+                <TableRow key={key}>
+                  <TableCell style={{ textAlign: "center" }}>
+                    <Tooltip
+                      title={
+                        x.status === "PENDING"
+                          ? "Waiting For Teacher To Approve"
+                          : "Click to view assignment"
+                      }
+                    >
+                      {x.referralCode.codeName ===
+                      "Failure to Complete Work" ? (
+                        <AssignmentIcon />
+                      ) : x.status === "PENDING" ? (
+                        <Typography color="orange">Pending</Typography>
+                      ) : (
+                        <Button
+                          size="small"
+                          color="success"
+                          variant="contained"
+                          onClick={() => handleAssignmentClick(x)}
+                        >
+                          Start Assignment
+                        </Button>
+                      )}
+                    </Tooltip>
+                  </TableCell>
+                  <TableCell style={{ fontSize: "1.5rem" }}>
+                    {x.referralCode.codeName}
+                  </TableCell>
+                  <TableCell style={{ fontSize: "1.5rem" }}>
+                    {x.infractionDescription[0]}
+                  </TableCell>
+                  <TableCell style={{ fontSize: "1.5rem" }}>
+                    {x.infractionLevel}
+                  </TableCell>
+                  <TableCell style={{ fontSize: "1.5rem" }}>
+                    {x.teacherEmail}
+                  </TableCell>
+
+                  <TableCell style={{ fontSize: "1.5rem" }}>
+                    <div style={{ display: "flex" }}>
+                      {" "}
+                      {dateCreateFormat(x.timeCreated)}
+                    </div>
+                  </TableCell>
+                  <TableCell style={{ fontSize: "1.5rem" }}>
+                    <div style={{ display: "flex" }}>
+                      {" "}
+                      {x.status === "PENDING" ? "" : calculateImportance(x)}
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <></>
+            )}
+            {punishmentData.length > 0 ? (
+              punishmentData.map((x, key) => (
                 <TableRow key={key}>
                   <TableCell style={{ textAlign: "center" }}>
                     <Tooltip

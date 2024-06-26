@@ -46,8 +46,12 @@ export default function ViolationPage(props) {
       const headers = {
         Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
       };
-
-      const url = `${baseUrl}/punish/v1/${props.data.punishmentId}/index/${mapIndex}`;
+      let url = "";
+      if (props.data.officeReferralId == null) {
+        let url = `${baseUrl}/punish/v1/${props.data.punishmentId}/index/${mapIndex}`;
+      } else {
+        let url = `${baseUrl}/punish/v1/${props.data.officeReferralId}/index/${mapIndex}`;
+      }
 
       axios
         .put(url, {}, { headers }) // Include headers directly in the request config
@@ -110,6 +114,10 @@ export default function ViolationPage(props) {
         ? "Unauthorized Device/Cell Phone"
         : essay.infractionName;
 
+    const headers = {
+      Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
+    };
+
     var payload = {
       studentEmail: loggedInUser,
       infractionName: formattedInfraction,
@@ -117,21 +125,37 @@ export default function ViolationPage(props) {
       timeClosed: Date.now,
     };
 
-    const headers = {
-      Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
-    };
+    console.log(payload)
 
-    const url = `${baseUrl}/punish/v1/punishId/close`;
+    if (formattedInfraction === "Office Referral") {
+      let url = `${baseUrl}/officeReferral/v1/submit/${props.data.officeReferralId}`;
 
-    axios
-      .post(url, payload, { headers })
-      .then(function (res) {
-        window.alert(`You Work Has been Recorded for ${payload.studentEmail}`);
-        window.location.href = "/dashboard/student";
-      })
-      .catch(function (error) {
-        console.error(error);
-      });
+      axios
+        .post(url, payload, { headers })
+        .then(function (res) {
+          window.alert(
+            `You Work Has been Recorded for ${payload.studentEmail}`
+          );
+          window.location.href = "/dashboard/student";
+        })
+        .catch(function (error) {
+          console.error(error);
+        });
+    } else {
+      let url = `${baseUrl}/punish/v1/punishId/close`;
+
+      axios
+        .post(url, payload, { headers })
+        .then(function (res) {
+          window.alert(
+            `You Work Has been Recorded for ${payload.studentEmail}`
+          );
+          window.location.href = "/dashboard/student";
+        })
+        .catch(function (error) {
+          console.error(error);
+        });
+    }
   };
 
   return (
