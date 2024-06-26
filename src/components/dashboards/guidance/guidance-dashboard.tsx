@@ -21,6 +21,22 @@ import { handleLogout } from "src/utils/helperFunctions";
 import { dateCreateFormat } from "src/helperFunctions/helperFunctions";
 import { get } from "src/utils/api/api";
 
+interface GuidanceResponse{
+  
+    guidanceId: string;
+    studentEmail: string;
+    schoolName: string;
+    timeCreated: null |[];
+    teacherEmail: string;
+    guidanceEmail: string;
+    referralDescription: [string];
+    status: string;
+    notesArray: null | [];
+    linkToPunishment: null | string,
+    followUpDate: null | []
+
+}
+
 const GuidanceDashboard = () => {
   const [displayPicker, setDisplayPicker] = useState(false);
   const [displayNotes, setDisplayNotes] = useState(false);
@@ -139,7 +155,8 @@ const GuidanceDashboard = () => {
       setData(
         result.filter((item: any) => {
           return !item.guidance;
-        })
+        }
+      )
       );
     } catch (err) {
       console.error("Error Fetching Data: ", err);
@@ -527,9 +544,8 @@ const GuidanceDashboard = () => {
                   {" "}
                   <h1 className="main-panel-title">Active Referrals</h1>
                 </div>
-                {data.map((item: any, index: any) => {
-                  const markStatus =
-                    item.guidanceStatus === "CLOSED" ? "OPEN" : "CLOSED";
+                {data.map((item: GuidanceResponse, index: any) => {
+       
                   return (
                     <div
                       className="task-card"
@@ -550,12 +566,14 @@ const GuidanceDashboard = () => {
 
                       <div className="card-body">
                         <div className="card-body-title">
-                          {item.infractionName}
+                          {   item.referralDescription !== undefined  && item.referralDescription[0]}
                         </div>
                         <div className="card-body-description">
-                          {item.notesArray[0].content}
+                          {/* {item?.notesArray[0]?.content} */}
                         </div>
-                        {categoryBadgeGenerator(item.infractionName)}
+                        {item.referralDescription && item.referralDescription[0] !== undefined && (
+              categoryBadgeGenerator(item.referralDescription[0])
+            )}
                       </div>
                       <div className="card-body">
                         <div className="card-body-title">Created By</div>
@@ -565,13 +583,14 @@ const GuidanceDashboard = () => {
                       </div>
                       <div className="card-actions">
                         <div className="card-action-title">
-                          {item.guidanceStatus === "CLOSED"
+                          {item.status === "CLOSED"
                             ? "Restore"
                             : "Mark Complete"}
                         </div>
                         <div
                           onClick={() =>
-                            handleStatusChange(markStatus, item.punishmentId)
+      
+                            handleStatusChange("CLOSED", item.guidanceId)
                           }
                           className="check-box"
                         ></div>
@@ -582,7 +601,7 @@ const GuidanceDashboard = () => {
                           className="clock-icon"
                           onClick={() => {
                             setDisplayPicker((prevState) => !prevState); // Toggle the state
-                            setActiveTask(item.punishmentId);
+                            setActiveTask(item.guidanceId);
                           }}
                         >
                           <AccessTimeIcon
@@ -596,7 +615,7 @@ const GuidanceDashboard = () => {
                           className="clock-icon"
                           onClick={() => {
                             setDisplayNotes((prevState) => !prevState); // Toggle the state
-                            setActiveTask(item.punishmentId);
+                            setActiveTask(item.guidanceId);
                           }}
                         >
                           <NoteAddIcon
@@ -609,8 +628,8 @@ const GuidanceDashboard = () => {
                         <div
                           className="clock-icon"
                           onClick={() => {
-                            setDisplayResources((prevState) => !prevState); // Toggle the state
-                            setActiveTask(item.punishmentId);
+                            // setDisplayResources((prevState) => !prevState); // Toggle the state
+                            // setActiveTask(item.guidanceId);
                           }}
                         >
                           <SendIcon

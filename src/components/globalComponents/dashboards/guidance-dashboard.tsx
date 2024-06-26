@@ -36,7 +36,7 @@ const GuidanceDashboard = () => {
   const [modalType, setModalType] = useState("");
   const [displayStudentModal, setDisplayStudentModal] = useState<boolean>(false)
   const [data, setData] = useState<any>([]);
-    const [punishmentData,setPunishmentData] = useState<any>([]);
+
   const [panelName, setPanelName] = useState("overview")
 
   //Indicators - UI display of processing e.g. loading wheel
@@ -307,459 +307,347 @@ const GuidanceDashboard = () => {
   };
 
   return (
-    <>
-      {/* MODALS */}
+    <h1>find</h1>
+//     <>
+//       {/* MODALS */}
 
-      <div>
-        {/* {modalType === "contact" && (
-      <ContactUsModal setContactUsDisplayModal={true} contactUsDisplayModal={false} />
-    )} */}
+//       <div>
+//         {/* {modalType === "contact" && (
+//       <ContactUsModal setContactUsDisplayModal={true} contactUsDisplayModal={false} />
+//     )} */}
 
-        {displayPicker && (
-          <SchedulerComponent
-            setDisplayModal={setDisplayPicker}
-            activeTask={activeTask}
-            setUpdatePage={setUpdatePage}
-          />
-        )}
+//         {displayPicker && (
+//           <SchedulerComponent
+//             setDisplayModal={setDisplayPicker}
+//             activeTask={activeTask}
+//             setUpdatePage={setUpdatePage}
+//           />
+//         )}
 
-        {displayNotes && (
-          <NotesComponent
-            setDisplayModal={setDisplayNotes}
-            activeTask={activeTask}
-            setUpdatePage={setUpdatePage}
-          />
-        )}
+//         {displayNotes && (
+//           <NotesComponent
+//             setDisplayModal={setDisplayNotes}
+//             activeTask={activeTask}
+//             setUpdatePage={setUpdatePage}
+//           />
+//         )}
 
-        {displayResources && (
-          <SendResourcesComponent
-            setDisplayModal={setDisplayResources}
-            activeTask={activeTask}
-            setUpdatePage={setUpdatePage}
+//         {displayResources && (
+//           <SendResourcesComponent
+//             setDisplayModal={setDisplayResources}
+//             activeTask={activeTask}
+//             setUpdatePage={setUpdatePage}
 
-          />
-        )}
+//           />
+//         )}
 
-        <NavigationLoggedIn
-          toggleNotificationDrawer={"toggleNotificationDrawer"}
-          setModalType={setModalType}
-          setPanelName={setPanelName}
-          setDropdown={setIsDropdownOpen}
-          isDropdownOpen={isDropdownOpen}
-          setLogin={handleLogout}
-        />
-      </div>
+//         <NavigationLoggedIn
+//           toggleNotificationDrawer={"toggleNotificationDrawer"}
+//           setModalType={setModalType}
+//           setPanelName={setPanelName}
+//           setDropdown={setIsDropdownOpen}
+//           isDropdownOpen={isDropdownOpen}
+//           setLogin={handleLogout}
+//         />
+//       </div>
 
-      <div style={{ height: "100vh" }}>
-        <div
-          style={{
-            padding: "10px 10px",
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "center",
-          }}
-          className="panel-container"
-        >
-          <div className={`task-panel ${panelName !=="overview"? "full":"two-third"}`}>
-            <div
-              style={{ display: "flex", justifyContent: "space-between" }}
-              className="toggles"
-            >
-           { panelName=== "overview" &&  <div className="toggle-groups">
-                <ToggleButtonGroup
-                  color="primary"
-                  value={taskType}
-                  exclusive
-                  onChange={handleTaskTypeChange}
-                  aria-label="Task Type"
-                  sx={{ "& .MuiToggleButton-root": { height: 30, width: 70 } }} // Custom height
-                >
-                  <ToggleButton value="OPEN">Open</ToggleButton>
-                  <ToggleButton value="CLOSED">Closed</ToggleButton>
-                  <ToggleButton value="DORMANT">Dormant</ToggleButton>
-                </ToggleButtonGroup>
+//       <div style={{ height: "100vh" }}>
+//         <div
+//           style={{
+//             padding: "10px 10px",
+//             display: "flex",
+//             flexDirection: "row",
+//             justifyContent: "center",
+//           }}
+//           className="panel-container"
+//         >
+//           <div className={`task-panel ${panelName !=="overview"? "full":"two-third"}`}>
+//             <div
+//               style={{ display: "flex", justifyContent: "space-between" }}
+//               className="toggles"
+//             >
+//            { panelName=== "overview" &&  <div className="toggle-groups">
+//                 <ToggleButtonGroup
+//                   color="primary"
+//                   value={taskType}
+//                   exclusive
+//                   onChange={handleTaskTypeChange}
+//                   aria-label="Task Type"
+//                   sx={{ "& .MuiToggleButton-root": { height: 30, width: 70 } }} // Custom height
+//                 >
+//                   <ToggleButton value="OPEN">Open</ToggleButton>
+//                   <ToggleButton value="CLOSED">Closed</ToggleButton>
+//                   <ToggleButton value="DORMANT">Dormant</ToggleButton>
+//                 </ToggleButtonGroup>
 
-                <ToggleButtonGroup
-                  color="primary"
-                  value={categoryFilter}
-                  exclusive
-                  onChange={handleCategoryChange}
-                  aria-label="Category"
-                  sx={{
-                    "& .MuiToggleButton-root": {
-                      height: 30,
-                      width: 70,
-                      marginTop: 2,
-                    },
-                  }} // Custom height
-                >
-                  <ToggleButton value="CLERICAL">Clerical</ToggleButton>
-                  <ToggleButton value="BEHAVIORAL">Behavioral</ToggleButton>
-                  <ToggleButton value="">All</ToggleButton>
-                </ToggleButtonGroup>
-              </div>}
+//                 <ToggleButtonGroup
+//                   color="primary"
+//                   value={categoryFilter}
+//                   exclusive
+//                   onChange={handleCategoryChange}
+//                   aria-label="Category"
+//                   sx={{
+//                     "& .MuiToggleButton-root": {
+//                       height: 30,
+//                       width: 70,
+//                       marginTop: 2,
+//                     },
+//                   }} // Custom height
+//                 >
+//                   <ToggleButton value="CLERICAL">Clerical</ToggleButton>
+//                   <ToggleButton value="BEHAVIORAL">Behavioral</ToggleButton>
+//                   <ToggleButton value="">All</ToggleButton>
+//                 </ToggleButtonGroup>
+//               </div>}
 
-              { panelName=== "punishment" &&  <div className="toggle-groups">
-                <ToggleButtonGroup
-                  color="primary"
-                  value={taskType}
-                  exclusive
-                  onChange={handleTaskTypeChange}
-                  aria-label="Task Type"
-                  sx={{ "& .MuiToggleButton-root": { height: 30, width: 70 } }} // Custom height
-                >
-                  <ToggleButton value="OPEN">Open</ToggleButton>
-                  <ToggleButton value="CLOSED">Closed</ToggleButton>
-                  <ToggleButton value="CFR">CRF</ToggleButton>
-                  <ToggleButton value="ALL">All</ToggleButton>
-                </ToggleButtonGroup>
+//               { panelName=== "punishment" &&  <div className="toggle-groups">
+//                 <ToggleButtonGroup
+//                   color="primary"
+//                   value={taskType}
+//                   exclusive
+//                   onChange={handleTaskTypeChange}
+//                   aria-label="Task Type"
+//                   sx={{ "& .MuiToggleButton-root": { height: 30, width: 70 } }} // Custom height
+//                 >
+//                   <ToggleButton value="OPEN">Open</ToggleButton>
+//                   <ToggleButton value="CLOSED">Closed</ToggleButton>
+//                   <ToggleButton value="CFR">CRF</ToggleButton>
+//                   <ToggleButton value="ALL">All</ToggleButton>
+//                 </ToggleButtonGroup>
 
          
-              </div>}
+//               </div>}
 
 
-              <div>
-                <FormControlLabel
-                  control={
-                    <Switch
-                      color="primary"
-                      checked={guidanceFilter}
-                      onChange={handleChange}
-                      aria-label="Referral Filter"
-                    />
-                  }
-                  label={guidanceFilter ? "My Referrals" : "All Referrals"}
-                />
-              </div>
-            </div>
-           {panelName === "punishment" &&  <div className="parent-contact-panel">
-           <div> <h1 className="main-panel-title">Parent Contacts</h1></div>
-            {data.map((item: any, index: any) => {
+//               <div>
+//                 <FormControlLabel
+//                   control={
+//                     <Switch
+//                       color="primary"
+//                       checked={guidanceFilter}
+//                       onChange={handleChange}
+//                       aria-label="Referral Filter"
+//                     />
+//                   }
+//                   label={guidanceFilter ? "My Referrals" : "All Referrals"}
+//                 />
+//               </div>
+//             </div>
+
+
+//            {panelName === "punishment" &&  <div className="parent-contact-panel">
+//            <div> <h1 className="main-panel-title">Parent Contacts</h1></div>
+//             {data.map((item: any, index: any) => {
       
-              return (
-                <div
-                  className="task-card"
-                  onClick={() => setActiveIndex(index)}
-                  key={index}
-                >
-                  <div className="tag">
-                    <div className="color-stripe"></div>
-                    <div className="tag-content">
-                      <div className="index"> {index + 1}</div>
-                      <div className="date">
-                        {" "}
-                        {dateCreateFormat(item?.followUpDate) ||
-                          dateCreateFormat(item?.timeCreated)}
-                      </div>
-                    </div>
-                  </div>
+//               return (
+//                 <div
+//                   className="task-card"
+//                   onClick={() => setActiveIndex(index)}
+//                   key={index}
+//                 >
+//                   <div className="tag">
+//                     <div className="color-stripe"></div>
+//                     <div className="tag-content">
+//                       <div className="index"> {index + 1}</div>
+//                       <div className="date">
+//                         {" "}
+//                         {dateCreateFormat(item?.followUpDate) ||
+//                           dateCreateFormat(item?.timeCreated)}
+//                       </div>
+//                     </div>
+//                   </div>
 
-                  <div className="card-body">
-                    <div className="card-body-title">{item.infractionName}</div>
-                    <div className="card-body-description">
-                      {item.infractionDescription}
-                    </div>
-                  </div>
-                  <div className="card-body">
-                    <div className="card-body-title">Created By</div>
-                    <div className="card-body-description">
-                      {item.teacherEmail}
-                    </div>
-                    <div>{statusBadgeGenerator(item.status)}</div>
-                  </div>
-                  <div className="action-container">
-                  <div className="card-actions">
-                    <div className="card-action-title">
-                      {item.guidanceStatus === "CLOSED"
-                        ? "Restore"
-                        : " Complete"}
-                    </div>
-                 <div
-                      onClick={() =>
-                        handlePunishmentClose(item.punishmentId)
-                      }
-                      className={closeIndicator && activeIndex === index ? 'check-box checked-fill ': `check-box`}
-                    ></div>
-                  </div>
-                  <div className="card-actions">
-                    <div className="card-action-title">Notes</div>
-                    <div
-                      className="clock-icon"
-                      onClick={() => {
-                        setDisplayNotes((prevState) => !prevState); // Toggle the state
-                        setActiveTask(item.punishmentId);
-                      }}
-                    >
-                      <NoteAddIcon
-                        sx={{ fontSize: "20px", fontWeight: "bold" }}
-                      />
-                    </div>
-                  </div>
-                  <div className="card-actions">
-                    <div className="card-action-title">Delete</div>
-                    <div
-                      className="clock-icon"
-                      onClick={() => {
-                        // setDisplayNotes((prevState) => !prevState); // Toggle the state
-                        deleteRecord(item)
-                      }}
-                    >
-                      <DeleteForeverIcon  sx={{ fontSize: "20px", fontWeight: "bold" }} />
+//                   <div className="card-body">
+//                     <div className="card-body-title">{item.infractionName}</div>
+//                     <div className="card-body-description">
+//                       {item.infractionDescription}
+//                     </div>
+//                   </div>
+//                   <div className="card-body">
+//                     <div className="card-body-title">Created By</div>
+//                     <div className="card-body-description">
+//                       {item.teacherEmail}
+//                     </div>
+//                     <div>{statusBadgeGenerator(item.status)}</div>
+//                   </div>
+//                   <div className="action-container">
+//                   <div className="card-actions">
+//                     <div className="card-action-title">
+//                       {item.guidanceStatus === "CLOSED"
+//                         ? "Restore"
+//                         : " Complete"}
+//                     </div>
+//                  <div
+//                       onClick={() =>
+//                         handlePunishmentClose(item.punishmentId)
+//                       }
+//                       className={closeIndicator && activeIndex === index ? 'check-box checked-fill ': `check-box`}
+//                     ></div>
+//                   </div>
+//                   <div className="card-actions">
+//                     <div className="card-action-title">Notes</div>
+//                     <div
+//                       className="clock-icon"
+//                       onClick={() => {
+//                         setDisplayNotes((prevState) => !prevState); // Toggle the state
+//                         setActiveTask(item.punishmentId);
+//                       }}
+//                     >
+//                       <NoteAddIcon
+//                         sx={{ fontSize: "20px", fontWeight: "bold" }}
+//                       />
+//                     </div>
+//                   </div>
+//                   <div className="card-actions">
+//                     <div className="card-action-title">Delete</div>
+//                     <div
+//                       className="clock-icon"
+//                       onClick={() => {
+//                         // setDisplayNotes((prevState) => !prevState); // Toggle the state
+//                         deleteRecord(item)
+//                       }}
+//                     >
+//                       <DeleteForeverIcon  sx={{ fontSize: "20px", fontWeight: "bold" }} />
 
                       
                       
-                    </div>
-                  </div>
+//                     </div>
+//                   </div>
 
-                  </div>
+//                   </div>
                 
               
-                </div>
-              );
-            })}
-          </div>                  
-           } 
+//                 </div>
+//               );
+//             })}
+//           </div>                  
+//            } 
 
-{/* MAINPAGE */}
-
-
-           { panelName === "overview" && <div className="guidance-panel">
-           <div> <h1 className="main-panel-title">Active Referrals</h1></div>
-            {data.map((item: any, index: any) => {
-              const markStatus =
-                item.guidanceStatus === "CLOSED" ? "OPEN" : "CLOSED";
-              return (
-                <div
-                  className="task-card"
-                  onClick={() => setActiveIndex(index)}
-                  key={index}
-                >
-                  <div className="tag">
-                    <div className="color-stripe"></div>
-                    <div className="tag-content">
-                      <div className="index"> {index + 1}</div>
-                      <div className="date">
-                        {" "}
-                        {dateCreateFormat(item?.followUpDate) ||
-                          dateCreateFormat(item?.timeCreated)}
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="card-body">
-                    <div className="card-body-title">{item.infractionName}</div>
-                    <div className="card-body-description">
-                      {item.notesArray[0].content}
-                    </div>
-                    {categoryBadgeGenerator(item.infractionName)}
-                  </div>
-                  <div className="card-body">
-                    <div className="card-body-title">Created By</div>
-                    <div className="card-body-description">
-                      {item.teacherEmail}
-                    </div>
-                  </div>
-                  <div className="card-actions">
-                    <div className="card-action-title">
-                      {item.guidanceStatus === "CLOSED"
-                        ? "Restore"
-                        : "Mark Complete"}
-                    </div>
-                    <div
-                      onClick={() =>
-                        handleStatusChange(markStatus, item.punishmentId)
-                      }
-                      className="check-box"
-                    ></div>
-                  </div>
-                  <div className="card-actions">
-                    <div className="card-action-title">Follow Up</div>
-                    <div
-                      className="clock-icon"
-                      onClick={() => {
-                        setDisplayPicker((prevState) => !prevState); // Toggle the state
-                        setActiveTask(item.punishmentId);
-                      }}
-                    >
-                      <AccessTimeIcon
-                        sx={{ fontSize: "20px", fontWeight: "bold" }}
-                      />
-                    </div>
-                  </div>
-                  <div className="card-actions">
-                    <div className="card-action-title">Notes</div>
-                    <div
-                      className="clock-icon"
-                      onClick={() => {
-                        setDisplayNotes((prevState) => !prevState); // Toggle the state
-                        setActiveTask(item.punishmentId);
-                      }}
-                    >
-                      <NoteAddIcon
-                        sx={{ fontSize: "20px", fontWeight: "bold" }}
-                      />
-                    </div>
-                  </div>
-                  <div className="card-actions">
-                    <div className="card-action-title">Resources</div>
-                    <div
-                      className="clock-icon"
-                      onClick={() => {
-                        setDisplayResources((prevState) => !prevState); // Toggle the state
-                        setActiveTask(item.punishmentId);
-                      }}
-                    >
-                      <SendIcon sx={{ fontSize: "20px", fontWeight: "bold" }} />
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>}
-
-      {/* STUDENT PANEL */}
-      { panelName === "student" &&  <div className="guidance-panel">
-           <div> <h1 className="main-panel-title">Student Records</h1></div>
-            {data?.map((item: any, index: any) => {
-              return <div>Comming Sono</div>
-             
-              // return (
-              //   <div
-              //     className="task-card"
-              //     onClick={() =>
-              //     {setActiveTask(item)
-              //       setDisplayStudentModal(true)
-              //       setActiveIndex(index)}}
-              //     key={index}
-              //   >
-              //     <div className="tag">
-              //       <div className="color-stripe"></div>
-              //       <div className="tag-content">
-              //         <div className="index"> {index + 1}</div>
-              //         <div className="date">
-              //           {" "}
-              //           {dateCreateFormat(item?.followUpDate) ||
-              //             dateCreateFormat(item?.timeCreated)}
-              //         </div>
-              //       </div>
-              //     </div>
-
-              //     <div className="card-body">
-              //       <div className="card-body-title">{item.infractionName}</div>
-              //       <div className="card-body-description">
-              //         {item.notesArray[0].content}
-              //       </div>
-              //       {categoryBadgeGenerator(item.infractionName)}
-              //     </div>
-              //     <div className="card-body">
-              //       <div className="card-body-title">Created By</div>
-              //       <div className="card-body-description">
-              //         {item.teacherEmail}
-              //       </div>
-              //     </div>
-              //     <div className="card-actions">
-              //       <div className="card-action-title">
-              //         {item.guidanceStatus === "CLOSED"
-              //           ? "Restore"
-              //           : "Mark Complete"}
-              //       </div>
-              //       <div
-              
-              //         className="check-box"
-              //       ></div>
-              //     </div>
-              //     <div className="card-actions">
-              //       <div className="card-action-title">Follow Up</div>
-              //       <div
-              //         className="clock-icon"
-              //         onClick={() => {
-              //           setDisplayPicker((prevState) => !prevState); // Toggle the state
-              //           setActiveTask(item.punishmentId);
-              //         }}
-              //       >
-              //         <AccessTimeIcon
-              //           sx={{ fontSize: "20px", fontWeight: "bold" }}
-              //         />
-              //       </div>
-              //     </div>
-              //     <div className="card-actions">
-              //       <div className="card-action-title">Notes</div>
-              //       <div
-              //         className="clock-icon"
-              //         onClick={() => {
-              //           setDisplayNotes((prevState) => !prevState); // Toggle the state
-              //           setActiveTask(item.punishmentId);
-              //         }}
-              //       >
-              //         <NoteAddIcon
-              //           sx={{ fontSize: "20px", fontWeight: "bold" }}
-              //         />
-              //       </div>
-              //     </div>
-              //     <div className="card-actions">
-              //       <div className="card-action-title">Resources</div>
-              //       <div
-              //         className="clock-icon"
-              //         onClick={() => {
-              //           setDisplayResources((prevState) => !prevState); // Toggle the state
-              //           setActiveTask(item.punishmentId);
-              //         }}
-              //       >
-              //         <SendIcon sx={{ fontSize: "20px", fontWeight: "bold" }} />
-              //       </div>
-              //     </div>
-              //   </div>
-              // );
-            })}
-          </div>}
+// {/* MAINPAGE */}
 
 
-            </div>
+//            { panelName === "overview" && <div className="guidance-panel">
+//            <div> <h1 className="main-panel-title">Active Referrals</h1></div>
+//             {data.map((item: any, index: any) => {
+//               const markStatus =
+//                 item.guidanceStatus === "CLOSED" ? "OPEN" : "CLOSED";
+//               return (
+//                 <div
+//                   className="task-card"
+//                   onClick={() => setActiveIndex(index)}
+//                   key={index}
+//                 >
+//                   <div className="tag">
+//                     <div className="color-stripe"></div>
+//                     <div className="tag-content">
+//                       <div className="index"> {index + 1}</div>
+//                       <div className="date">
+//                         {" "}
+//                         {dateCreateFormat(item?.followUpDate) ||
+//                           dateCreateFormat(item?.timeCreated)}
+//                       </div>
+//                     </div>
+//                   </div>
 
-            
-     {  displayStudentModal &&   <StudentDetailsModal studentEmail={activeTask.studentEmail}
-     setDisplayModal={setDisplayStudentModal}
-     />}
+//                   <div className="card-body">
+//                     <div className="card-body-title">{item.infractionName}</div>
+//                     <div className="card-body-description">
+//                       {item?.notesArray[0]?.content}
+//                     </div>
+//                     {categoryBadgeGenerator(item.infractionName)}
+//                   </div>
+//                   <div className="card-body">
+//                     <div className="card-body-title">Created By</div>
+//                     <div className="card-body-description">
+//                       {item.teacherEmail}
+//                     </div>
+//                   </div>
+//                   <div className="card-actions">
+//                     <div className="card-action-title">
+//                       {item.guidanceStatus === "CLOSED"
+//                         ? "Restore"
+//                         : "Mark Complete"}
+//                     </div>
+//                     <div
+//                       onClick={() =>
+//                         handleStatusChange(markStatus, item.punishmentId)
+//                       }
+//                       className="check-box"
+//                     ></div>
+//                   </div>
+//                   <div className="card-actions">
+//                     <div className="card-action-title">Follow Up</div>
+//                     <div
+//                       className="clock-icon"
+//                       onClick={() => {
+//                         setDisplayPicker((prevState) => !prevState); // Toggle the state
+//                         setActiveTask(item.punishmentId);
+//                       }}
+//                     >
+//                       <AccessTimeIcon
+//                         sx={{ fontSize: "20px", fontWeight: "bold" }}
+//                       />
+//                     </div>
+//                   </div>
+//                   <div className="card-actions">
+//                     <div className="card-action-title">Notes</div>
+//                     <div
+//                       className="clock-icon"
+//                       onClick={() => {
+//                         setDisplayNotes((prevState) => !prevState); // Toggle the state
+//                         setActiveTask(item.punishmentId);
+//                       }}
+//                     >
+//                       <NoteAddIcon
+//                         sx={{ fontSize: "20px", fontWeight: "bold" }}
+//                       />
+//                     </div>
+//                   </div>
+//                   <div className="card-actions">
+//                     <div className="card-action-title">Resources</div>
+//                     <div
+//                       className="clock-icon"
+//                       onClick={() => {
+//                         setDisplayResources((prevState) => !prevState); // Toggle the state
+//                         setActiveTask(item.punishmentId);
+//                       }}
+//                     >
+//                       <SendIcon sx={{ fontSize: "20px", fontWeight: "bold" }} />
+//                     </div>
+//                   </div>
+//                 </div>
+//               );
+//             })}
+//           </div>}
 
-          {/* NOTES AND DETAILS SECTION */}
-          <div className={`secondary-panel ${panelName !== "overview" ? "hide" : ""}`}>
-            <h1 className="main-panel-title">Threads</h1>
-            {activeIndex != null && activeIndex >= 0 && (
-              <div className="details-container">
-                <p>{data[activeIndex]?.guidanceTitle}</p>
-                <p>{dateCreateFormat(openTask[activeIndex]?.createdDate)}</p>
-                <p>{data[activeIndex]?.studentId}</p>
-                <p>{data[activeIndex]?.studentEmail}</p>
-                <p>{data[activeIndex]?.teacherEmail}</p>
-              </div>
-            )}
-            <div className="thread-container">
-              {activeIndex != null &&
-                activeIndex >= 0 &&
-                data[activeIndex]?.notesArray?.length > 0 &&
-                data[activeIndex].notesArray.map(
-                  (thread: any, index: number) => {
-                    return (
-                      <div className="thread-card" key={index}>
-                        <p>Event: {thread.event}</p>
-                        <p>Date: {dateCreateFormat(thread.date)}</p>
-                        <p>Content: {thread.content}</p>
-                      </div>
-                    );
-                  }
-                )}
+    
+//             <div className="thread-container">
+//               {activeIndex != null &&
+//                 activeIndex >= 0 &&
+//                 data[activeIndex]?.notesArray?.length > 0 &&
+//                 data[activeIndex].notesArray.map(
+//                   (thread: any, index: number) => {
+//                     return (
+//                       <div className="thread-card" key={index}>
+//                         <p>Event: {thread.event}</p>
+//                         <p>Date: {dateCreateFormat(thread.date)}</p>
+//                         <p>Content: {thread.content}</p>
+//                       </div>
+//                     );
+//                   }
+//                 )}
 
-              {activeIndex == null && (
-                <p>Click on Acitve Task to see details</p>
-              )}
-            </div>
-          </div>
-        </div>
-        <div className="analytics-panel">
-          <h1 className="main-panel-title">Analytics</h1>
-        </div>
-      </div>
-    </>
+//               {activeIndex == null && (
+//                 <p>Click on Acitve Task to see details</p>
+//               )}
+//             </div>
+//           </div>
+//         </div>
+//         <div className="analytics-panel">
+//           <h1 className="main-panel-title">Analytics</h1>
+//         </div>
+//       </div>
+//     </>
   );
 };
 
