@@ -546,7 +546,7 @@ setDisplayModal={setDisplayStudentModal}
                 </div>
               )}
 
-              <div>
+              <div className={`${panelName === "overview"?"":"none"}`}>
                 <FormControlLabel
                   control={
                     <Switch
