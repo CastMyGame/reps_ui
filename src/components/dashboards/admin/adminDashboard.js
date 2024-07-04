@@ -82,7 +82,6 @@ const AdminDashboard = () => {
           ) : (
             <div className="">
               <div
-                style={{ width: false ? "70%" : "100%" }}
                 className="left-main"
               >
                 <div className="main-content-panel">

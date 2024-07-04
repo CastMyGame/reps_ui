@@ -20,7 +20,7 @@ const handleSetDate = () => {
       };
 
     const url =`${baseUrl}/punish/v1/guidance/followup/${props.activeTask}`
-    axios.put(url, {"followUpDate":selectedDate?.toFormat("yyyyMMdd"),"guidanceStatus":"DORMANT"},{headers})
+    axios.put(url, {"followUpDate":selectedDate?.toFormat("yyyyMMdd"),"status":"DORMANT"},{headers})
     .then(response => {
       setToastType("success-toast")
       setIsToast(true)

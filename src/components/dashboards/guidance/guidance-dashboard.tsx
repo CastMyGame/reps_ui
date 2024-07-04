@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useState } from "react";
-import { NavigationLoggedIn } from "../../landing/navigation-loggedIn";
 import "./guidance-dashboard.css";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import NoteAddIcon from "@mui/icons-material/NoteAdd";
@@ -20,6 +19,136 @@ import {
 import { handleLogout } from "src/utils/helperFunctions";
 import { dateCreateFormat } from "src/helperFunctions/helperFunctions";
 import { get } from "src/utils/api/api";
+import { StudentDetailsModal } from "src/components/globalComponents/components/modals/studentDetailsModal";
+import NavbarCustom from "src/components/globalComponents/modals/navBar/navBar";
+import CreatePunishmentPanel from "src/components/globalComponents/modals/functions/createPunishmentPanel.js";
+import { TeacherDetailsModal } from "src/components/globalComponents/components/modals/teacherDetailsModal ";
+
+interface GuidanceResponse{
+  
+    guidanceId: string;
+    studentEmail: string;
+    schoolName: string;
+    timeCreated: null |[];
+    teacherEmail: string;
+    guidanceEmail: string;
+    referralDescription: [string];
+    status: string;
+    notesArray: null | [];
+    linkToPunishment: null | string,
+    followUpDate: null | []
+
+}
+
+interface StudentResponse{
+  
+  studentIdNumber: string;
+  address: string;
+  schoolName: string;
+  adminEmail: string | null;
+  firstName: string;
+  lastName: string;
+  grade: string;
+  notesArray: null | [];
+  parentPhoneNumber: string;
+  studentPhoneNumber: string;
+  studentEmail:string;
+  points:number;
+
+ 
+
+}
+
+interface Role{
+  role:string;
+  id:string
+}
+
+interface TeacherResponse{
+  
+  employeeId: string;
+  schoolName: string;
+  firstName: string;
+  lastName: string;
+  roles: null | [Role];
+  currency: number;
+  email:string;
+
+ 
+
+}
+
+interface Dropdown {
+  label: string;
+  panel: string;
+}
+
+
+interface ButtonData {
+  label: string;
+  panel: string;
+  multi: boolean;
+  dropdowns: Dropdown[];
+}
+
+
+
+const buttonData: ButtonData[] = [
+  { 
+    label: "OVERVIEW", 
+    panel: "overview", 
+    multi: false, 
+    dropdowns: []
+  },
+    { 
+      label: "REPORTS", 
+      panel: "reports", 
+      multi: true, 
+      dropdowns: [
+        { label: "BY STUDENTS", panel: "report-student" },
+        { label: "BY TEACHERS", panel: "report-teacher" }
+      ]
+    },
+    { 
+      label: "PARENT CONTACT", 
+      panel: "contacts", 
+      multi: true, 
+      dropdowns: [
+        { label: "NEW REFERRAL CONTACT", panel: "new-referral-contact" },
+        { label: "EXISTING PARENT CONTACT", panel: "existing-parent-contact" }
+      ]
+    },
+    { 
+      label: "TOOLS", 
+      panel: "tools", 
+      multi: true, 
+      dropdowns: [
+        { label: "CREATE/ASSIGNMENT", panel: "create-assignment" },
+        { label: "CREATE A STUDENT/TEACHER", panel: "create-user" },
+        { label: "ARCHIVED", panel: "archvied-records" }
+
+      ]
+    },
+    // { 
+    //   label: "CONTACT US", 
+    //   panel: "contact-us", 
+    //   multi: false, 
+    //   dropdowns: []
+    // },
+    { 
+      label: "DETENTION/LIST", 
+      panel: "detention", 
+      multi: false, 
+      dropdowns: []
+    },
+    // { 
+    //   label: "STORE REDEEM", 
+    //   panel: "redeem", 
+    //   multi: false, 
+    //   dropdowns: []
+    // },
+   
+  ];
 
 const GuidanceDashboard = () => {
   const [displayPicker, setDisplayPicker] = useState(false);
@@ -28,20 +157,21 @@ const GuidanceDashboard = () => {
   const [categoryFilter, setCategoryFilter] = useState("");
 
   const [updatePage, setUpdatePage] = useState(false);
-  const [modalType, setModalType] = useState("");
   const [data, setData] = useState<any>([]);
-  const [punishmentData, setPunishmentData] = useState<any>([]);
   const [panelName, setPanelName] = useState("overview");
 
   //Indicators - UI display of processing e.g. loading wheel
   const [closeIndicator, setCloseIndicator] = useState(false);
 
-  const [isDropdownOpen, setIsDropdownOpen] = useState("");
 
   const [openTask, setOpenTask] = useState<any>([]);
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [activeTask, setActiveTask] = useState<any | null>(null);
   const [guidanceFilter, setGuidanceFilter] = useState<boolean>(false);
+  const [displayStudentModal, setDisplayStudentModal] = useState(false)
+  const [displayTeacherModal, setDisplayTeacherModal] = useState(false)
+
+
   //Toggles
   const [taskType, setTaskType] = useState("OPEN");
 
@@ -139,12 +269,32 @@ const GuidanceDashboard = () => {
       setData(
         result.filter((item: any) => {
           return !item.guidance;
-        })
+        }
+      )
       );
     } catch (err) {
       console.error("Error Fetching Data: ", err);
     }
   }, [taskType, updatePage]);
+
+  const fetchStudentData = useCallback(async () => {
+    try {
+       let result = await get("student/v1/allStudents/");
+      setData(result);
+    } catch (err) {
+      console.error("Error Fetching Data: ", err);
+    }
+  }, [taskType, updatePage]);
+
+  const fetchTeacherData = useCallback(async () => {
+    try {
+       let result = await get("employees/v1/employees/TEACHER");
+      setData(result);
+    } catch (err) {
+      console.error("Error Fetching Data: ", err);
+    }
+  }, [taskType, updatePage]);
+
 
   const fetchActiveReferrals = useCallback(async () => {
     try {
@@ -197,10 +347,15 @@ const GuidanceDashboard = () => {
   };
 
   useEffect(() => {
-    if (panelName === "punishment") {
+    if (panelName === "existing-parent-contact") {
       fetchPunishmentData();
     } else if (panelName === "overview") {
       fetchActiveReferrals();
+    } else if( panelName === "report-student"){
+      fetchStudentData();
+    }
+    else if( panelName === "report-teacher"){
+      fetchTeacherData();
     }
   }, [
     panelName,
@@ -210,6 +365,8 @@ const GuidanceDashboard = () => {
     updatePage,
     fetchPunishmentData,
     fetchActiveReferrals,
+    fetchStudentData,
+    fetchTeacherData
   ]);
 
   useEffect(() => {
@@ -321,8 +478,20 @@ const GuidanceDashboard = () => {
             setDisplayModal={setDisplayNotes}
             activeTask={activeTask}
             setUpdatePage={setUpdatePage}
+            panelName = {panelName}
           />
         )}
+
+
+
+{  displayStudentModal &&  <StudentDetailsModal studentEmail={activeTask}
+setDisplayModal={setDisplayStudentModal}
+/>}
+
+
+{  displayTeacherModal &&  <TeacherDetailsModal teacherEmail={activeTask}
+setDisplayModal={setDisplayTeacherModal}
+/>}
 
         {displayResources && (
           <SendResourcesComponent
@@ -332,12 +501,9 @@ const GuidanceDashboard = () => {
           />
         )}
 
-        <NavigationLoggedIn
-          toggleNotificationDrawer={"toggleNotificationDrawer"}
-          setModalType={setModalType}
+        <NavbarCustom
           setPanelName={setPanelName}
-          setDropdown={setIsDropdownOpen}
-          isDropdownOpen={isDropdownOpen}
+          buttonData={buttonData}
           setLogin={handleLogout}
         />
       </div>
@@ -352,7 +518,7 @@ const GuidanceDashboard = () => {
           }}
           className="panel-container"
         >
-          <div className="task-panel">
+          <div className={`task-panel ${panelName !== "overview" && "full"}`}>
             <div
               style={{ display: "flex", justifyContent: "space-between" }}
               className="toggles"
@@ -395,7 +561,7 @@ const GuidanceDashboard = () => {
                 </div>
               )}
 
-              {panelName === "punishment" && (
+              {panelName === "existing-parent-contact" && (
                 <div className="toggle-groups">
                   <ToggleButtonGroup
                     color="primary"
@@ -415,7 +581,7 @@ const GuidanceDashboard = () => {
                 </div>
               )}
 
-              <div>
+              <div className={`${panelName === "overview"?"":"none"}`}>
                 <FormControlLabel
                   control={
                     <Switch
@@ -429,7 +595,7 @@ const GuidanceDashboard = () => {
                 />
               </div>
             </div>
-            {panelName === "punishment" && (
+            {panelName === "existing-parent-contact" && (
               <div className="parent-contact-panel">
                 <div>
                   {" "}
@@ -521,15 +687,74 @@ const GuidanceDashboard = () => {
                 })}
               </div>
             )}
+     {/* TEACHER PANEL */}
+     { panelName === "report-teacher" &&  <div className="guidance-panel">
+  <div> <h1 className="main-panel-title">Teacher Records</h1></div>
+   {data?.map((item: TeacherResponse, index: any) => {
+    
+  
+     return (
+       <div
+         className="task-card"
+         onClick={() =>
+         {setActiveTask(item.email)
+           setDisplayTeacherModal((prevState) => !prevState)
+           setActiveIndex(index)}}
+         key={index}
+       >
+         <div className="tag">
+           <div className="color-stripe"></div>
+           <div className="tag-content">
+             <div className="index">  {index}</div>
+             <div className="grade">
+               {" "}
+       
+             </div>
+           </div>
+         </div>
+
+         <div style={{display:"flex"}} className="card-body">
+           <div className="card-body-name">
+            {item.firstName} {item.lastName}
+            </div>
+           <div className="card-body-email">
+           {item.roles && item.roles.length > 0 ? item.roles[0].role : "Role Not Assigned"}
+           </div>
+           <div className="card-body-email">
+           {item.email}
+           </div>
+         </div>
+      
+       </div>
+     );
+   })}
+ </div>}            
+ 
+ 
+ {panelName === "new-referral-contact" &&   <CreatePunishmentPanel
+                      
+                    />}
+            {panelName === "create-assignment" && <h1>CREATE ASSIGNMENT</h1>}
+            {panelName === "create-user" && <h1>CREATE USER</h1>}
+            {panelName === "archvied-records" && <h1>ARCHIVED RECORD</h1>}
+            {panelName === "contact-us" && <h1>CONTACT US</h1>}
+            {panelName === "detention" && <h1>DETENTION LIST</h1>}
+            {panelName === "redeem" && <h1>REDEEM</h1>}
+
+
+
+
+
+
+
             {panelName === "overview" && (
               <div className="guidance-panel">
                 <div>
                   {" "}
                   <h1 className="main-panel-title">Active Referrals</h1>
                 </div>
-                {data.map((item: any, index: any) => {
-                  const markStatus =
-                    item.guidanceStatus === "CLOSED" ? "OPEN" : "CLOSED";
+                {data.map((item: GuidanceResponse, index: any) => {
+       
                   return (
                     <div
                       className="task-card"
@@ -550,12 +775,14 @@ const GuidanceDashboard = () => {
 
                       <div className="card-body">
                         <div className="card-body-title">
-                          {item.infractionName}
+                          {   item.referralDescription !== undefined  && item.referralDescription[0]}
                         </div>
                         <div className="card-body-description">
-                          {item.notesArray[0].content}
+                          {/* {item?.notesArray[0]?.content} */}
                         </div>
-                        {categoryBadgeGenerator(item.infractionName)}
+                        {item.referralDescription && item.referralDescription[0] !== undefined && (
+              categoryBadgeGenerator(item.referralDescription[0])
+            )}
                       </div>
                       <div className="card-body">
                         <div className="card-body-title">Created By</div>
@@ -565,13 +792,14 @@ const GuidanceDashboard = () => {
                       </div>
                       <div className="card-actions">
                         <div className="card-action-title">
-                          {item.guidanceStatus === "CLOSED"
+                          {item.status === "CLOSED"
                             ? "Restore"
                             : "Mark Complete"}
                         </div>
                         <div
                           onClick={() =>
-                            handleStatusChange(markStatus, item.punishmentId)
+      
+                            handleStatusChange("CLOSED", item.guidanceId)
                           }
                           className="check-box"
                         ></div>
@@ -582,7 +810,7 @@ const GuidanceDashboard = () => {
                           className="clock-icon"
                           onClick={() => {
                             setDisplayPicker((prevState) => !prevState); // Toggle the state
-                            setActiveTask(item.punishmentId);
+                            setActiveTask(item.guidanceId);
                           }}
                         >
                           <AccessTimeIcon
@@ -596,7 +824,7 @@ const GuidanceDashboard = () => {
                           className="clock-icon"
                           onClick={() => {
                             setDisplayNotes((prevState) => !prevState); // Toggle the state
-                            setActiveTask(item.punishmentId);
+                            setActiveTask(item.guidanceId);
                           }}
                         >
                           <NoteAddIcon
@@ -610,7 +838,7 @@ const GuidanceDashboard = () => {
                           className="clock-icon"
                           onClick={() => {
                             setDisplayResources((prevState) => !prevState); // Toggle the state
-                            setActiveTask(item.punishmentId);
+                            setActiveTask(item.guidanceId);
                           }}
                         >
                           <SendIcon
@@ -623,10 +851,85 @@ const GuidanceDashboard = () => {
                 })}
               </div>
             )}
-          </div>
+      
+
+            {/* STUDENT PANEL */}
+  { panelName === "report-student" &&  <div className="guidance-panel">
+  <div> <h1 className="main-panel-title">Student Records</h1></div>
+   {data?.map((item: StudentResponse, index: any) => {
+    
+  
+     return (
+       <div
+         className="task-card"
+         onClick={() =>
+         {setActiveTask(item.studentEmail)
+           setDisplayStudentModal((prevState) => !prevState)
+           setActiveIndex(index)}}
+         key={index}
+       >
+         <div className="tag">
+           <div className="color-stripe"></div>
+           <div className="tag-content">
+             <div className="index"> Grade {item.grade}</div>
+             <div className="grade">
+               {" "}
+       
+             </div>
+           </div>
+         </div>
+
+         <div className="card-body">
+           <div className="card-body-name">
+            {item.firstName} {item.lastName}
+            </div>
+           <div className="card-body-email">
+             {item.studentEmail}
+           </div>
+         </div>
+      
+      
+      
+         <div className="card-actions">
+           <div className="card-action-title">Notes</div>
+           <div
+             className="clock-icon"
+             onClick={() => {
+               setDisplayNotes((prevState) => !prevState); // Toggle the state
+               setActiveTask(item.studentIdNumber);             }}
+           >
+             <NoteAddIcon
+               sx={{ fontSize: "20px", fontWeight: "bold" }}
+             />
+           </div>
+         </div>
+         <div className="card-actions">
+           <div className="card-action-title">Resources</div>
+           <div
+             className="clock-icon"
+            //  onClick={() => {
+            //    setDisplayResources((prevState) => !prevState); // Toggle the state
+            //    setActiveTask(item.studentIdNumber);
+            //  }}
+           >
+             <SendIcon sx={{ fontSize: "20px", fontWeight: "bold" }} />
+           </div>
+         </div>
+       </div>
+     );
+   })}
+ </div>}
+
+ </div>
+
+
+
+  
+
+
 
           {/* NOTES AND DETAILS SECTION */}
-          <div className="secondary-panel">
+          <div className={`secondary-panel ${panelName !== "overview" && "hide"}`}>
             <h1 className="main-panel-title">Threads</h1>
             {activeIndex != null && activeIndex >= 0 && (
               <div className="details-container">
