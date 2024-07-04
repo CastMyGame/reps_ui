@@ -109,24 +109,24 @@ const buttonData: ButtonData[] = [
 
       ]
     },
-    { 
-      label: "CONTACT US", 
-      panel: "contact-us", 
-      multi: false, 
-      dropdowns: []
-    },
+    // { 
+    //   label: "CONTACT US", 
+    //   panel: "contact-us", 
+    //   multi: false, 
+    //   dropdowns: []
+    // },
     { 
       label: "DETENTION/LIST", 
       panel: "detention", 
       multi: false, 
       dropdowns: []
     },
-    { 
-      label: "STORE REDEEM", 
-      panel: "redeem", 
-      multi: false, 
-      dropdowns: []
-    },
+    // { 
+    //   label: "STORE REDEEM", 
+    //   panel: "redeem", 
+    //   multi: false, 
+    //   dropdowns: []
+    // },
     { 
       label: "STUDENTS", 
       panel: "student", 
@@ -529,7 +529,7 @@ setDisplayModal={setDisplayStudentModal}
                 </div>
               )}
 
-              {panelName === "punishment" && (
+              {panelName === "existing-parent-contact" && (
                 <div className="toggle-groups">
                   <ToggleButtonGroup
                     color="primary"
@@ -658,7 +658,6 @@ setDisplayModal={setDisplayStudentModal}
             {panelName === "report-student" && <h1>REPORT STUDENT</h1>}
             {panelName === "report-teacher" && <h1>REPORT TEACHERS</h1>}
             {panelName === "new-referral-contact" && <h1>CREATE NEW PUNISHMENT</h1>}
-            {panelName === "existing-parent-contact" && <h1>Existing Referrals</h1>}
             {panelName === "create-assignment" && <h1>CREATE ASSIGNMENT</h1>}
             {panelName === "create-user" && <h1>CREATE USER</h1>}
             {panelName === "archvied-records" && <h1>ARCHIVED RECORD</h1>}
