@@ -21,6 +21,7 @@ import { handleLogout } from "src/utils/helperFunctions";
 import { dateCreateFormat } from "src/helperFunctions/helperFunctions";
 import { get } from "src/utils/api/api";
 import { StudentDetailsModal } from "src/components/globalComponents/components/modals/studentDetailsModal";
+import NavbarCustom from "src/components/globalComponents/modals/navBar/navBar";
 
 interface GuidanceResponse{
   
@@ -56,6 +57,85 @@ interface StudentResponse{
  
 
 }
+
+interface Dropdown {
+  label: string;
+  panel: string;
+}
+
+
+interface ButtonData {
+  label: string;
+  panel: string;
+  multi: boolean;
+  dropdowns: Dropdown[];
+}
+
+
+
+const buttonData: ButtonData[] = [
+  { 
+    label: "OVERVIEW", 
+    panel: "overview", 
+    multi: false, 
+    dropdowns: []
+  },
+    { 
+      label: "REPORTS", 
+      panel: "reports", 
+      multi: true, 
+      dropdowns: [
+        { label: "BY STUDENTS", panel: "report-student" },
+        { label: "BY TEACHERS", panel: "report-teacher" }
+      ]
+    },
+    { 
+      label: "PARENT CONTACT", 
+      panel: "contacts", 
+      multi: true, 
+      dropdowns: [
+        { label: "NEW REFERRAL CONTACT", panel: "new-referral-contact" },
+        { label: "EXISTING PARENT CONTACT", panel: "existing-parent-contact" }
+      ]
+    },
+    { 
+      label: "TOOLS", 
+      panel: "tools", 
+      multi: true, 
+      dropdowns: [
+        { label: "CREATE/ASSIGNMENT", panel: "create-assignment" },
+        { label: "CREATE A STUDENT/TEACHER", panel: "create-user" },
+        { label: "ARCHIVED", panel: "archvied-records" }
+
+      ]
+    },
+    { 
+      label: "CONTACT US", 
+      panel: "contact-us", 
+      multi: false, 
+      dropdowns: []
+    },
+    { 
+      label: "DETENTION/LIST", 
+      panel: "detention", 
+      multi: false, 
+      dropdowns: []
+    },
+    { 
+      label: "STORE REDEEM", 
+      panel: "redeem", 
+      multi: false, 
+      dropdowns: []
+    },
+    { 
+      label: "STUDENTS", 
+      panel: "student", 
+      multi: false, 
+      dropdowns: [
+  
+      ]
+    }
+  ];
 
 const GuidanceDashboard = () => {
   const [displayPicker, setDisplayPicker] = useState(false);
@@ -389,12 +469,9 @@ setDisplayModal={setDisplayStudentModal}
           />
         )}
 
-        <NavigationLoggedIn
-          toggleNotificationDrawer={"toggleNotificationDrawer"}
-          setModalType={setModalType}
+        <NavbarCustom
           setPanelName={setPanelName}
-          setDropdown={setIsDropdownOpen}
-          isDropdownOpen={isDropdownOpen}
+          buttonData={buttonData}
           setLogin={handleLogout}
         />
       </div>
@@ -578,6 +655,23 @@ setDisplayModal={setDisplayStudentModal}
                 })}
               </div>
             )}
+            {panelName === "report-student" && <h1>REPORT STUDENT</h1>}
+            {panelName === "report-teacher" && <h1>REPORT TEACHERS</h1>}
+            {panelName === "new-referral-contact" && <h1>CREATE NEW PUNISHMENT</h1>}
+            {panelName === "existing-parent-contact" && <h1>Existing Referrals</h1>}
+            {panelName === "create-assignment" && <h1>CREATE ASSIGNMENT</h1>}
+            {panelName === "create-user" && <h1>CREATE USER</h1>}
+            {panelName === "archvied-records" && <h1>ARCHIVED RECORD</h1>}
+            {panelName === "contact-us" && <h1>CONTACT US</h1>}
+            {panelName === "detention" && <h1>DETENTION LIST</h1>}
+            {panelName === "redeem" && <h1>REDEEM</h1>}
+
+
+
+
+
+
+
             {panelName === "overview" && (
               <div className="guidance-panel">
                 <div>
