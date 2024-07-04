@@ -22,6 +22,7 @@ import { get } from "src/utils/api/api";
 import { StudentDetailsModal } from "src/components/globalComponents/components/modals/studentDetailsModal";
 import NavbarCustom from "src/components/globalComponents/modals/navBar/navBar";
 import CreatePunishmentPanel from "src/components/globalComponents/modals/functions/createPunishmentPanel.js";
+import { TeacherDetailsModal } from "src/components/globalComponents/components/modals/teacherDetailsModal ";
 
 interface GuidanceResponse{
   
@@ -127,14 +128,7 @@ const buttonData: ButtonData[] = [
     //   multi: false, 
     //   dropdowns: []
     // },
-    { 
-      label: "STUDENTS", 
-      panel: "student", 
-      multi: false, 
-      dropdowns: [
-  
-      ]
-    }
+   
   ];
 
 const GuidanceDashboard = () => {
@@ -156,6 +150,9 @@ const GuidanceDashboard = () => {
   const [activeTask, setActiveTask] = useState<any | null>(null);
   const [guidanceFilter, setGuidanceFilter] = useState<boolean>(false);
   const [displayStudentModal, setDisplayStudentModal] = useState(false)
+  const [displayTeacherModal, setDisplayTeacherModal] = useState(false)
+
+
   //Toggles
   const [taskType, setTaskType] = useState("OPEN");
 
@@ -270,6 +267,16 @@ const GuidanceDashboard = () => {
     }
   }, [taskType, updatePage]);
 
+  const fetchTeacherData = useCallback(async () => {
+    try {
+       let result = await get("employees/v1/employees/TEACHER");
+      setData(result);
+    } catch (err) {
+      console.error("Error Fetching Data: ", err);
+    }
+  }, [taskType, updatePage]);
+
+
   const fetchActiveReferrals = useCallback(async () => {
     try {
       const result = await get(
@@ -325,8 +332,11 @@ const GuidanceDashboard = () => {
       fetchPunishmentData();
     } else if (panelName === "overview") {
       fetchActiveReferrals();
-    } else if( panelName === "student"){
+    } else if( panelName === "report-student"){
       fetchStudentData();
+    }
+    else if( panelName === "report-teacher"){
+      fetchTeacherData();
     }
   }, [
     panelName,
@@ -336,7 +346,8 @@ const GuidanceDashboard = () => {
     updatePage,
     fetchPunishmentData,
     fetchActiveReferrals,
-    fetchStudentData
+    fetchStudentData,
+    fetchTeacherData
   ]);
 
   useEffect(() => {
@@ -456,6 +467,11 @@ const GuidanceDashboard = () => {
 
 {  displayStudentModal &&  <StudentDetailsModal studentEmail={activeTask}
 setDisplayModal={setDisplayStudentModal}
+/>}
+
+
+{  displayTeacherModal &&  <TeacherDetailsModal teacherEmail={activeTask}
+setDisplayModal={setDisplayTeacherModal}
 />}
 
         {displayResources && (
@@ -652,9 +668,75 @@ setDisplayModal={setDisplayStudentModal}
                 })}
               </div>
             )}
-            {panelName === "report-student" && <h1>REPORT STUDENT</h1>}
-            {panelName === "report-teacher" && <h1>REPORT TEACHERS</h1>}
-            {panelName === "new-referral-contact" &&   <CreatePunishmentPanel
+     {/* TEACHER PANEL */}
+     { panelName === "report-teacher" &&  <div className="guidance-panel">
+  <div> <h1 className="main-panel-title">Teacher Records</h1></div>
+   {data?.map((item: StudentResponse, index: any) => {
+    
+  
+     return (
+       <div
+         className="task-card"
+         onClick={() =>
+         {setActiveTask(item.studentEmail)
+           setDisplayTeacherModal((prevState) => !prevState)
+           setActiveIndex(index)}}
+         key={index}
+       >
+         <div className="tag">
+           <div className="color-stripe"></div>
+           <div className="tag-content">
+             <div className="index"> Grade {item.grade}</div>
+             <div className="grade">
+               {" "}
+       
+             </div>
+           </div>
+         </div>
+
+         <div className="card-body">
+           <div className="card-body-name">
+            {item.firstName} {item.lastName}
+            </div>
+           <div className="card-body-email">
+             {item.studentEmail}
+           </div>
+         </div>
+      
+      
+      
+         <div className="card-actions">
+           <div className="card-action-title">Notes</div>
+           <div
+             className="clock-icon"
+             onClick={() => {
+               setDisplayNotes((prevState) => !prevState); // Toggle the state
+               setActiveTask(item.studentIdNumber);             }}
+           >
+             <NoteAddIcon
+               sx={{ fontSize: "20px", fontWeight: "bold" }}
+             />
+           </div>
+         </div>
+         <div className="card-actions">
+           <div className="card-action-title">Resources</div>
+           <div
+             className="clock-icon"
+            //  onClick={() => {
+            //    setDisplayResources((prevState) => !prevState); // Toggle the state
+            //    setActiveTask(item.studentIdNumber);
+            //  }}
+           >
+             <SendIcon sx={{ fontSize: "20px", fontWeight: "bold" }} />
+           </div>
+         </div>
+       </div>
+     );
+   })}
+ </div>}            
+ 
+ 
+ {panelName === "new-referral-contact" &&   <CreatePunishmentPanel
                       
                     />}
             {panelName === "create-assignment" && <h1>CREATE ASSIGNMENT</h1>}
@@ -777,7 +859,7 @@ setDisplayModal={setDisplayStudentModal}
       
 
             {/* STUDENT PANEL */}
-  { panelName === "student" &&  <div className="guidance-panel">
+  { panelName === "report-student" &&  <div className="guidance-panel">
   <div> <h1 className="main-panel-title">Student Records</h1></div>
    {data?.map((item: StudentResponse, index: any) => {
     
