@@ -59,6 +59,25 @@ interface StudentResponse{
 
 }
 
+interface Role{
+  role:string;
+  id:string
+}
+
+interface TeacherResponse{
+  
+  employeeId: string;
+  schoolName: string;
+  firstName: string;
+  lastName: string;
+  roles: null | [Role];
+  currency: number;
+  email:string;
+
+ 
+
+}
+
 interface Dropdown {
   label: string;
   panel: string;
@@ -671,14 +690,14 @@ setDisplayModal={setDisplayTeacherModal}
      {/* TEACHER PANEL */}
      { panelName === "report-teacher" &&  <div className="guidance-panel">
   <div> <h1 className="main-panel-title">Teacher Records</h1></div>
-   {data?.map((item: StudentResponse, index: any) => {
+   {data?.map((item: TeacherResponse, index: any) => {
     
   
      return (
        <div
          className="task-card"
          onClick={() =>
-         {setActiveTask(item.studentEmail)
+         {setActiveTask(item.email)
            setDisplayTeacherModal((prevState) => !prevState)
            setActiveIndex(index)}}
          key={index}
@@ -686,7 +705,7 @@ setDisplayModal={setDisplayTeacherModal}
          <div className="tag">
            <div className="color-stripe"></div>
            <div className="tag-content">
-             <div className="index"> Grade {item.grade}</div>
+             <div className="index">  {index}</div>
              <div className="grade">
                {" "}
        
@@ -694,42 +713,18 @@ setDisplayModal={setDisplayTeacherModal}
            </div>
          </div>
 
-         <div className="card-body">
+         <div style={{display:"flex"}} className="card-body">
            <div className="card-body-name">
             {item.firstName} {item.lastName}
             </div>
            <div className="card-body-email">
-             {item.studentEmail}
+           {item.roles && item.roles.length > 0 ? item.roles[0].role : "Role Not Assigned"}
+           </div>
+           <div className="card-body-email">
+           {item.email}
            </div>
          </div>
       
-      
-      
-         <div className="card-actions">
-           <div className="card-action-title">Notes</div>
-           <div
-             className="clock-icon"
-             onClick={() => {
-               setDisplayNotes((prevState) => !prevState); // Toggle the state
-               setActiveTask(item.studentIdNumber);             }}
-           >
-             <NoteAddIcon
-               sx={{ fontSize: "20px", fontWeight: "bold" }}
-             />
-           </div>
-         </div>
-         <div className="card-actions">
-           <div className="card-action-title">Resources</div>
-           <div
-             className="clock-icon"
-            //  onClick={() => {
-            //    setDisplayResources((prevState) => !prevState); // Toggle the state
-            //    setActiveTask(item.studentIdNumber);
-            //  }}
-           >
-             <SendIcon sx={{ fontSize: "20px", fontWeight: "bold" }} />
-           </div>
-         </div>
        </div>
      );
    })}
