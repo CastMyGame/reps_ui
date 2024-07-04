@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useState } from "react";
-import { NavigationLoggedIn } from "../../landing/navigation-loggedIn";
 import "./guidance-dashboard.css";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import NoteAddIcon from "@mui/icons-material/NoteAdd";
@@ -22,6 +21,7 @@ import { dateCreateFormat } from "src/helperFunctions/helperFunctions";
 import { get } from "src/utils/api/api";
 import { StudentDetailsModal } from "src/components/globalComponents/components/modals/studentDetailsModal";
 import NavbarCustom from "src/components/globalComponents/modals/navBar/navBar";
+import CreatePunishmentPanel from "src/components/globalComponents/modals/functions/createPunishmentPanel.js";
 
 interface GuidanceResponse{
   
@@ -144,15 +144,12 @@ const GuidanceDashboard = () => {
   const [categoryFilter, setCategoryFilter] = useState("");
 
   const [updatePage, setUpdatePage] = useState(false);
-  const [modalType, setModalType] = useState("");
   const [data, setData] = useState<any>([]);
-  const [punishmentData, setPunishmentData] = useState<any>([]);
   const [panelName, setPanelName] = useState("overview");
 
   //Indicators - UI display of processing e.g. loading wheel
   const [closeIndicator, setCloseIndicator] = useState(false);
 
-  const [isDropdownOpen, setIsDropdownOpen] = useState("");
 
   const [openTask, setOpenTask] = useState<any>([]);
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
@@ -657,7 +654,9 @@ setDisplayModal={setDisplayStudentModal}
             )}
             {panelName === "report-student" && <h1>REPORT STUDENT</h1>}
             {panelName === "report-teacher" && <h1>REPORT TEACHERS</h1>}
-            {panelName === "new-referral-contact" && <h1>CREATE NEW PUNISHMENT</h1>}
+            {panelName === "new-referral-contact" &&   <CreatePunishmentPanel
+                      
+                    />}
             {panelName === "create-assignment" && <h1>CREATE ASSIGNMENT</h1>}
             {panelName === "create-user" && <h1>CREATE USER</h1>}
             {panelName === "archvied-records" && <h1>ARCHIVED RECORD</h1>}

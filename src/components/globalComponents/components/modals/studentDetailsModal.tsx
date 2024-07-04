@@ -92,7 +92,7 @@ export const StudentDetailsModal:React.FC<StudentDetailsModalProps> = ({studentE
 
                /> }
                    { requestModal &&  <GuidanceRequestModal
-               activeTask="23456"
+               activeTask={studentData?.studentIdNumber}
                setDisplayModal={setRequestModal}
                setUpdatePage={setUpdatePage}
                studentEmail = {studentEmail}
