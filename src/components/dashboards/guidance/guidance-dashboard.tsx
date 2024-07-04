@@ -324,7 +324,7 @@ const GuidanceDashboard = () => {
   };
 
   useEffect(() => {
-    if (panelName === "punishment") {
+    if (panelName === "existing-parent-contact") {
       fetchPunishmentData();
     } else if (panelName === "overview") {
       fetchActiveReferrals();
@@ -563,7 +563,7 @@ setDisplayModal={setDisplayStudentModal}
                 />
               </div>
             </div>
-            {panelName === "punishment" && (
+            {panelName === "existing-parent-contact" && (
               <div className="parent-contact-panel">
                 <div>
                   {" "}
