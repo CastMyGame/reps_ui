@@ -40,7 +40,7 @@ function getStyles(name, studentNames, theme) {
   };
 }
 
-const CreatePunishmentPanel = ({ data = [] }) => {
+const CreatePunishmentPanel = ({ setPanelName, data = [] }) => {
   const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
   });

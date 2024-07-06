@@ -23,73 +23,8 @@ import { StudentDetailsModal } from "src/components/globalComponents/components/
 import NavbarCustom from "src/components/globalComponents/modals/navBar/navBar";
 import CreatePunishmentPanel from "src/components/globalComponents/modals/functions/createPunishmentPanel.js";
 import { TeacherDetailsModal } from "src/components/globalComponents/components/modals/teacherDetailsModal ";
-
-interface GuidanceResponse{
-  
-    guidanceId: string;
-    studentEmail: string;
-    schoolName: string;
-    timeCreated: null |[];
-    teacherEmail: string;
-    guidanceEmail: string;
-    referralDescription: [string];
-    status: string;
-    notesArray: null | [];
-    linkToPunishment: null | string,
-    followUpDate: null | []
-
-}
-
-interface StudentResponse{
-  
-  studentIdNumber: string;
-  address: string;
-  schoolName: string;
-  adminEmail: string | null;
-  firstName: string;
-  lastName: string;
-  grade: string;
-  notesArray: null | [];
-  parentPhoneNumber: string;
-  studentPhoneNumber: string;
-  studentEmail:string;
-  points:number;
-
- 
-
-}
-
-interface Role{
-  role:string;
-  id:string
-}
-
-interface TeacherResponse{
-  
-  employeeId: string;
-  schoolName: string;
-  firstName: string;
-  lastName: string;
-  roles: null | [Role];
-  currency: number;
-  email:string;
-
- 
-
-}
-
-interface Dropdown {
-  label: string;
-  panel: string;
-}
-
-
-interface ButtonData {
-  label: string;
-  panel: string;
-  multi: boolean;
-  dropdowns: Dropdown[];
-}
+import { ButtonData } from "src/types/inputs";
+import { GuidanceResponse, StudentResponse, TeacherResponse } from "src/types/responses";
 
 
 

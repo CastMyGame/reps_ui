@@ -36,7 +36,7 @@ const AdminDashboard = () => {
     }
   }, []);
 
-  const toggleNotificationDrawer = (open) => {
+  const toggleNotificationDrawer = (open: boolean | ((prevState: boolean) => boolean)) => {
     setOpenNotificationDrawer(open);
   };
 
@@ -63,7 +63,7 @@ const AdminDashboard = () => {
       <div>
         <div>
           {modalType === "contact" && (
-            <ContactUsModal setContactUsDisplayModal={setModalType} />
+            <ContactUsModal setContactUsDisplayModal={setModalType} contactUsDisplayModal={undefined} />
           )}
 
           <NavigationAdmin
@@ -93,7 +93,7 @@ const AdminDashboard = () => {
                     )
                   )}
                   {panelName === "viewTeacher" && <AdminTeacherPanel />}
-                  {panelName === "student" && <TeacherStudentPanel />}
+                  {panelName === "student" && <TeacherStudentPanel setPanelName={setPanelName} />}
                   {panelName === "punishment" && (
                     <GlobalPunishmentPanel roleType={"admin"} />
                   )}
@@ -114,7 +114,7 @@ const AdminDashboard = () => {
                   )}
                   {panelName === "userManagement" && <AddTeacherForm />}
                   {panelName === "archived" && (
-                    <GlobalArchivedPunishmentPanel />
+                    <GlobalArchivedPunishmentPanel filter={undefined} roleType={"admin"} />
                   )}
                   {panelName === "createEditAssignments" && (
                     <AssignmentManager />
