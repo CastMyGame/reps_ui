@@ -3,6 +3,11 @@ export interface Role {
   id: string;
 }
 
+export interface OfficeReferralCode {
+    codeKey: number;
+    codeName: string;
+}
+
 export interface GuidanceResponse {
   guidanceId: string;
   studentEmail: string;
@@ -40,4 +45,18 @@ export interface TeacherResponse {
   roles: null | [Role];
   currency: number;
   email: string;
+}
+
+export interface OfficeReferralResponse {
+  officeReferralId: string;
+  referralCode: OfficeReferralCode;
+  studentEmail: string;
+  adminEmail: string;
+  teacherEmail: string;
+  schoolName: string;
+  status: string;
+  closedExplanation: string;
+  timeCreated: null | [];
+  referralDescription: [string];
+  followUpDate: null | [];
 }
