@@ -72,6 +72,24 @@ const GuidanceDashboard = () => {
     }
   };
 
+  const handleStatusChange = (status: any, id: string) => {
+    const payload = { status: status };
+    const headers = {
+      Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
+    };
+
+    const url = `${baseUrl}/punish/v1/guidance/status/${id}`;
+    axios
+      .put(url, payload, { headers })
+      .then((response) => {
+        console.log(response.data);
+        handleUpdatePage();
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
   const handleReferralFilterChange = (filterBoolean: boolean) => {
     if (filterBoolean !== null) {
       setGuidanceFilter(filterBoolean);

@@ -21,12 +21,14 @@ import { NavigationAdmin } from "src/components/landing/navigation-admin";
 import { handleLogout } from "src/utils/helperFunctions";
 import SpendPage from "src/components/globalComponents/spend-page/spend-page";
 import { OfficeReferralResponse } from "src/types/responses";
-import { categoryBadgeGenerator, dateCreateFormat } from "src/helperFunctions/helperFunctions";
+import {
+  categoryBadgeGenerator,
+  dateCreateFormat,
+} from "src/helperFunctions/helperFunctions";
 import { baseUrl } from "src/utils/jsonData";
 import axios from "axios";
 
 const AdminDashboard = () => {
-  const [loggedIn, setLoggedIn] = useState(true);
   const [openNotificationDrawer, setOpenNotificationDrawer] = useState(false);
   const [panelName, setPanelName] = useState("overview");
   const [punishmentData, setPunishmentData] = useState([]);
@@ -38,14 +40,13 @@ const AdminDashboard = () => {
   const [displayPicker, setDisplayPicker] = useState(false);
   const [displayNotes, setDisplayNotes] = useState(false);
   const [displayResources, setDisplayResources] = useState(false);
+  const [referralList, setReferralList] = useState<any>([]);
 
   const [isDropdownOpen, setIsDropdownOpen] = useState("");
 
   useEffect(() => {
     if (sessionStorage.getItem("Authorization") === null) {
       window.location.href = "/login";
-    } else {
-      setLoggedIn(true);
     }
   }, []);
 
@@ -87,9 +88,11 @@ const AdminDashboard = () => {
         const result = await get("DTO/v1/AdminOverviewData");
         setPunishmentData(result.punishmentResponse);
         setData(result);
+        setReferralList(result.officeReferrals);
       } catch (err) {
         console.error("Error Fetching Data: ", err);
       }
+      console.log(referralList + "This is the referral list!!!");
     };
 
     if (panelName === "overview") {
@@ -98,185 +101,183 @@ const AdminDashboard = () => {
   }, [panelName]);
 
   return (
-    loggedIn && (
+    <div>
       <div>
-        <div>
-          {modalType === "contact" && (
-            <ContactUsModal
-              setContactUsDisplayModal={setModalType}
-              contactUsDisplayModal={undefined}
-            />
-          )}
-
-          <NavigationAdmin
-            toggleNotificationDrawer={toggleNotificationDrawer}
-            setModalType={setModalType}
-            setPanelName={setPanelName}
-            setDropdown={setIsDropdownOpen}
-            isDropdownOpen={isDropdownOpen}
-            setLogin={handleLogout}
+        {modalType === "contact" && (
+          <ContactUsModal
+            setContactUsDisplayModal={setModalType}
+            contactUsDisplayModal={undefined}
           />
-        </div>
+        )}
 
-        <div className="header">
-          {punishmentData.length === 0 ? (
-            <LoadingWheelPanel />
-          ) : (
-            <div className="">
-              <div className="left-main">
-                <div className="main-content-panel">
-                  {punishmentData.length === 0 ? (
-                    <LoadingWheelPanel />
-                  ) : (
-                    panelName === "overview" && (
-                      {data.map((item: OfficeReferralResponse, index: any) => {
-                  return (
-                    <div
-                      className="task-card"
-                      onClick={() => setActiveIndex(index)}
-                      key={index}
-                    >
-                      <div className="tag">
-                        <div className="color-stripe"></div>
-                        <div className="tag-content">
-                          <div className="index"> {index + 1}</div>
-                          <div className="date">
-                            {" "}
-                            {dateCreateFormat(item?.followUpDate) ||
-                              dateCreateFormat(item?.timeCreated)}
-                          </div>
-                        </div>
-                      </div>
+        <NavigationAdmin
+          toggleNotificationDrawer={toggleNotificationDrawer}
+          setModalType={setModalType}
+          setPanelName={setPanelName}
+          setDropdown={setIsDropdownOpen}
+          isDropdownOpen={isDropdownOpen}
+          setLogin={handleLogout}
+        />
+      </div>
 
-                      <div className="card-body">
-                        <div className="card-body-title">
-                          {item.referralDescription !== undefined &&
-                            item.referralDescription[0]}
-                        </div>
-                        <div className="card-body-description">
-                          {/* {item?.notesArray[0]?.content} */}
-                        </div>
-                        {item.referralDescription &&
+      <div className="header">
+        <div className="">
+          <div className="left-main">
+            <div className="main-content-panel">
+              {referralList === null ? (
+                <LoadingWheelPanel />
+              ) : (
+                panelName === "overview" && (
+                  <>
+                    {referralList.map(
+                      (item: OfficeReferralResponse, index: any) => {
+                        return (
+                          <div
+                            className="task-card"
+                            onClick={() => setActiveIndex(index)}
+                            key={index}
+                          >
+                            <div className="tag">
+                              <div className="color-stripe"></div>
+                              <div className="tag-content">
+                                <div className="index"> {index + 1}</div>
+                                <div className="date">
+                                  {" "}
+                                  {dateCreateFormat(item?.followUpDate) ||
+                                    dateCreateFormat(item?.timeCreated)}
+                                </div>
+                              </div>
+                            </div>
+
+                            <div className="card-body">
+                              <div className="card-body-title">
+                                {item?.referralDescription[0]}
+                              </div>
+                              <div className="card-body-description">
+                                {/* {item?.notesArray[0]?.content} */}
+                              </div>
+                              {/* {item.referralDescription &&
                           item.referralDescription[0] !== undefined &&
-                          categoryBadgeGenerator(item.referralDescription[0])}
-                      </div>
-                      <div className="card-body">
-                        <div className="card-body-title">Created By</div>
-                        <div className="card-body-description">
-                          {item.teacherEmail}
-                        </div>
-                      </div>
-                      <div className="card-actions">
-                        <div className="card-action-title">
-                          {item.status === "CLOSED"
-                            ? "Restore"
-                            : "Mark Complete"}
-                        </div>
-                        <div
-                          onClick={() =>
-                            handleStatusChange("CLOSED", item.officeReferralId)
-                          }
-                          className="check-box"
-                        ></div>
-                      </div>
-                      <div className="card-actions">
-                        <div className="card-action-title">Follow Up</div>
-                        <div
-                          className="clock-icon"
-                          onClick={() => {
-                            setDisplayPicker((prevState) => !prevState); // Toggle the state
-                            setActiveTask(item.officeReferralId);
-                          }}
-                        >
-                          <AccessTimeIcon
-                            sx={{ fontSize: "20px", fontWeight: "bold" }}
-                          />
-                        </div>
-                      </div>
-                      <div className="card-actions">
-                        <div className="card-action-title">Notes</div>
-                        <div
-                          className="clock-icon"
-                          onClick={() => {
-                            setDisplayNotes((prevState) => !prevState); // Toggle the state
-                            setActiveTask(item.officeReferralId);
-                          }}
-                        >
-                          <NoteAddIcon
-                            sx={{ fontSize: "20px", fontWeight: "bold" }}
-                          />
-                        </div>
-                      </div>
-                      <div className="card-actions">
-                        <div className="card-action-title">Resources</div>
-                        <div
-                          className="clock-icon"
-                          onClick={() => {
-                            setDisplayResources((prevState) => !prevState); // Toggle the state
-                            setActiveTask(item.officeReferralId);
-                          }}
-                        >
-                          <SendIcon
-                            sx={{ fontSize: "20px", fontWeight: "bold" }}
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
-                    )
-                  )}
-                  {panelName === "viewTeacher" && <AdminTeacherPanel />}
-                  {panelName === "student" && (
-                    <TeacherStudentPanel setPanelName={setPanelName} />
-                  )}
-                  {panelName === "punishment" && (
-                    <GlobalPunishmentPanel roleType={"admin"} />
-                  )}
-                  {panelName === "createPunishment" && (
-                    <CreatePunishmentPanel
-                      setPanelName={setPanelName}
-                      data={data}
-                    />
-                  )}
-                  {/* {panelName === "createOfficeRef" && (
+                          categoryBadgeGenerator(item.referralDescription[0])} */}
+                            </div>
+                            <div className="card-body">
+                              <div className="card-body-title">Created By</div>
+                              <div className="card-body-description">
+                                {item?.teacherEmail}
+                              </div>
+                            </div>
+                            <div className="card-actions">
+                              <div className="card-action-title">
+                                {item?.status === "CLOSED"
+                                  ? "Restore"
+                                  : "Mark Complete"}
+                              </div>
+                              <div
+                                onClick={() =>
+                                  handleStatusChange(
+                                    "CLOSED",
+                                    item?.officeReferralId
+                                  )
+                                }
+                                className="check-box"
+                              ></div>
+                            </div>
+                            <div className="card-actions">
+                              <div className="card-action-title">Follow Up</div>
+                              <div
+                                className="clock-icon"
+                                onClick={() => {
+                                  setDisplayPicker((prevState) => !prevState); // Toggle the state
+                                  setActiveTask(item?.officeReferralId);
+                                }}
+                              >
+                                <AccessTimeIcon
+                                  sx={{ fontSize: "20px", fontWeight: "bold" }}
+                                />
+                              </div>
+                            </div>
+                            <div className="card-actions">
+                              <div className="card-action-title">Notes</div>
+                              <div
+                                className="clock-icon"
+                                onClick={() => {
+                                  setDisplayNotes((prevState) => !prevState); // Toggle the state
+                                  setActiveTask(item?.officeReferralId);
+                                }}
+                              >
+                                <NoteAddIcon
+                                  sx={{ fontSize: "20px", fontWeight: "bold" }}
+                                />
+                              </div>
+                            </div>
+                            <div className="card-actions">
+                              <div className="card-action-title">Resources</div>
+                              <div
+                                className="clock-icon"
+                                onClick={() => {
+                                  setDisplayResources(
+                                    (prevState) => !prevState
+                                  ); // Toggle the state
+                                  setActiveTask(item?.officeReferralId);
+                                }}
+                              >
+                                <SendIcon
+                                  sx={{ fontSize: "20px", fontWeight: "bold" }}
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      }
+                    )}
+                  </>
+                )
+              )}
+              {panelName === "viewTeacher" && <AdminTeacherPanel />}
+              {panelName === "student" && (
+                <TeacherStudentPanel setPanelName={setPanelName} />
+              )}
+              {panelName === "punishment" && (
+                <GlobalPunishmentPanel roleType={"admin"} />
+              )}
+              {panelName === "createPunishment" && (
+                <CreatePunishmentPanel
+                  setPanelName={setPanelName}
+                  data={data}
+                />
+              )}
+              {/* {panelName === "createOfficeRef" && (
                     <CreateOfficeReferral
                       setPanelName={setPanelName}
                       data={data}
                     />
                   )} */}
-                  {panelName === "createNewStudent" && (
-                    <CreateNewStudentPanel />
-                  )}
-                  {panelName === "userManagement" && <AddTeacherForm />}
-                  {panelName === "archived" && (
-                    <GlobalArchivedPunishmentPanel
-                      filter={undefined}
-                      roleType={"admin"}
-                    />
-                  )}
-                  {panelName === "createEditAssignments" && (
-                    <AssignmentManager />
-                  )}
-                  {panelName === "spendPoints" && <SpendPage data={data} />}
-                </div>
-              </div>
+              {panelName === "createNewStudent" && <CreateNewStudentPanel />}
+              {panelName === "userManagement" && <AddTeacherForm />}
+              {panelName === "archived" && (
+                <GlobalArchivedPunishmentPanel
+                  filter={undefined}
+                  roleType={"admin"}
+                />
+              )}
+              {panelName === "createEditAssignments" && <AssignmentManager />}
+              {panelName === "spendPoints" && <SpendPage data={data} />}
             </div>
-          )}
+          </div>
         </div>
-
-        <Drawer
-          anchor="right"
-          open={openNotificationDrawer}
-          onClose={() => toggleNotificationDrawer(false)}
-        >
-          {/* <NotificationBar notificationData={data}/> */}
-          <DetentionWidget />
-
-          <ISSWidget />
-        </Drawer>
       </div>
-    )
+
+      <Drawer
+        anchor="right"
+        open={openNotificationDrawer}
+        onClose={() => toggleNotificationDrawer(false)}
+      >
+        {/* <NotificationBar notificationData={data}/> */}
+        <DetentionWidget />
+
+        <ISSWidget />
+      </Drawer>
+    </div>
   );
 };
 
