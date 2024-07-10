@@ -23,6 +23,7 @@ import { StudentDetailsModal } from "src/components/globalComponents/components/
 import NavbarCustom from "src/components/globalComponents/modals/navBar/navBar";
 import CreatePunishmentPanel from "src/components/globalComponents/modals/functions/createPunishmentPanel.js";
 import { TeacherDetailsModal } from "src/components/globalComponents/components/modals/teacherDetailsModal ";
+import ComingSoon from "src/components/globalComponents/components/generic-components/coming-soon";
 
 interface GuidanceResponse{
   
@@ -734,12 +735,12 @@ setDisplayModal={setDisplayTeacherModal}
  {panelName === "new-referral-contact" &&   <CreatePunishmentPanel
                       
                     />}
-            {panelName === "create-assignment" && <h1>CREATE ASSIGNMENT</h1>}
-            {panelName === "create-user" && <h1>CREATE USER</h1>}
-            {panelName === "archvied-records" && <h1>ARCHIVED RECORD</h1>}
-            {panelName === "contact-us" && <h1>CONTACT US</h1>}
-            {panelName === "detention" && <h1>DETENTION LIST</h1>}
-            {panelName === "redeem" && <h1>REDEEM</h1>}
+            {panelName === "create-assignment" && <ComingSoon title="Create Assignment"/>}
+            {panelName === "create-user" &&  <ComingSoon title="Create User"/>}
+            {panelName === "archvied-records" &&  <ComingSoon title="Archive Records"/>}
+            {panelName === "contact-us" &&  <ComingSoon title="Contact Us"/>}
+            {panelName === "detention" &&  <ComingSoon title="Detention"/>}
+            {panelName === "redeem" &&  <ComingSoon title="Redemption Store"/>}
 
 
 
