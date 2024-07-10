@@ -6,7 +6,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "./security/Login";
 import Register from "./security/Register";
 import StudentDashboard from "./components/dashboards/student/DashboardStudent ";
-import AdminDashboard from "./components/dashboards/admin/adminDashboard";
+import AdminDashboard from "./components/dashboards/admin/admin-dashboard";
 import PDFReport from "./roles/admin/reports/PDFReport";
 import { PDFViewer } from "@react-pdf/renderer";
 import TeacherDashboard from "./components/dashboards/teacher/teacherDashboard";

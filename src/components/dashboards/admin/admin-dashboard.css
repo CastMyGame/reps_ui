@@ -1,0 +1,290 @@
+
+.panel-container{
+    width: 100%;
+    padding: 10px 10px;
+}
+
+.main-panel-title{
+    text-align: center;
+    background-color: silver;
+    padding: 10px 10px;
+    position: sticky;
+    top: 0;
+    position: sticky;
+    top: 0;
+}
+
+.task-panel{
+    width: 60%;
+    background-color: lightblue;
+    padding: 20px 20px;
+    height: 100%;
+    overflow-y: scroll;
+    height: 100%;
+    overflow-y: scroll;
+
+}
+
+.task-card{
+    height: 80px;
+    width:100%;
+    margin-bottom:10px;
+    display: flex;
+
+
+}
+
+.task-card:hover{
+    background-color: lightgrey;
+}
+
+.tag{
+    display: flex;
+    
+}
+
+.tag-content{
+    margin-left: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+.color-stripe{
+    background-color: orange;
+    height: 100%;
+    width: 7px;
+    border-radius: 5px;
+
+}
+
+.index{
+    font-size: large;
+    font-weight: bold;
+    text-align: center;
+}
+
+.date{
+    font-size: x-small;
+    font-weight:100;
+    text-align: center;
+    color: black;
+}
+
+.card-body{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    text-align: center;
+    height: 60px;
+    align-items: center;
+}
+
+.card-body-title{
+    text-align: center;
+    font-weight: 800;
+
+}
+
+.card-body-description{
+    font-size: smaller;
+    
+
+}
+
+.card-actions{
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-right: 2%;
+
+}
+
+.card-action-title{
+    width: max-content;
+    font-size: 10px;
+ 
+
+}
+
+.check-box{
+    background-color: whitesmoke;
+    border: 2px black solid;
+    width: 20px;
+    height: 20px;
+
+
+}
+
+.check-box:hover{
+    background-color: grey;
+}
+
+.checked-fill{
+    background-color: grey;
+    border: 2px white solid;
+    padding: 10% 10%
+}
+
+.clock-icon{
+    width: 20px;
+    height: 20px;
+
+}
+
+.secondary-panel{
+    width: 40%;
+    background-color: lightgray;
+    padding: 20px 20px;
+    overflow: auto;
+
+}
+
+.details-container{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: max-content;
+    background-color: orange;
+    padding: 20px 10px;
+    border-radius: 10px;
+
+
+}
+
+.thread-container{
+    overflow-y: auto;
+
+}
+
+.thread-card{
+    margin-top: 10px;
+    width: 100%;
+    height: 120px;
+    background-color: white;
+    padding: 10px 10px;
+    border-radius: 10px;
+    overflow-y: auto;
+
+
+}
+
+.thread-card:hover{
+    background-color: grey;
+}
+
+.analytics-panel{
+    background-color: silver;
+    height: 500px;
+
+}
+
+.cat-badge {
+    margin-top: 5px;
+    border-radius: 5px;
+    height: 14px;
+    width: 70px;
+    background-color: purple;
+    opacity: 50%;
+    color: white;
+    font-size: 10px;
+}
+
+
+.toggle-groups{
+    display: flex;
+    flex-direction: column;
+}
+
+.search-bar-resources{
+margin-top: 10px;
+width:98%;
+height:40px;
+background-color: white;
+color:black;
+
+}
+
+.selected-answers {
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    height: max-content;
+    min-height: 100px;
+    width: 98%;
+    border: 2px black solid;
+}
+
+.resource-chip {
+    border: 1px black solid;
+    border-radius: 5px;
+    white-space: nowrap;
+    margin-right: 1px;
+    height: fit-content;
+    padding: 2px 5px; /* Adding some padding for better appearance */
+    box-sizing: border-box; /* Ensure the padding and border are included in the width calculation */
+}
+
+.resource-container{
+    position: absolute;
+    padding: 5px 5px;
+    height: 98%;
+    width: 98%;
+
+
+}
+.mapped-items{
+
+    overflow: auto;
+    height: 200px;
+    width: 98%;
+}
+
+.resource-submit-btn{
+    position: absolute;
+    background-color: cornflowerblue;
+    top:90%
+
+}
+
+.success-toast{
+    position: fixed;
+    width: max-content;
+    padding: 5px 5px;
+    border: 1px solid black;
+    background-color: #22BB33;
+    opacity: 1; /* Initial opacity */
+    transition: opacity 0.5s ease-in-out; /* Transition effect */
+
+}
+
+.warning-toast{
+    width: max-content;
+    padding: 5px 5px;
+    border: 1px solid black;
+    background-color: #bb2124;
+    color: white;
+    opacity: 1; /* Initial opacity */
+    transition: opacity 0.5s ease-in-out; /* Transition effect */
+
+}
+
+.action-container{
+    display: flex;
+    justify-content: space-between;
+    width: 60%;
+    padding: 10px;
+
+}
+
+.hide{
+    display :none;
+}
+
+.full{
+    width: 100%;
+}
+
+.two-third{
+    width: 66%;
+}
