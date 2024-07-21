@@ -55,13 +55,13 @@ export const NavigationAdmin = (props) => {
                   onClick={() => dropdownHandler("createPunishment")}
                   className="item page-scroll"
                 >
-                  New Parent Contact
+                  New Referral/Shout Out
                 </div>
                 <div
                   onClick={() => dropdownHandler("punishment")}
                   className="item page-scroll"
                 >
-                  Existing Parent Contacts
+                  Existing Referrals/Shout Outs
                 </div>
               </div>
             </li>

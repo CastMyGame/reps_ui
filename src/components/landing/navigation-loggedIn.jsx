@@ -44,10 +44,10 @@ export const NavigationLoggedIn = (props) => {
             <div style={{display: props.isDropdownOpen === "referral"?"block":"none"}} class="feature-menu-dropdown">
   <div 
   onClick={()=>dropdownHandler("createPunishment")}
-  className="item page-scroll">New Parent Contact</div>
+  className="item page-scroll">New Referral/Shout Out</div>
   <div 
   onClick={()=>dropdownHandler("punishment")}
-  className="item page-scroll">Existing Parent Contacts</div>
+  className="item page-scroll">Existing Referrals/Shout Outs</div>
 </div>
               
             </li>
