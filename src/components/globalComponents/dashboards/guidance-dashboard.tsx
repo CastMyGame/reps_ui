@@ -17,7 +17,7 @@ import {
   ToggleButtonGroup,
 } from "@mui/material";
 import { handleLogout } from "src/utils/helperFunctions";
-import { dateCreateFormat } from "src/components/dashboard/global/helperFunctions";
+import { dateCreateFormat } from "src/helperFunctions/helperFunctions";
 
 const GuidanceDashboard = () => {
   const [displayPicker, setDisplayPicker] = useState(false);
