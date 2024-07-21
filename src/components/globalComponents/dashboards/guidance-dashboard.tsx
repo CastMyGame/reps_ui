@@ -366,7 +366,7 @@ const GuidanceDashboard = () => {
             {activeIndex != null && activeIndex >= 0 && (
               <div className="details-container">
                 <p>{openTask[activeIndex]?.guidanceTitle}</p>
-                <p>{dateCreateFormat(openTask[activeIndex]?.createdDate)}</p>
+                <p>{dateCreateFormat(openTask[activeIndex]?.timeCreated)}</p>
                 <p>{openTask[activeIndex]?.studentId}</p>
                 <p>{openTask[activeIndex]?.studentEmail}</p>
                 <p>{openTask[activeIndex]?.teacherEmail}</p>
