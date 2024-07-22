@@ -10,7 +10,7 @@ const Alert = React.forwardRef(function Alert(props, ref) {
 });
 
 export const ContactUsModal = ({ setContactUsDisplayModal, contactUsDisplayModal }) => {
-  const topics = ['General Inquiry', 'Login Issue', 'Billing Issue', 'Student Issue', 'Tool Issue'];
+  const topics = ['Guidance Request','General Inquiry', 'Login Issue', 'Billing Issue', 'Student Issue', 'Tool Issue'];
 
   const [selectedTopic, setSelectedTopic] = useState('');
   const [emailAddress, setEmailAddress] = useState('');
@@ -46,23 +46,60 @@ export const ContactUsModal = ({ setContactUsDisplayModal, contactUsDisplayModal
     // Clear any previous validation message
     setEmailValidationMessage('');
 
-    const payload = {
-      email: emailAddress,
-      subject: selectedTopic,
-      message: message,
-    };
 
-    axios
-      .post(`${baseUrl}/contact-us`, payload)
-      .then((response) => {
-        setWarningToast(true);
-        setTimeout(() => {
-          setWarningToast(false);
-          setContactUsDisplayModal(false);
-        }, 2000);
-      })
-      .catch((error) => console.error(error));
+ 
+
+
+if(selectedTopic === "Guidance Request"){
+  const headers = {
+    Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
   };
+  const payload = 
+      {
+          "guidance": {
+              "studentEmail": emailAddress,
+              "teacherEmail": sessionStorage.getItem('email'),
+              "referralDescription": [message]
+          },
+      
+ 
+  };
+
+  axios
+  .post(`${baseUrl}/punish/v1/guidance/new`, payload,{        
+    headers: headers,
+  })
+  .then((response) => {
+    setWarningToast(true);
+    setTimeout(() => {
+      setWarningToast(false);
+      setContactUsDisplayModal(false);
+    }, 2000);
+  })
+  .catch((error) => console.error(error));
+} else{
+  const payload = {
+    email: emailAddress,
+    subject: selectedTopic,
+    message: message,
+  };
+  axios
+  .post(`${baseUrl}/contact-us`, payload)
+  .then((response) => {
+    setWarningToast(true);
+    setTimeout(() => {
+      setWarningToast(false);
+      setContactUsDisplayModal(false);
+    }, 2000);
+  })
+  .catch((error) => console.error(error));
+};
+
+
+};
+
+
+
 
   const handleClose = (event, reason) => {
     if (reason === 'clickaway') {

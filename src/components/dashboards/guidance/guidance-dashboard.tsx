@@ -24,6 +24,7 @@ import NavbarCustom from "src/components/globalComponents/modals/navBar/navBar";
 import CreatePunishmentPanel from "src/components/globalComponents/modals/functions/createPunishmentPanel.js";
 import { TeacherDetailsModal } from "src/components/globalComponents/components/modals/teacherDetailsModal ";
 import ComingSoon from "src/components/globalComponents/components/generic-components/coming-soon";
+import { ContactUsModal } from "src/security/contactUsModal";
 
 interface GuidanceResponse{
   
@@ -131,12 +132,12 @@ const buttonData: ButtonData[] = [
 
       ]
     },
-    // { 
-    //   label: "CONTACT US", 
-    //   panel: "contact-us", 
-    //   multi: false, 
-    //   dropdowns: []
-    // },
+    { 
+      label: "CONTACT US", 
+      panel: "contact-us", 
+      multi: false, 
+      dropdowns: []
+    },
     { 
       label: "DETENTION/LIST", 
       panel: "detention", 
@@ -172,6 +173,7 @@ const GuidanceDashboard = () => {
   const [guidanceFilter, setGuidanceFilter] = useState<boolean>(false);
   const [displayStudentModal, setDisplayStudentModal] = useState(false)
   const [displayTeacherModal, setDisplayTeacherModal] = useState(false)
+  const [displayContactUs,setDisplayContactUs] = useState(false)
 
 
   //Toggles
@@ -491,9 +493,7 @@ const GuidanceDashboard = () => {
       {/* MODALS */}
 
       <div>
-        {/* {modalType === "contact" && (
-      <ContactUsModal setContactUsDisplayModal={true} contactUsDisplayModal={false} />
-    )} */}
+
 
         {displayPicker && (
           <SchedulerComponent
@@ -767,7 +767,7 @@ setDisplayModal={setDisplayTeacherModal}
             {panelName === "create-assignment" && <ComingSoon title="Create Assignment"/>}
             {panelName === "create-user" &&  <ComingSoon title="Create User"/>}
             {panelName === "archvied-records" &&  <ComingSoon title="Archive Records"/>}
-            {panelName === "contact-us" &&  <ComingSoon title="Contact Us"/>}
+            {panelName === "contact-us" &&  <ContactUsModal setContactUsDisplayModal={setDisplayContactUs} contactUsDisplayModal={displayContactUs}/>}
             {panelName === "detention" &&  <ComingSoon title="Detention"/>}
             {panelName === "redeem" &&  <ComingSoon title="Redemption Store"/>}
 
