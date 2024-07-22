@@ -1,5 +1,5 @@
 import React from "react";
-
+//
 export const Header = (props) => {
   return (
     <header id="header">
@@ -7,7 +7,9 @@ export const Header = (props) => {
         <div className="overlay">
           <div className="container">
             <div className="row">
-              <div className="col-md-8 col-md-offset-2 intro-text">
+              <div className="col-md-8 intro-text">
+                <div style={{ padding:"20px 30px",background: "rgba(129, 127, 127, 0.884)"}}>
+
                 <h1>
                   {props.data ? props.data.title : "Loading"}
                   <span></span>
@@ -19,6 +21,13 @@ export const Header = (props) => {
                 >
                   Learn More
                 </a>{" "}
+
+                </div>
+
+                <div style={{}}>
+                  
+                  </div>
+              
               </div>
             </div>
           </div>
