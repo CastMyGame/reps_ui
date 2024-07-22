@@ -815,7 +815,7 @@ setDisplayModal={setDisplayTeacherModal}
             )}
                       </div>
                       <div className="card-body">
-                      <div className="card-body-title">Infraction Name:</div>
+                      <div className="card-body-title">{item.infractionName? "Infraction Name":""}</div>
                       <div className="card-body-description">
                           {item.infractionName}
                         </div>
