@@ -172,7 +172,6 @@ const CreatePunishmentPanel = () => {
     setLoading(true);
     setOpenModal({ display: false, message: "" });
     const payloadContent = [];
-    console.log("std names", studentNames);
     studentNames.map((student) => {
       const studentPayload = {
         firstName: "Placeholder 1",

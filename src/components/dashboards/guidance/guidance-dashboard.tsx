@@ -970,14 +970,17 @@ setDisplayModal={setDisplayTeacherModal}
             {activeIndex != null && activeIndex >= 0 && (
               <div className="details-container">
                 <p>{data[activeIndex]?.guidanceTitle}</p>
-                {punishmentRecord && <div>
+                {punishmentRecord && <div className="referal-summary">
                   <p>ID:{data[activeIndex].linkToPunishment}</p>
                 <p>Infraction Name:{punishmentRecord?.infractionName}</p>
                 <p>Description: {punishmentRecord?.infractionDescription[0]} </p>
+                <p>Created By: {punishmentRecord?.teacherEmail} </p>
+                <p>Created On: {dateCreateFormat(punishmentRecord?.timeCreated)} </p>
+
+
                   
                   </div>}
              
-                <p>{dateCreateFormat(openTask[activeIndex]?.createdDate)}</p>
                 <p>{data[activeIndex]?.studentId}</p>
                 <p>{data[activeIndex]?.studentEmail}</p>
                 <p>{data[activeIndex]?.teacherEmail}</p>
