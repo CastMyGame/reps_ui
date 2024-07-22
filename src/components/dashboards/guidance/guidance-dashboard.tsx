@@ -37,7 +37,8 @@ interface GuidanceResponse{
     status: string;
     notesArray: null | [];
     linkToPunishment: null | string,
-    followUpDate: null | []
+    followUpDate: null | [],
+    infractionName:string;
 
 }
 
@@ -258,7 +259,30 @@ const GuidanceDashboard = () => {
       });
   };
 
-  //CALLBACKS
+
+  const [punishmentRecord,setPunishmentRecord] = useState<any>();
+  //
+  const getPunishmentRecord = useCallback(async () => {
+    console.log("ACTIVE TASK", data,activeIndex)
+    if(activeIndex !== null){
+      try {
+        let result;
+     
+          result = await get(`punish/v1/${data[activeIndex].linkToPunishment}`)
+        setPunishmentRecord(result)
+        
+      } catch (err) {
+        setPunishmentRecord(null)
+
+        console.error("Error Fetching Data: ", err);
+      }
+    }else{
+      setPunishmentRecord(null)
+    }
+    
+  }, [activeIndex]);
+
+
   const fetchPunishmentData = useCallback(async () => {
     try {
       let result;
@@ -348,9 +372,11 @@ const GuidanceDashboard = () => {
   };
 
   useEffect(() => {
+
     if (panelName === "existing-parent-contact") {
       fetchPunishmentData();
     } else if (panelName === "overview") {
+      getPunishmentRecord();
       fetchActiveReferrals();
     } else if( panelName === "report-student"){
       fetchStudentData();
@@ -364,10 +390,13 @@ const GuidanceDashboard = () => {
     categoryFilter,
     guidanceFilter,
     updatePage,
+    activeIndex,
     fetchPunishmentData,
     fetchActiveReferrals,
     fetchStudentData,
-    fetchTeacherData
+    fetchTeacherData,
+    getPunishmentRecord
+  
   ]);
 
   useEffect(() => {
@@ -786,6 +815,12 @@ setDisplayModal={setDisplayTeacherModal}
             )}
                       </div>
                       <div className="card-body">
+                      <div className="card-body-title">Infraction Name:</div>
+                      <div className="card-body-description">
+                          {item.infractionName}
+                        </div>
+                        </div>
+                      <div className="card-body">
                         <div className="card-body-title">Created By</div>
                         <div className="card-body-description">
                           {item.teacherEmail}
@@ -935,6 +970,13 @@ setDisplayModal={setDisplayTeacherModal}
             {activeIndex != null && activeIndex >= 0 && (
               <div className="details-container">
                 <p>{data[activeIndex]?.guidanceTitle}</p>
+                {punishmentRecord && <div>
+                  <p>ID:{data[activeIndex].linkToPunishment}</p>
+                <p>Infraction Name:{punishmentRecord?.infractionName}</p>
+                <p>Description: {punishmentRecord?.infractionDescription[0]} </p>
+                  
+                  </div>}
+             
                 <p>{dateCreateFormat(openTask[activeIndex]?.createdDate)}</p>
                 <p>{data[activeIndex]?.studentId}</p>
                 <p>{data[activeIndex]?.studentEmail}</p>
