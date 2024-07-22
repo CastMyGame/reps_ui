@@ -24,6 +24,7 @@ import NavbarCustom from "src/components/globalComponents/modals/navBar/navBar";
 import CreatePunishmentPanel from "src/components/globalComponents/modals/functions/createPunishmentPanel.js";
 import { TeacherDetailsModal } from "src/components/globalComponents/components/modals/teacherDetailsModal ";
 import ComingSoon from "src/components/globalComponents/components/generic-components/coming-soon";
+import { ContactUsModal } from "src/security/contactUsModal";
 
 interface GuidanceResponse{
   
@@ -37,7 +38,8 @@ interface GuidanceResponse{
     status: string;
     notesArray: null | [];
     linkToPunishment: null | string,
-    followUpDate: null | []
+    followUpDate: null | [],
+    infractionName:string;
 
 }
 
@@ -130,12 +132,12 @@ const buttonData: ButtonData[] = [
 
       ]
     },
-    // { 
-    //   label: "CONTACT US", 
-    //   panel: "contact-us", 
-    //   multi: false, 
-    //   dropdowns: []
-    // },
+    { 
+      label: "CONTACT US", 
+      panel: "contact-us", 
+      multi: false, 
+      dropdowns: []
+    },
     { 
       label: "DETENTION/LIST", 
       panel: "detention", 
@@ -171,6 +173,7 @@ const GuidanceDashboard = () => {
   const [guidanceFilter, setGuidanceFilter] = useState<boolean>(false);
   const [displayStudentModal, setDisplayStudentModal] = useState(false)
   const [displayTeacherModal, setDisplayTeacherModal] = useState(false)
+  const [displayContactUs,setDisplayContactUs] = useState(false)
 
 
   //Toggles
@@ -258,7 +261,30 @@ const GuidanceDashboard = () => {
       });
   };
 
-  //CALLBACKS
+
+  const [punishmentRecord,setPunishmentRecord] = useState<any>();
+  //
+  const getPunishmentRecord = useCallback(async () => {
+    console.log("ACTIVE TASK", data,activeIndex)
+    if(activeIndex !== null){
+      try {
+        let result;
+     
+          result = await get(`punish/v1/${data[activeIndex].linkToPunishment}`)
+        setPunishmentRecord(result)
+        
+      } catch (err) {
+        setPunishmentRecord(null)
+
+        console.error("Error Fetching Data: ", err);
+      }
+    }else{
+      setPunishmentRecord(null)
+    }
+    
+  }, [activeIndex]);
+
+
   const fetchPunishmentData = useCallback(async () => {
     try {
       let result;
@@ -348,9 +374,11 @@ const GuidanceDashboard = () => {
   };
 
   useEffect(() => {
+
     if (panelName === "existing-parent-contact") {
       fetchPunishmentData();
     } else if (panelName === "overview") {
+      getPunishmentRecord();
       fetchActiveReferrals();
     } else if( panelName === "report-student"){
       fetchStudentData();
@@ -364,10 +392,13 @@ const GuidanceDashboard = () => {
     categoryFilter,
     guidanceFilter,
     updatePage,
+    activeIndex,
     fetchPunishmentData,
     fetchActiveReferrals,
     fetchStudentData,
-    fetchTeacherData
+    fetchTeacherData,
+    getPunishmentRecord
+  
   ]);
 
   useEffect(() => {
@@ -462,9 +493,7 @@ const GuidanceDashboard = () => {
       {/* MODALS */}
 
       <div>
-        {/* {modalType === "contact" && (
-      <ContactUsModal setContactUsDisplayModal={true} contactUsDisplayModal={false} />
-    )} */}
+
 
         {displayPicker && (
           <SchedulerComponent
@@ -738,7 +767,7 @@ setDisplayModal={setDisplayTeacherModal}
             {panelName === "create-assignment" && <ComingSoon title="Create Assignment"/>}
             {panelName === "create-user" &&  <ComingSoon title="Create User"/>}
             {panelName === "archvied-records" &&  <ComingSoon title="Archive Records"/>}
-            {panelName === "contact-us" &&  <ComingSoon title="Contact Us"/>}
+            {panelName === "contact-us" &&  <ContactUsModal setContactUsDisplayModal={setDisplayContactUs} contactUsDisplayModal={displayContactUs}/>}
             {panelName === "detention" &&  <ComingSoon title="Detention"/>}
             {panelName === "redeem" &&  <ComingSoon title="Redemption Store"/>}
 
@@ -785,6 +814,12 @@ setDisplayModal={setDisplayTeacherModal}
               categoryBadgeGenerator(item.referralDescription[0])
             )}
                       </div>
+                      <div className="card-body">
+                      <div className="card-body-title">{item.infractionName? "Infraction Name":""}</div>
+                      <div className="card-body-description">
+                          {item.infractionName}
+                        </div>
+                        </div>
                       <div className="card-body">
                         <div className="card-body-title">Created By</div>
                         <div className="card-body-description">
@@ -935,7 +970,17 @@ setDisplayModal={setDisplayTeacherModal}
             {activeIndex != null && activeIndex >= 0 && (
               <div className="details-container">
                 <p>{data[activeIndex]?.guidanceTitle}</p>
-                <p>{dateCreateFormat(openTask[activeIndex]?.createdDate)}</p>
+                {punishmentRecord && <div className="referal-summary">
+                  <p>ID:{data[activeIndex].linkToPunishment}</p>
+                <p>Infraction Name:{punishmentRecord?.infractionName}</p>
+                <p>Description: {punishmentRecord?.infractionDescription[0]} </p>
+                <p>Created By: {punishmentRecord?.teacherEmail} </p>
+                <p>Created On: {dateCreateFormat(punishmentRecord?.timeCreated)} </p>
+
+
+                  
+                  </div>}
+             
                 <p>{data[activeIndex]?.studentId}</p>
                 <p>{data[activeIndex]?.studentEmail}</p>
                 <p>{data[activeIndex]?.teacherEmail}</p>
