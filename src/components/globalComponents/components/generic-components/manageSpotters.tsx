@@ -1,7 +1,10 @@
 import axios from "axios";
+import { useState } from "react";
 import { baseUrl } from "src/utils/jsonData";
 
 export function ManageSpotters(data = []) {
+  const [spotEmail, setSpotEmail] = useState("");
+  
     const headers = {
         Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
       };
