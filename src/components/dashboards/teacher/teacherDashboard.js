@@ -23,6 +23,7 @@ const TeacherDashboard = () => {
   const [panelName, setPanelName] = useState("overview");
   const [modalType, setModalType] = useState("");
   const [isDropdownOpen, setIsDropdownOpen] = useState("");
+  const [studentList, setStudentList] = useState([]);
 
   const [punishmentFilter, setPunishmentFilter] = useState("OPEN");
 
@@ -39,6 +40,7 @@ const TeacherDashboard = () => {
       try {
         const response = await get(`DTO/v1/TeacherOverviewData`);
         setData(response);
+        setStudentList(response.data.studentPopulation);
       } catch (err) {
         console.error(err);
       }
@@ -84,6 +86,7 @@ const TeacherDashboard = () => {
                     <TeacherOverviewPanel
                       setPanelName={setPanelName}
                       data={data}
+                      students={studentList}
                     />
                   )}
                   {panelName === "student" && (

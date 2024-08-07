@@ -11,7 +11,7 @@ import RecentIncidents from "src/components/globalComponents/dataDisplay/student
 import ShoutOuts from "src/components/globalComponents/shoutOuts";
 import { ManageSpotters } from "src/components/globalComponents/components/generic-components/manageSpotters";
 
-const TeacherOverviewPanel = ({ setPanelName, data = [] }) => {
+const TeacherOverviewPanel = ({ setPanelName, data = [], students = [] }) => {
   const [openModal, setOpenModal] = useState({
     display: false,
     message: "",
@@ -88,7 +88,7 @@ const TeacherOverviewPanel = ({ setPanelName, data = [] }) => {
       )}
       <div className="teacher-overview-first">
         <Card variant="outlined">
-          <ManageSpotters students={data.studentPopulation}/>
+          <ManageSpotters students={students}/>
         </Card>
       </div>
       <div className="teacher-overview-first">
