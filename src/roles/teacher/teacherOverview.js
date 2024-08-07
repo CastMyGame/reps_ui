@@ -9,6 +9,7 @@ import TeacherInfractionOverPeriodBarChart from "src/components/globalComponents
 import { PieChartParentCommunication } from "src/components/globalComponents/dataDisplay/pieChartParentCommunication.js";
 import RecentIncidents from "src/components/globalComponents/dataDisplay/studentRecentContacts.js";
 import ShoutOuts from "src/components/globalComponents/shoutOuts";
+import { ManageSpotters } from "src/components/globalComponents/components/generic-components/manageSpotters";
 
 const TeacherOverviewPanel = ({ setPanelName, data = [] }) => {
   const [openModal, setOpenModal] = useState({
@@ -85,6 +86,11 @@ const TeacherOverviewPanel = ({ setPanelName, data = [] }) => {
           </div>
         </div>
       )}
+      <div className="teacher-overview-first">
+        <Card variant="outlined">
+          <ManageSpotters students={data.studentPopulation}/>
+        </Card>
+      </div>
       <div className="teacher-overview-first">
         <Card variant="outlined">
           <ShoutOuts data={data} />

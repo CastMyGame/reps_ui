@@ -27,6 +27,7 @@
     "jspdf": "^2.5.1",
     "jspdf-autotable": "^3.8.1",
     "luxon": "^3.4.4",
+    "multiselect-react-dropdown": "^2.0.25",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-idle-timer": "^5.7.2",
