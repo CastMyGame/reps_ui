@@ -9,3 +9,8 @@ export type DropdownOption = {
     value: string;
     label: string;
 }
+
+export type StudentDataDTO = {
+    studentName: string;
+    studentEmail: string;
+}
