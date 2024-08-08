@@ -1,13 +1,14 @@
-import { Checkbox, FormControlLabel, FormGroup } from "@mui/material";
+import { Checkbox, FormControlLabel, FormGroup, Select } from "@mui/material";
 import axios from "axios";
 import { ChangeEvent, useEffect, useState } from "react";
 import { DropdownOption, StudentDataDTO } from "src/types/menus";
 import { baseUrl } from "src/utils/jsonData";
 
-export function ManageSpotters(students = []) {
-  const [spotStudents, setSpotStudents] = useState<StudentDataDTO[]>([]);
-  const [selectedOption, setSelectedOption] = useState([]);
-  const [filter, setFilter] = useState<string>("");
+export function ManageSpotters() {
+  const [selectOption, setSelectOption] = useState<any>();
+  const [filteredOptions, setFilteredOptions] = useState<any>([]);
+  const [searchTerm, setSearchTerm] = useState('');
+
   const [selectedItems, setSelectedItems] = useState<StudentDataDTO[]>([]);
 
   const handleCheckboxChange = (
@@ -25,33 +26,66 @@ export function ManageSpotters(students = []) {
     }
   };
 
+
+  // Happends on load
   useEffect(() => {
-    setSpotStudents(students);
-  }, [students]);
+    const headers = {
+      Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
+    };
 
-  const selectOptions = Object.values(spotStudents).map((student: StudentDataDTO) => ({
-    studentName: `${student.studentName} - ${student.studentEmail}`, // Display student's full name as the label
-    studentEmail: student.studentEmail, // Use a unique value for each option
-  }));
+    axios.get(`${baseUrl}/student/v1/allStudents`,{headers})
+   .then((res)=>{
+    setSelectOption(res.data);
+   }
+   )
+    
+  }, []);
 
-  const handleChange = (selectedOption: any) => {
-    setSelectedOption(selectedOption);
+  console.log(filteredOptions)
+
+  
+  
+  const handleChange = (event:any) => {
+    console.log(selectOption)
+    const value = event.target.value;
+    setSearchTerm(value);
+    
+    // Filter options based on search term
+    const filtered = selectOption.filter((item:any) =>
+      item.firstName.toLowerCase().includes(value.toLowerCase())
+    );
+    setFilteredOptions(filtered);
   };
 
-  const handleFilter = (event: any) => {
-    setFilter(event.target.value);
-  };
+
+  // const selectOptions = Object.values(spotStudents).map((student: StudentDataDTO) => ({
+  //   studentName: `${student.studentName} - ${student.studentEmail}`, // Display student's full name as the label
+  //   studentEmail: student.studentEmail, // Use a unique value for each option
+  // }));
+
+useEffect(()=>{
+  console.log(selectedItems)
+},[selectedItems])
 
   const headers = {
     Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
   };
 
-  const payload = {
-    spotters: [sessionStorage.getItem("email")],
-    studentEmail: selectedOption,
-  };
+
+
 
   const addSpotter = () => {
+    const student_emails:any = []
+selectOption.map((x:any)=>{
+  student_emails.push(x.studentEmail)
+})
+
+
+const payload = {
+  spotters: [sessionStorage.getItem("email")],
+  studentEmail: student_emails,
+};
+
     const url = `${baseUrl}/student/v1/addAsSpotter`;
     axios
       .put(url, payload, { headers })
@@ -62,10 +96,20 @@ export function ManageSpotters(students = []) {
       })
       .catch((error) => {
         console.error(error);
-      });
-  };
+       });
+   };
 
   const removeSpotter = () => {
+    const student_emails:any = []
+    selectOption.map((x:any)=>{
+      student_emails.push(x.studentEmail)
+    })
+    
+    
+    const payload = {
+      spotters: [sessionStorage.getItem("email")],
+      studentEmail: student_emails,
+    };
     const url = `${baseUrl}/student/v1/removeAsSpotter`;
     axios
       .put(url, payload, { headers })
@@ -80,14 +124,16 @@ export function ManageSpotters(students = []) {
   };
   return (
     <div className="flex w-full max-w-sm items-center space-x-2">
-      <input
-        placeholder=" search..."
-        className="search-bar-resources"
-        onChange={handleFilter}
-      />
-      <div className="mapped-items">
+    <input
+      placeholder="Search..."
+      className="search-bar-resources"
+      value={searchTerm}
+      onChange={handleChange}
+    />
+    <div className="mapped-items">
+      {filteredOptions.length > 0 && (
         <FormGroup>
-          {selectOptions.map((item, index) => (
+          {filteredOptions.map((item:any, index:number) => (
             <FormControlLabel
               key={index}
               style={{ color: "black" }}
@@ -99,23 +145,31 @@ export function ManageSpotters(students = []) {
                   onChange={(event) => handleCheckboxChange(event, item)}
                 />
               }
-              label={item.studentName}
+              label={`${item.firstName} ${item.lastName}` }
             />
           ))}
         </FormGroup>
-        <button onClick={addSpotter}>Spot Students</button>
-        <button onClick={removeSpotter}>Remove Spot for Students</button>
-      </div>
-      {/* <Multiselect
-        selectedValues={handleChange}
-        options={selectOptions}
-        onSelect={addSpotter}
-        displayValue="Students"
-      ></Multiselect> */}
+      )}
+       <button onClick={ addSpotter}>Spot Students</button>
+      <button onClick={removeSpotter}>Remove Spot for Students</button> 
+    </div>
+  </div>
+  );
+      {/* <Select
+  multiple={true}
+  onChange={handleChange}
+  onSelect={addSpotter}
+  value={selectedItems}
+>
+  {selectOptions.map((x) => (
+    <option key={x.studentEmail} value={x.studentEmail}>
+      {x.studentName} - {x.studentEmail}
+    </option>
+  ))}
+</Select> */}
       {/* <input type="email" placeholder="Enter Student Email" />
       <button type="submit" onClick={addSpotter}>
         Spot Student
       </button> */}
-    </div>
-  );
+  
 }
