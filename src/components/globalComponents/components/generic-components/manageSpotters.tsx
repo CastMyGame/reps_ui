@@ -1,46 +1,46 @@
-import { Checkbox, FormControlLabel, FormGroup } from "@mui/material";
+import { Autocomplete, Checkbox, Chip, FormControlLabel, FormGroup, TextField } from "@mui/material";
 import axios from "axios";
 import { ChangeEvent, useEffect, useState } from "react";
-import { DropdownOption, StudentDataDTO } from "src/types/menus";
+import { StudentDataDTO } from "src/types/menus";
 import { baseUrl } from "src/utils/jsonData";
 
 export function ManageSpotters(students = []) {
   const [spotStudents, setSpotStudents] = useState<StudentDataDTO[]>([]);
   const [selectedOption, setSelectedOption] = useState([]);
   const [filter, setFilter] = useState<string>("");
-  const [selectedItems, setSelectedItems] = useState<StudentDataDTO[]>([]);
+  // const [selectedItems, setSelectedItems] = useState<StudentDataDTO[]>([]);
 
-  const handleCheckboxChange = (
-    event: ChangeEvent<HTMLInputElement>,
-    item: StudentDataDTO
-  ) => {
-    if (event.target.checked) {
-      setSelectedItems([...selectedItems, item]);
-    } else {
-      setSelectedItems(
-        selectedItems.filter(
-          (selectedItem) => selectedItem.studentEmail !== item.studentEmail
-        )
-      );
-    }
-  };
+  // const handleCheckboxChange = (
+  //   event: ChangeEvent<HTMLInputElement>,
+  //   item: StudentDataDTO
+  // ) => {
+  //   if (event.target.checked) {
+  //     setSelectedItems([...selectedItems, item]);
+  //   } else {
+  //     setSelectedItems(
+  //       selectedItems.filter(
+  //         (selectedItem) => selectedItem.studentEmail !== item.studentEmail
+  //       )
+  //     );
+  //   }
+  // };
 
   useEffect(() => {
     setSpotStudents(students);
   }, [students]);
 
-  const selectOptions = Object.values(spotStudents).map((student: StudentDataDTO) => ({
-    studentName: `${student.studentName} - ${student.studentEmail}`, // Display student's full name as the label
-    studentEmail: student.studentEmail, // Use a unique value for each option
-  }));
+  // const selectOptions = Object.values(spotStudents).map((student: StudentDataDTO) => ({
+  //   studentName: `${student.studentName} - ${student.studentEmail}`, // Display student's full name as the label
+  //   studentEmail: student.studentEmail, // Use a unique value for each option
+  // }));
 
   const handleChange = (selectedOption: any) => {
     setSelectedOption(selectedOption);
   };
 
-  const handleFilter = (event: any) => {
-    setFilter(event.target.value);
-  };
+  // const handleFilter = (event: any) => {
+  //   setFilter(event.target.value);
+  // };
 
   const headers = {
     Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
@@ -80,29 +80,33 @@ export function ManageSpotters(students = []) {
   };
   return (
     <div className="flex w-full max-w-sm items-center space-x-2">
-      <input
-        placeholder=" search..."
-        className="search-bar-resources"
-        onChange={handleFilter}
-      />
       <div className="mapped-items">
-        <FormGroup>
-          {selectOptions.map((item, index) => (
-            <FormControlLabel
-              key={index}
-              style={{ color: "black" }}
-              control={
-                <Checkbox
-                  checked={selectedItems.some(
-                    (selectedItem) => selectedItem.studentEmail === item.studentEmail
-                  )}
-                  onChange={(event) => handleCheckboxChange(event, item)}
-                />
-              }
-              label={item.studentName}
+        <Autocomplete
+          multiple
+          className="student-dropdown"
+          id="demo-multiple-chip"
+          value={selectedOption}
+          onChange={(event, newValue) => handleChange(newValue)}
+          options={spotStudents}
+          getOptionLabel={(option) => option.studentName}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              className="student-dropdown"
+              label="Select Students"
+              sx={{ width: "100%" }}
             />
-          ))}
-        </FormGroup>
+          )}
+          renderTags={(value, getTagProps) =>
+            value.map((option, index) => (
+              <Chip
+                label={option.studentName}
+                sx={{ fontSize: 18 }}
+                {...getTagProps({ index })}
+              />
+            ))
+          }
+        />
         <button onClick={addSpotter}>Spot Students</button>
         <button onClick={removeSpotter}>Remove Spot for Students</button>
       </div>

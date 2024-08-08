@@ -16,6 +16,11 @@ const TeacherOverviewPanel = ({ setPanelName, data = [], students = [] }) => {
     display: false,
     message: "",
   });
+  const [studentList, setStudentList] = useState([]);
+
+  useEffect(() => {
+    setStudentList(students);
+  }, [students]);
 
   const dataExcludeNonReferrals = data.punishmentResponse.filter((x) => {
     return x.infractionName !== "Positive Behavior Shout Out!";
@@ -28,8 +33,6 @@ const TeacherOverviewPanel = ({ setPanelName, data = [], students = [] }) => {
     );
     return itemDate > sevenDaysAgo;
   });
-
-  console.log("FIND ME 3", dataExcludeNonReferrals);
 
   const weeklyDataIncSOBxConcern = data.punishmentResponse.filter((x) => {
     const currentDate = new Date();
@@ -88,7 +91,7 @@ const TeacherOverviewPanel = ({ setPanelName, data = [], students = [] }) => {
       )}
       <div className="teacher-overview-first">
         <Card variant="outlined">
-          <ManageSpotters students={students}/>
+          <ManageSpotters students={studentList}/>
         </Card>
       </div>
       <div className="teacher-overview-first">

@@ -40,7 +40,8 @@ const TeacherDashboard = () => {
       try {
         const response = await get(`DTO/v1/TeacherOverviewData`);
         setData(response);
-        setStudentList(response.data.studentPopulation);
+        console.log(response.studentPopulation + " THIS IS THE POPULATION");
+        setStudentList(response.studentPopulation);
       } catch (err) {
         console.error(err);
       }
