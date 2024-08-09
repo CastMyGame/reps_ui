@@ -1,57 +1,104 @@
-import { Autocomplete, Checkbox, Chip, FormControlLabel, FormGroup, TextField } from "@mui/material";
+import { Checkbox, FormControlLabel, FormGroup } from "@mui/material";
 import axios from "axios";
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { StudentDataDTO } from "src/types/menus";
 import { baseUrl } from "src/utils/jsonData";
 
-export function ManageSpotters(students = []) {
-  const [spotStudents, setSpotStudents] = useState<StudentDataDTO[]>([]);
-  const [selectedOption, setSelectedOption] = useState([]);
-  const [filter, setFilter] = useState<string>("");
-  // const [selectedItems, setSelectedItems] = useState<StudentDataDTO[]>([]);
+export function ManageSpotters() {
+  const [selectOption, setSelectOption] = useState<any>();
+  const [filteredOptions, setFilteredOptions] = useState<any>([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [showDropdown, setShowDropdown] = useState(false);
 
-  // const handleCheckboxChange = (
-  //   event: ChangeEvent<HTMLInputElement>,
-  //   item: StudentDataDTO
-  // ) => {
-  //   if (event.target.checked) {
-  //     setSelectedItems([...selectedItems, item]);
-  //   } else {
-  //     setSelectedItems(
-  //       selectedItems.filter(
-  //         (selectedItem) => selectedItem.studentEmail !== item.studentEmail
-  //       )
-  //     );
-  //   }
-  // };
+  const [selectedItems, setSelectedItems] = useState<StudentDataDTO[]>([]);
 
+  const handleCheckboxChange = (
+    event: ChangeEvent<HTMLInputElement>,
+    item: StudentDataDTO
+  ) => {
+    if (event.target.checked) {
+      setSelectedItems([...selectedItems, item]);
+    } else {
+      setSelectedItems(
+        selectedItems.filter(
+          (selectedItem) => selectedItem.studentEmail !== item.studentEmail
+        )
+      );
+    }
+  };
+
+  // Happends on load
   useEffect(() => {
-    setSpotStudents(students);
-  }, [students]);
+    const headers = {
+      Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
+    };
+
+    axios.get(`${baseUrl}/student/v1/allStudents`, { headers }).then((res) => {
+      setSelectOption(res.data);
+    });
+  }, []);
+
+  console.log(filteredOptions);
+
+  const useOnClickOutside = (ref: any, handler: any) => {
+    useEffect(() => {
+      const listener = (event: { target: any; }) => {
+        if (!ref.current || ref.current.contains(event.target)) {
+          return;
+        }
+        handler(event);
+      };
+
+      document.addEventListener("mousedown", listener);
+      document.addEventListener("touchstart", listener);
+
+      return () => {
+        document.removeEventListener("mousedown", listener);
+        document.removeEventListener("touchstart", listener);
+      };
+    }, [ref, handler]);
+  }
+
+  const ref = useRef();
+  useOnClickOutside(ref, () => setShowDropdown(false))
+
+  const handleChange = (event: any) => {
+    console.log(selectOption);
+    const value = event.target.value;
+    setSearchTerm(value);
+
+    // Filter options based on search term
+    const filtered = selectOption.filter((item: any) =>
+      item.firstName.toLowerCase().includes(value.toLowerCase())
+    );
+    setFilteredOptions(filtered);
+    setShowDropdown(true);
+  };
 
   // const selectOptions = Object.values(spotStudents).map((student: StudentDataDTO) => ({
   //   studentName: `${student.studentName} - ${student.studentEmail}`, // Display student's full name as the label
   //   studentEmail: student.studentEmail, // Use a unique value for each option
   // }));
 
-  const handleChange = (selectedOption: any) => {
-    setSelectedOption(selectedOption);
-  };
-
-  // const handleFilter = (event: any) => {
-  //   setFilter(event.target.value);
-  // };
+  useEffect(() => {
+    console.log(selectedItems);
+  }, [selectedItems]);
 
   const headers = {
     Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
   };
 
-  const payload = {
-    spotters: [sessionStorage.getItem("email")],
-    studentEmail: selectedOption,
-  };
-
   const addSpotter = () => {
+    const student_emails: any = [];
+    selectOption.map((x: any) => {
+      student_emails.push(x.studentEmail);
+    });
+
+    const payload = {
+      spotters: [sessionStorage.getItem("email")],
+      studentEmail: student_emails,
+    };
+
     const url = `${baseUrl}/student/v1/addAsSpotter`;
     axios
       .put(url, payload, { headers })
@@ -66,6 +113,15 @@ export function ManageSpotters(students = []) {
   };
 
   const removeSpotter = () => {
+    const student_emails: any = [];
+    selectOption.map((x: any) => {
+      student_emails.push(x.studentEmail);
+    });
+
+    const payload = {
+      spotters: [sessionStorage.getItem("email")],
+      studentEmail: student_emails,
+    };
     const url = `${baseUrl}/student/v1/removeAsSpotter`;
     axios
       .put(url, payload, { headers })
@@ -80,46 +136,56 @@ export function ManageSpotters(students = []) {
   };
   return (
     <div className="flex w-full max-w-sm items-center space-x-2">
+      <button onClick={addSpotter}>Spot Students</button>
+      <button onClick={removeSpotter}>Remove Spot for Students</button>
+      <input
+        placeholder="Search..."
+        className="search-bar-resources"
+        value={searchTerm}
+        onChange={handleChange}
+      />
       <div className="mapped-items">
-        <Autocomplete
-          multiple
-          className="student-dropdown"
-          id="demo-multiple-chip"
-          value={selectedOption}
-          onChange={(event, newValue) => handleChange(newValue)}
-          options={spotStudents}
-          getOptionLabel={(option) => option.studentName}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              className="student-dropdown"
-              label="Select Students"
-              sx={{ width: "100%" }}
-            />
-          )}
-          renderTags={(value, getTagProps) =>
-            value.map((option, index) => (
-              <Chip
-                label={option.studentName}
-                sx={{ fontSize: 18 }}
-                {...getTagProps({ index })}
+        {(filteredOptions.length > 0 && showDropdown) && (
+          <FormGroup>
+            {filteredOptions.map((item: any, index: number) => (
+              <FormControlLabel
+                key={index}
+                style={{ color: "black" }}
+                control={
+                  <Checkbox
+                    checked={selectedItems.some(
+                      (selectedItem) =>
+                        selectedItem.studentEmail === item.studentEmail
+                    )}
+                    onChange={(event) => handleCheckboxChange(event, item)}
+                  />
+                }
+                label={`${item.firstName} ${item.lastName}`}
               />
-            ))
-          }
-        />
-        <button onClick={addSpotter}>Spot Students</button>
-        <button onClick={removeSpotter}>Remove Spot for Students</button>
+            ))}
+          </FormGroup>
+        )}
       </div>
-      {/* <Multiselect
-        selectedValues={handleChange}
-        options={selectOptions}
-        onSelect={addSpotter}
-        displayValue="Students"
-      ></Multiselect> */}
-      {/* <input type="email" placeholder="Enter Student Email" />
-      <button type="submit" onClick={addSpotter}>
-        Spot Student
-      </button> */}
     </div>
   );
+  {
+    /* <Select
+  multiple={true}
+  onChange={handleChange}
+  onSelect={addSpotter}
+  value={selectedItems}
+>
+  {selectOptions.map((x) => (
+    <option key={x.studentEmail} value={x.studentEmail}>
+      {x.studentName} - {x.studentEmail}
+    </option>
+  ))}
+</Select> */
+  }
+  {
+    /* <input type="email" placeholder="Enter Student Email" />
+      <button type="submit" onClick={addSpotter}>
+        Spot Student
+      </button> */
+  }
 }
