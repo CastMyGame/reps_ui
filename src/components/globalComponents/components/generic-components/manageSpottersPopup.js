@@ -1,16 +1,12 @@
-import { Alert, Autocomplete, Button, Checkbox, Chip, FormControl, FormControlLabel, FormGroup, InputLabel, MenuItem, Select, Snackbar, TextareaAutosize, TextField, Typography } from "@mui/material";
+import { Alert, Autocomplete, Button, Chip, FormControl, InputLabel, Snackbar, TextField, Typography } from "@mui/material";
 import axios from "axios";
-import { ChangeEvent, useEffect, useRef, useState } from "react";
-import { StudentDataDTO } from "src/types/menus";
+import { useEffect, useState } from "react";
 import { baseUrl } from "src/utils/jsonData";
 
 export function ManageSpottersPopup({setContactUsDisplayModal, contactUsDisplayModal}) {
   const [warningToast, setWarningToast] = useState(false);
   const [selectOption, setSelectOption] = useState([]);
-  const [filteredOptions, setFilteredOptions] = useState([]);
   const [studentNames, setStudentNames] = useState([]);
-
-  const [selectedItems, setSelectedItems] = useState([]);
 
   const headers = {
     Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
@@ -28,21 +24,11 @@ export function ManageSpottersPopup({setContactUsDisplayModal, contactUsDisplayM
     label: `${student.firstName} ${student.lastName} - ${student.studentEmail}`, // Display student's full name as the label
   }));
 
-  console.log(filteredOptions);
-
-  // const selectOptions = Object.values(spotStudents).map((student: StudentDataDTO) => ({
-  //   studentName: `${student.studentName} - ${student.studentEmail}`, // Display student's full name as the label
-  //   studentEmail: student.studentEmail, // Use a unique value for each option
-  // }));
-
-  useEffect(() => {
-    console.log(selectedItems);
-  }, [selectedItems]);
-
   const addSpotter = () => {
     const student_emails = [];
     studentNames.map((x) => {
       student_emails.push(x.value);
+      return student_emails;
     });
 
     const payload = {
@@ -53,7 +39,7 @@ export function ManageSpottersPopup({setContactUsDisplayModal, contactUsDisplayM
     const url = `${baseUrl}/student/v1/addAsSpotter`;
     axios
       .put(url, payload, { headers })
-      .then((response) => {
+      .then(() => {
         window.alert(
           `You have been successfully added as a spotter for the students entered. You will receive all REPS emails for these students when they are sent. `
         );
@@ -67,6 +53,7 @@ export function ManageSpottersPopup({setContactUsDisplayModal, contactUsDisplayM
     const student_emails = [];
     studentNames.map((x) => {
       student_emails.push(x.value);
+      return student_emails;
     });
 
     const payload = {
@@ -76,7 +63,7 @@ export function ManageSpottersPopup({setContactUsDisplayModal, contactUsDisplayM
     const url = `${baseUrl}/student/v1/removeAsSpotter`;
     axios
       .put(url, payload, { headers })
-      .then((response) => {
+      .then(() => {
         window.alert(
           `You have been successfully removed as a spotter for the students entered. You will no longer receive REPS emails for these students. `
         );
@@ -86,7 +73,7 @@ export function ManageSpottersPopup({setContactUsDisplayModal, contactUsDisplayM
       });
   };
 
-  const handleClose = (event, reason) => {
+  const handleClose = (reason) => {
     if (reason === "clickaway") {
       return;
     }
