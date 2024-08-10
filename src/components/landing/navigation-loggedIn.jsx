@@ -56,11 +56,11 @@ export const NavigationLoggedIn = (props) => {
               className="page-scroll"
                onClick={() => props.setDropdown(prev => prev === "student" ? "" : "student")} >
               
-              My Students
+              Students
               </div><div style={{display: props.isDropdownOpen === "student"?"block":"none"}} class="feature-menu-dropdown">
               <div 
   onClick={()=>dropdownHandler("student")}
-  className="item page-scroll">My Students</div>
+  className="item page-scroll">School Roster</div>
   <div 
   onClick={()=>props.setModalType("spotter")}
   className="item page-scroll">Spot Students</div>

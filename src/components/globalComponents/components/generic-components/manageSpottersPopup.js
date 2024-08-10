@@ -7,6 +7,7 @@ export function ManageSpottersPopup({setContactUsDisplayModal, contactUsDisplayM
   const [warningToast, setWarningToast] = useState(false);
   const [selectOption, setSelectOption] = useState([]);
   const [studentNames, setStudentNames] = useState([]);
+  const [spottedStudents, setSpottedStudents] = useState([]);
 
   const headers = {
     Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
@@ -16,6 +17,12 @@ export function ManageSpottersPopup({setContactUsDisplayModal, contactUsDisplayM
   useEffect(() => {
     axios.get(`${baseUrl}/student/v1/allStudents`, { headers }).then((res) => {
       setSelectOption(res.data);
+    });
+  }, []);
+
+  useEffect(() => {
+    axios.get(`${baseUrl}/student/v1/findBySpotter/${sessionStorage.getItem("email")}`, { headers }).then((res) => {
+      setSpottedStudents(res.data);
     });
   }, []);
 
@@ -43,6 +50,9 @@ export function ManageSpottersPopup({setContactUsDisplayModal, contactUsDisplayM
         window.alert(
           `You have been successfully added as a spotter for the students entered. You will receive all REPS emails for these students when they are sent. `
         );
+        setTimeout(() => {
+          setContactUsDisplayModal("login");
+        }, 1000);
       })
       .catch((error) => {
         console.error(error);
@@ -67,6 +77,9 @@ export function ManageSpottersPopup({setContactUsDisplayModal, contactUsDisplayM
         window.alert(
           `You have been successfully removed as a spotter for the students entered. You will no longer receive REPS emails for these students. `
         );
+        setTimeout(() => {
+          setContactUsDisplayModal("login");
+        }, 1000);
       })
       .catch((error) => {
         console.error(error);
@@ -77,7 +90,7 @@ export function ManageSpottersPopup({setContactUsDisplayModal, contactUsDisplayM
     if (reason === "clickaway") {
       return;
     }
-
+    setContactUsDisplayModal("login");
     setWarningToast(false);
   };
   return (
@@ -104,6 +117,19 @@ export function ManageSpottersPopup({setContactUsDisplayModal, contactUsDisplayM
             are currently spotting
           </Typography>
         </div>
+        <div>
+          <Typography variant="h5" style={{ textAlign: "left"}}>
+            Students you are currently spotting:
+          </Typography>
+        </div>
+
+        {spottedStudents.map((option) => {
+          return (
+            <div>
+              {option.firstName} {option.lastName}
+            </div>
+          );
+        })}
 
         <FormControl
           fullWidth
