@@ -9,6 +9,7 @@
     flex-wrap: wrap; /* Allows the pills to wrap to the next line if needed */
     padding: 10px; /* Optional: Adds some padding around the container */
     gap: 5px; /* Optional: Adds space between the pills */
+
   }
   
   .spotter-pill {
@@ -19,4 +20,25 @@
     height: auto;
     width: max-content;
     white-space: nowrap; /* Prevents the text inside the pill from wrapping */
+  }
+
+  .spotter-pill:hover{
+    background-color: blue;
+    color:white ;
+    transform: scale(1.05);
+  }
+
+  .remove-x{
+    display:none;
+    bottom: 1px;
+    margin-left:5px;
+    margin-bottom: 1px;
+    color:white
+
+  }
+
+/* Show the remove-x when the spotter-pill is hovered */
+.spotter-pill:hover .remove-x {
+    display:inline-table;
+    transform: scale(1.05);
   }

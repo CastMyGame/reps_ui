@@ -53,8 +53,8 @@ box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1)
     width: 25%;
     height: 250px;
     padding-left: 10px;
-
-    border: 2px solid black
+    border: 2px solid black;
+    overflow-y: scroll;
 
 
 }
