@@ -4,18 +4,13 @@ import {
   TableHead,
   TableBody,
   TableRow,
-  TableCell,
-  Paper,
-  TextField,
+  TableCell
 } from "@mui/material";
 import { useState,useEffect } from "react";
 import "./teacher_profile_modal.css";
-import IncidentsByStudentTable from "src/components/globalComponents/dataDisplay/incidentsByStudentTable";
-import { IncidentByTeacherPieChart } from "src/components/globalComponents/dataDisplay/incident-by-teacher-pie-chart";
 import { baseUrl } from "src/utils/jsonData";
 import axios from "axios";
 import TeacherProfileIncidentsByStudentTable from "./teacher_profile_widget_incident_table";
-import { IncidentByStudentPieChart } from "src/components/globalComponents/dataDisplay/incident-by-student-pie-chart";
 import { TeacherProfileIncidentByStudentPieChart } from "./teacher_profile_widget_incident-pie";
 import { TeacherProfileSpotter } from "./teacher_profile_widget_spotter";
 
@@ -77,7 +72,7 @@ useEffect(()=>{
       </div>
 
       {data ? (
-        <div style={{ height: "300px" }} className="modal-body-student">
+        <div className="profile-modal-body">
           <TableContainer
             style={{ height: "250px", backgroundColor: "white" }}
           >
@@ -103,16 +98,16 @@ useEffect(()=>{
                     key={index}
                   >
                     <TableCell style={{ width: "25%" }}>
-                      {/* {teacher.status} */}
+                      {teacher.status}
                     </TableCell>
                     <TableCell style={{ width: "25%" }}>
-                      {/* {teacher.infraction.infractionDescription} */}
+                      {teacher.infractionDescription}
                     </TableCell>
                     <TableCell style={{ width: "25%" }}>
-                      {/* {teacher.timeCreated} */}
+                      {teacher.timeCreated}
                     </TableCell>
                     <TableCell style={{ width: "25%" }}>
-                      {/* {teacher.infraction.infractionName} */}
+                      {teacher.infractionName}
                     </TableCell>
                   </TableRow>
                 ))}
