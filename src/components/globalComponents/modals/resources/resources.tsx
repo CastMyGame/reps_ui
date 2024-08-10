@@ -3,14 +3,7 @@ import './resources.css';
 import { Checkbox, FormControlLabel, FormGroup } from '@mui/material';
 import { baseUrl } from 'src/utils/jsonData';
 import axios from 'axios';
-
-
-interface ResourceOption {
-    value: string;
-    label: string;
-    url: string;
-    category: string;
-  }
+import { ResourceOption } from 'src/types/menus';
 
 const SendResourcesComponent = (props:any) => {
   const [filter,setFilter] = useState<string>("")

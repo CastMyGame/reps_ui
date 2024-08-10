@@ -1,4 +1,5 @@
 import axios from "axios";
+import { baseUrl } from "../utils/jsonData";
 
 export const getCurrentWeekOfYear = () => {
   const today = new Date();
@@ -123,3 +124,27 @@ export const dateCreateFormat = (inputDate) => {
   const options = { year: "numeric", month: "2-digit", day: "2-digit" };
   return date.toLocaleDateString("en-US", options);
 };
+
+export const getStudentList = () => {
+  const headers = {
+    Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
+  };
+
+  let studentList = []
+
+  const url = `${baseUrl}/student/v1/allStudents`; // Replace with your actual API endpoint
+
+    axios
+      .get(url, { headers }) // Pass the headers option with the JWT token
+      .then(function (response) {
+        studentList.push(response.data);
+      })
+      .catch(function (error) {
+        console.error(error);
+      });
+
+      return studentList.map((student) => ({
+        studentName: `${student.firstName} ${student.lastName} - ${student.studentEmail}`, // Display student's full name as the label
+        studentEmail: student.studentEmail, // Use a unique value for each option
+      }));;
+}
