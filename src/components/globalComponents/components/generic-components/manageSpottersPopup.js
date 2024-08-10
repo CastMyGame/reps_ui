@@ -4,7 +4,7 @@ import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { StudentDataDTO } from "src/types/menus";
 import { baseUrl } from "src/utils/jsonData";
 
-export function ManageSpottersPopup(setContactUsDisplayModal, contactUsDisplayModal) {
+export function ManageSpottersPopup({setContactUsDisplayModal, contactUsDisplayModal}) {
   const [warningToast, setWarningToast] = useState(false);
   const [selectOption, setSelectOption] = useState([]);
   const [filteredOptions, setFilteredOptions] = useState([]);
@@ -42,7 +42,7 @@ export function ManageSpottersPopup(setContactUsDisplayModal, contactUsDisplayMo
   const addSpotter = () => {
     const student_emails = [];
     studentNames.map((x) => {
-      student_emails.push(x.studentEmail);
+      student_emails.push(x.value);
     });
 
     const payload = {
@@ -66,7 +66,7 @@ export function ManageSpottersPopup(setContactUsDisplayModal, contactUsDisplayMo
   const removeSpotter = () => {
     const student_emails = [];
     studentNames.map((x) => {
-      student_emails.push(x.studentEmail);
+      student_emails.push(x.value);
     });
 
     const payload = {
