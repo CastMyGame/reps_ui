@@ -15,6 +15,8 @@ import "../../../roles/teacher/teacher.css";
 import { NavigationLoggedIn } from "src/components/landing/navigation-loggedIn.jsx";
 import { handleLogout } from "src/utils/helperFunctions.js";
 import SpendPage from "src/components/globalComponents/spend-page/spend-page.js";
+import { ManageSpotters } from "src/components/globalComponents/components/generic-components/manageSpotters.tsx";
+import { ManageSpottersPopup } from "src/components/globalComponents/components/generic-components/manageSpottersPopup.js";
 
 const TeacherDashboard = () => {
   const [loggedIn, setLoggedIn] = useState(true);
@@ -61,6 +63,9 @@ const TeacherDashboard = () => {
         <div>
           {modalType === "contact" && (
             <ContactUsModal setContactUsDisplayModal={setModalType} />
+          )}
+          {modalType === "spotter" && (
+            <ManageSpottersPopup setContactUsDisplayModal={setModalType} />
           )}
 
           <NavigationLoggedIn

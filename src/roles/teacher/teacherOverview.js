@@ -91,11 +91,6 @@ const TeacherOverviewPanel = ({ setPanelName, data = [], students = [] }) => {
       )}
       <div className="teacher-overview-first">
         <Card variant="outlined">
-          <ManageSpotters students={studentList}/>
-        </Card>
-      </div>
-      <div className="teacher-overview-first">
-        <Card variant="outlined">
           <ShoutOuts data={data} />
         </Card>
       </div>
