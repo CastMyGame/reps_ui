@@ -39,7 +39,7 @@ export const NavigationLoggedIn = (props) => {
             <div
             className="page-scroll"
              onClick={() => props.setDropdown(prev => prev === "referral" ? "" : "referral")} >
-                Parent Contact
+                Referrals
             </div>
             <div style={{display: props.isDropdownOpen === "referral"?"block":"none"}} class="feature-menu-dropdown">
   <div 
@@ -54,10 +54,17 @@ export const NavigationLoggedIn = (props) => {
             <li>
               <div 
               className="page-scroll"
-               onClick={()=>dropdownHandler("student")}
-              >
-              My Students
-              </div>
+               onClick={() => props.setDropdown(prev => prev === "student" ? "" : "student")} >
+              
+              Students
+              </div><div style={{display: props.isDropdownOpen === "student"?"block":"none"}} class="feature-menu-dropdown">
+              <div 
+  onClick={()=>dropdownHandler("student")}
+  className="item page-scroll">School Roster</div>
+  <div 
+  onClick={()=>props.setModalType("spotter")}
+  className="item page-scroll">Spot Students</div>
+  </div>
             </li>
             <li>
               <div 
