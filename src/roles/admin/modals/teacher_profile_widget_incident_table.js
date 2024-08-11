@@ -10,7 +10,7 @@ import {
   Typography,
 } from "@mui/material";
 
-const IncidentsByStudentTable = ({ writeUps = [] }) => {
+const TeacherProfileIncidentsByStudentTable = ({ writeUps = [] }) => {
   const uniqueStudents = {};
   const totalIncidents = writeUps.length;
   const [searchQuery, setSearchQuery] = useState("");
@@ -86,19 +86,13 @@ const IncidentsByStudentTable = ({ writeUps = [] }) => {
 
   return (
     <TableContainer component={Paper}>
-      <Typography
-        variant="h4"
-        align="center"
-        style={{ margin: "10px", fontSize: 24 }}
-      >
-        Write-up % By Student
-      </Typography>
+      <h3 style={{textAlign:'center'}}> Write-up % By Student</h3> 
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell style={{ fontSize: "2rem" }}>Name</TableCell>
-            <TableCell style={{ fontSize: "2rem" }}>Write-ups</TableCell>
-            <TableCell style={{ fontSize: "2rem" }}>
+            <TableCell style={{ fontSize: "1rem" }}>Name</TableCell>
+            <TableCell style={{ fontSize: "1rem" }}>Write-ups</TableCell>
+            <TableCell style={{ fontSize: "1rem" }}>
               Percent of Write-ups
             </TableCell>
           </TableRow>
@@ -106,13 +100,13 @@ const IncidentsByStudentTable = ({ writeUps = [] }) => {
         <TableBody>
           {filteredData.map((record, index) => (
             <TableRow key={index}>
-              <TableCell style={{ fontSize: "1.5rem" }}>
+              <TableCell style={{ fontSize: "1rem" }}>
                 {record.firstName || record.studentEmail} {record.lastName}
               </TableCell>
-              <TableCell style={{ fontSize: "1.5rem" }}>
+              <TableCell style={{ fontSize: "1rem" }}>
                 {record.incidents}
               </TableCell>
-              <TableCell style={{ fontSize: "1.5rem" }}>
+              <TableCell style={{ fontSize: "1rem" }}>
                 {record.percent}%
               </TableCell>
             </TableRow>
@@ -123,4 +117,4 @@ const IncidentsByStudentTable = ({ writeUps = [] }) => {
   );
 };
 
-export default IncidentsByStudentTable;
+export default TeacherProfileIncidentsByStudentTable;
