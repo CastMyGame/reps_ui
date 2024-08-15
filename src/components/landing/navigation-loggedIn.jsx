@@ -39,25 +39,32 @@ export const NavigationLoggedIn = (props) => {
             <div
             className="page-scroll"
              onClick={() => props.setDropdown(prev => prev === "referral" ? "" : "referral")} >
-                Parent Contact
+                Referrals
             </div>
             <div style={{display: props.isDropdownOpen === "referral"?"block":"none"}} class="feature-menu-dropdown">
   <div 
   onClick={()=>dropdownHandler("createPunishment")}
-  className="item page-scroll">New Parent Contact</div>
+  className="item page-scroll">New Referral/Shout Out</div>
   <div 
   onClick={()=>dropdownHandler("punishment")}
-  className="item page-scroll">Existing Parent Contacts</div>
+  className="item page-scroll">Existing Referrals/Shout Outs</div>
 </div>
               
             </li>
             <li>
               <div 
               className="page-scroll"
-               onClick={()=>dropdownHandler("student")}
-              >
-              My Students
-              </div>
+               onClick={() => props.setDropdown(prev => prev === "student" ? "" : "student")} >
+              
+              Students
+              </div><div style={{display: props.isDropdownOpen === "student"?"block":"none"}} class="feature-menu-dropdown">
+              <div 
+  onClick={()=>dropdownHandler("student")}
+  className="item page-scroll">School Roster</div>
+  <div 
+  onClick={()=>props.setModalType("spotter")}
+  className="item page-scroll">Spot Students</div>
+  </div>
             </li>
             <li>
               <div 

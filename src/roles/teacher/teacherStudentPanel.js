@@ -16,6 +16,8 @@ import jsPDF from "jspdf";
 import "jspdf-autotable";
 import { IncidentByTypePieChart } from "src/components/globalComponents/dataDisplay/incidentsByType";
 import { get } from "../../utils/api/api";
+import axios from "axios";
+import { baseUrl } from "src/utils/jsonData";
 
 const TeacherStudentPanel = ({ setPanelName, data = [] }) => {
   const [listOfStudents, setListOfStudents] = useState([]);
@@ -23,6 +25,7 @@ const TeacherStudentPanel = ({ setPanelName, data = [] }) => {
   const [studentData, setStudentData] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredData, setFilteredData] = useState([]);
+  const [spotEmail, setSpotEmail] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -52,6 +55,33 @@ const TeacherStudentPanel = ({ setPanelName, data = [] }) => {
     }
   };
 
+  const addSpotter = async () => {
+    if (studentData != null) {
+      const headers = {
+        Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
+      };
+
+      const payload = {
+        spotters: [sessionStorage.getItem("email")],
+        studentEmail: spotEmail,
+      };
+
+      const url = `${baseUrl}/student/v1/spotters`;
+      axios
+        .put(url, payload, { headers })
+        .then((response) => {
+          console.log(response.data);
+          setStudentDisplay(false);
+          window.alert(
+            `You have been successfully added as a spotter for: ${spotEmail} `
+          );
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
+  };
+
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
   };
@@ -68,6 +98,7 @@ const TeacherStudentPanel = ({ setPanelName, data = [] }) => {
 
   const handleProfileClick = (x) => {
     fetchStudentData(x.studentEmail);
+    setSpotEmail(x.studentEmail);
   };
 
   const pdfRef = useRef();
@@ -278,6 +309,13 @@ const TeacherStudentPanel = ({ setPanelName, data = [] }) => {
                 }}
               >
                 Cancel
+              </button>
+              <button
+                onClick={() => {
+                  addSpotter();
+                }}
+              >
+                Spot this Student
               </button>
               <button
                 onClick={() => {

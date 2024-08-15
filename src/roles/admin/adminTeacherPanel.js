@@ -17,6 +17,7 @@ import "jspdf-autotable";
 import { IncidentByStudentPieChart } from "src/components/globalComponents/dataDisplay/incident-by-student-pie-chart";
 import IncidentsByStudentTable from "src/components/globalComponents/dataDisplay/incidentsByStudentTable";
 import { get } from "../../utils/api/api";
+import { TeacherDetailsModal } from "./modals/teacher_profile_modal";
 
 const AdminTeacherPanel = () => {
   const [data, setData] = useState([]);
@@ -39,16 +40,6 @@ const AdminTeacherPanel = () => {
     fetchEmployeeData();
   }, []);
 
-  //Fetch Teacher Data
-  const fetchTeacherData = async (teacherEmail) => {
-    try {
-      const result = await get("punish/v1/punishments/");
-      setTeacherProfileData(result);
-      setTeacherProfileModal(true);
-    } catch (err) {
-      console.error("Error Fetching Data: ", err);
-    }
-  };
 
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
@@ -66,171 +57,57 @@ const AdminTeacherPanel = () => {
   }, [data, searchQuery]);
 
   const handleProfileClick = (x) => {
+    
     setActiveTeacher(x);
-    fetchTeacherData(x.email);
     setTeacherProfileModal(true);
   };
 
   // const pdfRef = useRef();
 
-  const generatePDF = (activeTeacher, studentData) => {
-    const pdf = new jsPDF();
-    // Add logo
-    const logoWidth = 50; // Adjust the width of the logo as needed
-    const logoHeight = 50; // Adjust the height of the logo as needed
-    const logoX = 130; // Adjust the X coordinate of the logo as needed
-    const logoY = 15; // Adjust the Y coordinate of the logo as needed
+  // const generatePDF = (activeTeacher, studentData) => {
+  //   const pdf = new jsPDF();
+  //   // Add logo
+  //   const logoWidth = 50; // Adjust the width of the logo as needed
+  //   const logoHeight = 50; // Adjust the height of the logo as needed
+  //   const logoX = 130; // Adjust the X coordinate of the logo as needed
+  //   const logoY = 15; // Adjust the Y coordinate of the logo as needed
 
-    //https://medium.com/dont-leave-me-out-in-the-code/5-steps-to-create-a-pdf-in-react-using-jspdf-1af182b56cee
-    //Resource for adding image and how pdf text works
-    var image = new Image();
-    image.src = "/burke-logo.png";
-    pdf.addImage(image, "PNG", logoX, logoY, logoWidth, logoHeight);
+  //   //https://medium.com/dont-leave-me-out-in-the-code/5-steps-to-create-a-pdf-in-react-using-jspdf-1af182b56cee
+  //   //Resource for adding image and how pdf text works
+  //   var image = new Image();
+  //   image.src = "/burke-logo.png";
+  //   pdf.addImage(image, "PNG", logoX, logoY, logoWidth, logoHeight);
 
-    // Add student details section
-    pdf.setFontSize(12);
-    pdf.rect(15, 15, 180, 50);
-    pdf.text(`${activeTeacher.firstName} ${activeTeacher.lastName}`, 20, 20);
-    pdf.text(`Email: ${activeTeacher.email}`, 20, 30);
-    // pdf.text(`Phone: ${studentData[0].student.studentPhoneNumber}`, 20, 40);
-    // pdf.text(`Grade: ${studentData[0].student.grade}`, 20, 50);
-    // pdf.text(`Address: ${studentData[0].student.address}`, 20, 60);
+  //   // Add student details section
+  //   pdf.setFontSize(12);
+  //   pdf.rect(15, 15, 180, 50);
+  //   pdf.text(`${activeTeacher.firstName} ${activeTeacher.lastName}`, 20, 20);
+  //   pdf.text(`Email: ${activeTeacher.email}`, 20, 30);
+  //   // pdf.text(`Phone: ${studentData[0].student.studentPhoneNumber}`, 20, 40);
+  //   // pdf.text(`Grade: ${studentData[0].student.grade}`, 20, 50);
+  //   // pdf.text(`Address: ${studentData[0].student.address}`, 20, 60);
 
-    // Add punishment details table
-    pdf.autoTable({
-      startY: 70, // Adjust the Y-coordinate as needed
-      head: [["Status", "Description", "Date", "Infraction"]],
-      body: studentData.map((student) => [
-        student.status,
-        student.infraction.infractionDescription,
-        student.timeCreated,
-        student.infraction.infractionName,
-      ]),
-    });
+  //   // Add punishment details table
+  //   pdf.autoTable({
+  //     startY: 70, // Adjust the Y-coordinate as needed
+  //     head: [["Status", "Description", "Date", "Infraction"]],
+  //     body: studentData.map((student) => [
+  //       student.status,
+  //       student.infraction.infractionDescription,
+  //       student.timeCreated,
+  //       student.infraction.infractionName,
+  //     ]),
+  //   });
 
-    // Save or open the PDF
-    pdf.save("teacher_report.pdf");
-  };
+  //   // Save or open the PDF
+  //   pdf.save("teacher_report.pdf");
+  // };
 
   const hasScroll = data.length > 10;
   return (
     <>
-      {teacherProfileModal && teacherProfileData && (
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100vw",
-            height: "100vh",
-          }}
-          className="modal-overlay"
-        >
-          <div
-            style={{
-              height: "95vh",
-              width: "95vw",
-              position: "relative",
-              backgroundColor: "white", // Adjust background color as needed
-              padding: "5px", // Adjust padding as needed
-              borderRadius: "8px", // Add border radius as needed
-              boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)", // Add box shadow as needed
-            }}
-            className="modal-content"
-          >
-            <div style={{ height: "290px" }} className="modal-header">
-              <div style={{ display: "flex", flexDirection: "row" }}>
-                <div className="box-left">
-                  <div>
-                    <h4 style={{ textAlign: "left" }}>
-                      {activeTeacher.firstName} {activeTeacher.lastName}
-                    </h4>
-                  </div>
-                  <div style={{ textAlign: "left" }}>
-                    Email: {activeTeacher.email}
-                  </div>
-                  <div></div>
-                </div>
-                <div className="box-center">
-                  <IncidentsByStudentTable writeUps={teacherProfileData} />
-                </div>
-                <div className="box-right">
-                  <IncidentByStudentPieChart writeUps={teacherProfileData} />
-                </div>
-              </div>
-            </div>
-
-            {data ? (
-              <div style={{ height: "300px" }} className="modal-body-student">
-                <TableContainer
-                  style={{ height: "250px", backgroundColor: "white" }}
-                >
-                  <Table stickyHeader>
-                    <TableHead>
-                      <TableRow>
-                        <TableCell style={{ width: "25%" }}>Status</TableCell>
-                        <TableCell style={{ width: "25%" }}>
-                          Description
-                        </TableCell>
-                        <TableCell style={{ width: "25%" }}>Date</TableCell>
-                        <TableCell style={{ width: "25%" }}>
-                          Infraction
-                        </TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {teacherProfileData.map((teacher, index) => (
-                        <TableRow
-                          style={{
-                            background: index % 2 === 0 ? "lightgrey" : "white",
-                          }}
-                          key={index}
-                        >
-                          <TableCell style={{ width: "25%" }}>
-                            {teacher.status}
-                          </TableCell>
-                          <TableCell style={{ width: "25%" }}>
-                            {teacher.infraction.infractionDescription}
-                          </TableCell>
-                          <TableCell style={{ width: "25%" }}>
-                            {teacher.timeCreated}
-                          </TableCell>
-                          <TableCell style={{ width: "25%" }}>
-                            {teacher.infraction.infractionName}
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-              </div>
-            ) : (
-              <div>No Data available</div>
-            )}
-
-            <div className="modal-buttons-teacher-profile">
-              <button
-                onClick={() => {
-                  setTeacherProfileModal(false);
-                }}
-              >
-                Close
-              </button>
-              <button
-                onClick={() => {
-                  generatePDF(activeTeacher, teacherProfileData);
-                }}
-                style={{ backgroundColor: "#CF9FFF" }}
-              >
-                Print
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+     
+     {teacherProfileModal && teacherProfileData &&(<TeacherDetailsModal teacherProfileData={teacherProfileData} activeTeacher={activeTeacher} setDisplayBoolean={setTeacherProfileModal}/>) }
       <div
         style={{
           backgroundColor: "rgb(25, 118, 210)",

@@ -9,12 +9,18 @@ import TeacherInfractionOverPeriodBarChart from "src/components/globalComponents
 import { PieChartParentCommunication } from "src/components/globalComponents/dataDisplay/pieChartParentCommunication.js";
 import RecentIncidents from "src/components/globalComponents/dataDisplay/studentRecentContacts.js";
 import ShoutOuts from "src/components/globalComponents/shoutOuts";
+import { ManageSpotters } from "src/components/globalComponents/components/generic-components/manageSpotters";
 
-const TeacherOverviewPanel = ({ setPanelName, data = [] }) => {
+const TeacherOverviewPanel = ({ setPanelName, data = [], students = [] }) => {
   const [openModal, setOpenModal] = useState({
     display: false,
     message: "",
   });
+  const [studentList, setStudentList] = useState([]);
+
+  useEffect(() => {
+    setStudentList(students);
+  }, [students]);
 
   const dataExcludeNonReferrals = data.punishmentResponse.filter((x) => {
     return x.infractionName !== "Positive Behavior Shout Out!";
@@ -27,8 +33,6 @@ const TeacherOverviewPanel = ({ setPanelName, data = [] }) => {
     );
     return itemDate > sevenDaysAgo;
   });
-
-  console.log("FIND ME 3", dataExcludeNonReferrals);
 
   const weeklyDataIncSOBxConcern = data.punishmentResponse.filter((x) => {
     const currentDate = new Date();

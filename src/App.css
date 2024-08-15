@@ -1045,6 +1045,7 @@ button:hover {
 
 .page-scroll {
   cursor: pointer;
+  width: fit-content;
 }
 
 .points-container{

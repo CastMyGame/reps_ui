@@ -181,6 +181,43 @@ const CreatePunishmentPanel = ({ setPanelName, data = [] }) => {
 
     const payload = payloadContent;
 
+    if (isGuidance.isGuidanceBoolean) {
+      const guidancePayloadContent =
+      studentNames.map((student) => ({
+          guidance: {
+            studentEmail: student.value,
+            classPeriod: infractionPeriodSelected,
+            teacherEmail: teacherEmailSelected,
+            referralDescription: [isGuidance.guidanceDescription],
+          },
+        }));
+      
+
+      axios
+        .post(`${baseUrl}/punish/v1/guidance/formList`, guidancePayloadContent, {
+          headers: headers,
+        })
+        .then(function (res) {
+          window.alert(`Guidance Referral has been created`);
+          // setToast({ display: true, message: "Referral Succesfuly Created" });
+          // setTimeout(() => {
+          //   setLoading(false);
+          //   setToast({ display: false, message: "" });
+          // }, 1000);
+          // resetForm();
+          // setInfractionDescriptionSelected("");
+          // props.setDisplayModal(false);
+        })
+        .catch(function (error) {
+          console.error(error);
+          // setToast({ display: true, message: "Something Went Wrong" });
+          // setTimeout(() => {
+          //   setLoading(false);
+          //   setToast({ display: false, message: "" });
+          // }, 2000);
+        });
+    }
+
     axios
       .post(`${baseUrl}/punish/v1/startPunish/formList`, payload, {
         headers: headers,

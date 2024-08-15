@@ -15,6 +15,8 @@ import "../../../roles/teacher/teacher.css";
 import { NavigationLoggedIn } from "src/components/landing/navigation-loggedIn.jsx";
 import { handleLogout } from "src/utils/helperFunctions.js";
 import SpendPage from "src/components/globalComponents/spend-page/spend-page.js";
+import { ManageSpotters } from "src/components/globalComponents/components/generic-components/manageSpotters.tsx";
+import { ManageSpottersPopup } from "src/components/globalComponents/components/generic-components/manageSpottersPopup.js";
 
 const TeacherDashboard = () => {
   const [loggedIn, setLoggedIn] = useState(true);
@@ -23,6 +25,7 @@ const TeacherDashboard = () => {
   const [panelName, setPanelName] = useState("overview");
   const [modalType, setModalType] = useState("");
   const [isDropdownOpen, setIsDropdownOpen] = useState("");
+  const [studentList, setStudentList] = useState([]);
 
   const [punishmentFilter, setPunishmentFilter] = useState("OPEN");
 
@@ -39,6 +42,8 @@ const TeacherDashboard = () => {
       try {
         const response = await get(`DTO/v1/TeacherOverviewData`);
         setData(response);
+        console.log(response.studentPopulation + " THIS IS THE POPULATION");
+        setStudentList(response.studentPopulation);
       } catch (err) {
         console.error(err);
       }
@@ -58,6 +63,9 @@ const TeacherDashboard = () => {
         <div>
           {modalType === "contact" && (
             <ContactUsModal setContactUsDisplayModal={setModalType} />
+          )}
+          {modalType === "spotter" && (
+            <ManageSpottersPopup setContactUsDisplayModal={setModalType} />
           )}
 
           <NavigationLoggedIn
@@ -84,6 +92,7 @@ const TeacherDashboard = () => {
                     <TeacherOverviewPanel
                       setPanelName={setPanelName}
                       data={data}
+                      students={studentList}
                     />
                   )}
                   {panelName === "student" && (
