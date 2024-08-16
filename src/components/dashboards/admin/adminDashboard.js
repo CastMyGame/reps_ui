@@ -125,66 +125,71 @@ const AdminDashboard = () => {
           <div className="">
             <div className="left-main">
               <div className="main-content-panel">
-                {ready ? (
+                {referralList.length === 0 ? (
                   <LoadingWheelPanel />
                 ) : (
                   panelName === "overview" && (
                     <>
                       {referralList.map((item, index) => {
                         return (
-                          <div
-                            className="task-card"
-                            onClick={() => setActiveIndex(index)}
-                            key={index}
-                          >
-                            <div className="tag">
-                              <div className="color-stripe"></div>
-                              <div className="tag-content">
-                                <div className="index"> {index + 1}</div>
-                                <div className="date">
-                                  {" "}
-                                  {dateCreateFormat(item?.followUpDate) ||
-                                    dateCreateFormat(item?.timeCreated)}
+                          <div>
+                            <div
+                              className="task-card"
+                              onClick={() => setActiveIndex(index)}
+                              key={index}
+                            >
+                              <div className="tag">
+                                <div className="color-stripe"></div>
+                                <div className="tag-content">
+                                  <div className="index"> {index + 1}</div>
+                                  <div className="date">
+                                    {" "}
+                                    {dateCreateFormat(item?.followUpDate) ||
+                                      dateCreateFormat(item?.timeCreated)}
+                                  </div>
                                 </div>
                               </div>
-                            </div>
 
-                            <div className="card-body">
-                              <div className="card-body-title">
-                                {item?.referralDescription[0]}
-                              </div>
-                              <div className="card-body-description">
-                                {/* {item?.notesArray[0]?.content} */}
-                              </div>
-                              {/* {item.referralDescription &&
+                              <div className="card-body">
+                                <div className="card-body-title">
+                                  {item?.referralDescription[0]}
+                                </div>
+                                <div className="card-body-description">
+                                  {/* {item?.notesArray[0]?.content} */}
+                                </div>
+                                {/* {item.referralDescription &&
                           item.referralDescription[0] !== undefined &&
                           categoryBadgeGenerator(item.referralDescription[0])} */}
-                            </div>
-                            <div className="card-body">
-                              <div className="card-body-title">Created By</div>
-                              <div className="card-body-description">
-                                {item?.teacherEmail}
                               </div>
-                            </div>
-                            <div className="card-actions">
-                              <div className="card-action-title">
-                                {item?.status === "CLOSED"
-                                  ? "Restore"
-                                  : "Mark Complete"}
+                              <div className="card-body">
+                                <div className="card-body-title">
+                                  Created By
+                                </div>
+                                <div className="card-body-description">
+                                  {item?.teacherEmail}
+                                </div>
                               </div>
-                              <div
-                                onClick={() =>
-                                  handleStatusChange(
-                                    "CLOSED",
-                                    item?.officeReferralId
-                                  )
-                                }
-                                className="check-box"
-                              ></div>
+                              <div className="card-actions">
+                                <div className="card-action-title">
+                                  {item?.status === "CLOSED"
+                                    ? "Restore"
+                                    : "Mark Complete"}
+                                </div>
+                                <div
+                                  onClick={() =>
+                                    handleStatusChange(
+                                      "CLOSED",
+                                      item?.officeReferralId
+                                    )
+                                  }
+                                  className="check-box"
+                                ></div>
+                              </div>
                             </div>
                           </div>
                         );
                       })}
+                      <AdminOverviewPanel data={data} />
                     </>
                   )
                 )}
