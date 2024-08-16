@@ -17,7 +17,6 @@ import { ContactUsModal } from "src/security/contactUsModal";
 import { NavigationAdmin } from "src/components/landing/navigation-admin";
 import { handleLogout } from "src/utils/helperFunctions";
 import SpendPage from "src/components/globalComponents/spend-page/spend-page";
-import { OfficeReferralResponse } from "src/types/responses";
 import CircularProgress from "@mui/material/CircularProgress";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
@@ -38,15 +37,10 @@ const AdminDashboard = () => {
   const [panelName, setPanelName] = useState("overview");
   const [punishmentData, setPunishmentData] = useState([]);
   const [modalType, setModalType] = useState("");
-  const [data, setData] = useState([]);
+  const [adminDto, setAdminDto] = useState([]);
   const [activeIndex, setActiveIndex] = useState(null);
   const [updatePage, setUpdatePage] = useState(false);
-  const [activeTask, setActiveTask] = useState(null);
-  const [displayPicker, setDisplayPicker] = useState(false);
-  const [displayNotes, setDisplayNotes] = useState(false);
-  const [displayResources, setDisplayResources] = useState(false);
   const [referralList, setReferralList] = useState([null]);
-  const [ready, setReady] = useState(false);
   const [deletePayload, setDeletePayload] = useState(null);
   const [openModal, setOpenModal] = useState({
     display: false,
@@ -119,14 +113,11 @@ const AdminDashboard = () => {
       try {
         const result = await get("DTO/v1/AdminOverviewData");
         setPunishmentData(result.punishmentResponse);
-        setData(result.response);
-        console.log(data + " THE DATA IS SET!!!!!!!!!!!!!!!!!");
+        setAdminDto(result);
         setReferralList(result.officeReferrals);
-        setReady(true);
       } catch (err) {
         console.error("Error Fetching Data: ", err);
       }
-      console.log(referralList + "This is the referral list!!!");
     };
 
     if (panelName === "overview") {
@@ -298,7 +289,7 @@ const AdminDashboard = () => {
           <div className="">
             <div className="left-main">
               <div className="main-content-panel">
-                {referralList == null ? (
+                {adminDto.length === 0 ? (
                   <LoadingWheelPanel />
                 ) : (
                   panelName === "overview" && (
@@ -372,7 +363,7 @@ const AdminDashboard = () => {
                           </div>
                         );
                       })}
-                      <AdminOverviewPanel data={data} />
+                      <AdminOverviewPanel data={adminDto} />
                     </>
                   )
                 )}
@@ -386,7 +377,7 @@ const AdminDashboard = () => {
                 {panelName === "createPunishment" && (
                   <CreatePunishmentPanel
                     setPanelName={setPanelName}
-                    data={data}
+                    data={adminDto}
                   />
                 )}
                 {/* {panelName === "createOfficeRef" && (
@@ -404,7 +395,7 @@ const AdminDashboard = () => {
                   />
                 )}
                 {panelName === "createEditAssignments" && <AssignmentManager />}
-                {panelName === "spendPoints" && <SpendPage data={data} />}
+                {panelName === "spendPoints" && <SpendPage data={adminDto} />}
               </div>
             </div>
           </div>

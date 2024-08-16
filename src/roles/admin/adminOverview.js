@@ -12,13 +12,12 @@ import { IncidentByStudentPieChart } from "src/components/globalComponents/dataD
 import "./admin.css";
 import ShoutOuts from "src/components/globalComponents/shoutOuts";
 
-const AdminOverviewPanel = (data = []) => {
+const AdminOverviewPanel = ({ data = [] }) => {
   //Fetch Data to Prop Drill to Components
 
   const punishments = data.punishmentResponse;
-  console.log(punishments + " PUNISHMENT RESPONSE!!!");
 
-  const weeklyDataIncSOBxConcern = punishments.filter((x) => {
+  const weeklyDataIncSOBxConcern = punishments?.filter((x) => {
     const currentDate = new Date();
     const itemDate = new Date(x.timeCreated);
     const sevenDaysAgo = new Date(
