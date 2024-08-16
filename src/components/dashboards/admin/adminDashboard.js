@@ -18,6 +18,8 @@ import { NavigationAdmin } from "src/components/landing/navigation-admin";
 import { handleLogout } from "src/utils/helperFunctions";
 import SpendPage from "src/components/globalComponents/spend-page/spend-page";
 import CircularProgress from "@mui/material/CircularProgress";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 import {
@@ -294,75 +296,123 @@ const AdminDashboard = () => {
                 ) : (
                   panelName === "overview" && (
                     <>
-                      {referralList.map((item, index) => {
-                        return (
-                          <div
-                            className="task-card"
-                            onClick={() => setActiveIndex(index)}
-                            key={index}
-                            role="button"
-                          >
-                            <div className="tag">
-                              <div className="color-stripe"></div>
-                              <div className="tag-content">
-                                <div className="index"> {index + 1}</div>
-                                <div className="date">
-                                  {" "}
-                                  {dateCreateFormat(item?.timeCreated)}
+                      <div className="office-referral-first">
+                        {referralList.map((item, index) => {
+                          return (
+                            <div
+                              className="task-card"
+                              onClick={() => setActiveIndex(index)}
+                              key={index}
+                              role="button"
+                            >
+                              <div className="tag">
+                                <div className="color-stripe"></div>
+                                <div className="tag-content">
+                                  <div className="index"> {index + 1}</div>
+                                  <div className="date">
+                                    {" "}
+                                    {dateCreateFormat(item?.timeCreated)}
+                                  </div>
                                 </div>
                               </div>
-                            </div>
 
-                            <div className="card-body">
-                              <div className="card-body-title">
-                                {item?.referralCode.codeName}
-                              </div>
-                              <div className="card-body-description">
-                                {item?.referralDescription[0]}
-                              </div>
-                              {/* USE THIS TO MAKE BADGES FOR OFFICE REFERRALS
+                              <div className="card-body">
+                                <div className="card-body-title">
+                                  {item?.referralCode.codeName}
+                                </div>
+                                <div className="card-body-description">
+                                  {item?.referralDescription[0]}
+                                </div>
+                                {/* USE THIS TO MAKE BADGES FOR OFFICE REFERRALS
                                {item.referralDescription &&
                           item.referralDescription[0] !== undefined &&
                           categoryBadgeGenerator(item.referralDescription[0])} */}
-                            </div>
-                            <div className="card-body">
-                              <div className="card-body-title">Created By</div>
-                              <div className="card-body-description">
-                                {item?.teacherEmail}
+                              </div>
+                              <div className="card-body">
+                                <div className="card-body-title">
+                                  Created By
+                                </div>
+                                <div className="card-body-description">
+                                  {item?.teacherEmail}
+                                </div>
+                              </div>
+                              <div className="card-actions">
+                                <button
+                                  style={{
+                                    height: "60px",
+                                    width: "180px",
+                                    backgroundColor: "green",
+                                  }}
+                                  onClick={() => {
+                                    setOpenModal({
+                                      display: true,
+                                      message:
+                                        "You are attempting to remove the restorative assignment and close out a referral. If this was not your intent click cancel. If this is your intent, provide a brief explanation for why the restorative assignment is being removed and click Close",
+                                      buttonType: "close",
+                                    });
+                                    setDeletePayload(item);
+                                  }}
+                                >
+                                  <p
+                                    style={{
+                                      marginBottom: "5px",
+                                      marginTop: "-2%",
+                                    }}
+                                  >
+                                    Close Referral
+                                  </p>
+                                  {loadingPunishmentId.id ===
+                                    item.officeReferralId &&
+                                  loadingPunishmentId.buttonType === "close" ? (
+                                    <CircularProgress
+                                      style={{ height: "20px", width: "20px" }}
+                                      color="secondary"
+                                    />
+                                  ) : (
+                                    <CheckBoxIcon />
+                                  )}
+                                </button>
+                                <button
+                                  style={{
+                                    height: "60px",
+                                    width: "180px",
+                                    backgroundColor: "red",
+                                  }}
+                                  onClick={() => {
+                                    setOpenModal({
+                                      display: true,
+                                      message:
+                                        "You are attempting to delete the record of this referral. If you were attempting to remove the restorative assignment and close out the referral please click cancel and hit the “Close Referral” button. If you still want to delete the record of this referral, provide a brief explanation for this action and click Delete Referral.",
+                                      buttonType: "delete",
+                                    });
+                                    setDeletePayload(item);
+                                  }}
+                                >
+                                  <p
+                                    style={{
+                                      marginBottom: "5px",
+                                      marginTop: "-2%",
+                                    }}
+                                  >
+                                    Delete Referral
+                                  </p>
+                                  {loadingPunishmentId.id ===
+                                    item.officeReferralId &&
+                                  loadingPunishmentId.buttonType ===
+                                    "delete" ? (
+                                    <CircularProgress
+                                      style={{ height: "20px", width: "20px" }}
+                                      color="secondary"
+                                    />
+                                  ) : (
+                                    <DeleteForeverIcon />
+                                  )}
+                                </button>
                               </div>
                             </div>
-                            <div className="card-actions">
-                              <div className="card-action-title">
-                                {item?.status === "CLOSED"
-                                  ? "Restore"
-                                  : "Mark Complete"}
-                              </div>
-                              <button
-                                className="level-three-buttons"
-                                onClick={() => {
-                                  setOpenModal({
-                                    display: true,
-                                    message:
-                                      "Please Review Student Answers, Accept and Reject buttons are enabled when text is entered in comment section either approving or explaining the rejection",
-                                    buttonType: "close",
-                                    data: item,
-                                  });
-                                  setDeletePayload(item.officeReferralId);
-                                }}
-                              >
-                                {loadingPunishmentId.buttonType === "close" ? (
-                                  <CircularProgress
-                                    style={{ height: "20px", width: "20px" }}
-                                    color="secondary"
-                                  />
-                                ) : (
-                                  <div>Review</div>
-                                )}
-                              </button>
-                            </div>
-                          </div>
-                        );
-                      })}
+                          );
+                        })}
+                      </div>
                       <AdminOverviewPanel data={adminDto} />
                     </>
                   )
