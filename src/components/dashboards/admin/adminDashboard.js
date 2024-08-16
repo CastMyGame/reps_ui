@@ -119,7 +119,8 @@ const AdminDashboard = () => {
       try {
         const result = await get("DTO/v1/AdminOverviewData");
         setPunishmentData(result.punishmentResponse);
-        setData(result);
+        setData(result.response);
+        console.log(data + " THE DATA IS SET!!!!!!!!!!!!!!!!!");
         setReferralList(result.officeReferrals);
         setReady(true);
       } catch (err) {
@@ -308,6 +309,7 @@ const AdminDashboard = () => {
                             className="task-card"
                             onClick={() => setActiveIndex(index)}
                             key={index}
+                            role="button"
                           >
                             <div className="tag">
                               <div className="color-stripe"></div>
@@ -315,20 +317,20 @@ const AdminDashboard = () => {
                                 <div className="index"> {index + 1}</div>
                                 <div className="date">
                                   {" "}
-                                  {dateCreateFormat(item?.followUpDate) ||
-                                    dateCreateFormat(item?.timeCreated)}
+                                  {dateCreateFormat(item?.timeCreated)}
                                 </div>
                               </div>
                             </div>
 
                             <div className="card-body">
                               <div className="card-body-title">
-                                {item?.referralDescription[0]}
+                                {item?.referralCode.codeName}
                               </div>
                               <div className="card-body-description">
-                                {/* {item?.notesArray[0]?.content} */}
+                                {item?.referralDescription[0]}
                               </div>
-                              {/* {item.referralDescription &&
+                              {/* USE THIS TO MAKE BADGES FOR OFFICE REFERRALS
+                               {item.referralDescription &&
                           item.referralDescription[0] !== undefined &&
                           categoryBadgeGenerator(item.referralDescription[0])} */}
                             </div>
@@ -354,13 +356,10 @@ const AdminDashboard = () => {
                                     buttonType: "close",
                                     data: item,
                                   });
-                                  setDeletePayload(
-                                    item.officeReferral.officeReferralId
-                                  );
+                                  setDeletePayload(item.officeReferralId);
                                 }}
                               >
-                                {
-                                loadingPunishmentId.buttonType === "close" ? (
+                                {loadingPunishmentId.buttonType === "close" ? (
                                   <CircularProgress
                                     style={{ height: "20px", width: "20px" }}
                                     color="secondary"
@@ -400,7 +399,7 @@ const AdminDashboard = () => {
                 {panelName === "userManagement" && <AddTeacherForm />}
                 {panelName === "archived" && (
                   <GlobalArchivedPunishmentPanel
-                    filter={undefined}
+                    filter={"PENDING"}
                     roleType={"admin"}
                   />
                 )}

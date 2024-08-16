@@ -13,9 +13,6 @@ import { dateCreateFormat } from "../../helperFunctions/helperFunctions";
 const ShoutOuts = ({ data = [] }) => {
   const [barOpen, setBarOpen] = useState(true);
 
-  //We need to fix the cfr issues
-  console.log("shoutout", data);
-
   const hasScroll = data.shoutOutsResponse.length > 2;
 
   return !barOpen ? (
@@ -38,8 +35,7 @@ const ShoutOuts = ({ data = [] }) => {
             fontWeight: "bold",
           }}
         >
-          Positive Behavior | Wallet: {data.teacher.currency}{" "}
-          {data.school.currency}
+          Positive Behavior | Wallet: {data.teacher.currency} {data.school.currency}
         </h5>
       </div>
     </div>
@@ -58,8 +54,7 @@ const ShoutOuts = ({ data = [] }) => {
             onClick={() => setBarOpen(false)}
           />{" "}
           <h5 style={{ marginLeft: "20px", fontSize: 24, fontWeight: "bold" }}>
-            Positive Behavior | Wallet: {data.teacher.currency}{" "}
-            {data.school.currency}
+            Positive Behavior | Wallet: {data.teacher.currency} {data.school.currency}
           </h5>{" "}
         </div>
       </div>

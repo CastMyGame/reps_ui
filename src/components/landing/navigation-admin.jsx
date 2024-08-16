@@ -49,7 +49,7 @@ export const NavigationAdmin = (props) => {
                   display:
                     props.isDropdownOpen === "referral" ? "block" : "none",
                 }}
-                class="feature-menu-dropdown"
+                className="feature-menu-dropdown"
               >
                 <div
                   onClick={() => dropdownHandler("createPunishment")}
@@ -81,7 +81,7 @@ export const NavigationAdmin = (props) => {
                   display:
                     props.isDropdownOpen === "reports" ? " block" : "none",
                 }}
-                class="feature-menu-dropdown page-scroll"
+                className="feature-menu-dropdown page-scroll"
               >
                 <div
                   onClick={() => dropdownHandler("student")}
@@ -110,7 +110,7 @@ export const NavigationAdmin = (props) => {
                 style={{
                   display: props.isDropdownOpen === "tools" ? " block" : "none",
                 }}
-                class="feature-menu-dropdown page-scroll"
+                className="feature-menu-dropdown page-scroll"
               >
                 <div
                   onClick={() => dropdownHandler("createEditAssignments")}

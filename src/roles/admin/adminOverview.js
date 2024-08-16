@@ -12,11 +12,11 @@ import { IncidentByStudentPieChart } from "src/components/globalComponents/dataD
 import "./admin.css";
 import ShoutOuts from "src/components/globalComponents/shoutOuts";
 
-const AdminOverviewPanel = ({ data = [] }) => {
-  //Fetch Data to Prop Drill to Componetns
+const AdminOverviewPanel = (data = []) => {
+  //Fetch Data to Prop Drill to Components
 
-  let punishments = data.punishmentResponse;
-  let teacherData = data.teachers;
+  const punishments = data.punishmentResponse;
+  console.log(punishments + " PUNISHMENT RESPONSE!!!");
 
   const weeklyDataIncSOBxConcern = punishments.filter((x) => {
     const currentDate = new Date();
@@ -75,21 +75,24 @@ const AdminOverviewPanel = ({ data = [] }) => {
         <div className="card-overview-third">
           <IncidentByTeacherPieChart
             data={data.writeUpResponse}
-            teacherData={teacherData}
+            teacherData={data.teachers}
           />
         </div>
 
         <div className="card-overview-third">
           {data.teachers && (
             <Top5TeacherRatioTable
-              data={punishments}
-              teacherData={teacherData}
+              data={data.punishmentResponse}
+              teacherData={data.teachers}
             />
           )}
         </div>
 
         <div className="card-overview-third">
-          <WorseClassTable data={punishments} teacherData={teacherData} />
+          <WorseClassTable
+            data={data.punishmentResponse}
+            teacherData={data.teachers}
+          />
         </div>
       </div>
 
@@ -105,15 +108,15 @@ const AdminOverviewPanel = ({ data = [] }) => {
 
       <div className="overview-row">
         <div className="card-overview-third">
-          <TotalReferralByWeek data={punishments} />
+          <TotalReferralByWeek data={data.punishmentResponse} />
         </div>
 
         <div className="card-overview-third">
-          <TotalStudentReferredByWeek data={punishments} />
+          <TotalStudentReferredByWeek data={data.punishmentResponse} />
         </div>
 
         <div className="card-overview-third">
-          <ReferralByBehavior data={punishments} />
+          <ReferralByBehavior data={data.punishmentResponse} />
         </div>
       </div>
     </>
