@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Drawer from "@mui/material/Drawer";
 import CreatePunishmentPanel from "src/components/globalComponents/referrals/createPunishmentPanel";
 import CreateNewStudentPanel from "src/components/globalComponents/users/createNewStudentPanel";
@@ -18,12 +18,19 @@ import { NavigationAdmin } from "src/components/landing/navigation-admin";
 import { handleLogout } from "src/utils/helperFunctions";
 import SpendPage from "src/components/globalComponents/spend-page/spend-page";
 import { OfficeReferralResponse } from "src/types/responses";
+import CircularProgress from "@mui/material/CircularProgress";
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert from "@mui/material/Alert";
 import {
   categoryBadgeGenerator,
   dateCreateFormat,
 } from "src/helperFunctions/helperFunctions";
 import { baseUrl } from "src/utils/jsonData";
 import axios from "axios";
+
+const Alert = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
 const AdminDashboard = () => {
   const [loggedIn, setLoggedIn] = useState(true);
@@ -38,10 +45,35 @@ const AdminDashboard = () => {
   const [displayPicker, setDisplayPicker] = useState(false);
   const [displayNotes, setDisplayNotes] = useState(false);
   const [displayResources, setDisplayResources] = useState(false);
-  const [referralList, setReferralList] = useState([]);
+  const [referralList, setReferralList] = useState([null]);
   const [ready, setReady] = useState(false);
+  const [deletePayload, setDeletePayload] = useState(null);
+  const [openModal, setOpenModal] = useState({
+    display: false,
+    message: "",
+    buttonType: "",
+    data: null,
+  });
+  const [textareaValue, setTextareaValue] = useState("");
+  const [toast, setToast] = useState({ visible: false, message: "" });
+  const [loadingPunishmentId, setLoadingPunishmentId] = useState({
+    id: null,
+    buttonType: "",
+  });
 
   const [isDropdownOpen, setIsDropdownOpen] = useState("");
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setToast({ visible: false, message: "" });
+  };
+
+  const headers = {
+    Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
+  };
 
   useEffect(() => {
     if (sessionStorage.getItem("Authorization") === null) {
@@ -57,15 +89,12 @@ const AdminDashboard = () => {
     }, 500);
   };
 
-  const handleStatusChange = (status, id) => {
-    const payload = { status: status };
-    const headers = {
-      Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
-    };
+  const handleClosePunishment = (description, id) => {
+    const payload = { id: id, comment: description };
 
-    const url = `${baseUrl}/punish/v1/guidance/status/${id}`;
+    const url = `${baseUrl}/officeReferral/v1/closeId`;
     axios
-      .put(url, payload, { headers })
+      .post(url, payload, { headers })
       .then((response) => {
         console.log(response.data);
         handleUpdatePage();
@@ -77,6 +106,10 @@ const AdminDashboard = () => {
 
   const toggleNotificationDrawer = (open) => {
     setOpenNotificationDrawer(open);
+  };
+
+  const handleTextareaChange = (event) => {
+    setTextareaValue(event.target.value);
   };
 
   //Fetch Data to Prop Drill to Componetns
@@ -100,6 +133,33 @@ const AdminDashboard = () => {
     }
   }, [panelName]);
 
+  const handleRejectPunishment = (obj) => {
+    setLoadingPunishmentId({
+      id: obj.officeReferral.officeReferralId,
+      buttonType: "close",
+    });
+    const url = `${baseUrl}/officeReferral/v1/rejected/${obj.officeReferral.officeReferralId}`;
+    axios
+      .put(url, [textareaValue], { headers }) // Pass the headers option with the JWT token
+      .then(function (response) {
+        setToast({
+          visible: true,
+          message:
+            "You have rejected the student's answers and an email has been sent letting them know.",
+        });
+      })
+      .catch(function (error) {
+        console.error(error);
+      })
+      .finally(() => {
+        setOpenModal({ display: false, message: "" });
+        setTimeout(() => {
+          setToast({ visible: false, message: "" });
+          setLoadingPunishmentId({ id: null, buttonType: "" });
+        }, 1000);
+      });
+  };
+
   return (
     loggedIn && (
       <div>
@@ -110,6 +170,118 @@ const AdminDashboard = () => {
               contactUsDisplayModal={undefined}
             />
           )}
+          {openModal.display && (
+            <div className="modal-overlay">
+              <div className="modal-content">
+                <div className="modal-header">
+                  <h3>{openModal.message}</h3>
+                  <div className="answer-container">
+                    {openModal.data.officeReferral.infractionDescription.map(
+                      (item, index) => {
+                        if (index > 1) {
+                          const match = item.match(
+                            /question=([\s\S]+?),\s*answer=([\s\S]+?)(?=\))/
+                          );
+                          if (match) {
+                            const question = match[1].trim();
+                            const answer = match[2].trim();
+
+                            return (
+                              <div
+                                key={index}
+                                style={{
+                                  display: "flex",
+                                  flexDirection: "row",
+                                  border: "1px solid black",
+                                }}
+                              >
+                                <div
+                                  style={{
+                                    backgroundColor: "grey",
+                                    minHeight: "15px",
+                                    width: "40%",
+                                  }}
+                                >
+                                  <strong>Question:</strong> {question}
+                                </div>
+                                <div
+                                  style={{
+                                    color: "black",
+                                    backgroundColor: "lightBlue",
+                                    minHeight: "50px",
+                                    width: "60%",
+                                    textAlign: "left",
+                                    paddingLeft: "10px",
+                                  }}
+                                >
+                                  <strong>Answer:</strong> {answer}
+                                </div>
+                              </div>
+                            );
+                          }
+                        }
+                      }
+                    )}
+                  </div>
+                </div>
+                <div className="modal-body">
+                  <textarea
+                    value={textareaValue} // Set the value of the textarea to the state variable
+                    onChange={handleTextareaChange} // Handle changes to the textarea
+                    className="multi-line-input"
+                    placeholder="Enter additional comments"
+                    rows={4} // This sets the initial height to show 4 rows
+                  ></textarea>
+                </div>
+                <div className="modal-buttons">
+                  <button
+                    onClick={() => {
+                      setOpenModal({ display: false, message: "" });
+                      setTextareaValue("");
+                    }}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    disabled={textareaValue.length === 0}
+                    style={{
+                      backgroundColor: textareaValue === "" ? "grey" : "red",
+                    }}
+                    onClick={() => handleRejectPunishment(deletePayload)}
+                  >
+                    Reject Answers
+                  </button>
+                  <button
+                    disabled={textareaValue.length === 0}
+                    style={{
+                      backgroundColor: textareaValue === "" ? "grey" : "green",
+                    }}
+                    onClick={() => {
+                      handleClosePunishment(deletePayload);
+                      console.log(deletePayload);
+                    }}
+                  >
+                    Accept Answers
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          <Snackbar
+            anchorOrigin={{ vertical: "top", horizontal: "center" }}
+            open={toast.visible}
+            autoHideDuration={6000}
+            onClose={handleClose}
+          >
+            <Alert
+              Close={handleClose}
+              severity="success"
+              sx={{ width: "100%" }}
+            >
+              {toast.message}
+            </Alert>
+          </Snackbar>
 
           <NavigationAdmin
             toggleNotificationDrawer={toggleNotificationDrawer}
@@ -125,66 +297,78 @@ const AdminDashboard = () => {
           <div className="">
             <div className="left-main">
               <div className="main-content-panel">
-                {referralList.length === 0 ? (
+                {referralList == null ? (
                   <LoadingWheelPanel />
                 ) : (
                   panelName === "overview" && (
                     <>
                       {referralList.map((item, index) => {
                         return (
-                          <div>
-                            <div
-                              className="task-card"
-                              onClick={() => setActiveIndex(index)}
-                              key={index}
-                            >
-                              <div className="tag">
-                                <div className="color-stripe"></div>
-                                <div className="tag-content">
-                                  <div className="index"> {index + 1}</div>
-                                  <div className="date">
-                                    {" "}
-                                    {dateCreateFormat(item?.followUpDate) ||
-                                      dateCreateFormat(item?.timeCreated)}
-                                  </div>
+                          <div
+                            className="task-card"
+                            onClick={() => setActiveIndex(index)}
+                            key={index}
+                          >
+                            <div className="tag">
+                              <div className="color-stripe"></div>
+                              <div className="tag-content">
+                                <div className="index"> {index + 1}</div>
+                                <div className="date">
+                                  {" "}
+                                  {dateCreateFormat(item?.followUpDate) ||
+                                    dateCreateFormat(item?.timeCreated)}
                                 </div>
                               </div>
+                            </div>
 
-                              <div className="card-body">
-                                <div className="card-body-title">
-                                  {item?.referralDescription[0]}
-                                </div>
-                                <div className="card-body-description">
-                                  {/* {item?.notesArray[0]?.content} */}
-                                </div>
-                                {/* {item.referralDescription &&
+                            <div className="card-body">
+                              <div className="card-body-title">
+                                {item?.referralDescription[0]}
+                              </div>
+                              <div className="card-body-description">
+                                {/* {item?.notesArray[0]?.content} */}
+                              </div>
+                              {/* {item.referralDescription &&
                           item.referralDescription[0] !== undefined &&
                           categoryBadgeGenerator(item.referralDescription[0])} */}
+                            </div>
+                            <div className="card-body">
+                              <div className="card-body-title">Created By</div>
+                              <div className="card-body-description">
+                                {item?.teacherEmail}
                               </div>
-                              <div className="card-body">
-                                <div className="card-body-title">
-                                  Created By
-                                </div>
-                                <div className="card-body-description">
-                                  {item?.teacherEmail}
-                                </div>
+                            </div>
+                            <div className="card-actions">
+                              <div className="card-action-title">
+                                {item?.status === "CLOSED"
+                                  ? "Restore"
+                                  : "Mark Complete"}
                               </div>
-                              <div className="card-actions">
-                                <div className="card-action-title">
-                                  {item?.status === "CLOSED"
-                                    ? "Restore"
-                                    : "Mark Complete"}
-                                </div>
-                                <div
-                                  onClick={() =>
-                                    handleStatusChange(
-                                      "CLOSED",
-                                      item?.officeReferralId
-                                    )
-                                  }
-                                  className="check-box"
-                                ></div>
-                              </div>
+                              <button
+                                className="level-three-buttons"
+                                onClick={() => {
+                                  setOpenModal({
+                                    display: true,
+                                    message:
+                                      "Please Review Student Answers, Accept and Reject buttons are enabled when text is entered in comment section either approving or explaining the rejection",
+                                    buttonType: "close",
+                                    data: item,
+                                  });
+                                  setDeletePayload(
+                                    item.officeReferral.officeReferralId
+                                  );
+                                }}
+                              >
+                                {
+                                loadingPunishmentId.buttonType === "close" ? (
+                                  <CircularProgress
+                                    style={{ height: "20px", width: "20px" }}
+                                    color="secondary"
+                                  />
+                                ) : (
+                                  <div>Review</div>
+                                )}
+                              </button>
                             </div>
                           </div>
                         );

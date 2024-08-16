@@ -26,7 +26,7 @@ const LevelThreePanel = ({ roleType }) => {
 
   const [listOfPunishments, setListOfPunishments] = useState([]);
   const [sort, setSort] = useState("");
-  const [loadingPunihsmentId, setLoadingPunishmentId] = useState({
+  const [loadingPunishmentId, setLoadingPunishmentId] = useState({
     id: null,
     buttonType: "",
   });
@@ -410,9 +410,9 @@ const LevelThreePanel = ({ roleType }) => {
                                   setDeletePayload(x);
                                 }}
                               >
-                                {loadingPunihsmentId.id ===
+                                {loadingPunishmentId.id ===
                                   x.punishment.punishmentId &&
-                                loadingPunihsmentId.buttonType === "close" ? (
+                                loadingPunishmentId.buttonType === "close" ? (
                                   <CircularProgress
                                     style={{ height: "20px", width: "20px" }}
                                     color="secondary"
