@@ -41,6 +41,10 @@ export default function ViolationPage(props) {
   }, []);
 
   useEffect(() => {
+    console.log(mapIndex);
+  }, [mapIndex]);
+
+  useEffect(() => {
     if (mapIndex == 0) {
     } else {
       const headers = {
@@ -48,9 +52,9 @@ export default function ViolationPage(props) {
       };
       let url = "";
       if (props.data.officeReferralId == null) {
-        let url = `${baseUrl}/punish/v1/${props.data.punishmentId}/index/${mapIndex}`;
+        url = `${baseUrl}/punish/v1/${props.data.punishmentId}/index/${mapIndex}`;
       } else {
-        let url = `${baseUrl}/punish/v1/${props.data.officeReferralId}/index/${mapIndex}`;
+        url = `${baseUrl}/punish/v1/${props.data.officeReferralId}/index/${mapIndex}`;
       }
 
       axios
@@ -125,7 +129,7 @@ export default function ViolationPage(props) {
       timeClosed: Date.now,
     };
 
-    console.log(payload)
+    console.log(payload);
 
     if (formattedInfraction === "Office Referral") {
       let url = `${baseUrl}/officeReferral/v1/submit/${props.data.officeReferralId}`;
@@ -136,7 +140,7 @@ export default function ViolationPage(props) {
           window.alert(
             `You Work Has been Recorded for ${payload.studentEmail}`
           );
-          window.location.href = "/dashboard/student";
+          // window.location.href = "/dashboard/student";
         })
         .catch(function (error) {
           console.error(error);
@@ -150,7 +154,7 @@ export default function ViolationPage(props) {
           window.alert(
             `You Work Has been Recorded for ${payload.studentEmail}`
           );
-          window.location.href = "/dashboard/student";
+          // window.location.href = "/dashboard/student";
         })
         .catch(function (error) {
           console.error(error);

@@ -6,8 +6,7 @@ import { baseUrl } from './jsonData';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
-import Assignment from '@mui/icons-material/Assignment';
+import Select from '@mui/material/Select';
 
 const AssignmentManager = () => {
   const [numOfQuestions, setNumberOfQuestions] = useState(1);
