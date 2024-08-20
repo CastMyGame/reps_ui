@@ -11,6 +11,7 @@ import { WorseClassTable } from "src/components/globalComponents/dataDisplay/top
 import { IncidentByStudentPieChart } from "src/components/globalComponents/dataDisplay/incident-by-student-pie-chart";
 import "./admin.css";
 import ShoutOuts from "src/components/globalComponents/shoutOuts";
+import OfficeReferrals from "src/components/globalComponents/officeReferrals/officeReferrals";
 
 const AdminOverviewPanel = ({ data = [] }) => {
   //Fetch Data to Prop Drill to Components
@@ -31,6 +32,12 @@ const AdminOverviewPanel = ({ data = [] }) => {
       <div className="teacher-overview-first">
         <Card variant="outlined">
           <ShoutOuts data={data} />
+        </Card>
+      </div>
+
+      <div className="teacher-overview-first">
+        <Card variant="outlined">
+          <OfficeReferrals data={data.officeReferrals} />
         </Card>
       </div>
 
