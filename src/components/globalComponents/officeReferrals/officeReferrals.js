@@ -47,7 +47,7 @@ const OfficeReferrals = ({ data = [] }) => {
     }, 500);
   };
 
-  const handleClosePunishment = (description, id) => {
+  const handleClosePunishment = (id, description) => {
     const payload = { id: id, comment: description };
 
     const url = `${baseUrl}/officeReferral/v1/closeId`;
@@ -64,12 +64,12 @@ const OfficeReferrals = ({ data = [] }) => {
 
   const handleRejectPunishment = (obj) => {
     setLoadingPunishmentId({
-      id: obj.officeReferral.officeReferralId,
+      id: obj.officeReferralId,
       buttonType: "close",
     });
-    const url = `${baseUrl}/officeReferral/v1/rejected/${obj.officeReferral.officeReferralId}`;
+    const url = `${baseUrl}/officeReferral/v1/rejected/${obj.officeReferralId}`;
     axios
-      .put(url, [textareaValue], { headers }) // Pass the headers option with the JWT token
+      .put(url, [textareaValue] , { headers }) // Pass the headers option with the JWT token
       .then(function (response) {
         setToast({
           visible: true,
@@ -101,52 +101,50 @@ const OfficeReferrals = ({ data = [] }) => {
             <div className="modal-header">
               <h3>{openModal.message}</h3>
               <div className="answer-container">
-                {openModal.data.referralDescription.map(
-                  (item, index) => {
-                    if (index > 1) {
-                      const match = item.match(
-                        /question=([\s\S]+?),\s*answer=([\s\S]+?)(?=\))/
-                      );
-                      if (match) {
-                        const question = match[1].trim();
-                        const answer = match[2].trim();
+                {openModal.data.referralDescription.map((item, index) => {
+                  if (index > 1) {
+                    const match = item.match(
+                      /question=([\s\S]+?),\s*answer=([\s\S]+?)(?=\))/
+                    );
+                    if (match) {
+                      const question = match[1].trim();
+                      const answer = match[2].trim();
 
-                        return (
+                      return (
+                        <div
+                          key={index}
+                          style={{
+                            display: "flex",
+                            flexDirection: "row",
+                            border: "1px solid black",
+                          }}
+                        >
                           <div
-                            key={index}
                             style={{
-                              display: "flex",
-                              flexDirection: "row",
-                              border: "1px solid black",
+                              backgroundColor: "grey",
+                              minHeight: "15px",
+                              width: "40%",
                             }}
                           >
-                            <div
-                              style={{
-                                backgroundColor: "grey",
-                                minHeight: "15px",
-                                width: "40%",
-                              }}
-                            >
-                              <strong>Question:</strong> {question}
-                            </div>
-                            <div
-                              style={{
-                                color: "black",
-                                backgroundColor: "lightBlue",
-                                minHeight: "50px",
-                                width: "60%",
-                                textAlign: "left",
-                                paddingLeft: "10px",
-                              }}
-                            >
-                              <strong>Answer:</strong> {answer}
-                            </div>
+                            <strong>Question:</strong> {question}
                           </div>
-                        );
-                      }
+                          <div
+                            style={{
+                              color: "black",
+                              backgroundColor: "lightBlue",
+                              minHeight: "50px",
+                              width: "60%",
+                              textAlign: "left",
+                              paddingLeft: "10px",
+                            }}
+                          >
+                            <strong>Answer:</strong> {answer}
+                          </div>
+                        </div>
+                      );
                     }
                   }
-                )}
+                })}
               </div>
             </div>
             <div className="modal-body">
@@ -182,7 +180,10 @@ const OfficeReferrals = ({ data = [] }) => {
                   backgroundColor: textareaValue === "" ? "grey" : "green",
                 }}
                 onClick={() => {
-                  handleClosePunishment(deletePayload);
+                  handleClosePunishment(
+                    deletePayload.officeReferralId,
+                    textareaValue
+                  );
                   console.log(deletePayload);
                 }}
               >
@@ -236,81 +237,83 @@ const OfficeReferrals = ({ data = [] }) => {
           </TableHead>
           <TableBody>
             {data?.length > 0 ? (
-              data?.map((x, key) => (
-                <TableRow key={key}>
-                  <TableCell style={{ width: "20%", fontSize: 14 }}>
-                    {dateCreateFormat(x.timeCreated)}
-                  </TableCell>
-                  <TableCell style={{ width: "20%", fontSize: 14 }}>
-                    {x.studentEmail}{" "}
-                  </TableCell>
-                  <TableCell style={{ width: "30%", fontSize: 14 }}>
-                    {x.referralDescription}
-                  </TableCell>
-                  <TableCell style={{ width: "30%", fontSize: 14 }}>
-                    {x.teacherEmail}
-                  </TableCell>
-                  <TableCell style={{ width: "30%", fontSize: 14 }}>
-                    <>
-                      <button
-                        style={{
-                          height: "60px",
-                          width: "180px",
-                          backgroundColor: "green",
-                        }}
-                        onClick={() => {
-                          setOpenModal({
-                            display: true,
-                            message:
-                              "You are attempting to remove the restorative assignment and close out a referral. If this was not your intent click cancel. If this is your intent, provide a brief explanation for why the restorative assignment is being removed and click Close",
-                            buttonType: "close",
-                            data: x,
-                          });
-                          setDeletePayload(x);
-                        }}
-                      >
-                        <p
+              data
+                ?.filter((x) => x.status !== "CLOSED")
+                .map((x, key) => (
+                  <TableRow key={key}>
+                    <TableCell style={{ width: "20%", fontSize: 14 }}>
+                      {dateCreateFormat(x.timeCreated)}
+                    </TableCell>
+                    <TableCell style={{ width: "20%", fontSize: 14 }}>
+                      {x.studentEmail}{" "}
+                    </TableCell>
+                    <TableCell style={{ width: "30%", fontSize: 14 }}>
+                      {x.referralDescription}
+                    </TableCell>
+                    <TableCell style={{ width: "30%", fontSize: 14 }}>
+                      {x.teacherEmail}
+                    </TableCell>
+                    <TableCell style={{ width: "30%", fontSize: 14 }}>
+                      <>
+                        <button
                           style={{
-                            marginBottom: "5px",
-                            marginTop: "-2%",
+                            height: "60px",
+                            width: "180px",
+                            backgroundColor: "green",
+                          }}
+                          onClick={() => {
+                            setOpenModal({
+                              display: true,
+                              message:
+                                "You are attempting to remove the restorative assignment and close out a referral. If this was not your intent click cancel. If this is your intent, provide a brief explanation for why the restorative assignment is being removed and click Close",
+                              buttonType: "close",
+                              data: x,
+                            });
+                            setDeletePayload(x);
                           }}
                         >
-                          Review Answers
-                        </p>
-                        <CheckBoxIcon />
-                      </button>
+                          <p
+                            style={{
+                              marginBottom: "5px",
+                              marginTop: "-2%",
+                            }}
+                          >
+                            Review Answers
+                          </p>
+                          <CheckBoxIcon />
+                        </button>
 
-                      <button
-                        style={{
-                          height: "60px",
-                          width: "180px",
-                          backgroundColor: "red",
-                        }}
-                        onClick={() => {
-                          setOpenModal({
-                            display: true,
-                            message:
-                              "You are attempting to delete the record of this referral. If you were attempting to remove the restorative assignment and close out the referral please click cancel and hit the “Close Referral” button. If you still want to delete the record of this referral, provide a brief explanation for this action and click Delete Referral.",
-                            buttonType: "delete",
-                            data: x,
-                          });
-                          setDeletePayload(x);
-                        }}
-                      >
-                        <p
+                        <button
                           style={{
-                            marginBottom: "5px",
-                            marginTop: "-2%",
+                            height: "60px",
+                            width: "180px",
+                            backgroundColor: "red",
+                          }}
+                          onClick={() => {
+                            setOpenModal({
+                              display: true,
+                              message:
+                                "You are attempting to delete the record of this referral. If you were attempting to remove the restorative assignment and close out the referral please click cancel and hit the “Close Referral” button. If you still want to delete the record of this referral, provide a brief explanation for this action and click Delete Referral.",
+                              buttonType: "delete",
+                              data: x,
+                            });
+                            setDeletePayload(x);
                           }}
                         >
-                          Delete Referral
-                        </p>
-                        <DeleteForeverIcon />
-                      </button>
-                    </>
-                  </TableCell>
-                </TableRow>
-              ))
+                          <p
+                            style={{
+                              marginBottom: "5px",
+                              marginTop: "-2%",
+                            }}
+                          >
+                            Delete Referral
+                          </p>
+                          <DeleteForeverIcon />
+                        </button>
+                      </>
+                    </TableCell>
+                  </TableRow>
+                ))
             ) : (
               <TableRow>
                 <TableCell

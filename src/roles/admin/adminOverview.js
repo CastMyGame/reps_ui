@@ -27,6 +27,8 @@ const AdminOverviewPanel = ({ data = [] }) => {
     return itemDate > sevenDaysAgo;
   });
 
+  const notClosed = data.officeReferrals.filter((x) => x.status !== "CLOSED");
+
   return (
     <>
       <div className="teacher-overview-first">
@@ -34,12 +36,13 @@ const AdminOverviewPanel = ({ data = [] }) => {
           <ShoutOuts data={data} />
         </Card>
       </div>
-
-      <div className="teacher-overview-first">
-        <Card variant="outlined">
-          <OfficeReferrals data={data.officeReferrals} />
-        </Card>
-      </div>
+      {notClosed.length > 0 && (
+        <div className="teacher-overview-first">
+          <Card variant="outlined">
+            <OfficeReferrals data={data.officeReferrals} />
+          </Card>
+        </div>
+      )}
 
       <div className="card-title">
         <Typography

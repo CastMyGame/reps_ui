@@ -164,8 +164,6 @@ const CreatePunishmentPanel = ({ setPanelName, data = [] }) => {
     console.log("std names", studentNames);
     studentNames.map((student) => {
       const studentPayload = {
-        firstName: "Placeholder 1",
-        lastName: "Placeholder 2",
         studentEmail: student.value,
         teacherEmail: teacherEmailSelected,
         infractionPeriod: infractionPeriodSelected,
