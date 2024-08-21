@@ -17,6 +17,21 @@ import { ContactUsModal } from "src/security/contactUsModal";
 import { NavigationAdmin } from "src/components/landing/navigation-admin";
 import { handleLogout } from "src/utils/helperFunctions";
 import SpendPage from "src/components/globalComponents/spend-page/spend-page";
+import CircularProgress from "@mui/material/CircularProgress";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import CheckBoxIcon from "@mui/icons-material/CheckBox";
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert from "@mui/material/Alert";
+import {
+  categoryBadgeGenerator,
+  dateCreateFormat,
+} from "src/helperFunctions/helperFunctions";
+import { baseUrl } from "src/utils/jsonData";
+import axios from "axios";
+
+const Alert = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
 const AdminDashboard = () => {
   const [loggedIn, setLoggedIn] = useState(true);
@@ -24,9 +39,34 @@ const AdminDashboard = () => {
   const [panelName, setPanelName] = useState("overview");
   const [punishmentData, setPunishmentData] = useState([]);
   const [modalType, setModalType] = useState("");
-  const [data, setData] = useState([]);
+  const [adminDto, setAdminDto] = useState([]);
+  const [openModal, setOpenModal] = useState({
+    display: false,
+    message: "",
+    buttonType: "",
+    data: null,
+  });
+  const [textareaValue, setTextareaValue] = useState("");
+  const [referralList, setReferralList] = useState([null]);
+  const [toast, setToast] = useState({ visible: false, message: "" });
+  const [loadingPunishmentId, setLoadingPunishmentId] = useState({
+    id: null,
+    buttonType: "",
+  });
 
   const [isDropdownOpen, setIsDropdownOpen] = useState("");
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setToast({ visible: false, message: "" });
+  };
+
+  const headers = {
+    Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
+  };
 
   useEffect(() => {
     if (sessionStorage.getItem("Authorization") === null) {
@@ -47,7 +87,8 @@ const AdminDashboard = () => {
       try {
         const result = await get("DTO/v1/AdminOverviewData");
         setPunishmentData(result.punishmentResponse);
-        setData(result);
+        setAdminDto(result);
+        setReferralList(result.officeReferrals);
       } catch (err) {
         console.error("Error Fetching Data: ", err);
       }
@@ -63,8 +104,26 @@ const AdminDashboard = () => {
       <div>
         <div>
           {modalType === "contact" && (
-            <ContactUsModal setContactUsDisplayModal={setModalType} />
+            <ContactUsModal
+              setContactUsDisplayModal={setModalType}
+              contactUsDisplayModal={undefined}
+            />
           )}
+
+          <Snackbar
+            anchorOrigin={{ vertical: "top", horizontal: "center" }}
+            open={toast.visible}
+            autoHideDuration={6000}
+            onClose={handleClose}
+          >
+            <Alert
+              Close={handleClose}
+              severity="success"
+              sx={{ width: "100%" }}
+            >
+              {toast.message}
+            </Alert>
+          </Snackbar>
 
           <NavigationAdmin
             toggleNotificationDrawer={toggleNotificationDrawer}
@@ -77,53 +136,48 @@ const AdminDashboard = () => {
         </div>
 
         <div className="header">
-          {punishmentData.length === 0 ? (
-            <LoadingWheelPanel />
-          ) : (
-            <div className="">
-              <div
-                className="left-main"
-              >
-                <div className="main-content-panel">
-                  {punishmentData.length === 0 ? (
-                    <LoadingWheelPanel />
-                  ) : (
-                    panelName === "overview" && (
-                      <AdminOverviewPanel data={data} />
-                    )
-                  )}
-                  {panelName === "viewTeacher" && <AdminTeacherPanel />}
-                  {panelName === "student" && <TeacherStudentPanel />}
-                  {panelName === "punishment" && (
-                    <GlobalPunishmentPanel roleType={"admin"} />
-                  )}
-                  {panelName === "createPunishment" && (
-                    <CreatePunishmentPanel
-                      setPanelName={setPanelName}
-                      data={data}
-                    />
-                  )}
-                  {/* {panelName === "createOfficeRef" && (
+          <div className="">
+            <div className="left-main">
+              <div className="main-content-panel">
+                {adminDto.length === 0 ? (
+                  <LoadingWheelPanel />
+                ) : (
+                  panelName === "overview" && (
+                      <AdminOverviewPanel data={adminDto} />
+                  )
+                )}
+                {panelName === "viewTeacher" && <AdminTeacherPanel />}
+                {panelName === "student" && (
+                  <TeacherStudentPanel setPanelName={setPanelName} />
+                )}
+                {panelName === "punishment" && (
+                  <GlobalPunishmentPanel roleType={"admin"} />
+                )}
+                {panelName === "createPunishment" && (
+                  <CreatePunishmentPanel
+                    setPanelName={setPanelName}
+                    data={adminDto}
+                  />
+                )}
+                {/* {panelName === "createOfficeRef" && (
                     <CreateOfficeReferral
                       setPanelName={setPanelName}
                       data={data}
                     />
                   )} */}
-                  {panelName === "createNewStudent" && (
-                    <CreateNewStudentPanel />
-                  )}
-                  {panelName === "userManagement" && <AddTeacherForm />}
-                  {panelName === "archived" && (
-                    <GlobalArchivedPunishmentPanel />
-                  )}
-                  {panelName === "createEditAssignments" && (
-                    <AssignmentManager />
-                  )}
-                  {panelName === "spendPoints" && <SpendPage data={data} />}
-                </div>
+                {panelName === "createNewStudent" && <CreateNewStudentPanel />}
+                {panelName === "userManagement" && <AddTeacherForm />}
+                {panelName === "archived" && (
+                  <GlobalArchivedPunishmentPanel
+                    filter={"PENDING"}
+                    roleType={"admin"}
+                  />
+                )}
+                {panelName === "createEditAssignments" && <AssignmentManager />}
+                {panelName === "spendPoints" && <SpendPage data={adminDto} />}
               </div>
             </div>
-          )}
+          </div>
         </div>
 
         <Drawer

@@ -17,141 +17,19 @@ import {
   ToggleButtonGroup,
 } from "@mui/material";
 import { handleLogout } from "src/utils/helperFunctions";
-import { dateCreateFormat } from "src/helperFunctions/helperFunctions";
+import { categoryBadgeGenerator, dateCreateFormat } from "src/helperFunctions/helperFunctions";
 import { get } from "src/utils/api/api";
 import { StudentDetailsModal } from "src/components/globalComponents/components/modals/studentDetailsModal";
 import NavbarCustom from "src/components/globalComponents/modals/navBar/navBar";
 import CreatePunishmentPanel from "src/components/globalComponents/modals/functions/createPunishmentPanel.js";
 import { TeacherDetailsModal } from "src/components/globalComponents/components/modals/teacherDetailsModal ";
-import ComingSoon from "src/components/globalComponents/components/generic-components/coming-soon";
-import { ContactUsModal } from "src/security/contactUsModal";
-
-interface GuidanceResponse{
-  
-    guidanceId: string;
-    studentEmail: string;
-    schoolName: string;
-    timeCreated: null |[];
-    teacherEmail: string;
-    guidanceEmail: string;
-    referralDescription: [string];
-    status: string;
-    notesArray: null | [];
-    linkToPunishment: null | string,
-    followUpDate: null | [],
-    infractionName:string;
-
-}
-
-interface StudentResponse{
-  
-  studentIdNumber: string;
-  address: string;
-  schoolName: string;
-  adminEmail: string | null;
-  firstName: string;
-  lastName: string;
-  grade: string;
-  notesArray: null | [];
-  parentPhoneNumber: string;
-  studentPhoneNumber: string;
-  studentEmail:string;
-  points:number;
-
- 
-
-}
-
-interface Role{
-  role:string;
-  id:string
-}
-
-interface TeacherResponse{
-  
-  employeeId: string;
-  schoolName: string;
-  firstName: string;
-  lastName: string;
-  roles: null | [Role];
-  currency: number;
-  email:string;
-
- 
-
-}
-
-interface Dropdown {
-  label: string;
-  panel: string;
-}
-
-
-interface ButtonData {
-  label: string;
-  panel: string;
-  multi: boolean;
-  dropdowns: Dropdown[];
-}
-
-
-
-const buttonData: ButtonData[] = [
-  { 
-    label: "OVERVIEW", 
-    panel: "overview", 
-    multi: false, 
-    dropdowns: []
-  },
-    { 
-      label: "REPORTS", 
-      panel: "reports", 
-      multi: true, 
-      dropdowns: [
-        { label: "BY STUDENTS", panel: "report-student" },
-        { label: "BY TEACHERS", panel: "report-teacher" }
-      ]
-    },
-    { 
-      label: "PARENT CONTACT", 
-      panel: "contacts", 
-      multi: true, 
-      dropdowns: [
-        { label: "NEW REFERRAL CONTACT", panel: "new-referral-contact" },
-        { label: "EXISTING PARENT CONTACT", panel: "existing-parent-contact" }
-      ]
-    },
-    { 
-      label: "TOOLS", 
-      panel: "tools", 
-      multi: true, 
-      dropdowns: [
-        { label: "CREATE/ASSIGNMENT", panel: "create-assignment" },
-        { label: "CREATE A STUDENT/TEACHER", panel: "create-user" },
-        { label: "ARCHIVED", panel: "archvied-records" }
-
-      ]
-    },
-    { 
-      label: "CONTACT US", 
-      panel: "contact-us", 
-      multi: false, 
-      dropdowns: []
-    },
-    { 
-      label: "DETENTION/LIST", 
-      panel: "detention", 
-      multi: false, 
-      dropdowns: []
-    },
-    // { 
-    //   label: "STORE REDEEM", 
-    //   panel: "redeem", 
-    //   multi: false, 
-    //   dropdowns: []
-    // },
-   
-  ];
+import {
+  GuidanceResponse,
+  StudentResponse,
+  TeacherResponse,
+} from "src/types/responses";
+import { guidanceButtonData } from "src/types/navbars";
+import { BEHAVIORAL, CLERICAL } from "src/types/constants";
 
 const GuidanceDashboard = () => {
   const [displayPicker, setDisplayPicker] = useState(false);
@@ -166,15 +44,12 @@ const GuidanceDashboard = () => {
   //Indicators - UI display of processing e.g. loading wheel
   const [closeIndicator, setCloseIndicator] = useState(false);
 
-
   const [openTask, setOpenTask] = useState<any>([]);
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [activeTask, setActiveTask] = useState<any | null>(null);
   const [guidanceFilter, setGuidanceFilter] = useState<boolean>(false);
-  const [displayStudentModal, setDisplayStudentModal] = useState(false)
-  const [displayTeacherModal, setDisplayTeacherModal] = useState(false)
-  const [displayContactUs,setDisplayContactUs] = useState(false)
-
+  const [displayStudentModal, setDisplayStudentModal] = useState(false);
+  const [displayTeacherModal, setDisplayTeacherModal] = useState(false);
 
   //Toggles
   const [taskType, setTaskType] = useState("OPEN");
@@ -197,31 +72,6 @@ const GuidanceDashboard = () => {
     }
   };
 
-  const handleReferralFilterChange = (filterBoolean: boolean) => {
-    if (filterBoolean !== null) {
-      setGuidanceFilter(filterBoolean);
-      setUpdatePage((prev) => !prev);
-    }
-  };
-
-  const handleChange = (event: any) => {
-    handleReferralFilterChange(event.target.checked);
-  };
-
-  //CONSTANTS
-  const CLERICAL = ["Grade Change Request", "Schedule Change Request"];
-  const BEHAVIORAL = [
-    "Tardy",
-    "Unauthorized Device/Cell Phone",
-    "Disruptive Behavior",
-    "Horseplay",
-    "Dress Code",
-    "Behavioral Concern",
-    "Failure to Complete Work",
-    "Guidance Referral",
-  ];
-
-  //Status Change Actions for Closing and Scheduling Task
   const handleStatusChange = (status: any, id: string) => {
     const payload = { status: status };
     const headers = {
@@ -239,6 +89,19 @@ const GuidanceDashboard = () => {
         console.error(error);
       });
   };
+
+  const handleReferralFilterChange = (filterBoolean: boolean) => {
+    if (filterBoolean !== null) {
+      setGuidanceFilter(filterBoolean);
+      setUpdatePage((prev) => !prev);
+    }
+  };
+
+  const handleChange = (event: any) => {
+    handleReferralFilterChange(event.target.checked);
+  };
+
+  //Status Change Actions for Closing and Scheduling Task
 
   const handlePunishmentClose = (id: string) => {
     setCloseIndicator(true);
@@ -296,8 +159,7 @@ const GuidanceDashboard = () => {
       setData(
         result.filter((item: any) => {
           return !item.guidance;
-        }
-      )
+        })
       );
     } catch (err) {
       console.error("Error Fetching Data: ", err);
@@ -306,7 +168,7 @@ const GuidanceDashboard = () => {
 
   const fetchStudentData = useCallback(async () => {
     try {
-       let result = await get("student/v1/allStudents/");
+      let result = await get("student/v1/allStudents/");
       setData(result);
     } catch (err) {
       console.error("Error Fetching Data: ", err);
@@ -315,13 +177,12 @@ const GuidanceDashboard = () => {
 
   const fetchTeacherData = useCallback(async () => {
     try {
-       let result = await get("employees/v1/employees/TEACHER");
+      let result = await get("employees/v1/employees/TEACHER");
       setData(result);
     } catch (err) {
       console.error("Error Fetching Data: ", err);
     }
   }, [taskType, updatePage]);
-
 
   const fetchActiveReferrals = useCallback(async () => {
     try {
@@ -380,10 +241,9 @@ const GuidanceDashboard = () => {
     } else if (panelName === "overview") {
       getPunishmentRecord();
       fetchActiveReferrals();
-    } else if( panelName === "report-student"){
+    } else if (panelName === "report-student") {
       fetchStudentData();
-    }
-    else if( panelName === "report-teacher"){
+    } else if (panelName === "report-teacher") {
       fetchTeacherData();
     }
   }, [
@@ -397,8 +257,6 @@ const GuidanceDashboard = () => {
     fetchActiveReferrals,
     fetchStudentData,
     fetchTeacherData,
-    getPunishmentRecord
-  
   ]);
 
   useEffect(() => {
@@ -432,19 +290,7 @@ const GuidanceDashboard = () => {
   };
 
   //Badge Generatores
-  const categoryBadgeGenerator = (infractionName: string) => {
-    if (CLERICAL.includes(infractionName)) {
-      return (
-        <div style={{ backgroundColor: "gold" }} className="cat-badge">
-          Clerical
-        </div>
-      );
-    }
-
-    if (BEHAVIORAL.includes(infractionName)) {
-      return <div className="cat-badge">Behavioral</div>;
-    }
-  };
+  
 
   const statusBadgeGenerator = (status: string) => {
     if (status === "OPEN") {
@@ -508,20 +354,23 @@ const GuidanceDashboard = () => {
             setDisplayModal={setDisplayNotes}
             activeTask={activeTask}
             setUpdatePage={setUpdatePage}
-            panelName = {panelName}
+            panelName={panelName}
           />
         )}
 
+        {displayStudentModal && (
+          <StudentDetailsModal
+            studentEmail={activeTask}
+            setDisplayModal={setDisplayStudentModal}
+          />
+        )}
 
-
-{  displayStudentModal &&  <StudentDetailsModal studentEmail={activeTask}
-setDisplayModal={setDisplayStudentModal}
-/>}
-
-
-{  displayTeacherModal &&  <TeacherDetailsModal teacherEmail={activeTask}
-setDisplayModal={setDisplayTeacherModal}
-/>}
+        {displayTeacherModal && (
+          <TeacherDetailsModal
+            teacherEmail={activeTask}
+            setDisplayModal={setDisplayTeacherModal}
+          />
+        )}
 
         {displayResources && (
           <SendResourcesComponent
@@ -533,7 +382,7 @@ setDisplayModal={setDisplayTeacherModal}
 
         <NavbarCustom
           setPanelName={setPanelName}
-          buttonData={buttonData}
+          buttonData={guidanceButtonData}
           setLogin={handleLogout}
         />
       </div>
@@ -605,13 +454,13 @@ setDisplayModal={setDisplayTeacherModal}
                   >
                     <ToggleButton value="OPEN">Open</ToggleButton>
                     <ToggleButton value="CLOSED">Closed</ToggleButton>
-                    <ToggleButton value="CFR">CRF</ToggleButton>
+                    <ToggleButton value="CFR">CFR</ToggleButton>
                     <ToggleButton value="ALL">All</ToggleButton>
                   </ToggleButtonGroup>
                 </div>
               )}
 
-              <div className={`${panelName === "overview"?"":"none"}`}>
+              <div className={`${panelName === "overview" ? "" : "none"}`}>
                 <FormControlLabel
                   control={
                     <Switch
@@ -717,65 +566,56 @@ setDisplayModal={setDisplayTeacherModal}
                 })}
               </div>
             )}
-     {/* TEACHER PANEL */}
-     { panelName === "report-teacher" &&  <div className="guidance-panel">
-  <div> <h1 className="main-panel-title">Teacher Records</h1></div>
-   {data?.map((item: TeacherResponse, index: any) => {
-    
-  
-     return (
-       <div
-         className="task-card"
-         onClick={() =>
-         {setActiveTask(item.email)
-           setDisplayTeacherModal((prevState) => !prevState)
-           setActiveIndex(index)}}
-         key={index}
-       >
-         <div className="tag">
-           <div className="color-stripe"></div>
-           <div className="tag-content">
-             <div className="index">  {index}</div>
-             <div className="grade">
-               {" "}
-       
-             </div>
-           </div>
-         </div>
+            {/* TEACHER PANEL */}
+            {panelName === "report-teacher" && (
+              <div className="guidance-panel">
+                <div>
+                  {" "}
+                  <h1 className="main-panel-title">Teacher Records</h1>
+                </div>
+                {data?.map((item: TeacherResponse, index: any) => {
+                  return (
+                    <div
+                      className="task-card"
+                      onClick={() => {
+                        setActiveTask(item.email);
+                        setDisplayTeacherModal((prevState) => !prevState);
+                        setActiveIndex(index);
+                      }}
+                      key={index}
+                    >
+                      <div className="tag">
+                        <div className="color-stripe"></div>
+                        <div className="tag-content">
+                          <div className="index"> {index}</div>
+                          <div className="grade"> </div>
+                        </div>
+                      </div>
 
-         <div style={{display:"flex"}} className="card-body">
-           <div className="card-body-name">
-            {item.firstName} {item.lastName}
-            </div>
-           <div className="card-body-email">
-           {item.roles && item.roles.length > 0 ? item.roles[0].role : "Role Not Assigned"}
-           </div>
-           <div className="card-body-email">
-           {item.email}
-           </div>
-         </div>
-      
-       </div>
-     );
-   })}
- </div>}            
- 
- 
- {panelName === "new-referral-contact" &&   <CreatePunishmentPanel
-                      
-                    />}
-            {panelName === "create-assignment" && <ComingSoon title="Create Assignment"/>}
-            {panelName === "create-user" &&  <ComingSoon title="Create User"/>}
-            {panelName === "archvied-records" &&  <ComingSoon title="Archive Records"/>}
-            {panelName === "contact-us" &&  <ContactUsModal setContactUsDisplayModal={setDisplayContactUs} contactUsDisplayModal={displayContactUs}/>}
-            {panelName === "detention" &&  <ComingSoon title="Detention"/>}
-            {panelName === "redeem" &&  <ComingSoon title="Redemption Store"/>}
+                      <div style={{ display: "flex" }} className="card-body">
+                        <div className="card-body-name">
+                          {item.firstName} {item.lastName}
+                        </div>
+                        <div className="card-body-email">
+                          {item.roles && item.roles.length > 0
+                            ? item.roles[0].role
+                            : "Role Not Assigned"}
+                        </div>
+                        <div className="card-body-email">{item.email}</div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
 
-
-
-
-
-
+            {panelName === "new-referral-contact" && <CreatePunishmentPanel />}
+            {panelName === "create-assignment" && <h1>CREATE ASSIGNMENT</h1>}
+            {panelName === "create-user" && <h1>CREATE USER</h1>}
+            {panelName === "archvied-records" && <h1>ARCHIVED RECORD</h1>}
+            {panelName === "contact-us" && <h1>CONTACT US</h1>}
+            {panelName === "detention" && <h1>DETENTION LIST</h1>}
+            {panelName === "redeem" && <h1>REDEEM</h1>}
 
             {panelName === "overview" && (
               <div className="guidance-panel">
@@ -784,7 +624,6 @@ setDisplayModal={setDisplayTeacherModal}
                   <h1 className="main-panel-title">Active Referrals</h1>
                 </div>
                 {data.map((item: GuidanceResponse, index: any) => {
-       
                   return (
                     <div
                       className="task-card"
@@ -805,21 +644,16 @@ setDisplayModal={setDisplayTeacherModal}
 
                       <div className="card-body">
                         <div className="card-body-title">
-                          {   item.referralDescription !== undefined  && item.referralDescription[0]}
+                          {item.referralDescription !== undefined &&
+                            item.referralDescription[0]}
                         </div>
                         <div className="card-body-description">
                           {/* {item?.notesArray[0]?.content} */}
                         </div>
-                        {item.referralDescription && item.referralDescription[0] !== undefined && (
-              categoryBadgeGenerator(item.referralDescription[0])
-            )}
+                        {item.referralDescription &&
+                          item.referralDescription[0] !== undefined &&
+                          categoryBadgeGenerator(item.referralDescription[0])}
                       </div>
-                      <div className="card-body">
-                      <div className="card-body-title">{item.infractionName? "Infraction Name":""}</div>
-                      <div className="card-body-description">
-                          {item.infractionName}
-                        </div>
-                        </div>
                       <div className="card-body">
                         <div className="card-body-title">Created By</div>
                         <div className="card-body-description">
@@ -834,7 +668,6 @@ setDisplayModal={setDisplayTeacherModal}
                         </div>
                         <div
                           onClick={() =>
-      
                             handleStatusChange("CLOSED", item.guidanceId)
                           }
                           className="check-box"
@@ -887,85 +720,81 @@ setDisplayModal={setDisplayTeacherModal}
                 })}
               </div>
             )}
-      
 
             {/* STUDENT PANEL */}
-  { panelName === "report-student" &&  <div className="guidance-panel">
-  <div> <h1 className="main-panel-title">Student Records</h1></div>
-   {data?.map((item: StudentResponse, index: any) => {
-    
-  
-     return (
-       <div
-         className="task-card"
-         onClick={() =>
-         {setActiveTask(item.studentEmail)
-           setDisplayStudentModal((prevState) => !prevState)
-           setActiveIndex(index)}}
-         key={index}
-       >
-         <div className="tag">
-           <div className="color-stripe"></div>
-           <div className="tag-content">
-             <div className="index"> Grade {item.grade}</div>
-             <div className="grade">
-               {" "}
-       
-             </div>
-           </div>
-         </div>
+            {panelName === "report-student" && (
+              <div className="guidance-panel">
+                <div>
+                  {" "}
+                  <h1 className="main-panel-title">Student Records</h1>
+                </div>
+                {data?.map((item: StudentResponse, index: any) => {
+                  return (
+                    <div
+                      className="task-card"
+                      onClick={() => {
+                        setActiveTask(item.studentEmail);
+                        setDisplayStudentModal((prevState) => !prevState);
+                        setActiveIndex(index);
+                      }}
+                      key={index}
+                    >
+                      <div className="tag">
+                        <div className="color-stripe"></div>
+                        <div className="tag-content">
+                          <div className="index"> Grade {item.grade}</div>
+                          <div className="grade"> </div>
+                        </div>
+                      </div>
 
-         <div className="card-body">
-           <div className="card-body-name">
-            {item.firstName} {item.lastName}
-            </div>
-           <div className="card-body-email">
-             {item.studentEmail}
-           </div>
-         </div>
-      
-      
-      
-         <div className="card-actions">
-           <div className="card-action-title">Notes</div>
-           <div
-             className="clock-icon"
-             onClick={() => {
-               setDisplayNotes((prevState) => !prevState); // Toggle the state
-               setActiveTask(item.studentIdNumber);             }}
-           >
-             <NoteAddIcon
-               sx={{ fontSize: "20px", fontWeight: "bold" }}
-             />
-           </div>
-         </div>
-         <div className="card-actions">
-           <div className="card-action-title">Resources</div>
-           <div
-             className="clock-icon"
-            //  onClick={() => {
-            //    setDisplayResources((prevState) => !prevState); // Toggle the state
-            //    setActiveTask(item.studentIdNumber);
-            //  }}
-           >
-             <SendIcon sx={{ fontSize: "20px", fontWeight: "bold" }} />
-           </div>
-         </div>
-       </div>
-     );
-   })}
- </div>}
+                      <div className="card-body">
+                        <div className="card-body-name">
+                          {item.firstName} {item.lastName}
+                        </div>
+                        <div className="card-body-email">
+                          {item.studentEmail}
+                        </div>
+                      </div>
 
- </div>
-
-
-
-  
-
-
+                      <div className="card-actions">
+                        <div className="card-action-title">Notes</div>
+                        <div
+                          className="clock-icon"
+                          onClick={() => {
+                            setDisplayNotes((prevState) => !prevState); // Toggle the state
+                            setActiveTask(item.studentIdNumber);
+                          }}
+                        >
+                          <NoteAddIcon
+                            sx={{ fontSize: "20px", fontWeight: "bold" }}
+                          />
+                        </div>
+                      </div>
+                      <div className="card-actions">
+                        <div className="card-action-title">Resources</div>
+                        <div
+                          className="clock-icon"
+                          //  onClick={() => {
+                          //    setDisplayResources((prevState) => !prevState); // Toggle the state
+                          //    setActiveTask(item.studentIdNumber);
+                          //  }}
+                        >
+                          <SendIcon
+                            sx={{ fontSize: "20px", fontWeight: "bold" }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
 
           {/* NOTES AND DETAILS SECTION */}
-          <div className={`secondary-panel ${panelName !== "overview" && "hide"}`}>
+          <div
+            className={`secondary-panel ${panelName !== "overview" && "hide"}`}
+          >
             <h1 className="main-panel-title">Threads</h1>
             {activeIndex != null && activeIndex >= 0 && (
               <div className="details-container">

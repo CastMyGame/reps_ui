@@ -40,7 +40,7 @@ function getStyles(name, studentNames, theme) {
   };
 }
 
-const CreatePunishmentPanel = ({ data = [] }) => {
+const CreatePunishmentPanel = ({ setPanelName, data = [] }) => {
   const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
   });
@@ -164,8 +164,6 @@ const CreatePunishmentPanel = ({ data = [] }) => {
     console.log("std names", studentNames);
     studentNames.map((student) => {
       const studentPayload = {
-        firstName: "Placeholder 1",
-        lastName: "Placeholder 2",
         studentEmail: student.value,
         teacherEmail: teacherEmailSelected,
         infractionPeriod: infractionPeriodSelected,

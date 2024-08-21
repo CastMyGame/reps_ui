@@ -48,7 +48,7 @@ function getStyles(
   };
 }
 
-const CreatePunishmentPanel = ({ data = [] }) => {
+const CreateOfficeReferralPanel = ({ data = [] }) => {
   const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
   });
@@ -752,4 +752,4 @@ const CreatePunishmentPanel = ({ data = [] }) => {
     </>
   );
 };
-export default CreatePunishmentPanel;
+export default CreateOfficeReferralPanel;

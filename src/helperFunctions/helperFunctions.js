@@ -1,5 +1,6 @@
 import axios from "axios";
 import { baseUrl } from "../utils/jsonData";
+import { CLERICAL, BEHAVIORAL } from "src/types/constants";
 
 export const getCurrentWeekOfYear = () => {
   const today = new Date();
@@ -124,6 +125,20 @@ export const dateCreateFormat = (inputDate) => {
   const options = { year: "numeric", month: "2-digit", day: "2-digit" };
   return date.toLocaleDateString("en-US", options);
 };
+
+export const categoryBadgeGenerator = (infractionName) => {
+    if (CLERICAL.includes(infractionName)) {
+      return (
+        <div style={{ backgroundColor: "gold" }} className="cat-badge">
+          Clerical
+        </div>
+      );
+    }
+
+    if (BEHAVIORAL.includes(infractionName)) {
+      return <div className="cat-badge">Behavioral</div>;
+    }
+  };
 
 export const getStudentList = () => {
   const headers = {
