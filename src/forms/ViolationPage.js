@@ -15,12 +15,15 @@ export default function ViolationPage(props) {
   useEffect(() => {
     setMapIndex(props.data.mapIndex);
     console.log(mapIndex);
+    console.log(props.data.officeReferralId);
   }, []);
 
   useEffect(() => {
     const headers = {
       Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
     };
+
+    let theName = props.data.infractionName || "Office Referral";
 
     console.log("ENJPY", props.data);
 
@@ -30,7 +33,7 @@ export default function ViolationPage(props) {
       .then((response) => {
         const essay = response.data.filter(
           (essay) =>
-            essay.infractionName === props.data.infractionName &&
+            essay.infractionName === theName &&
             essay.level == parseInt(props.data.infractionLevel)
         );
         setEssay(essay[0]);
@@ -51,10 +54,10 @@ export default function ViolationPage(props) {
         Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
       };
       let url = "";
-      if (props.data.officeReferralId == null) {
+      if (props.data.officeReferralId === undefined) {
         url = `${baseUrl}/punish/v1/${props.data.punishmentId}/index/${mapIndex}`;
       } else {
-        url = `${baseUrl}/punish/v1/${props.data.officeReferralId}/index/${mapIndex}`;
+        url = `${baseUrl}/officeReferral/v1/${props.data.officeReferralId}/index/${mapIndex}`;
       }
 
       axios

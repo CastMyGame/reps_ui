@@ -174,8 +174,7 @@ const StudentOpenPunishmentPanel = ({
                           : "Click to view assignment"
                       }
                     >
-                      {x.referralCode.codeName ===
-                      "Failure to Complete Work" ? (
+                      {x.referralCode === null ? (
                         <AssignmentIcon />
                       ) : x.status === "PENDING" ? (
                         <Typography color="orange">Pending</Typography>
@@ -192,10 +191,10 @@ const StudentOpenPunishmentPanel = ({
                     </Tooltip>
                   </TableCell>
                   <TableCell style={{ fontSize: "1.5rem" }}>
-                    {x.referralCode.codeName}
+                    Office Referral
                   </TableCell>
                   <TableCell style={{ fontSize: "1.5rem" }}>
-                    {x.infractionDescription[0]}
+                    {x.referralDescription[0]}
                   </TableCell>
                   <TableCell style={{ fontSize: "1.5rem" }}>
                     {x.infractionLevel}

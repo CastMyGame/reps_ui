@@ -396,32 +396,30 @@ const LevelThreePanel = ({ roleType }) => {
                       <TableCell>
                         <div className="level-three-button-container">
                           {x.punishment.infractionLevel === "3" ? (
-                            <>
-                              <button
-                                className="level-three-buttons"
-                                onClick={() => {
-                                  setOpenModal({
-                                    display: true,
-                                    message:
-                                      "Please Review Student Answers, Accept and Reject buttons are enabled when text is entered in comment section either approving or explaining the rejection",
-                                    buttonType: "close",
-                                    data: x,
-                                  });
-                                  setDeletePayload(x);
-                                }}
-                              >
-                                {loadingPunishmentId.id ===
-                                  x.punishment.punishmentId &&
-                                loadingPunishmentId.buttonType === "close" ? (
-                                  <CircularProgress
-                                    style={{ height: "20px", width: "20px" }}
-                                    color="secondary"
-                                  />
-                                ) : (
-                                  <div>Review</div>
-                                )}
-                              </button>
-                            </>
+                            <button
+                              className="level-three-buttons"
+                              onClick={() => {
+                                setOpenModal({
+                                  display: true,
+                                  message:
+                                    "Please Review Student Answers, Accept and Reject buttons are enabled when text is entered in comment section either approving or explaining the rejection",
+                                  buttonType: "close",
+                                  data: x,
+                                });
+                                setDeletePayload(x);
+                              }}
+                            >
+                              {loadingPunishmentId.id ===
+                                x.punishment.punishmentId &&
+                              loadingPunishmentId.buttonType === "close" ? (
+                                <CircularProgress
+                                  style={{ height: "20px", width: "20px" }}
+                                  color="secondary"
+                                />
+                              ) : (
+                                <div>Review</div>
+                              )}
+                            </button>
                           ) : (
                             <button
                               style={{ height: "45px", width: "150px" }}

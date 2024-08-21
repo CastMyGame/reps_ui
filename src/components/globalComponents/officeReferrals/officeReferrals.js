@@ -93,7 +93,6 @@ const OfficeReferrals = ({ data = [] }) => {
     setTextareaValue(event.target.value);
   };
 
-
   return (
     <>
       {openModal.display && (
@@ -102,7 +101,7 @@ const OfficeReferrals = ({ data = [] }) => {
             <div className="modal-header">
               <h3>{openModal.message}</h3>
               <div className="answer-container">
-                {openModal.data.officeReferral.infractionDescription.map(
+                {openModal.data.referralDescription.map(
                   (item, index) => {
                     if (index > 1) {
                       const match = item.match(
@@ -252,61 +251,63 @@ const OfficeReferrals = ({ data = [] }) => {
                     {x.teacherEmail}
                   </TableCell>
                   <TableCell style={{ width: "30%", fontSize: 14 }}>
-                      <>
-                        <button
+                    <>
+                      <button
+                        style={{
+                          height: "60px",
+                          width: "180px",
+                          backgroundColor: "green",
+                        }}
+                        onClick={() => {
+                          setOpenModal({
+                            display: true,
+                            message:
+                              "You are attempting to remove the restorative assignment and close out a referral. If this was not your intent click cancel. If this is your intent, provide a brief explanation for why the restorative assignment is being removed and click Close",
+                            buttonType: "close",
+                            data: x,
+                          });
+                          setDeletePayload(x);
+                        }}
+                      >
+                        <p
                           style={{
-                            height: "60px",
-                            width: "180px",
-                            backgroundColor: "green",
-                          }}
-                          onClick={() => {
-                            setOpenModal({
-                              display: true,
-                              message:
-                                "You are attempting to remove the restorative assignment and close out a referral. If this was not your intent click cancel. If this is your intent, provide a brief explanation for why the restorative assignment is being removed and click Close",
-                              buttonType: "close",
-                            });
-                            setDeletePayload(x);
+                            marginBottom: "5px",
+                            marginTop: "-2%",
                           }}
                         >
-                          <p
-                            style={{
-                              marginBottom: "5px",
-                              marginTop: "-2%",
-                            }}
-                          >
-                            Close Referral
-                          </p>
-                            <CheckBoxIcon />
-                        </button>
+                          Review Answers
+                        </p>
+                        <CheckBoxIcon />
+                      </button>
 
-                        <button
+                      <button
+                        style={{
+                          height: "60px",
+                          width: "180px",
+                          backgroundColor: "red",
+                        }}
+                        onClick={() => {
+                          setOpenModal({
+                            display: true,
+                            message:
+                              "You are attempting to delete the record of this referral. If you were attempting to remove the restorative assignment and close out the referral please click cancel and hit the “Close Referral” button. If you still want to delete the record of this referral, provide a brief explanation for this action and click Delete Referral.",
+                            buttonType: "delete",
+                            data: x,
+                          });
+                          setDeletePayload(x);
+                        }}
+                      >
+                        <p
                           style={{
-                            height: "60px",
-                            width: "180px",
-                            backgroundColor: "red",
-                          }}
-                          onClick={() => {
-                            setOpenModal({
-                              display: true,
-                              message:
-                                "You are attempting to delete the record of this referral. If you were attempting to remove the restorative assignment and close out the referral please click cancel and hit the “Close Referral” button. If you still want to delete the record of this referral, provide a brief explanation for this action and click Delete Referral.",
-                              buttonType: "delete",
-                            });
-                            setDeletePayload(x);
+                            marginBottom: "5px",
+                            marginTop: "-2%",
                           }}
                         >
-                          <p
-                            style={{
-                              marginBottom: "5px",
-                              marginTop: "-2%",
-                            }}
-                          >
-                            Delete Referral
-                            </p>
-                            <DeleteForeverIcon />
-                        </button>
-                      </>
+                          Delete Referral
+                        </p>
+                        <DeleteForeverIcon />
+                      </button>
+                    </>
                   </TableCell>
                 </TableRow>
               ))
