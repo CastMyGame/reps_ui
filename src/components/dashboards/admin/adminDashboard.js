@@ -17,9 +17,7 @@ import { ContactUsModal } from "src/security/contactUsModal";
 import { NavigationAdmin } from "src/components/landing/navigation-admin";
 import { handleLogout } from "src/utils/helperFunctions";
 import SpendPage from "src/components/globalComponents/spend-page/spend-page";
-import CircularProgress from "@mui/material/CircularProgress";
-import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
-import CheckBoxIcon from "@mui/icons-material/CheckBox";
+import CreateOfficeReferralPanel from "src/components/globalComponents/referrals/createOfficeReferral";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 import {
@@ -159,12 +157,12 @@ const AdminDashboard = () => {
                     data={adminDto}
                   />
                 )}
-                {/* {panelName === "createOfficeRef" && (
-                    <CreateOfficeReferral
+                {panelName === "createOfficeReferral" && (
+                    <CreateOfficeReferralPanel
                       setPanelName={setPanelName}
-                      data={data}
+                      data={adminDto}
                     />
-                  )} */}
+                  )}
                 {panelName === "createNewStudent" && <CreateNewStudentPanel />}
                 {panelName === "userManagement" && <AddTeacherForm />}
                 {panelName === "archived" && (
