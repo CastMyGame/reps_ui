@@ -1,4 +1,4 @@
-import React, { SetStateAction, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { baseUrl } from "../../../utils/jsonData";
 import Button from "@mui/material/Button";
@@ -11,7 +11,6 @@ import {
   CircularProgress,
   FormControlLabel,
   FormGroup,
-  Theme,
 } from "@mui/material";
 import Container from "@mui/material/Container";
 import Snackbar from "@mui/material/Snackbar";
@@ -35,11 +34,7 @@ const MenuProps = {
   },
 };
 
-function getStyles(
-  name: { value: string; label: string },
-  studentNames: string | any[],
-  theme: Theme
-) {
+function getStyles(name, studentNames, theme) {
   return {
     fontWeight:
       studentNames.indexOf(name.value) === -1
@@ -56,8 +51,7 @@ const CreateOfficeReferralPanel = ({ data = [] }) => {
   const [listOfStudents, setListOfStudents] = useState([]);
   const [infractionTypeSelected, setInfractionTypeSelected] = useState("");
   const [infractionPeriodSelected, setInfractionPeriodSelected] = useState("");
-  const [teacherEmailSelected, setTeacherEmailSelected] =
-    useState<SetStateAction<string>>("");
+  const [teacherEmailSelected, setTeacherEmailSelected] = useState("");
   const [infractionDescriptionSelected, setInfractionDescriptionSelected] =
     useState("");
   const [toast, setToast] = useState({ display: false, message: "" });
@@ -78,11 +72,6 @@ const CreateOfficeReferralPanel = ({ data = [] }) => {
   }, [storageEmail]);
 
   const [currency, setCurrency] = useState(0);
-
-  const [isGuidance, setIsGuidance] = useState({
-    isGuidanceBoolean: false,
-    guidanceDescription: "",
-  });
 
   const defaultTheme = createTheme();
 
@@ -105,21 +94,13 @@ const CreateOfficeReferralPanel = ({ data = [] }) => {
     { value: "period9", label: "Period 9" },
   ];
 
-  const infractionSelectOptions = [
-    { value: "Tardy", label: "Tardy" },
+  const referralSelectOptions = [
+    { value: "100 - Fighting", label: "100 - Fighting" },
+    { value: "200 - Assault", label: "200 - Assault" },
     {
-      value: "Unauthorized Device/Cell Phone",
-      label: "Unauthorized Device/Cell Phone",
+      value: "300 - Indecent Exposure",
+      label: "300 - Indecent Exposure",
     },
-    { value: "Disruptive Behavior", label: "Disruptive Behavior" },
-    { value: "Horseplay", label: "Horseplay" },
-    { value: "Dress Code", label: "Dress Code" },
-    {
-      value: "Positive Behavior Shout Out!",
-      label: "Positive Behavior Shout Out!",
-    },
-    { value: "Behavioral Concern", label: "Behavioral Concern" },
-    { value: "Failure to Complete Work", label: "Failure to Complete Work" },
   ];
 
   const descriptions = {
@@ -129,12 +110,7 @@ const CreateOfficeReferralPanel = ({ data = [] }) => {
     "Positive Behavior Shout Out!": "",
   };
 
-  const titles = {
-    "Failure to Complete Work": "Failure to Complete Work",
-    "Positive Behavior Shout Out!": "Positive Behavior Shout Out!",
-  };
-
-  const getDescription = (selectedOption: string) => {
+  const getDescription = (selectedOption) => {
     return (
       descriptions[selectedOption] ||
       "Description of Behavior/Event. This will be sent directly to the student and guardian so be sure to provide accurate and objective facts."
@@ -168,7 +144,6 @@ const CreateOfficeReferralPanel = ({ data = [] }) => {
     setInfractionPeriodSelected(null);
     setInfractionTypeSelected(null);
     setInfractionDescriptionSelected("");
-    setIsGuidance({ isGuidanceBoolean: false, guidanceDescription: "" });
   };
 
   //Mapping selected students pushing indivdual payloads to post
@@ -177,18 +152,19 @@ const CreateOfficeReferralPanel = ({ data = [] }) => {
     setLoading(true);
     setOpenModal({ display: false, message: "" });
     const payloadContent = [];
-    console.log("std names", studentNames);
     studentNames.map((student) => {
+      const referralCode = {
+        codeKey: infractionTypeSelected.split("-")[0],
+        codeName: infractionTypeSelected.split("-")[1],
+      };
+
       const studentPayload = {
-        firstName: "Placeholder 1",
-        lastName: "Placeholder 2",
         studentEmail: student.value,
         teacherEmail: teacherEmailSelected,
-        infractionPeriod: infractionPeriodSelected,
-        infractionName: infractionTypeSelected,
-        infractionDescription: infractionDescriptionSelected,
+        classPeriod: infractionPeriodSelected,
+        referralCode: referralCode,
+        referralDescription: [infractionDescriptionSelected],
         currency: currency,
-        guidanceDescription: isGuidance.guidanceDescription || "",
       };
       payloadContent.push(studentPayload);
       return payloadContent;
@@ -197,7 +173,7 @@ const CreateOfficeReferralPanel = ({ data = [] }) => {
     const payload = payloadContent;
 
     axios
-      .post(`${baseUrl}/punish/v1/startPunish/formList`, payload, {
+      .post(`${baseUrl}/officeReferral/v1/startPunish/adminReferral`, payload, {
         headers: headers,
       })
       .then(function (res) {
@@ -265,21 +241,6 @@ const CreateOfficeReferralPanel = ({ data = [] }) => {
     data.teacher.currency -
     currency * (studentNames.length ? studentNames.length : 0);
 
-  const handleGuidanceChange = (event) => {
-    const { name, value } = event.target;
-    setIsGuidance((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
-  };
-
-  const handleGuidanceCheckboxChange = (event) => {
-    const { checked } = event.target;
-    setIsGuidance((prevState) => ({
-      ...prevState,
-      isGuidanceBoolean: checked,
-    }));
-  };
 
   return (
     <>
@@ -456,7 +417,7 @@ const CreateOfficeReferralPanel = ({ data = [] }) => {
                     style={{ width: "50%", marginLeft: "10px", fontSize: 18 }}
                   >
                     <InputLabel id="infractionType" style={{ fontSize: 24 }}>
-                      Infraction Type/Positive Shoutout
+                      Infraction Type
                     </InputLabel>
 
                     <Select
@@ -490,7 +451,7 @@ const CreateOfficeReferralPanel = ({ data = [] }) => {
                       }}
                       MenuProps={MenuProps}
                     >
-                      {infractionSelectOptions.map((name) => (
+                      {referralSelectOptions.map((name) => (
                         <MenuItem
                           key={name.value}
                           value={name.value}
@@ -511,90 +472,6 @@ const CreateOfficeReferralPanel = ({ data = [] }) => {
                       ? getDescription(infractionTypeSelected)
                       : "Description of Behavior/Event. This will be sent directly to the student and guardian so be sure to provide accurate and objective facts as well as do NOT include the names of any other students."}
                   </p>
-                  <div>
-                    <div className="guidance-box">
-                      <FormGroup>
-                        <FormControlLabel
-                          style={{ color: "black" }}
-                          componentsProps={{ typography: { variant: "h4" } }}
-                          value="end"
-                          labelPlacement="end"
-                          control={
-                            <Checkbox
-                              color="primary"
-                              checked={isGuidance.isGuidanceBoolean}
-                              sx={{ "& .MuiSvgIcon-root": { fontSize: 28 } }}
-                              onChange={handleGuidanceCheckboxChange}
-                              name="isGuidanceBoolean"
-                            />
-                          }
-                          label="Create Guidance Referral"
-                        />
-                        {isGuidance.isGuidanceBoolean && (
-                          <h4>Description goes here</h4>
-                        )}
-                      </FormGroup>
-                    </div>
-                    {infractionTypeSelected ===
-                      "Positive Behavior Shout Out!" && (
-                      <div className="points-container">
-                        <div className="point-field">
-                          <div className="wallet-after">
-                            <p>
-                              {" "}
-                              Wallet after shout out:{" "}
-                              {difference ? difference : 0}
-                            </p>
-                          </div>
-                          <TextField
-                            type="numeric"
-                            margin="normal"
-                            inputProps={{ style: { fontSize: 15 }, min: 0 }} // font size of input text
-                            className="points-input"
-                            required
-                            onChange={handleCurrencyChange}
-                            id="currency"
-                            placeholder="Enter Amount"
-                            name="currency"
-                            autoFocus
-                            value={currency}
-                          />
-                        </div>
-                        <div
-                          style={{
-                            display: "flex",
-                            flexDirection: "column",
-                            marginTop: "1%",
-                          }}
-                          className="points-arrow"
-                        >
-                          <KeyboardDoubleArrowUpIcon
-                            onClick={() => setCurrency((prev) => prev + 1)}
-                            sx={{ fontSize: 40 }}
-                          />
-                          <KeyboardDoubleArrowDownIcon
-                            onClick={() =>
-                              setCurrency((prev) =>
-                                prev > 0 ? prev - 1 : prev
-                              )
-                            }
-                            sx={{ fontSize: 40 }}
-                          />
-                        </div>
-                        <div className="shout-message">
-                          <p>
-                            Thank you for celebrating the positive behavior of a
-                            student. Please include a description of the
-                            students behavior below. Refrain from using any
-                            other student’s name in this description unless they
-                            were also involved in what caused this shout out.
-                            Remember you can not give away more currency than
-                            you have in your wallet and it does not replenish!
-                          </p>
-                        </div>
-                      </div>
-                    )}
-                  </div>
                 </div>
                 <div>
                   <TextField
@@ -652,18 +529,6 @@ const CreateOfficeReferralPanel = ({ data = [] }) => {
                     }}
                   />
                 </div>
-                {isGuidance.isGuidanceBoolean && (
-                  <TextField
-                    margin="normal"
-                    required
-                    fullWidth
-                    id="guidanceDescription"
-                    label="Brief Guidance Description"
-                    name="guidanceDescription"
-                    value={isGuidance.guidanceDescription}
-                    onChange={handleGuidanceChange}
-                  />
-                )}
                 {/* <br/> */}
 
                 <div

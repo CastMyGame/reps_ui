@@ -42,7 +42,7 @@ export const NavigationAdmin = (props) => {
                   )
                 }
               >
-                Parent Contact
+                Referrals
               </div>
               <div
                 style={{
@@ -55,13 +55,19 @@ export const NavigationAdmin = (props) => {
                   onClick={() => dropdownHandler("createPunishment")}
                   className="item page-scroll"
                 >
-                  New Referral/Shout Out
+                  New Teacher Referral/Shout Out
                 </div>
                 <div
                   onClick={() => dropdownHandler("punishment")}
                   className="item page-scroll"
                 >
                   Existing Referrals/Shout Outs
+                </div>
+                <div
+                  onClick={() => dropdownHandler("createOfficeReferral")}
+                  className="item page-scroll"
+                >
+                  New Office Referral
                 </div>
               </div>
             </li>
