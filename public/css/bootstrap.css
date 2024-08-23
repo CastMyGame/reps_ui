@@ -239,7 +239,10 @@ th {
     page-break-after: avoid;
   }
   .navbar {
-    display: none;
+    display: block;
+    max-height: 15vh;
+    font-size: 30px;
+    font-size: 3.5vw;
   }
   .btn > .caret,
   .dropup > .btn > .caret {
@@ -1587,9 +1590,34 @@ pre code {
   margin-right: auto;
   margin-left: auto;
 }
-@media (min-width: 768px) {
-  .container {
-    width: 750px;
+@media only screen and (min-width: 768px) {
+  /* Hide the burger! */
+  .hamburger {
+      display: none;
+    }
+    .HamburgerMenu {
+      display: none;
+    }
+    /* Show all the nav bar content */
+  .navbar {
+    display: inline-block;
+  }
+}
+@media only screen and (max-width: 767px) {
+
+  /* Hide the burger! */
+  .hamburger {
+    display: block;
+  }
+
+  .navbar {
+    display: none;
+  }
+
+  .HamburgerMenu {
+    position: absolute;
+    left: 2%;
+    cursor: pointer;
   }
 }
 @media (min-width: 992px) {
