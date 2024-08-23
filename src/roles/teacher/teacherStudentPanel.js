@@ -156,13 +156,11 @@ const TeacherStudentPanel = ({ setPanelName, data = [] }) => {
             top: 300,
             left: 0,
             width: "100%",
-            height: "25%",
           }}
           className="modal-overlay"
         >
           <div
             style={{
-              height: "80%",
               width: "80%",
               position: "relative",
               backgroundColor: "white", // Adjust background color as needed
@@ -212,20 +210,27 @@ const TeacherStudentPanel = ({ setPanelName, data = [] }) => {
         >
           <div
             style={{
-              height: "80%",
+              maxHeight: "80rem",
               width: "80%",
               position: "relative",
               backgroundColor: "white", // Adjust background color as needed
               padding: "20px", // Adjust padding as needed
               borderRadius: "8px", // Add border radius as needed
               boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)", // Add box shadow as needed
+              overflowY: "hidden",
             }}
             className="modal-content"
           >
             <div className="modal-header">
-              <div style={{ display: "flex", flexDirection: "row" }}>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  maxHeight: "20rem",
+                }}
+              >
                 <div className="box-left">
-                  <div className="student-info-box">
+                  <div className="student-info-box" style={{}}>
                     <div
                       style={{ display: "flex", backgroundColor: "" }}
                       className="icon"
