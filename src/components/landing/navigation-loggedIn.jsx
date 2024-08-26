@@ -1,11 +1,10 @@
 import React from "react";
 import "./landing.css";
 import { GiHamburgerMenu } from "react-icons/gi";
+import Hamburger from "../globalComponents/components/generic-components/hamburger";
 
 
 export const NavigationLoggedIn = (props) => {
-
-  const Hamburger = <GiHamburgerMenu className="HamburgerMenu" size="30px" color="black" />
 
 
   const dropdownHandler = (panel) =>{
@@ -21,9 +20,7 @@ export const NavigationLoggedIn = (props) => {
         }}>
           
         <div style={{display:"flex"}}className="navbar-header">
-          <div className="hamburger">
-            {Hamburger}
-          </div>
+            <Hamburger />
       
           <a className="navbar-brand page-scroll" href="#page-top" style={{ fontSize: 16}}>
             Welcome {sessionStorage.getItem("userName")}!
