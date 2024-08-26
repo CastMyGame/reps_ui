@@ -4,14 +4,39 @@ import Hamburger from "../globalComponents/components/generic-components/hamburg
 
 
 const menuData = [
-  {item:'OVERVIEW', subItems:null},
-  {item:'REFERRAL',subItems:['New Teacher Referral/Shout Out','Existing Referrals/Shout Outs', 'New Office Managed Referral']}, 
-  {item:'STUDENTS', subItems:["School Roster","Spot Students"]},
-  {item:'MY TASK', subItems:null},
- {item:'CONTACT US',subItems:null}
-  
-
-]
+  {
+    item: 'OVERVIEW',
+    panel: 'overview',
+    subItems: null
+  },
+  {
+    item: 'REFERRAL',
+    panel: null,
+    subItems: [
+      { title: 'New Teacher Referral/Shout Out', panel: "createPunishment" },
+      { title: 'Existing Referrals/Shout Outs', panel: 'punishment' },
+      { title: 'New Office Managed Referral', panel: 'createOfficeReferral' }
+    ]
+  },
+  {
+    item: 'STUDENTS',
+    panel: null,
+    subItems: [
+      { title: "School Roster", panel: 'student' },
+      { title: "Spot Students", panel: 'spotter' }
+    ]
+  },
+  {
+    item: 'MY TASK',
+    panel: 'levelThree',
+    subItems: null
+  },
+  {
+    item: 'CONTACT US',
+    panel: 'contact',
+    subItems: null
+  }
+];
 
 
 
@@ -32,7 +57,7 @@ export const NavigationLoggedIn = (props) => {
         }}>
           
         <div style={{display:"flex"}}className="navbar-header">
-           <div className="hamburger-container"><Hamburger data={menuData} /></div>
+           <div className="hamburger-container"><Hamburger setPanelName={ props.setPanelName} data={menuData} setModalType={props.setModalType} /></div>
       
           <a className="navbar-brand page-scroll" href="#page-top" style={{ fontSize: 16}}>
             Welcome {sessionStorage.getItem("userName")}!
