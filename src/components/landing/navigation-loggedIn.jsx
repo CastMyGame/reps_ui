@@ -1,10 +1,22 @@
 import React from "react";
 import "./landing.css";
-import { GiHamburgerMenu } from "react-icons/gi";
 import Hamburger from "../globalComponents/components/generic-components/hamburger";
 
 
+const menuData = [
+  {item:'OVERVIEW', subItems:null},
+  {item:'REFERRAL',subItems:['New Teacher Referral/Shout Out','Existing Referrals/Shout Outs', 'New Office Managed Referral']}, 
+  {item:'STUDENTS', subItems:["School Roster","Spot Students"]},
+  {item:'MY TASK', subItems:null},
+ {item:'CONTACT US',subItems:null}
+  
+
+]
+
+
+
 export const NavigationLoggedIn = (props) => {
+
 
 
   const dropdownHandler = (panel) =>{
@@ -20,7 +32,7 @@ export const NavigationLoggedIn = (props) => {
         }}>
           
         <div style={{display:"flex"}}className="navbar-header">
-            <Hamburger />
+           <div className="hamburger-container"><Hamburger data={menuData} /></div>
       
           <a className="navbar-brand page-scroll" href="#page-top" style={{ fontSize: 16}}>
             Welcome {sessionStorage.getItem("userName")}!

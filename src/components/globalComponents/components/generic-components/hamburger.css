@@ -1,17 +1,28 @@
-.hamburger {
-    width: 2rem;
-    height: 2rem;
-    display: none;
-    justify-content: space-around;
-    flex-flow: column nowrap;
-    z-index: 10;
-}
 
-.burger {
-    width: 2rem;
-    height: 0.25rem;
-    border-radius: 10px;
-    background-color: black;
-    transform-origin: 1px;
-    transition: all 0.3s linear;
-}
+
+.hamburger {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .burger {
+    padding: 10px;
+    background-color: #333;
+    color: white;
+    cursor: pointer;
+    border-bottom: 1px solid #444;
+  }
+  
+  .sub-menu {
+    padding-left: 20px;
+    background-color: #444;
+  }
+
+
+  
+  .sub-item {
+    padding: 5px;
+    color: #ddd;
+    cursor: pointer;
+  }
