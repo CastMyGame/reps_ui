@@ -1,11 +1,7 @@
 import React from "react";
 import "./landing.css";
-import { GiHamburgerMenu } from "react-icons/gi";
 
 export const NavigationAdmin = (props) => {
-
-  const Hamburger = <GiHamburgerMenu className="HamburgerMenu" size="30px" color="black" />
-
   const dropdownHandler = (panel) => {
     props.setPanelName(panel);
     props.setDropdown("");
@@ -13,23 +9,31 @@ export const NavigationAdmin = (props) => {
 
   return (
     <nav id="menu" className="navbar navbar-default navbar-fixed-top">
-      <div className="container" style={{
+      <div
+        className="container"
+        style={{
           width: "100%",
-          display: "inline-block"
-        }}>
-        <div style={{ display: "flex" }} className="navbar-header">
-
-          <div className="hamburger">
-            {Hamburger}
-          </div>
-          <a
-            className="navbar-brand page-scroll"
-            href="#page-top"
-            style={{ fontSize: 16 }}
-          >
-            Welcome {sessionStorage.getItem("userName")}!
-          </a>
-        </div>
+          display: "inline-block",
+        }}
+      >
+        <button
+          type="button"
+          className="navbar-toggle collapsed"
+          data-toggle="collapse"
+          data-target="#bs-example-navbar-collapse-1"
+        >
+          {" "}
+          <span className="sr-only">Toggle navigation</span>{" "}
+          <span className="icon-bar"></span> <span className="icon-bar"></span>{" "}
+          <span className="icon-bar"></span>{" "}
+        </button>
+        <a
+          className="navbar-brand page-scroll"
+          href="#page-top"
+          style={{ fontSize: 16 }}
+        >
+          Welcome {sessionStorage.getItem("userName")}!
+        </a>
 
         <div
           className="collapse navbar-collapse"
@@ -46,7 +50,7 @@ export const NavigationAdmin = (props) => {
             </li>
             <li>
               <div
-              className="page-scroll"
+                className="page-scroll"
                 onClick={() =>
                   props.setDropdown((prev) =>
                     prev === "referral" ? "" : "referral"
@@ -84,7 +88,7 @@ export const NavigationAdmin = (props) => {
             </li>
             <li>
               <div
-              className="page-scroll"
+                className="page-scroll"
                 onClick={() =>
                   props.setDropdown((prev) =>
                     prev === "reports" ? "" : "reports"
@@ -116,7 +120,7 @@ export const NavigationAdmin = (props) => {
             </li>
             <li>
               <div
-              className="page-scroll"
+                className="page-scroll"
                 onClick={() =>
                   props.setDropdown((prev) => (prev === "tools" ? "" : "tools"))
                 }
@@ -170,17 +174,20 @@ export const NavigationAdmin = (props) => {
               </div>
             </li>
             <li>
-              <div 
-              className="page-scroll"
-              onClick={()=>{
-                props.setPanelName("spendPoints")
-              }}
+              <div
+                className="page-scroll"
+                onClick={() => {
+                  props.setPanelName("spendPoints");
+                }}
               >
-              Store Redeem
+                Store Redeem
               </div>
             </li>
             <li>
-              <button className="login-btn page-scroll" onClick={() => props.setLogin()}>
+              <button
+                className="login-btn page-scroll"
+                onClick={() => props.setLogin()}
+              >
                 Logout
               </button>
             </li>
