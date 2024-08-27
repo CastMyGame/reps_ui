@@ -1,5 +1,6 @@
 import React from "react";
 import "./landing.css";
+import "../globalComponents/components/generic-components/hamburger.css";
 import Hamburger from "../globalComponents/components/generic-components/hamburger";
 
 
