@@ -1,37 +1,40 @@
 import React from "react";
 import "./landing.css";
-import { GiHamburgerMenu } from "react-icons/gi";
-
 
 export const NavigationLoggedIn = (props) => {
+  const dropdownHandler = (panel) => {
+    props.setPanelName(panel);
+    props.setDropdown("");
+  };
 
-  const Hamburger = <GiHamburgerMenu className="HamburgerMenu" size="30px" color="black" />
-
-
-  const dropdownHandler = (panel) =>{
-    props.setPanelName(panel)
-    props.setDropdown("")
-  }
-  
   return (
     <nav id="menu" className="navbar navbar-default navbar-fixed-top">
-      <div className="container" style={{
+      <div
+        className="container"
+        style={{
           width: "100%",
-          display: "inline-block"
-        }}>
-          
-        <div style={{display:"flex"}}className="navbar-header">
-          <div className="hamburger">
-            {Hamburger}
-          </div>
-      
-          <a className="navbar-brand page-scroll" href="#page-top" style={{ fontSize: 16}}>
-            Welcome {sessionStorage.getItem("userName")}!
-          </a>
-    
+          display: "inline-block",
+        }}
+      >
+        <button
+          type="button"
+          className="navbar-toggle collapsed"
+          data-toggle="collapse"
+          data-target="#bs-example-navbar-collapse-1"
+        >
+          {" "}
+          <span className="sr-only">Toggle navigation</span>{" "}
+          <span className="icon-bar"></span> <span className="icon-bar"></span>{" "}
+          <span className="icon-bar"></span>{" "}
+        </button>
 
-   
-        </div>
+        <a
+          className="navbar-brand page-scroll"
+          href="#page-top"
+          style={{ fontSize: 16 }}
+        >
+          Welcome {sessionStorage.getItem("userName")}!
+        </a>
 
         <div
           className="collapse navbar-collapse"
@@ -39,94 +42,132 @@ export const NavigationLoggedIn = (props) => {
         >
           <ul className="nav navbar-nav navbar-right">
             <li>
-              <div 
-              onClick={()=>dropdownHandler("overview")}
-              className="page-scroll">
+              <div
+                onClick={() => dropdownHandler("overview")}
+                className="page-scroll"
+              >
                 Overview
               </div>
             </li>
             <li>
-            <div
-            className="page-scroll"
-             onClick={() => props.setDropdown(prev => prev === "referral" ? "" : "referral")} >
+              <div
+                className="page-scroll"
+                onClick={() =>
+                  props.setDropdown((prev) =>
+                    prev === "referral" ? "" : "referral"
+                  )
+                }
+              >
                 Referrals
-            </div>
-            <div style={{display: props.isDropdownOpen === "referral"?"block":"none"}} class="feature-menu-dropdown">
-  <div 
-  onClick={()=>dropdownHandler("createPunishment")}
-  className="item page-scroll">New Teacher Referral/Shout Out</div>
-  <div 
-  onClick={()=>dropdownHandler("punishment")}
-  className="item page-scroll">Existing Referrals/Shout Outs</div>
-<div 
-  onClick={()=>dropdownHandler("createOfficeReferral")}
-  className="item page-scroll">New Office Managed Referral</div>
-  </div>
-              
-            </li>
-            <li>
-              <div 
-              className="page-scroll"
-               onClick={() => props.setDropdown(prev => prev === "student" ? "" : "student")} >
-              
-              Students
-              </div><div style={{display: props.isDropdownOpen === "student"?"block":"none"}} class="feature-menu-dropdown">
-              <div 
-  onClick={()=>dropdownHandler("student")}
-  className="item page-scroll">School Roster</div>
-  <div 
-  onClick={()=>props.setModalType("spotter")}
-  className="item page-scroll">Spot Students</div>
-  </div>
-            </li>
-            <li>
-              <div 
-              className="page-scroll"
-              onClick={()=>{
-                props.setPanelName("levelThree")
-              }}
+              </div>
+              <div
+                style={{
+                  display:
+                    props.isDropdownOpen === "referral" ? "block" : "none",
+                }}
+                class="feature-menu-dropdown"
               >
-              My Tasks
+                <div
+                  onClick={() => dropdownHandler("createPunishment")}
+                  className="item page-scroll"
+                >
+                  New Teacher Referral/Shout Out
+                </div>
+                <div
+                  onClick={() => dropdownHandler("punishment")}
+                  className="item page-scroll"
+                >
+                  Existing Referrals/Shout Outs
+                </div>
+                <div
+                  onClick={() => dropdownHandler("createOfficeReferral")}
+                  className="item page-scroll"
+                >
+                  New Office Managed Referral
+                </div>
               </div>
             </li>
             <li>
-              <div 
-              className="page-scroll"
-              onClick={()=>{
-                props.setModalType("contact")
-              }}
+              <div
+                className="page-scroll"
+                onClick={() =>
+                  props.setDropdown((prev) =>
+                    prev === "student" ? "" : "student"
+                  )
+                }
               >
-              Contact Us
+                Students
+              </div>
+              <div
+                style={{
+                  display:
+                    props.isDropdownOpen === "student" ? "block" : "none",
+                }}
+                class="feature-menu-dropdown"
+              >
+                <div
+                  onClick={() => dropdownHandler("student")}
+                  className="item page-scroll"
+                >
+                  School Roster
+                </div>
+                <div
+                  onClick={() => props.setModalType("spotter")}
+                  className="item page-scroll"
+                >
+                  Spot Students
+                </div>
               </div>
             </li>
             <li>
-              <div 
-              className="page-scroll"
-              onClick={()=>{
-                props.toggleNotificationDrawer(true)
-              }}
+              <div
+                className="page-scroll"
+                onClick={() => {
+                  props.setPanelName("levelThree");
+                }}
               >
-              Detention/ISS List
+                My Tasks
               </div>
             </li>
             <li>
-              <div 
-              className="page-scroll"
-              onClick={()=>{
-                props.setPanelName("spendPoints")
-              }}
+              <div
+                className="page-scroll"
+                onClick={() => {
+                  props.setModalType("contact");
+                }}
               >
-              Store Redeem
+                Contact Us
               </div>
             </li>
-           
             <li>
-              <button className="login-btn page-scroll"
-              onClick={()=>props.setLogin()}>
+              <div
+                className="page-scroll"
+                onClick={() => {
+                  props.toggleNotificationDrawer(true);
+                }}
+              >
+                Detention/ISS List
+              </div>
+            </li>
+            <li>
+              <div
+                className="page-scroll"
+                onClick={() => {
+                  props.setPanelName("spendPoints");
+                }}
+              >
+                Store Redeem
+              </div>
+            </li>
+
+            <li>
+              <button
+                className="login-btn page-scroll"
+                onClick={() => props.setLogin()}
+              >
                 Logout
               </button>
             </li>
-          
           </ul>
         </div>
       </div>
