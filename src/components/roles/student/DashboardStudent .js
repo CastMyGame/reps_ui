@@ -116,8 +116,8 @@ const StudentDashboard = () => {
                     </Card>
                   </div>
                 </div>
-                <div className="student-overview">
-                  <Card style={{ height: "200px" }} variant="outlined">
+                <div className="student-overview-first">
+                  <Card style={{ height: "800px" }} variant="outlined">
                     <StudentReferralsByWeek />
                   </Card>
                 </div>

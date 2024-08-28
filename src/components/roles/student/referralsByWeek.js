@@ -1,4 +1,4 @@
-import ReactEcharts from 'echarts-for-react';
+import ReactEcharts from "echarts-for-react";
 import { Typography } from "@mui/material";
 import {
   extractDataByWeek,
@@ -50,42 +50,75 @@ export default function StudentReferralsByWeek({ data = [] }) {
   const xAxisData = displayDate.map((obj) => Object.keys(obj)[0]); // Extract the keys (labels)
   const seriesData = displayDate.map((obj) => Object.values(obj)[0] || 0); // Extract the values associated with the keys
 
-  return (
-    data && (
-      <>
-        <Typography variant="h4" gutterBottom>
-          Number of Referrals By Week
-        </Typography>{" "}
-        <button
-          onClick={() => setRangeWeek((prev) => prev - 1)}
-          style={{ height: "20px", width: "20px", padding: 0, borderRadius: 0 }}
-        >
-          -
-        </button>{" "}
-        <button
-          onClick={() => setRangeWeek((prev) => prev + 1)}
-          style={{ height: "20px", width: "20px", padding: 0, borderRadius: 0 }}
-        >
-          +
-        </button>
-        <ReactEcharts
-          xAxis={[
-            {
-              scaleType: "band",
-              data: xAxisData,
-              label: "Weeks",
-            },
-          ]}
-          yAxis={[{ label: "Number of Incidents" }]}
-          series={[
-            {
-              data: seriesData, // Number of punishments
-            },
-          ]}
-          width={400}
-          height={250}
-        />
-      </>
-    )
-  );
+  //Options variables for eChart
+  var option = {
+    title: {
+      text: "Referrals By Type",
+    },
+    tooltip: {
+      trigger: "axis",
+    },
+    legend: {
+      data: [
+        "Tardy",
+        "Dress Code",
+        "Unauthorized Device",
+        "Horseplay",
+        "Disruptive Behavior",
+      ],
+    },
+    grid: {
+      left: "3%",
+      right: "4%",
+      bottom: "3%",
+      containLabel: true,
+    },
+    toolbox: {
+      feature: {
+        saveAsImage: {},
+      },
+    },
+    xAxis: {
+      type: "time",
+      boundaryGap: false,
+      data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+    },
+    yAxis: {
+      type: "value",
+    },
+    series: [
+      {
+        name: "Tardy",
+        type: "line",
+        stack: "Total",
+        data: [120, 132, 101, 134, 90, 230, 210],
+      },
+      {
+        name: "Dress Code",
+        type: "line",
+        stack: "Total",
+        data: [220, 182, 191, 234, 290, 330, 310],
+      },
+      {
+        name: "Unauthorized Device",
+        type: "line",
+        stack: "Total",
+        data: [150, 232, 201, 154, 190, 330, 410],
+      },
+      {
+        name: "Horseplay",
+        type: "line",
+        stack: "Total",
+        data: [320, 332, 301, 334, 390, 330, 320],
+      },
+      {
+        name: "Disruptive behavior",
+        type: "line",
+        stack: "Total",
+        data: [820, 932, 901, 934, 1290, 1330, 1320],
+      },
+    ],
+  };
+
+  return data && <ReactEcharts option={option} />;
 }
