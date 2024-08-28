@@ -5,18 +5,18 @@ import FailureToComplete from "./forms/FailureToComplete";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "./security/Login";
 import Register from "./security/Register";
-import StudentDashboard from "./components/dashboards/student/DashboardStudent ";
-import AdminDashboard from "./components/dashboards/admin/adminDashboard";
+import StudentDashboard from "./components/roles/student/DashboardStudent ";
+import AdminDashboard from "./components/roles/admin/adminDashboard";
 import PDFReport from "./roles/admin/reports/PDFReport";
 import { PDFViewer } from "@react-pdf/renderer";
-import TeacherDashboard from "./components/dashboards/teacher/teacherDashboard";
+import TeacherDashboard from "./components/roles/teacher/teacherDashboard";
 import GlobalArchivedPunishmentPanel from "./components/globalComponents/referrals/globalArchivedPunishmentPanel";
 import ResetPassword from "./security/Reset";
 import ForgotPassword from "./security/forgotPassword";
 import { useState } from "react";
 import IdleTimerContainer from "./security/IdleTimerContainer";
 import SinglePageSignIn from "./security/single-page-login";
-import GuidanceDashboard from "./components/dashboards/guidance/guidance-dashboard";
+import GuidanceDashboard from "./components/roles/guidance/guidance-dashboard";
 
 function App() {
   const [isLoggedOut, setIsLoggedOut] = useState(false);

@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
 import Drawer from "@mui/material/Drawer";
 import NotificationBar from "src/components/notification-bar/NotificationBar";
-import StudentClosedPunishmentPanel from "src/roles/student/studentClosePunishmentPanel";
-import StudentOpenPunishmentPanel from "src/roles/student/studentOpenPunishmentPanel";
+import StudentClosedPunishmentPanel from "src/components/roles/student/studentClosePunishmentPanel";
+import StudentOpenPunishmentPanel from "src/components/roles/student/studentOpenPunishmentPanel";
 import ShoutOutWidget from "src/components/globalComponents/shoutOutWidget";
 import TotalPositivePoints from "src/components/globalComponents/users/positivePointsComponents";
 import Card from "@mui/material/Card";
 // import BlankPanelForTest from './blankPanelForTest';
 import ViolationPage from "src/forms/ViolationPage";
 import { get } from "../../../utils/api/api";
-import LoadingWheelPanel from "src/roles/student/blankPanelForTest";
+import LoadingWheelPanel from "src/components/roles/student/blankPanelForTest";
 import { ContactUsModal } from "src/security/contactUsModal";
 import { NavigationStudent } from "src/components/landing/navigation-student";
 import { handleLogout } from "src/utils/helperFunctions";
@@ -41,7 +41,7 @@ const StudentDashboard = () => {
         setPunishments(response.punishments);
         setStudentDetails(response.student);
         setSchool(response.school);
-        setReferrals(response.officeReferrals)
+        setReferrals(response.officeReferrals);
       } catch (err) {
         console.error(err);
       }
@@ -118,11 +118,13 @@ const StudentDashboard = () => {
 
                 <div style={{ height: "80vh" }} className="student-panel">
                   {panelName === "closedAssignments" && (
-                    <StudentClosedPunishmentPanel listOfPunishments={punishments} />
+                    <StudentClosedPunishmentPanel
+                      listOfPunishments={punishments}
+                    />
                   )}
                   {panelName === "openAssignments" && (
                     <StudentOpenPunishmentPanel
-                    listOfReferrals={referrals}
+                      listOfReferrals={referrals}
                       listOfPunishments={punishments}
                       handleStartAssignment={handleStartAssignment}
                     />

@@ -17,7 +17,7 @@ import { baseUrl } from "../../../utils/jsonData";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 import CircularProgress from "@mui/material/CircularProgress";
-import LoadingWheelPanel from "../../../roles/student/blankPanelForTest";
+import LoadingWheelPanel from "../../roles/student/blankPanelForTest";
 
 const LevelThreePanel = ({ roleType }) => {
   const Alert = React.forwardRef(function Alert(props, ref) {
