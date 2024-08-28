@@ -13,6 +13,7 @@ import LoadingWheelPanel from "src/components/roles/student/blankPanelForTest";
 import { ContactUsModal } from "src/security/contactUsModal";
 import { NavigationStudent } from "src/components/landing/navigation-student";
 import { handleLogout } from "src/utils/helperFunctions";
+import StudentReferralsByWeek from "./referralsByWeek";
 
 const StudentDashboard = () => {
   const [loggedIn, setLoggedIn] = useState(true);
@@ -114,6 +115,11 @@ const StudentDashboard = () => {
                       />
                     </Card>
                   </div>
+                </div>
+                <div className="student-overview">
+                  <Card style={{ height: "200px" }} variant="outlined">
+                    <StudentReferralsByWeek />
+                  </Card>
                 </div>
 
                 <div style={{ height: "80vh" }} className="student-panel">

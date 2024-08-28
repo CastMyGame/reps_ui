@@ -4,7 +4,7 @@ import CreatePunishmentPanel from "src/components/globalComponents/referrals/cre
 import CreateNewStudentPanel from "src/components/globalComponents/users/createNewStudentPanel";
 import ISSWidget from "src/components/globalComponents/issWidget";
 import DetentionWidget from "src/components/globalComponents/detentionWidget";
-import AdminTeacherPanel from "src/roles/admin/adminTeacherPanel";
+import AdminTeacherPanel from "src/components/roles/admin/adminTeacherPanel";
 import GlobalPunishmentPanel from "src/components/globalComponents/referrals/globalPunishmentPanel";
 import GlobalArchivedPunishmentPanel from "src/components/globalComponents/referrals/globalArchivedPunishmentPanel";
 import AdminOverviewPanel from "src/components/roles/admin/adminOverview";

@@ -1,4 +1,4 @@
-
+import ReactEcharts from 'echarts-for-react';
 import { Typography } from "@mui/material";
 import {
   extractDataByWeek,
@@ -8,7 +8,7 @@ import {
 } from "../../../helperFunctions/helperFunctions";
 import { useState } from "react";
 
-export default function TotalReferralByWeek({ data = [] }) {
+export default function StudentReferralsByWeek({ data = [] }) {
   const [rangeWeeks, setRangeWeek] = useState(10);
   const currentWeek = getCurrentWeekOfYear();
 
@@ -68,7 +68,7 @@ export default function TotalReferralByWeek({ data = [] }) {
         >
           +
         </button>
-        <LineChart
+        <ReactEcharts
           xAxis={[
             {
               scaleType: "band",
