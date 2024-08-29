@@ -1,5 +1,4 @@
 import ReactEcharts from "echarts-for-react";
-import { Typography } from "@mui/material";
 import {
   extractDataByWeek,
   extractDataByWeekFirstDay,
@@ -79,9 +78,9 @@ export default function StudentReferralsByWeek({ data = [] }) {
       },
     },
     xAxis: {
-      type: "time",
+      type: "value",
       boundaryGap: false,
-      data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+      data: [xAxisData],
     },
     yAxis: {
       type: "value",
@@ -120,5 +119,5 @@ export default function StudentReferralsByWeek({ data = [] }) {
     ],
   };
 
-  return data && <ReactEcharts option={option} />;
+  return option && <ReactEcharts option={option} />;
 }

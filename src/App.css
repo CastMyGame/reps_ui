@@ -640,11 +640,10 @@ height: 60px;
 }
 .student-overview-first{
   width: 70%;
-  height: 200px;
+  height: 25vh;
   margin-right: 10px;
   background-color: white;
-
-
+  justify-content: stretch;
 }
 .student-overview-second{
   width: 30%;
