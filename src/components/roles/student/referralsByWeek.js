@@ -119,5 +119,14 @@ export default function StudentReferralsByWeek({ data = [] }) {
     ],
   };
 
-  return option && <ReactEcharts option={option} />;
+  return (
+    console.log(
+      xAxisData + " X AXIS DATA"
+    ) &&
+    option && (
+      <>
+        <ReactEcharts option={option} />
+      </>
+    )
+  );
 }

@@ -26,6 +26,7 @@ const StudentDashboard = () => {
   const [selectAssignmentToStart, setSelectAssignmentToStart] = useState();
   const [studentDetails, setStudentDetails] = useState();
   const [school, setSchool] = useState();
+  const [data, setData] = useState([]);
 
   useEffect(() => {
     if (sessionStorage.getItem("Authorization") === null) {
@@ -43,6 +44,7 @@ const StudentDashboard = () => {
         setStudentDetails(response.student);
         setSchool(response.school);
         setReferrals(response.officeReferrals);
+        setData(response);
       } catch (err) {
         console.error(err);
       }
