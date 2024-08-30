@@ -120,7 +120,7 @@ const StudentDashboard = () => {
                 </div>
                 <div className="student-overview">
                   <div className="student-overview-first">
-                    <Card variant="outlined">
+                    <Card style={{ height: "200px" }} variant="outlined">
                       <StudentReferralsByWeek data={punishments} />
                     </Card>
                   </div>

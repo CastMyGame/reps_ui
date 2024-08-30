@@ -46,7 +46,8 @@ export default function StudentReferralsByWeek({ data = [] }) {
   displayDate.reverse();
 
   // Convert the weekMap to the format suitable for LineChart
-  const xAxisData = displayDate.map((obj) => Object.keys(obj)[0]); // Extract the keys (labels)
+  //   const xAxisData = displayDate.map((obj) => Object.keys(obj)[0]); // Extract the keys (labels)
+  const xAxisData = data.map((punish) => new Date(punish.timeCreated));
   const seriesData = displayDate.map((obj) => Object.values(obj)[0] || 0); // Extract the values associated with the keys
 
   //Options variables for eChart
@@ -78,9 +79,11 @@ export default function StudentReferralsByWeek({ data = [] }) {
       },
     },
     xAxis: {
-      type: "value",
+      type: "time",
+      axisLabel: {
+        formatter: '{M}-{d}',
+      },
       boundaryGap: false,
-      data: [xAxisData],
     },
     yAxis: {
       type: "value",
@@ -120,10 +123,7 @@ export default function StudentReferralsByWeek({ data = [] }) {
   };
 
   return (
-    console.log(
-      xAxisData + " X AXIS DATA"
-    ) &&
-    option && (
+    console.log(xAxisData + " X AXIS DATA") && (
       <>
         <ReactEcharts option={option} />
       </>
