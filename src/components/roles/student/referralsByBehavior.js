@@ -1,4 +1,5 @@
 import ReactEcharts from "echarts-for-react";
+import * as eCharts from "echarts";
 import {
   extractDataByWeek,
   extractDataByWeekFirstDay,
@@ -8,6 +9,10 @@ import {
 import { useState } from "react";
 
 export default function StudentReferralsByWeek({ data = [] }) {
+  var chartDom = document.getElementById("main");
+  var myChart = eCharts.init(document.getElementById("main"));
+  var option;
+
   const [rangeWeeks, setRangeWeek] = useState(10);
   const currentWeek = getCurrentWeekOfYear();
 
@@ -81,13 +86,23 @@ export default function StudentReferralsByWeek({ data = [] }) {
     xAxis: {
       type: "time",
       axisLabel: {
-        formatter: '{M}-{d}',
+        formatter: "{M}-{d}",
       },
       boundaryGap: false,
+      data: ["Mon", "Tues", "Wed", "Thurs", "Fri", "Sat", "Sun"],
     },
     yAxis: {
       type: "value",
     },
+    dataset: [
+      { source: data },
+      {
+        transform: {
+          type: "filter",
+          config: { dimension: "infractionName", value: "timeCreated" },
+        },
+      },
+    ],
     series: [
       {
         name: "Tardy",
@@ -124,9 +139,9 @@ export default function StudentReferralsByWeek({ data = [] }) {
 
   return (
     console.log(xAxisData + " X AXIS DATA") && (
-      <>
-        <ReactEcharts option={option} />
-      </>
+      <div id="main" style={{ height: "400px", width: "800px" }}>
+        <myChart option={option} />
+      </div>
     )
   );
 }

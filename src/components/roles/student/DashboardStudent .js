@@ -13,7 +13,8 @@ import LoadingWheelPanel from "src/components/roles/student/blankPanelForTest";
 import { ContactUsModal } from "src/security/contactUsModal";
 import { NavigationStudent } from "src/components/landing/navigation-student";
 import { handleLogout } from "src/utils/helperFunctions";
-import StudentReferralsByWeek from "./referralsByWeek";
+import StudentReferralsByWeek from "./referralsByBehavior";
+import StudentReferralsByBehavior from "./referralsByBehavior";
 
 const StudentDashboard = () => {
   const [loggedIn, setLoggedIn] = useState(true);
