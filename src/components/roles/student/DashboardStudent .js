@@ -13,8 +13,8 @@ import LoadingWheelPanel from "src/components/roles/student/blankPanelForTest";
 import { ContactUsModal } from "src/security/contactUsModal";
 import { NavigationStudent } from "src/components/landing/navigation-student";
 import { handleLogout } from "src/utils/helperFunctions";
-import StudentReferralsByWeek from "./referralsByBehavior";
-import StudentReferralsByBehavior from "./referralsByBehavior";
+import StudentReferralsByWeek from "./studentReferralsByBehavior";
+import StudentReferralsByBehavior from "./studentReferralsByBehavior";
 
 const StudentDashboard = () => {
   const [loggedIn, setLoggedIn] = useState(true);
@@ -121,8 +121,15 @@ const StudentDashboard = () => {
                 </div>
                 <div className="student-overview">
                   <div className="student-overview-first">
-                    <Card style={{ height: "200px" }} variant="outlined">
-                      <StudentReferralsByWeek data={punishments} />
+                    <Card
+                      style={{ height: "200px", width: "800px" }}
+                      variant="outlined"
+                    >
+                      <StudentReferralsByWeek
+                        id="main-graph"
+                        style={{ height: "200px", width: "800px" }}
+                        data={punishments}
+                      />
                     </Card>
                   </div>
                 </div>

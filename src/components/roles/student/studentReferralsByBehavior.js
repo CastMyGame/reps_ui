@@ -6,12 +6,11 @@ import {
   getCurrentWeekOfYear,
   getFirstDayOfWeek,
 } from "../../../helperFunctions/helperFunctions";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 
 export default function StudentReferralsByWeek({ data = [] }) {
-  var chartDom = document.getElementById("main");
-  var myChart = eCharts.init(document.getElementById("main"));
-  var option;
+  var chartDom = document.getElementById("main-graph");
+  var myChart = eCharts.init(document.getElementById("main-graph"));
 
   const [rangeWeeks, setRangeWeek] = useState(10);
   const currentWeek = getCurrentWeekOfYear();
@@ -58,19 +57,13 @@ export default function StudentReferralsByWeek({ data = [] }) {
   //Options variables for eChart
   var option = {
     title: {
-      text: "Referrals By Type",
+      text: "Stacked Line",
     },
     tooltip: {
       trigger: "axis",
     },
     legend: {
-      data: [
-        "Tardy",
-        "Dress Code",
-        "Unauthorized Device",
-        "Horseplay",
-        "Disruptive Behavior",
-      ],
+      data: ["Email", "Union Ads", "Video Ads", "Direct", "Search Engine"],
     },
     grid: {
       left: "3%",
@@ -84,52 +77,40 @@ export default function StudentReferralsByWeek({ data = [] }) {
       },
     },
     xAxis: {
-      type: "time",
-      axisLabel: {
-        formatter: "{M}-{d}",
-      },
+      type: "category",
       boundaryGap: false,
-      data: ["Mon", "Tues", "Wed", "Thurs", "Fri", "Sat", "Sun"],
+      data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
     },
     yAxis: {
       type: "value",
     },
-    dataset: [
-      { source: data },
-      {
-        transform: {
-          type: "filter",
-          config: { dimension: "infractionName", value: "timeCreated" },
-        },
-      },
-    ],
     series: [
       {
-        name: "Tardy",
+        name: "Email",
         type: "line",
         stack: "Total",
         data: [120, 132, 101, 134, 90, 230, 210],
       },
       {
-        name: "Dress Code",
+        name: "Union Ads",
         type: "line",
         stack: "Total",
         data: [220, 182, 191, 234, 290, 330, 310],
       },
       {
-        name: "Unauthorized Device",
+        name: "Video Ads",
         type: "line",
         stack: "Total",
         data: [150, 232, 201, 154, 190, 330, 410],
       },
       {
-        name: "Horseplay",
+        name: "Direct",
         type: "line",
         stack: "Total",
         data: [320, 332, 301, 334, 390, 330, 320],
       },
       {
-        name: "Disruptive behavior",
+        name: "Search Engine",
         type: "line",
         stack: "Total",
         data: [820, 932, 901, 934, 1290, 1330, 1320],
@@ -137,11 +118,15 @@ export default function StudentReferralsByWeek({ data = [] }) {
     ],
   };
 
+  // if (option && typeof option === "object") {
+  //   myChart.setOption(option);
+  // }
+
+  // window.addEventListener("resize", myChart.resize);
+
   return (
     console.log(xAxisData + " X AXIS DATA") && (
-      <div id="main" style={{ height: "400px", width: "800px" }}>
-        <myChart option={option} />
-      </div>
+        <ReactEcharts id="main-graph" option={option} />
     )
   );
 }
