@@ -4,7 +4,10 @@ import {
   TableHead,
   TableBody,
   TableRow,
-  TableCell
+  TableCell,
+  Autocomplete,
+  TextField,
+  Chip
 } from "@mui/material";
 import { useState,useEffect } from "react";
 import "./teacher_profile_modal.css";
@@ -20,8 +23,33 @@ export const TeacherDetailsModal = ({activeTeacher,setDisplayBoolean})=>{
 
 const [data, setData] = useState([])
 const [teacherProfileData,setTeacherProfileData] = useState([])
+const [studentNames, setStudentNames] = useState([]);
+const [listOfStudents, setListOfStudents] = useState([]);
+const [displaySpotterAdd, setDisplaySpotterAdd] = useState(false)
 
-console.log("AT",activeTeacher)
+
+
+const headers = {
+  Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
+};
+
+const url = `${baseUrl}/student/v1/allStudents`; 
+
+useEffect(() => {
+  axios
+    .get(url, { headers }) // Pass the headers option with the JWT token
+    .then(function (response) {
+      setListOfStudents(response.data);
+    })
+    .catch(function (error) {
+      console.error(error);
+    });
+}, []);
+
+const selectOptions = listOfStudents.map((student) => ({
+  value: student.studentEmail, // Use a unique value for each option
+  label: `${student.firstName} ${student.lastName} - ${student.studentEmail}`, // Display student's full name as the label
+}));
 
 useEffect(()=>{
   const headers = {
@@ -41,9 +69,40 @@ useEffect(()=>{
 },[activeTeacher])
 
 
+const addSpotter = () => {
+  const student_emails = [];
+  studentNames.map((x) => {
+    student_emails.push(x.value);
+    return student_emails;
+  });
+
+  const payload = {
+    spotters: [activeTeacher.email],
+    studentEmail: student_emails,
+  };
+
+  const url = `${baseUrl}/student/v1/addAsSpotter`;
+  axios
+    .put(url, payload, { headers })
+    .then(() => {
+      window.alert(
+        `You have been successfully added as a spotter for the students entered. You will receive all REPS emails for these students when they are sent. `
+      );
+      setTimeout(() => {
+        setDisplaySpotterAdd(false);
+        setStudentNames([])
+      }, 1000);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+};
+
+
   return(
 
     <>
+    
     <div className="details-modal-container">
       <div className="details-modal-container-inner">
       <div className="details-modal-header">
@@ -66,9 +125,46 @@ useEffect(()=>{
             <TeacherProfileIncidentByStudentPieChart writeUps={teacherProfileData} />
           </div>
           <div className="header-section-right">
-            <TeacherProfileSpotter teacher={activeTeacher.email} />
+            <TeacherProfileSpotter teacher={activeTeacher.email} setDisplaySpotterAdd={setDisplaySpotterAdd} displaySpotterAdd={displaySpotterAdd} />
           </div>
         </div>
+       { displaySpotterAdd && <div className="spot-student-modal">
+          <p style={{textAlign:'center'}}>Add Students To Spot</p>
+          <Autocomplete
+                  multiple
+                  className="student-dropdown"
+                  id="demo-multiple-chip"
+                  value={studentNames}
+                  onChange={(event, newValue) => setStudentNames(newValue)}
+                  options={selectOptions} // Pass the selectOptions array here
+                  getOptionLabel={(option) => option.label}
+                  inputLabelProps={{ style: { fontSize: 18 } }}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      className="student-dropdown"
+                      inputLabelProps={{ style: { fontSize: 18 } }}
+                      label="Select Students"
+                      sx={{ width: "100%",backgroundColor:'white' }}
+                    />
+                  )}
+                  renderTags={(value, getTagProps) =>
+                    value.map((option, index) => (
+                      <Chip
+                        key={option.value}
+                        label={option.label}
+                        sx={{ fontSize: 18 }}
+                        {...getTagProps({ index })}
+                      />
+                    ))
+                  }
+                />
+              <button className="btn-add-student-roster" onClick={()=>addSpotter()}>Add Students</button>
+              <button className="btn-close-student-roster" onClick={()=> setDisplaySpotterAdd(false)}>Close</button>
+
+
+          </div>}
+
       </div>
 
       {data ? (
@@ -114,7 +210,7 @@ useEffect(()=>{
               </TableBody>
             </Table>
           </TableContainer>
-        </div>
+        </div> 
       ) : (
         <div>No Data available</div>
       )}
