@@ -24,7 +24,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import { dateCreateFormat } from "../../../helperFunctions/helperFunctions";
-import LoadingWheelPanel from "../../../roles/student/blankPanelForTest";
+import LoadingWheelPanel from "../../roles/student/blankPanelForTest";
 
 const GlobalPunishmentPanel = ({ roleType }) => {
   const Alert = React.forwardRef(function Alert(props, ref) {

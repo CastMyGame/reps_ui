@@ -16,7 +16,7 @@ import "jspdf-autotable";
 
 import { IncidentByStudentPieChart } from "src/components/globalComponents/dataDisplay/incident-by-student-pie-chart";
 import IncidentsByStudentTable from "src/components/globalComponents/dataDisplay/incidentsByStudentTable";
-import { get } from "../../utils/api/api";
+import { get } from "../../../utils/api/api";
 import { TeacherDetailsModal } from "./modals/teacher_profile_modal";
 
 const AdminTeacherPanel = () => {

@@ -24,6 +24,8 @@
     "button": "^1.1.1",
     "command": "^0.0.5",
     "dayjs": "^1.11.11",
+    "echarts": "^5.5.1",
+    "echarts-for-react": "^3.0.2",
     "emailjs-com": "^3.2.0",
     "init": "^0.1.2",
     "input": "^1.0.1",

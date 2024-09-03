@@ -4,15 +4,15 @@ import CreatePunishmentPanel from "src/components/globalComponents/referrals/cre
 import CreateNewStudentPanel from "src/components/globalComponents/users/createNewStudentPanel";
 import ISSWidget from "src/components/globalComponents/issWidget";
 import DetentionWidget from "src/components/globalComponents/detentionWidget";
-import AdminTeacherPanel from "src/roles/admin/adminTeacherPanel";
+import AdminTeacherPanel from "src/components/roles/admin/adminTeacherPanel";
 import GlobalPunishmentPanel from "src/components/globalComponents/referrals/globalPunishmentPanel";
 import GlobalArchivedPunishmentPanel from "src/components/globalComponents/referrals/globalArchivedPunishmentPanel";
-import AdminOverviewPanel from "src/roles/admin/adminOverview";
+import AdminOverviewPanel from "src/components/roles/admin/adminOverview";
 import AssignmentManager from "src/utils/EssayForm";
-import TeacherStudentPanel from "src/roles/teacher/teacherStudentPanel";
+import TeacherStudentPanel from "src/components/roles/teacher/teacherStudentPanel";
 import AddTeacherForm from "src/components/globalComponents/users/addTeacherForm";
 import { get } from "../../../utils/api/api";
-import LoadingWheelPanel from "src/roles/student/blankPanelForTest";
+import LoadingWheelPanel from "src/components/roles/student/blankPanelForTest";
 import { ContactUsModal } from "src/security/contactUsModal";
 import { NavigationAdmin } from "src/components/landing/navigation-admin";
 import { handleLogout } from "src/utils/helperFunctions";
@@ -141,7 +141,7 @@ const AdminDashboard = () => {
                   <LoadingWheelPanel />
                 ) : (
                   panelName === "overview" && (
-                      <AdminOverviewPanel data={adminDto} />
+                    <AdminOverviewPanel data={adminDto} />
                   )
                 )}
                 {panelName === "viewTeacher" && <AdminTeacherPanel />}
@@ -158,11 +158,11 @@ const AdminDashboard = () => {
                   />
                 )}
                 {panelName === "createOfficeReferral" && (
-                    <CreateOfficeReferralPanel
-                      setPanelName={setPanelName}
-                      data={adminDto}
-                    />
-                  )}
+                  <CreateOfficeReferralPanel
+                    setPanelName={setPanelName}
+                    data={adminDto}
+                  />
+                )}
                 {panelName === "createNewStudent" && <CreateNewStudentPanel />}
                 {panelName === "userManagement" && <AddTeacherForm />}
                 {panelName === "archived" && (

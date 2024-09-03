@@ -12,7 +12,7 @@ import {
 import Typography from "@mui/material/Typography";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import axios from "axios";
-import { baseUrl } from "../../utils/jsonData";
+import { baseUrl } from "../../../utils/jsonData";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 import CircularProgress from "@mui/material/CircularProgress";

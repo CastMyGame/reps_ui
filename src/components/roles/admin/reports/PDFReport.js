@@ -1,7 +1,7 @@
 import { Page, Text, View, Document, StyleSheet } from "@react-pdf/renderer";
 import axios from "axios";
 import React, { useState, useEffect } from "react";
-import { baseUrl } from "../../../utils/jsonData";
+import { baseUrl } from "../../../../utils/jsonData";
 
 const styles = StyleSheet.create({
   page: {

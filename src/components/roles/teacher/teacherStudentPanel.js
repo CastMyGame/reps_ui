@@ -15,7 +15,7 @@ import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 import { IncidentByTypePieChart } from "src/components/globalComponents/dataDisplay/incidentsByType";
-import { get } from "../../utils/api/api";
+import { get } from "../../../utils/api/api";
 import axios from "axios";
 import { baseUrl } from "src/utils/jsonData";
 
