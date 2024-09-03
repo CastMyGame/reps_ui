@@ -63,10 +63,10 @@ const TeacherStudentPanel = ({ setPanelName, data = [] }) => {
 
       const payload = {
         spotters: [sessionStorage.getItem("email")],
-        studentEmail: spotEmail,
+        studentEmail: [spotEmail],
       };
 
-      const url = `${baseUrl}/student/v1/spotters`;
+      const url = `${baseUrl}/student/v1/addAsSpotter`;
       axios
         .put(url, payload, { headers })
         .then((response) => {
