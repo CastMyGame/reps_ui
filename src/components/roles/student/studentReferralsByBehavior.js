@@ -3,6 +3,7 @@ import {
   extractDataByWeek,
   getCurrentWeekOfYear,
   getFirstDayOfWeek,
+  findDataByWeekAndByPunishment,
 } from "../../../helperFunctions/helperFunctions";
 import { useState } from "react";
 
@@ -42,15 +43,46 @@ export default function StudentReferralsByWeek({ data = [] }) {
   const xAxisData = displayDate.map((obj) => Object.keys(obj)[0]);
   const seriesData = displayDate.map((obj) => Object.values(obj)[0] || 0);
 
+  const GenerateBxByWeek = (bx, numOfWeeks, data) => {
+    const bxData = [];
+    for (let i = 0; i < numOfWeeks; i++) {
+      const weekNum = yearAdj(currentWeek - i);
+      const dataForWeek = findDataByWeekAndByPunishment(weekNum, bx, data);
+      bxData.push(dataForWeek);
+    }
+    return bxData;
+  };
+
+  const tardyData = GenerateBxByWeek("Tardy", rangeWeeks, data);
+  const horseplayData = GenerateBxByWeek("Horseplay", rangeWeeks, data);
+  const dressCodeData = GenerateBxByWeek("Dress Code", rangeWeeks, data);
+  const unauthorizedDeviceData = GenerateBxByWeek(
+    "Unauthorized Device/Cell Phone",
+    rangeWeeks,
+    data
+  );
+  const disruptiveBehaviorData = GenerateBxByWeek(
+    "Disruptive Behavior",
+    rangeWeeks,
+    data
+  );
+  const positiveData = GenerateBxByWeek(
+    "Positive Shout Out!",
+    rangeWeeks,
+    data
+  );
+  const behavioralConcernData = GenerateBxByWeek(
+    "Behavioral Concern",
+    rangeWeeks,
+    data
+  );
+
   const option = {
-    title: {
-      text: "Stacked Line",
-    },
     tooltip: {
       trigger: "axis",
     },
     legend: {
-      data: ["Student Referrals"],
+      data: ["Tardy", "Horseplay", "Positive Shout Out!", "Dress Code", "Behavioral Concern", "Disruptive Behavior", "Unauthorized Device/Cell Phone"],
     },
     grid: {
       left: "3%",
@@ -73,16 +105,52 @@ export default function StudentReferralsByWeek({ data = [] }) {
     },
     series: [
       {
-        name: "Student Referrals",
+        name: "Tardy",
         type: "line",
         stack: "Total",
-        data: seriesData,
+        data: tardyData,
+      },
+      {
+        name: "Dress Code",
+        type: "line",
+        stack: "Total",
+        data: dressCodeData,
+      },
+      {
+        name: "Disruptive Behavior",
+        type: "line",
+        stack: "Total",
+        data: disruptiveBehaviorData,
+      },
+      {
+        name: "Behavioral Concern",
+        type: "line",
+        stack: "Total",
+        data: behavioralConcernData,
+      },
+      {
+        name: "Positive Shout Out!",
+        type: "line",
+        stack: "Total",
+        data: positiveData,
+      },
+      {
+        name: "Horseplay",
+        type: "line",
+        stack: "Total",
+        data: horseplayData,
+      },
+      {
+        name: "Unauthorized Device/Cell Phone",
+        type: "line",
+        stack: "Total",
+        data: unauthorizedDeviceData,
       },
     ],
   };
 
   return (
-    <div id="main-graph">
+    <div>
       <ReactEcharts option={option} />
     </div>
   );

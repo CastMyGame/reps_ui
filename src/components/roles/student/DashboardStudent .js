@@ -122,14 +122,10 @@ const StudentDashboard = () => {
                 <div className="student-overview">
                   <div className="student-overview-first">
                     <Card
-                      style={{ height: "200px", width: "800px" }}
+                      style={{ minHeight: "200px", minWidth: "800px" }}
                       variant="outlined"
                     >
-                      <StudentReferralsByWeek
-                        id="main-graph"
-                        style={{ height: "200px", width: "800px" }}
-                        data={punishments}
-                      />
+                      <StudentReferralsByWeek data={punishments} />
                     </Card>
                   </div>
                 </div>
