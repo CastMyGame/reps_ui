@@ -13,8 +13,8 @@ import LoadingWheelPanel from "src/components/roles/student/blankPanelForTest";
 import { ContactUsModal } from "src/security/contactUsModal";
 import { NavigationStudent } from "src/components/landing/navigation-student";
 import { handleLogout } from "src/utils/helperFunctions";
-import StudentReferralsByWeek from "./studentReferralsByBehavior";
-import StudentReferralsByBehavior from "./studentReferralsByBehavior";
+import StudentReferralsByWeek from "../../globalComponents/dataDisplay/studentReferralsByBehavior";
+import StudentReferralsByBehavior from "../../globalComponents/dataDisplay/studentReferralsByBehavior";
 import StudentReferralsPieChart from "src/components/globalComponents/dataDisplay/studentReferralsPieChart";
 
 const StudentDashboard = () => {

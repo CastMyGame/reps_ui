@@ -6,17 +6,18 @@ import {
   findDataByWeekAndByPunishment,
 } from "../../../helperFunctions/helperFunctions";
 import { useState } from "react";
+import { StudentPunishment, TeacherReferral } from "src/types/responses";
 
-export default function StudentReferralsByWeek({ data = [] }) {
+const StudentReferralsByWeek: React.FC<StudentPunishment> = ({ data = [] }) => {
   const [rangeWeeks, setRangeWeek] = useState(10);
   const currentWeek = getCurrentWeekOfYear();
 
   // Adjust the week number if current week extends prior to this year
-  const yearAdj = (cw) => {
+  const yearAdj = (cw: number) => {
     return cw > 0 ? cw : 52 + cw;
   };
 
-  const GenerateChartData = (currentWeek, rangeWeeks, data) => {
+  const GenerateChartData = (currentWeek: number, rangeWeeks: number, data: TeacherReferral[]) => {
     const genData = [];
 
     for (let i = 0; i < rangeWeeks; i++) {
@@ -37,13 +38,13 @@ export default function StudentReferralsByWeek({ data = [] }) {
     return genData;
   };
 
-  const displayDate = GenerateChartData(currentWeek, rangeWeeks, data);
+  const displayDate = GenerateChartData(currentWeek, rangeWeeks, (data as TeacherReferral[]));
   displayDate.reverse();
 
   const xAxisData = displayDate.map((obj) => Object.keys(obj)[0]);
   const seriesData = displayDate.map((obj) => Object.values(obj)[0] || 0);
 
-  const GenerateBxByWeek = (bx, numOfWeeks, data) => {
+  const GenerateBxByWeek = (bx: string, numOfWeeks: number, data: TeacherReferral[]) => {
     const bxData = [];
     for (let i = 0; i < numOfWeeks; i++) {
       const weekNum = yearAdj(currentWeek - i);
@@ -53,28 +54,40 @@ export default function StudentReferralsByWeek({ data = [] }) {
     return bxData;
   };
 
-  const tardyData = GenerateBxByWeek("Tardy", rangeWeeks, data);
-  const horseplayData = GenerateBxByWeek("Horseplay", rangeWeeks, data);
-  const dressCodeData = GenerateBxByWeek("Dress Code", rangeWeeks, data);
+  const tardyData = GenerateBxByWeek(
+    "Tardy",
+    rangeWeeks,
+    data as TeacherReferral[]
+  );
+  const horseplayData = GenerateBxByWeek(
+    "Horseplay",
+    rangeWeeks,
+    data as TeacherReferral[]
+  );
+  const dressCodeData = GenerateBxByWeek(
+    "Dress Code",
+    rangeWeeks,
+    data as TeacherReferral[]
+  );
   const unauthorizedDeviceData = GenerateBxByWeek(
     "Unauthorized Device/Cell Phone",
     rangeWeeks,
-    data
+    data as TeacherReferral[]
   );
   const disruptiveBehaviorData = GenerateBxByWeek(
     "Disruptive Behavior",
     rangeWeeks,
-    data
+    data as TeacherReferral[]
   );
   const positiveData = GenerateBxByWeek(
     "Positive Shout Out!",
     rangeWeeks,
-    data
+    data as TeacherReferral[]
   );
   const behavioralConcernData = GenerateBxByWeek(
     "Behavioral Concern",
     rangeWeeks,
-    data
+    data as TeacherReferral[]
   );
 
   const option = {
@@ -82,7 +95,15 @@ export default function StudentReferralsByWeek({ data = [] }) {
       trigger: "axis",
     },
     legend: {
-      data: ["Tardy", "Horseplay", "Positive Shout Out!", "Dress Code", "Behavioral Concern", "Disruptive Behavior", "Unauthorized Device/Cell Phone"],
+      data: [
+        "Tardy",
+        "Horseplay",
+        "Positive Shout Out!",
+        "Dress Code",
+        "Behavioral Concern",
+        "Disruptive Behavior",
+        "Unauthorized Device/Cell Phone",
+      ],
     },
     grid: {
       left: "3%",
@@ -154,4 +175,6 @@ export default function StudentReferralsByWeek({ data = [] }) {
       <ReactEcharts option={option} />
     </div>
   );
-}
+};
+
+export default StudentReferralsByWeek;

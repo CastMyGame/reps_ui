@@ -60,3 +60,14 @@ export interface OfficeReferralResponse {
   referralDescription: [string];
   followUpDate: null | [];
 }
+
+export interface TeacherReferral {
+  punishmentId: string;
+  studentEmail: string;
+  schoolName: string;
+  infractionName: string;
+}
+
+export interface StudentPunishment {
+  data: TeacherReferral;
+}
