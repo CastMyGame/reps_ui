@@ -209,11 +209,11 @@ a:focus,
   width: 100%;
   padding: 0;
   background: url(../img/main-page-header.png) center center no-repeat;
-  background-color: #e5e5e5;
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  background-size: cover;
-  -o-background-size: cover;
+  background-color: #cccccc;
+  -webkit-background-size:auto;
+  -moz-background-size: auto;
+  background-size: auto;
+  -o-background-size: auto;
 }
 .intro .overlay {
   background: rgba(0, 0, 0, 0.2);
