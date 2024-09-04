@@ -3,7 +3,7 @@ import React from "react";
 import { PieChart, pieArcLabelClasses } from "@mui/x-charts/PieChart";
 import "./CustomPieChart.css";
 
-export const IncidentByStudentPieChart = ({ writeUps = [] }) => {
+export const IncidentByStudentPieChart: React.FC<StudentPunishment> = ({ writeUps = [] }) => {
   // const filterData = data.filter()
   const uniqueStudents = {};
   const totalIncidents = writeUps.length;

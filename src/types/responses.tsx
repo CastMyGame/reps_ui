@@ -67,3 +67,7 @@ export interface TeacherReferral {
   schoolName: string;
   infractionName: string;
 }
+
+export interface StudentPunishment {
+  data: TeacherReferral;
+}
