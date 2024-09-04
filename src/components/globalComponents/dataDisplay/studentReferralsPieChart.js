@@ -27,7 +27,6 @@ export default function StudentReferralsPieChart({ data = [] }) {
     },
     series: [
       {
-        name: "Access From",
         type: "pie",
         radius: "50%",
         data: [
