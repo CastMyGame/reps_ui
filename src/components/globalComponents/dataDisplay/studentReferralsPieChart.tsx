@@ -1,16 +1,25 @@
 import ReactEcharts from "echarts-for-react";
+import { TeacherReferral } from "src/types/responses";
 
-export default function StudentReferralsPieChart({ data = [] }) {
-  const referralData = data.filter(
-    (punishment) =>
+interface StudentPunishment {
+  data: TeacherReferral;
+}
+
+const StudentReferralsPieChart: React.FC<StudentPunishment> = ({
+  data = [],
+}) => {
+  const referralData = (data as TeacherReferral[]).filter(
+    (punishment: TeacherReferral) =>
       punishment.infractionName !== "Positive Shout Out!" ||
-      punishment.infractionName !== "Behavioral Concern"
+      "Behavioral Concern"
   ).length;
-  const positiveData = data.filter(
-    (punishment) => punishment.infractionName === "Positive Shout Out!"
+  const positiveData = (data as TeacherReferral[]).filter(
+    (punishment: TeacherReferral) =>
+      punishment.infractionName === "Positive Shout Out!"
   ).length;
-  const behavioralConcernData = data.filter(
-    (punishment) => punishment.infractionName === "Behavioral Concern"
+  const behavioralConcernData = (data as TeacherReferral[]).filter(
+    (punishment: TeacherReferral) =>
+      punishment.infractionName === "Behavioral Concern"
   ).length;
 
   const option = {
@@ -50,4 +59,6 @@ export default function StudentReferralsPieChart({ data = [] }) {
       <ReactEcharts option={option} />
     </div>
   );
-}
+};
+
+export default StudentReferralsPieChart;
