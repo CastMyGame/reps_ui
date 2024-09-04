@@ -15,6 +15,7 @@ import { NavigationStudent } from "src/components/landing/navigation-student";
 import { handleLogout } from "src/utils/helperFunctions";
 import StudentReferralsByWeek from "./studentReferralsByBehavior";
 import StudentReferralsByBehavior from "./studentReferralsByBehavior";
+import StudentReferralsPieChart from "src/components/globalComponents/dataDisplay/studentReferralsPieChart";
 
 const StudentDashboard = () => {
   const [loggedIn, setLoggedIn] = useState(true);
@@ -126,6 +127,14 @@ const StudentDashboard = () => {
                       variant="outlined"
                     >
                       <StudentReferralsByWeek data={punishments} />
+                    </Card>
+                  </div>
+                  <div className="student-overview-first">
+                    <Card
+                      style={{ minHeight: "200px", minWidth: "800px" }}
+                      variant="outlined"
+                    >
+                      <StudentReferralsPieChart data={punishments} />
                     </Card>
                   </div>
                 </div>
