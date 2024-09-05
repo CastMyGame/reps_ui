@@ -16,6 +16,26 @@ const IncidentsByStudentTable = ({ writeUps = [] }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredData, setFilteredData] = useState([]);
 
+  const studentsWithIncidentsList = Object.entries(uniqueStudents).map(
+    ([studentEmail, incidents]) => {
+      const studentRecord = writeUps.find(
+        (item) => item.studentEmail === studentEmail
+      );
+
+      const firstName =
+        studentRecord.firstName || studentRecord.studentFirstName;
+      const lastName = studentRecord.lastName || studentRecord.studentLastName;
+
+      return {
+        studentEmail,
+        firstName,
+        lastName,
+        incidents,
+        percent: ((incidents / totalIncidents) * 100).toFixed(2),
+      };
+    }
+  );
+
   useEffect(() => {
     // Filter the data based on the search query
     const filteredRecords = writeUps.filter((record) => {
@@ -60,27 +80,6 @@ const IncidentsByStudentTable = ({ writeUps = [] }) => {
     const studentEmail = item.studentEmail;
     uniqueStudents[studentEmail] = (uniqueStudents[studentEmail] || 0) + 1;
   });
-
-  const studentsWithIncidentsList = Object.entries(uniqueStudents).map(
-    ([studentEmail, incidents]) => {
-      const studentRecord = writeUps.find(
-        (item) => item.studentEmail === studentEmail
-      );
-
-      const firstName =
-        studentRecord.firstName || studentRecord.studentFirstName;
-      const lastName = studentRecord.lastName || studentRecord.studentLastName;
-      console.log("answer", incidents);
-
-      return {
-        studentEmail,
-        firstName,
-        lastName,
-        incidents,
-        percent: ((incidents / totalIncidents) * 100).toFixed(2),
-      };
-    }
-  );
 
   filteredData.sort((a, b) => b.incidents - a.incidents);
 

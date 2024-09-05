@@ -6,7 +6,13 @@ import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { Autocomplete, Box, CircularProgress, FormControlLabel, FormGroup } from "@mui/material";
+import {
+  Autocomplete,
+  Box,
+  CircularProgress,
+  FormControlLabel,
+  FormGroup,
+} from "@mui/material";
 import Container from "@mui/material/Container";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
@@ -17,8 +23,6 @@ import Chip from "@mui/material/Chip";
 import KeyboardDoubleArrowUpIcon from "@mui/icons-material/KeyboardDoubleArrowUp";
 import KeyboardDoubleArrowDownIcon from "@mui/icons-material/KeyboardDoubleArrowDown";
 import Checkbox from "@mui/material/Checkbox";
-
-
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -66,7 +70,12 @@ const CreatePunishmentPanel = ({ setPanelName, data = [] }) => {
 
   const [currency, setCurrency] = useState(0);
 
-  const [isGuidance,setIsGuidance] = useState({isGuidanceBoolean:false,guidanceDescription:""});
+  const [isGuidance, setIsGuidance] = useState({
+    isGuidanceBoolean: false,
+    guidanceDescription: "",
+  });
+
+  const [isPhoneLog, setIsPhoneLog] = useState("");
 
   const defaultTheme = createTheme();
 
@@ -103,6 +112,7 @@ const CreatePunishmentPanel = ({ setPanelName, data = [] }) => {
       label: "Positive Behavior Shout Out!",
     },
     { value: "Behavioral Concern", label: "Behavioral Concern" },
+    { value: "Academic Concern", label: "Academic Concern" },
     { value: "Failure to Complete Work", label: "Failure to Complete Work" },
   ];
 
@@ -147,12 +157,24 @@ const CreatePunishmentPanel = ({ setPanelName, data = [] }) => {
     label: `${student.firstName} ${student.lastName} - ${student.studentEmail}`, // Display student's full name as the label
   }));
 
+  const getPhoneNumber = (email) => {
+    if (email != null) {
+      const result = listOfStudents.filter(
+        (student) => (student.studentEmail = email)
+      );
+      return result[0].parentPhoneNumber;
+    } else {
+      return "";
+    }
+  };
+
   const resetForm = () => {
     setStudentNames([]);
     setInfractionPeriodSelected(null);
     setInfractionTypeSelected(null);
     setInfractionDescriptionSelected("");
-    setIsGuidance({isGuidanceBoolean:false,guidanceDescription:""})
+    setIsGuidance({ isGuidanceBoolean: false, guidanceDescription: "" });
+    setIsPhoneLog({ isPhoneLogBoolean: false, phoneLogDescription: "" });
   };
 
   //Mapping selected students pushing indivdual payloads to post
@@ -170,8 +192,8 @@ const CreatePunishmentPanel = ({ setPanelName, data = [] }) => {
         infractionName: infractionTypeSelected,
         infractionDescription: infractionDescriptionSelected,
         currency: currency,
-        guidanceDescription: isGuidance.guidanceDescription || ""
-
+        guidanceDescription: isGuidance.guidanceDescription || "",
+        phoneLogDescription: isPhoneLog.phoneLogDescription || "",
       };
       payloadContent.push(studentPayload);
       return payloadContent;
@@ -180,39 +202,28 @@ const CreatePunishmentPanel = ({ setPanelName, data = [] }) => {
     const payload = payloadContent;
 
     if (isGuidance.isGuidanceBoolean) {
-      const guidancePayloadContent =
-      studentNames.map((student) => ({
-          guidance: {
-            studentEmail: student.value,
-            classPeriod: infractionPeriodSelected,
-            teacherEmail: teacherEmailSelected,
-            referralDescription: [isGuidance.guidanceDescription],
-          },
-        }));
-      
+      const guidancePayloadContent = studentNames.map((student) => ({
+        guidance: {
+          studentEmail: student.value,
+          classPeriod: infractionPeriodSelected,
+          teacherEmail: teacherEmailSelected,
+          referralDescription: [isGuidance.guidanceDescription],
+        },
+      }));
 
       axios
-        .post(`${baseUrl}/punish/v1/guidance/formList`, guidancePayloadContent, {
-          headers: headers,
-        })
+        .post(
+          `${baseUrl}/punish/v1/guidance/formList`,
+          guidancePayloadContent,
+          {
+            headers: headers,
+          }
+        )
         .then(function (res) {
           window.alert(`Guidance Referral has been created`);
-          // setToast({ display: true, message: "Referral Succesfuly Created" });
-          // setTimeout(() => {
-          //   setLoading(false);
-          //   setToast({ display: false, message: "" });
-          // }, 1000);
-          // resetForm();
-          // setInfractionDescriptionSelected("");
-          // props.setDisplayModal(false);
         })
         .catch(function (error) {
           console.error(error);
-          // setToast({ display: true, message: "Something Went Wrong" });
-          // setTimeout(() => {
-          //   setLoading(false);
-          //   setToast({ display: false, message: "" });
-          // }, 2000);
         });
     }
 
@@ -265,7 +276,7 @@ const CreatePunishmentPanel = ({ setPanelName, data = [] }) => {
         }, 2000);
         setCurrency(0);
       } else {
-      setCurrency(enteredValue); // Update the state if it meets the validation criteria
+        setCurrency(enteredValue); // Update the state if it meets the validation criteria
       }
     } else {
       // Optionally, you can show an error message or handle the invalid input in some way
@@ -281,9 +292,19 @@ const CreatePunishmentPanel = ({ setPanelName, data = [] }) => {
     setToast({ display: false, message: "" });
   };
 
-  let difference = data.teacher.currency - currency * (studentNames.length ? studentNames.length : 0);
+  let difference =
+    data.teacher.currency -
+    currency * (studentNames.length ? studentNames.length : 0);
 
   const handleGuidanceChange = (event) => {
+    const { name, value } = event.target;
+    setIsGuidance((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
+
+  const handlePhoneLogChange = (event) => {
     const { name, value } = event.target;
     setIsGuidance((prevState) => ({
       ...prevState,
@@ -296,6 +317,15 @@ const CreatePunishmentPanel = ({ setPanelName, data = [] }) => {
     setIsGuidance((prevState) => ({
       ...prevState,
       isGuidanceBoolean: checked,
+    }));
+  };
+
+  const handlePhoneLogCheckboxChange = (event) => {
+    console.log(listOfStudents);
+    const { checked } = event.target;
+    setIsPhoneLog((prevState) => ({
+      ...prevState,
+      isPhoneLogBoolean: checked,
     }));
   };
 
@@ -522,7 +552,6 @@ const CreatePunishmentPanel = ({ setPanelName, data = [] }) => {
                   </div>
                 </div>
                 <div className="question-container-text-area">
-
                   <p style={{ fontSize: 24 }}>
                     {infractionTypeSelected === "Failure to Complete Work" ||
                     infractionTypeSelected === "Positive Behavior Shout Out!" ||
@@ -531,28 +560,52 @@ const CreatePunishmentPanel = ({ setPanelName, data = [] }) => {
                       : "Description of Behavior/Event. This will be sent directly to the student and guardian so be sure to provide accurate and objective facts as well as do NOT include the names of any other students."}
                   </p>
                   <div>
-                  <div className="guidance-box">
-                  <FormGroup>
-                  <FormControlLabel
-  style={{ color: "black" }}
-  componentsProps={{ typography: { variant: 'h4' } }}
-  value="end"
-  labelPlacement="end"
-  control={
-    <Checkbox
-      color="primary"
-      checked={isGuidance.isGuidanceBoolean }
-      sx={{ "& .MuiSvgIcon-root": { fontSize: 28 } }}
-      onChange={handleGuidanceCheckboxChange}
-      name="isGuidanceBoolean"
-    />
-  }
-  label="Create Guidance Referral"
-/>
-      {isGuidance.isGuidanceBoolean && <h4>Description goes here</h4>}
-    </FormGroup>
-
-                  </div>
+                    <div className="guidance-box">
+                      <FormGroup>
+                        <FormControlLabel
+                          style={{ color: "black" }}
+                          componentsProps={{ typography: { variant: "h4" } }}
+                          value="end"
+                          labelPlacement="end"
+                          control={
+                            <Checkbox
+                              color="primary"
+                              checked={isGuidance.isGuidanceBoolean}
+                              sx={{ "& .MuiSvgIcon-root": { fontSize: 28 } }}
+                              onChange={handleGuidanceCheckboxChange}
+                              name="isGuidanceBoolean"
+                            />
+                          }
+                          label="Create Guidance Referral"
+                        />
+                        {isGuidance.isGuidanceBoolean && (
+                          <h4>Description goes here</h4>
+                        )}
+                      </FormGroup>
+                    </div>
+                    <div className="guidance-box">
+                      <FormGroup>
+                        <FormControlLabel
+                          style={{ color: "black" }}
+                          componentsProps={{ typography: { variant: "h4" } }}
+                          value="end"
+                          labelPlacement="end"
+                          control={
+                            <Checkbox
+                              color="primary"
+                              checked={isPhoneLog.isPhoneLogBoolean}
+                              sx={{ "& .MuiSvgIcon-root": { fontSize: 28 } }}
+                              onChange={handlePhoneLogCheckboxChange}
+                              name="isPhoneLogBoolean"
+                            />
+                          }
+                          label="Log Phone Call"
+                        />
+                        {isPhoneLog.isPhoneLogBoolean && (
+                          <h4>Phone Log goes here</h4>
+                        )}
+                      </FormGroup>
+                    </div>
                     {infractionTypeSelected ===
                       "Positive Behavior Shout Out!" && (
                       <div className="points-container">
@@ -606,17 +659,15 @@ const CreatePunishmentPanel = ({ setPanelName, data = [] }) => {
                             students behavior below. Refrain from using any
                             other student’s name in this description unless they
                             were also involved in what caused this shout out.
-                            Remember you can not give away more currency than you have in your wallet
-                            and it does not replenish!
+                            Remember you can not give away more currency than
+                            you have in your wallet and it does not replenish!
                           </p>
                         </div>
                       </div>
                     )}
-                     
                   </div>
                 </div>
                 <div>
-              
                   <TextField
                     margin="normal"
                     required
@@ -673,17 +724,38 @@ const CreatePunishmentPanel = ({ setPanelName, data = [] }) => {
                   />
                 </div>
                 {isGuidance.isGuidanceBoolean && (
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                id="guidanceDescription"
-                label="Brief Guidance Description"
-                name="guidanceDescription"
-                value={isGuidance.guidanceDescription}
-                onChange={handleGuidanceChange}
-              />
-            )}
+                  <TextField
+                    margin="normal"
+                    required
+                    fullWidth
+                    id="guidanceDescription"
+                    label="Brief Guidance Description"
+                    name="guidanceDescription"
+                    value={isGuidance.guidanceDescription}
+                    onChange={handleGuidanceChange}
+                  />
+                )}
+                {isPhoneLog.isPhoneLogBoolean && studentNames.length < 2 && (
+                  <>
+                    <Box
+                      component="section"
+                      sx={{ p: 2, border: "1px dashed grey" }}
+                    >
+                      Parent phone number:{" "}
+                      {getPhoneNumber(studentNames[0].value)}
+                    </Box>
+                    <TextField
+                      margin="normal"
+                      required
+                      fullWidth
+                      id="phoneLogDescription"
+                      label="Phone Log Description"
+                      name="phoneLogDescription"
+                      value={isPhoneLog.phoneLogDescription}
+                      onChange={handlePhoneLogChange}
+                    />
+                  </>
+                )}
                 {/* <br/> */}
 
                 <div
