@@ -5,7 +5,8 @@ import axios from 'axios';
 import { baseUrl } from 'src/utils/jsonData';
 
 const NotesComponent = (props:any) => {
-    const [noteText, setNoteText] = useState({event:"Notes", content:""});
+    const [noteText, setNoteText] = useState({createdBy: "",
+      event:"Notes", content:""});
     const [toastMessage, setToastMessage] = useState("");
     const [isToast, setIsToast] = useState(false);
     const [toastType, setToastType] = useState("")
@@ -13,6 +14,8 @@ const NotesComponent = (props:any) => {
     const headers = {
         Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
       };
+
+      const loggedInUser = sessionStorage.getItem("email");
 
 
 //Add PUT controller to update followup date
@@ -56,8 +59,9 @@ const NotesComponent = (props:any) => {
 
 
     const handleNoteChange = (event:any) => {
-        setNoteText({event:"Notes", content: event.target.value});
-    }
+      if(loggedInUser != null) {
+        setNoteText({createdBy: loggedInUser, event:"Notes", content: event.target.value});
+    }}
 
     return (
         <div className='nm-modal-container'>
