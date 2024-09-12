@@ -10,7 +10,6 @@ export const IncidentByTeacherPieChart = ({ data = [], teacherData = [] }) => {
   const teachersWithIncidentsList = [];
 
   teacherData.map((teacher) => {
-    console.log(teacher.email);
     const filteredData = data.filter(
       (item) => item.teacherEmail === teacher.email
     );

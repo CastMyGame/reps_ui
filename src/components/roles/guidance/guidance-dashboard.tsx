@@ -85,7 +85,6 @@ const GuidanceDashboard = () => {
     axios
       .put(url, payload, { headers })
       .then((response) => {
-        console.log(response.data);
         handleUpdatePage();
       })
       .catch((error) => {
@@ -117,7 +116,6 @@ const GuidanceDashboard = () => {
     axios
       .post(url, [], { headers })
       .then((response) => {
-        console.log(response.data);
         setCloseIndicator(false);
         handleUpdatePage();
         window.alert(`You have Closed Record: ${id} `);
@@ -130,7 +128,6 @@ const GuidanceDashboard = () => {
   const [punishmentRecord, setPunishmentRecord] = useState<any>();
   //
   const getPunishmentRecord = useCallback(async () => {
-    console.log("ACTIVE TASK", data, activeIndex);
     if (activeIndex !== null) {
       try {
         let result;
@@ -222,7 +219,6 @@ const GuidanceDashboard = () => {
     axios
       .delete(url, { data: punishment, headers }) // Pass the headers option with the JWT token
       .then(function (response) {
-        console.log(response.data);
         setUpdatePage((prev) => !prev);
         window.alert(
           `You have Deleted Record: ${punishment.infractionName} ${punishment.studentEmail}`

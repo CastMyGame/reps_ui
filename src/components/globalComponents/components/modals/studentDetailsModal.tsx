@@ -39,7 +39,6 @@ interface studentObj{
 }
 
 export const StudentDetailsModal:React.FC<StudentDetailsModalProps> = ({studentEmail,setDisplayModal}) =>{
-    console.log(studentEmail)
     const [data,setData] = useState([])
     const [studentData,setStudentData] = useState<studentObj>()
     const [noteModal,setNoteModal] = useState<boolean>(false)
@@ -78,10 +77,6 @@ export const StudentDetailsModal:React.FC<StudentDetailsModalProps> = ({studentE
         fetchPunishmentData();
         fetchStudentData()
     },[fetchPunishmentData,fetchStudentData])
-
-
-    console.log(studentData?.notesArray)
-
 
     return(
         <div className="student-details-modal">
@@ -157,7 +152,6 @@ export const StudentDetailsModal:React.FC<StudentDetailsModalProps> = ({studentE
                          
 
                 {  studentData !==undefined &&    studentData?.notesArray.map((item:any ,index:number) =>{
-                    console.log(item)
 
 return(
     <div className="thread-card" key={index}>

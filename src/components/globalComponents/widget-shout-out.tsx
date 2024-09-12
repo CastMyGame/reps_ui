@@ -53,9 +53,7 @@ const GeneralShoutOut: React.FC<AdminShoutOutProps> = ({ data = [], school = { c
   const [barOpen, setBarOpen] = useState<boolean>(true);
 
   function parseISOString(s: string): string {
-    console.log("date before luxon",s)
     const date = DateTime.fromISO(s);
-    console.log("date",date)
     return date.toLocaleString(DateTime.DATETIME_MED);
   }
 

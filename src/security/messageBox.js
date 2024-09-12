@@ -22,7 +22,6 @@ export const MessageBox = ({ setContactUsDisplayModal, contactUsDisplayModal }) 
       try {
         const response = await get(`messaging/v1/`);
         setData(response.receivedMessages);
-        console.log(data)
       } catch (err) {
         console.error(err);
       }

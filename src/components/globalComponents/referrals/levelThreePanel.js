@@ -264,7 +264,6 @@ const LevelThreePanel = ({ roleType }) => {
                 }}
                 onClick={() => {
                   handleClosePunishment(deletePayload);
-                  console.log(deletePayload);
                 }}
               >
                 Accept Answers

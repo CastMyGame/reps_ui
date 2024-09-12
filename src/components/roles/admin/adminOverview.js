@@ -14,7 +14,6 @@ import ShoutOuts from "src/components/globalComponents/shoutOuts";
 import OfficeReferrals from "src/components/globalComponents/officeReferrals/officeReferrals";
 
 const AdminOverviewPanel = ({ data = [] }) => {
-  console.log("admin overview data:", data);
   //Fetch Data to Prop Drill to Components
 
   const punishments = data.punishmentResponse;

@@ -6,8 +6,6 @@ import { AdminOverviewDto, TeacherDto } from "src/types/responses";
 export const IncidentByStudentPieChart: React.FC<AdminOverviewDto> = ({
   writeUpResponse = [],
 }) => {
-  console.log("write up response: ", writeUpResponse);
-  // const filterData = data.filter()
   let uniqueStudents: Record<string, number> = {};
   const totalIncidents = (writeUpResponse as TeacherDto[]).length;
 
@@ -38,9 +36,6 @@ export const IncidentByStudentPieChart: React.FC<AdminOverviewDto> = ({
 
   const meetsThreshold = studentsWithIncidentsList
     .filter((ind) => parseFloat(ind.percent) > 8.0)
-    .sort((a, b) => b.incidents - a.incidents);
-  const otherNotMeetingTreshold = studentsWithIncidentsList
-    .filter((ind) => parseFloat(ind.percent) <= 5.0)
     .sort((a, b) => b.incidents - a.incidents);
 
   const option = {

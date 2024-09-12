@@ -36,7 +36,6 @@ const StudentOpenPunishmentPanel = ({
 
   const handleAssignmentClick = (x) => {
     handleStartAssignment(x);
-    console.log(x);
   };
 
   const calculateImportance = (x) => {

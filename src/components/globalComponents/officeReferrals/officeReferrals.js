@@ -54,7 +54,6 @@ const OfficeReferrals = ({ data = [] }) => {
     axios
       .post(url, payload, { headers })
       .then((response) => {
-        console.log(response.data);
         handleUpdatePage();
       })
       .catch((error) => {
@@ -184,7 +183,6 @@ const OfficeReferrals = ({ data = [] }) => {
                     deletePayload.officeReferralId,
                     textareaValue
                   );
-                  console.log(deletePayload);
                 }}
               >
                 Accept Answers

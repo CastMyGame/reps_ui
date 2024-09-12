@@ -79,9 +79,6 @@ export const TeacherDetailsModal:React.FC<TeacherDetailsModalProps> = ({teacherE
     // },[fetchPunishmentData,fetchStudentData])
 
 
-    console.log(studentData?.notesArray)
-
-
     return(
         <div className="student-details-modal">
                {/* { noteModal &&  <NotesComponent
@@ -156,7 +153,7 @@ export const TeacherDetailsModal:React.FC<TeacherDetailsModalProps> = ({teacherE
                          
 
                 {  studentData !==undefined &&    studentData?.notesArray.map((item:any ,index:number) =>{
-                    console.log(item)
+
 
 return(
     <div className="thread-card" key={index}>

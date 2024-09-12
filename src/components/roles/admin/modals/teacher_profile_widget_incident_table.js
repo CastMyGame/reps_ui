@@ -70,7 +70,6 @@ const TeacherProfileIncidentsByStudentTable = ({ writeUps = [] }) => {
       const firstName =
         studentRecord.firstName || studentRecord.studentFirstName;
       const lastName = studentRecord.lastName || studentRecord.studentLastName;
-      console.log("answer", incidents);
 
       return {
         studentEmail,

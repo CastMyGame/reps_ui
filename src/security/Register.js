@@ -106,12 +106,10 @@ export default function Register() {
 
     const payload = {username: data.get('email'),password: data.get('password'),firstName:data.get('firstName'), lastName:data.get('lastName'), schoolName:data.get('schoolName')}
 
-console.log(payload)
     // Submit the form data if there are no errors
 
     axios.post(`${baseUrl}/register`,payload)
     .then(function (res){
-      console.log(res)
       setRegistrationSuccessMessage(true)
       setTimeout(()=>{
         navigate("/login")

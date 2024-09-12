@@ -58,12 +58,6 @@ const SendResourcesComponent = (props:any) => {
         },3000)
  
       });
-  
-   
-
- 
-      console.log(selectedItems)
-        // props.setDisplayModal(false);
     }
 
 

@@ -43,7 +43,6 @@ const SpendPage = ({ data = [] }) => {
       Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
     };
     if (studentSelect !== null) {
-      console.log(studentSelect, "studentselect");
       const selectStudentUrl = `${baseUrl}/student/v1/email/${studentSelect}`; // Replace with your actual API endpoint
       axios
         .get(selectStudentUrl, { headers }) // Pass the headers option with the JWT token
