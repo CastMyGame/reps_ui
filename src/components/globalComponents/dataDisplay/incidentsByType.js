@@ -108,9 +108,9 @@ export const IncidentByTypePieChart = ({ data = [] }) => {
         type: "pie",
         radius: "50%",
         data: [
-          { value: behavioralConcernData, name: "Behavioral Concern" },
-          { value: positiveData, name: "Positive Shout Out!" },
-          { value: referralData, name: "Teacher Referrals" },
+          { value: "", name: "Behavioral Concern" },
+          { value: "", name: "Positive Shout Out!" },
+          { value: "", name: "Teacher Referrals" },
         ],
         emphasis: {
           itemStyle: {

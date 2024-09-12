@@ -1,81 +1,51 @@
-import { Typography } from "@mui/material";
 import React from "react";
-import { PieChart, pieArcLabelClasses } from "@mui/x-charts/PieChart";
+import ReactEcharts from "echarts-for-react";
 import "./CustomPieChart.css";
-import {
-  StudentPunishment,
-  TeacherDto,
-  TeacherOverviewDto,
-} from "src/types/responses";
+import { AdminOverviewDto, TeacherDto } from "src/types/responses";
 
-export const IncidentByStudentPieChart: React.FC<TeacherOverviewDto> = ({
+export const IncidentByStudentPieChart: React.FC<AdminOverviewDto> = ({
   writeUpResponse = [],
 }) => {
+  console.log("write up response: ", writeUpResponse);
   // const filterData = data.filter()
-  let uniqueStudents: string[] = [];
-  const totalIncidents = writeUpResponse.length;
+  let uniqueStudents: Record<string, number> = {};
+  const totalIncidents = (writeUpResponse as TeacherDto[]).length;
 
   // Get Unique Students Info
-  writeUpResponse.forEach((item) => {
+  (writeUpResponse as TeacherDto[]).forEach((item) => {
     const studentEmail = item.studentEmail;
-    // uniqueStudents[studentEmail] = (uniqueStudents[studentEmail] || 0) + 1;
-    if (!uniqueStudents.includes(studentEmail)) {
-      uniqueStudents.push(studentEmail);
-    }
+    uniqueStudents[studentEmail] = (uniqueStudents[studentEmail] || 0) + 1;
   });
 
   const studentsWithIncidentsList = Object.entries(uniqueStudents).map(
     ([studentEmail, incidents]) => {
-      let { studentFirstName, studentLastName } = writeUpResponse.find(
+      let student = (writeUpResponse as TeacherDto[]).find(
         (item) => item.studentEmail === studentEmail
       );
+
+      const studentFirstName = student?.studentFirstName || "Unknown";
+      const studentLastName = student?.studentLastName || "Unknown";
 
       return {
         studentEmail,
         studentFirstName,
         studentLastName,
-        incidents,
-        percent: ((incidents / totalIncidents) * 100).toFixed(2),
+        incidents: Number(incidents),
+        percent: ((Number(incidents) / totalIncidents) * 100).toFixed(2),
       };
     }
   );
 
-  const meetsTres = studentsWithIncidentsList
-    .filter((ind) => parseFloat(ind.percent) > 5.0)
+  const meetsThreshold = studentsWithIncidentsList
+    .filter((ind) => parseFloat(ind.percent) > 8.0)
     .sort((a, b) => b.incidents - a.incidents);
   const otherNotMeetingTreshold = studentsWithIncidentsList
     .filter((ind) => parseFloat(ind.percent) <= 5.0)
     .sort((a, b) => b.incidents - a.incidents);
 
-  const modifiedList = [
-    ...meetsTres,
-    {
-      studentId: "001",
-      studentFirstName: "Other",
-      studentLastName: "Students",
-      incidents: otherNotMeetingTreshold
-        .reduce((acc, student) => {
-          return acc + student.incidents;
-        }, 0)
-        .toFixed(2),
-      percent: otherNotMeetingTreshold
-        .reduce((acc, student) => {
-          return acc + parseFloat(student.percent);
-        }, 0)
-        .toFixed(2), // Closing parenthesis was added here
-    },
-  ];
-
-  // Custom styles for the scrollable container
-  const scrollableContainerStyle = {
-    maxHeight: "200px",
-    overflowY: "auto",
-    paddingRight: "10px", // Adjust as needed to make room for the scrollbar
-  };
-
   const option = {
     title: {
-      text: "Referral Breakdown",
+      text: "Highly Active Students",
       left: "center",
     },
     tooltip: {
@@ -90,9 +60,10 @@ export const IncidentByStudentPieChart: React.FC<TeacherOverviewDto> = ({
         type: "pie",
         radius: "50%",
         data: [
-          { value: behavioralConcernData, name: "Behavioral Concern" },
-          { value: positiveData, name: "Positive Shout Out!" },
-          { value: referralData, name: "Teacher Referrals" },
+          ...meetsThreshold.map((student) => ({
+            value: student.incidents,
+            name: `${student.studentFirstName} ${student.studentLastName}`,
+          }))
         ],
         emphasis: {
           itemStyle: {
