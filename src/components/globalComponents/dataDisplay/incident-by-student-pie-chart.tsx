@@ -2,10 +2,14 @@ import { Typography } from "@mui/material";
 import React from "react";
 import { PieChart, pieArcLabelClasses } from "@mui/x-charts/PieChart";
 import "./CustomPieChart.css";
-import { StudentPunishment, TeacherDto, TeacherOverviewDto } from "src/types/responses";
+import {
+  StudentPunishment,
+  TeacherDto,
+  TeacherOverviewDto,
+} from "src/types/responses";
 
 export const IncidentByStudentPieChart: React.FC<TeacherOverviewDto> = ({
-  writeUpResponse = []
+  writeUpResponse = [],
 }) => {
   // const filterData = data.filter()
   let uniqueStudents: string[] = [];

@@ -80,16 +80,16 @@ export interface TeacherDto {
   studentLastName: string;
   infractionName: string;
   timeCreated: Date;
-  infractionDescription: string[];
+  infractionDescription: [string];
   teacherEmail: string;
   status: string;
   level: string;
 }
 
 export interface TeacherOverviewDto {
-  punishmentResponse: TeacherDto[];
-  writeUpResponse: TeacherDto[];
-  shoutOutsResponse: TeacherDto[];
+  punishmentResponse: [TeacherDto];
+  writeUpResponse: [TeacherDto];
+  shoutOutsResponse: [TeacherDto];
   teacher: Employee;
   school: School;
 }
