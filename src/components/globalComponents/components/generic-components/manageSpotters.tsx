@@ -38,8 +38,6 @@ export function ManageSpotters() {
     });
   }, []);
 
-  console.log(filteredOptions);
-
   const useOnClickOutside = (ref: any, handler: any) => {
     useEffect(() => {
       const listener = (event: { target: any; }) => {
@@ -63,7 +61,6 @@ export function ManageSpotters() {
   useOnClickOutside(ref, () => setShowDropdown(false))
 
   const handleChange = (event: any) => {
-    console.log(selectOption);
     const value = event.target.value;
     setSearchTerm(value);
 
@@ -74,15 +71,6 @@ export function ManageSpotters() {
     setFilteredOptions(filtered);
     setShowDropdown(true);
   };
-
-  // const selectOptions = Object.values(spotStudents).map((student: StudentDataDTO) => ({
-  //   studentName: `${student.studentName} - ${student.studentEmail}`, // Display student's full name as the label
-  //   studentEmail: student.studentEmail, // Use a unique value for each option
-  // }));
-
-  useEffect(() => {
-    console.log(selectedItems);
-  }, [selectedItems]);
 
   const headers = {
     Authorization: "Bearer " + sessionStorage.getItem("Authorization"),

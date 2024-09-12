@@ -17,7 +17,11 @@ const StudentReferralsByWeek: React.FC<StudentPunishment> = ({ data = [] }) => {
     return cw > 0 ? cw : 52 + cw;
   };
 
-  const GenerateChartData = (currentWeek: number, rangeWeeks: number, data: TeacherReferral[]) => {
+  const GenerateChartData = (
+    currentWeek: number,
+    rangeWeeks: number,
+    data: TeacherReferral[]
+  ) => {
     const genData = [];
 
     for (let i = 0; i < rangeWeeks; i++) {
@@ -38,13 +42,21 @@ const StudentReferralsByWeek: React.FC<StudentPunishment> = ({ data = [] }) => {
     return genData;
   };
 
-  const displayDate = GenerateChartData(currentWeek, rangeWeeks, (data as TeacherReferral[]));
+  const displayDate = GenerateChartData(
+    currentWeek,
+    rangeWeeks,
+    data as TeacherReferral[]
+  );
   displayDate.reverse();
 
   const xAxisData = displayDate.map((obj) => Object.keys(obj)[0]);
   const seriesData = displayDate.map((obj) => Object.values(obj)[0] || 0);
 
-  const GenerateBxByWeek = (bx: string, numOfWeeks: number, data: TeacherReferral[]) => {
+  const GenerateBxByWeek = (
+    bx: string,
+    numOfWeeks: number,
+    data: TeacherReferral[]
+  ) => {
     const bxData = [];
     for (let i = 0; i < numOfWeeks; i++) {
       const weekNum = yearAdj(currentWeek - i);

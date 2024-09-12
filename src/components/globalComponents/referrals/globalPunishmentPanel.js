@@ -67,7 +67,6 @@ const GlobalPunishmentPanel = ({ roleType }) => {
     axios
       .get(url, { headers }) // Pass the headers option with the JWT token
       .then(function (response) {
-        console.log("response", response.data);
         const sortedData = response.data.sort(
           (a, b) =>
             new Date(a.punishment.timeCreated) -
@@ -398,7 +397,6 @@ const GlobalPunishmentPanel = ({ roleType }) => {
             <TableBody>
               {data.length > 0 ? (
                 data.map((x, key) => {
-                  console.log(x, "find me");
                   const days = calculateDaysSince(x.punishment.timeCreated);
 
                   return (

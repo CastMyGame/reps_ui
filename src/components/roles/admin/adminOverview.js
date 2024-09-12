@@ -56,7 +56,7 @@ const AdminOverviewPanel = ({ data = [] }) => {
 
       <div className="overview-row">
         <div className="card-overview-third">
-          <IncidentByStudentPieChart writeUps={data.writeUpResponse} />
+          <IncidentByStudentPieChart writeUpResponse={data.writeUpResponse} />
         </div>
 
         <div className="card-overview-third">

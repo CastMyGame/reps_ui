@@ -5,7 +5,6 @@ import axios from 'axios';
 import { baseUrl } from 'src/utils/jsonData';
 export const TeacherProfileSpotter = ({teacher, setDisplaySpotterAdd, displaySpotterAdd}) => {
 
-  console.log("find",teacher)
   const [studentData,setStudentData] = useState()
   const [update,setUpdate] = useState(false);
 
@@ -45,7 +44,7 @@ if (userConfirmed) {
     setUpdate((prev)=>!prev)
   })
   .catch(() => {
-    console.log("SOMETHING WENT WRONG");
+    console.error("SOMETHING WENT WRONG");
   });
 } else {
   // User clicked "Cancel" (No)

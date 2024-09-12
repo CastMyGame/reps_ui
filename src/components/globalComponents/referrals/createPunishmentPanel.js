@@ -183,7 +183,6 @@ const CreatePunishmentPanel = ({ setPanelName, data = [] }) => {
     setLoading(true);
     setOpenModal({ display: false, message: "" });
     const payloadContent = [];
-    console.log("std names", studentNames);
     studentNames.map((student) => {
       const studentPayload = {
         studentEmail: student.value,
@@ -321,7 +320,6 @@ const CreatePunishmentPanel = ({ setPanelName, data = [] }) => {
   };
 
   const handlePhoneLogCheckboxChange = (event) => {
-    console.log(listOfStudents);
     const { checked } = event.target;
     setIsPhoneLog((prevState) => ({
       ...prevState,

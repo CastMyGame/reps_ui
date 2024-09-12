@@ -14,8 +14,6 @@ export default function ViolationPage(props) {
 
   useEffect(() => {
     setMapIndex(props.data.mapIndex);
-    console.log(mapIndex);
-    console.log(props.data.officeReferralId);
   }, []);
 
   useEffect(() => {
@@ -24,8 +22,6 @@ export default function ViolationPage(props) {
     };
 
     let theName = props.data.infractionName || "Office Referral";
-
-    console.log("ENJPY", props.data);
 
     const url = `${baseUrl}/assignments/v1/`;
     axios
@@ -44,10 +40,6 @@ export default function ViolationPage(props) {
   }, []);
 
   useEffect(() => {
-    console.log(mapIndex);
-  }, [mapIndex]);
-
-  useEffect(() => {
     if (mapIndex == 0) {
     } else {
       const headers = {
@@ -63,7 +55,6 @@ export default function ViolationPage(props) {
       axios
         .put(url, {}, { headers }) // Include headers directly in the request config
         .then((response) => {
-          console.log(response.data);
         })
         .catch((error) => {
           console.error(error);
@@ -131,8 +122,6 @@ export default function ViolationPage(props) {
       studentAnswer: studentAnswers,
       timeClosed: Date.now,
     };
-
-    console.log(payload);
 
     if (formattedInfraction === "Office Referral") {
       let url = `${baseUrl}/officeReferral/v1/submit/${props.data.officeReferralId}`;

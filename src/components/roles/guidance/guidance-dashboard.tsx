@@ -17,7 +17,10 @@ import {
   ToggleButtonGroup,
 } from "@mui/material";
 import { handleLogout } from "src/utils/helperFunctions";
-import { categoryBadgeGenerator, dateCreateFormat } from "src/helperFunctions/helperFunctions";
+import {
+  categoryBadgeGenerator,
+  dateCreateFormat,
+} from "src/helperFunctions/helperFunctions";
 import { get } from "src/utils/api/api";
 import { StudentDetailsModal } from "src/components/globalComponents/components/modals/studentDetailsModal";
 import NavbarCustom from "src/components/globalComponents/modals/navBar/navBar";
@@ -82,7 +85,6 @@ const GuidanceDashboard = () => {
     axios
       .put(url, payload, { headers })
       .then((response) => {
-        console.log(response.data);
         handleUpdatePage();
       })
       .catch((error) => {
@@ -114,7 +116,6 @@ const GuidanceDashboard = () => {
     axios
       .post(url, [], { headers })
       .then((response) => {
-        console.log(response.data);
         setCloseIndicator(false);
         handleUpdatePage();
         window.alert(`You have Closed Record: ${id} `);
@@ -124,29 +125,24 @@ const GuidanceDashboard = () => {
       });
   };
 
-
-  const [punishmentRecord,setPunishmentRecord] = useState<any>();
+  const [punishmentRecord, setPunishmentRecord] = useState<any>();
   //
   const getPunishmentRecord = useCallback(async () => {
-    console.log("ACTIVE TASK", data,activeIndex)
-    if(activeIndex !== null){
+    if (activeIndex !== null) {
       try {
         let result;
-     
-          result = await get(`punish/v1/${data[activeIndex].linkToPunishment}`)
-        setPunishmentRecord(result)
-        
+
+        result = await get(`punish/v1/${data[activeIndex].linkToPunishment}`);
+        setPunishmentRecord(result);
       } catch (err) {
-        setPunishmentRecord(null)
+        setPunishmentRecord(null);
 
         console.error("Error Fetching Data: ", err);
       }
-    }else{
-      setPunishmentRecord(null)
+    } else {
+      setPunishmentRecord(null);
     }
-    
   }, [activeIndex]);
-
 
   const fetchPunishmentData = useCallback(async () => {
     try {
@@ -223,7 +219,6 @@ const GuidanceDashboard = () => {
     axios
       .delete(url, { data: punishment, headers }) // Pass the headers option with the JWT token
       .then(function (response) {
-        console.log(response.data);
         setUpdatePage((prev) => !prev);
         window.alert(
           `You have Deleted Record: ${punishment.infractionName} ${punishment.studentEmail}`
@@ -235,7 +230,6 @@ const GuidanceDashboard = () => {
   };
 
   useEffect(() => {
-
     if (panelName === "existing-parent-contact") {
       fetchPunishmentData();
     } else if (panelName === "overview") {
@@ -290,7 +284,6 @@ const GuidanceDashboard = () => {
   };
 
   //Badge Generatores
-  
 
   const statusBadgeGenerator = (status: string) => {
     if (status === "OPEN") {
@@ -339,8 +332,6 @@ const GuidanceDashboard = () => {
       {/* MODALS */}
 
       <div>
-
-
         {displayPicker && (
           <SchedulerComponent
             setDisplayModal={setDisplayPicker}
@@ -799,17 +790,21 @@ const GuidanceDashboard = () => {
             {activeIndex != null && activeIndex >= 0 && (
               <div className="details-container">
                 <p>{data[activeIndex]?.guidanceTitle}</p>
-                {punishmentRecord && <div className="referal-summary">
-                  <p>ID:{data[activeIndex].linkToPunishment}</p>
-                <p>Infraction Name:{punishmentRecord?.infractionName}</p>
-                <p>Description: {punishmentRecord?.infractionDescription[0]} </p>
-                <p>Created By: {punishmentRecord?.teacherEmail} </p>
-                <p>Created On: {dateCreateFormat(punishmentRecord?.timeCreated)} </p>
+                {punishmentRecord && (
+                  <div className="referal-summary">
+                    <p>ID:{data[activeIndex].linkToPunishment}</p>
+                    <p>Infraction Name:{punishmentRecord?.infractionName}</p>
+                    <p>
+                      Description: {punishmentRecord?.infractionDescription[0]}{" "}
+                    </p>
+                    <p>Created By: {punishmentRecord?.teacherEmail} </p>
+                    <p>
+                      Created On:{" "}
+                      {dateCreateFormat(punishmentRecord?.timeCreated)}{" "}
+                    </p>
+                  </div>
+                )}
 
-
-                  
-                  </div>}
-             
                 <p>{data[activeIndex]?.studentId}</p>
                 <p>{data[activeIndex]?.studentEmail}</p>
                 <p>{data[activeIndex]?.teacherEmail}</p>

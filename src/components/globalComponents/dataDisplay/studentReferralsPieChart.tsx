@@ -1,9 +1,5 @@
 import ReactEcharts from "echarts-for-react";
-import { TeacherReferral } from "src/types/responses";
-
-interface StudentPunishment {
-  data: TeacherReferral;
-}
+import { StudentPunishment, TeacherReferral } from "src/types/responses";
 
 const StudentReferralsPieChart: React.FC<StudentPunishment> = ({
   data = [],

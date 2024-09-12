@@ -1,3 +1,5 @@
+import { Employee, School } from "./school";
+
 export interface Role {
   role: string;
   id: string;
@@ -70,4 +72,56 @@ export interface TeacherReferral {
 
 export interface StudentPunishment {
   data: TeacherReferral;
+}
+
+export interface TeacherDto {
+  studentEmail: string;
+  studentFirstName: string;
+  studentLastName: string;
+  infractionName: string;
+  timeCreated: Date;
+  infractionDescription: [string];
+  teacherEmail: string;
+  status: string;
+  level: string;
+}
+
+export interface TeacherOverviewDto {
+  punishmentResponse: TeacherDto;
+  writeUpResponse: TeacherDto;
+  shoutOutsResponse: TeacherDto;
+  teacher: Employee;
+  school: School;
+}
+
+export interface AdminOverviewDto {
+  punishmentResponse: TeacherDto;
+  writeUpResponse: TeacherDto;
+  shoutOutsResponse: TeacherDto;
+  teacher: Employee;
+  school: School;
+  teachers: Employee;
+  officeReferrals: OfficeReferral;
+}
+
+export interface OfficeReferral {
+  officeReferralId: string;
+  referralCode: OfficeReferralCode;
+  infractionLevel: string;
+  studentEmail: string;
+  adminEmail: string;
+  schoolName: string;
+  status: string;
+  closedExplanation: string;
+  timeCreated: Date;
+  timeClosed: Date;
+  classPeriod: string;
+  isArchived: boolean;
+  isStateFiled: boolean;
+  stateIncidentNumber: string;
+  archivedBy: string;
+  archivedExplanation: string;
+  archivedOn: Date;
+  mapIndex: number;
+  referralDescription: string;
 }

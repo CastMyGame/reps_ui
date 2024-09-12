@@ -18,7 +18,6 @@ const DetentionWidget = () => {
       .get(url, { headers })
       .then(function (response) {
         const data = response.data;
-        console.log("Data: ", data);
 
         setData(data);
       })

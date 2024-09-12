@@ -64,8 +64,6 @@ const CreateAssignmentForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Access formData.infractionName, formData.level, formData.questions[0].qTitle, and formData.questions[0].qReferences
-    console.log(formData);
   };
 
   return (

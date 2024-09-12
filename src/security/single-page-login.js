@@ -114,7 +114,6 @@ const [login,setLogin] = useState(true);
     const schoolName = res.data.userModel.schoolName;
     const email = res.data.userModel.username;
     const role = res.data.userModel.roles[0]["role"]
-    console.log(role)
     sessionStorage.setItem("Authorization", token);
     sessionStorage.setItem("userName", userName);
     sessionStorage.setItem("schoolName", schoolName);

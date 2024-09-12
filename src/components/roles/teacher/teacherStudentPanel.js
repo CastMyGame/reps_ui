@@ -48,7 +48,6 @@ const TeacherStudentPanel = ({ setPanelName, data = [] }) => {
       if (response != null) {
         setStudentData(response);
         setStudentDisplay(true);
-        console.log(response + "Student Data");
       }
     } catch (error) {
       console.error(error);
@@ -70,7 +69,6 @@ const TeacherStudentPanel = ({ setPanelName, data = [] }) => {
       axios
         .put(url, payload, { headers })
         .then((response) => {
-          console.log(response.data);
           setStudentDisplay(false);
           window.alert(
             `You have been successfully added as a spotter for: ${spotEmail} `
@@ -184,7 +182,6 @@ const TeacherStudentPanel = ({ setPanelName, data = [] }) => {
               <button
                 onClick={() => {
                   generatePDF(studentData);
-                  console.log(studentData + "Student Data");
                 }}
                 style={{ backgroundColor: "#CF9FFF" }}
               >

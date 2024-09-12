@@ -62,9 +62,7 @@ const AdminUserRoleManagement = () => {
     axios
       .put(url, payload, { headers }) // Pass the headers option with the JWT token
       .then(function (response) {
-        console.log(response.data);
         setApproveUpdate((prev) => !prev);
-        console.log(approveUpdate);
         window.alert("You have updated user");
       })
       .catch(function (error) {
@@ -78,7 +76,6 @@ const AdminUserRoleManagement = () => {
     axios
       .delete(url, { headers }) // Pass the headers option with the JWT token
       .then(function (response) {
-        console.log(response.data);
         setApproveUpdate((prev) => !prev);
         window.alert(
           `You have Deleted User: ${user.firstName} ${user.lastName}`
@@ -149,8 +146,6 @@ const AdminUserRoleManagement = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {console.log(data)}
-
             {data.length > 0 ? (
               data.map((x, key) => (
                 <TableRow
@@ -187,9 +182,6 @@ const AdminUserRoleManagement = () => {
                         }
                         onChange={(event) => {
                           const selectedRoleId = event.target.value; // This will give you the selected role value
-                          console.log(
-                            `Student ID: ${x.id}, Selected Role ID: ${selectedRoleId}`
-                          );
                           updateUserRole(x.id, selectedRoleId);
                         }}
                         style={{ minWidth: "150px" }} // Adjust width if necessary

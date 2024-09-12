@@ -8,7 +8,6 @@ export default function IdleComponent() {
   const [showNotification, setShowNotification] = useState(false);
 
   const onIdle = () => {
-    console.log('Log Out');
     // Clear all sessionStorage
     sessionStorage.clear();
     navigate('/login');
