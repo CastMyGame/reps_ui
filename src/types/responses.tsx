@@ -1,3 +1,5 @@
+import { Employee, School } from "./school";
+
 export interface Role {
   role: string;
   id: string;
@@ -70,4 +72,24 @@ export interface TeacherReferral {
 
 export interface StudentPunishment {
   data: TeacherReferral;
+}
+
+export interface TeacherDto {
+  studentEmail: string;
+  studentFirstName: string;
+  studentLastName: string;
+  infractionName: string;
+  timeCreated: Date;
+  infractionDescription: string[];
+  teacherEmail: string;
+  status: string;
+  level: string;
+}
+
+export interface TeacherOverviewDto {
+  punishmentResponse: TeacherDto[];
+  writeUpResponse: TeacherDto[];
+  shoutOutsResponse: TeacherDto[];
+  teacher: Employee;
+  school: School;
 }
