@@ -12,8 +12,11 @@ import { IncidentByStudentPieChart } from "src/components/globalComponents/dataD
 import "./admin.css";
 import ShoutOuts from "src/components/globalComponents/shoutOuts";
 import OfficeReferrals from "src/components/globalComponents/officeReferrals/officeReferrals";
+import { AdminSchoolReferralByTypePieChart } from "src/components/globalComponents/dataDisplay/adminSchoolReferralByTypePieChart";
+import { AdminTeacherReferralByTypePieChart } from "src/components/globalComponents/dataDisplay/adminTeacherReferralByTypePieChart";
 
 const AdminOverviewPanel = ({ data = [] }) => {
+  console.log("Overview Drill: ", data);
   //Fetch Data to Prop Drill to Components
 
   const punishments = data.punishmentResponse;
@@ -56,11 +59,18 @@ const AdminOverviewPanel = ({ data = [] }) => {
 
       <div className="overview-row">
         <div className="card-overview-third">
-          <IncidentByStudentPieChart writeUpResponse={data.writeUpResponse} />
+          <AdminSchoolReferralByTypePieChart
+            writeUpResponse={data.writeUpResponse}
+            shoutOutsResponse={data.shoutOutsResponse}
+            punishmentResponse={data.punishmentResponse}
+            officeReferrals={data.officeReferrals}
+          />
         </div>
 
         <div className="card-overview-third">
-          <IncidentsByStudentTable writeUps={data.writeUpResponse} />
+          <AdminTeacherReferralByTypePieChart
+            writeUpResponse={data.writeUpResponse}
+          />
         </div>
 
         <div className="card-overview-third">

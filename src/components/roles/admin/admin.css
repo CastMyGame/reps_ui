@@ -184,6 +184,8 @@ width: 95%;
   background: linear-gradient(to right, #6372ff 0%, #5ca9fb 100%);
   color: #fff;
   overflow-x: scroll;
+  max-height: 100%;
+  height: fit-content;
   
 
 
@@ -208,9 +210,8 @@ width: 95%;
 
 .card-overview-third {
   margin-right: 5px;
-  height: 400px;
-  min-width: 600px;
-  max-width: 33%;
+  max-height: 100%;
+  max-width: 100%;
   padding: 1%;
   background-color: #fff;
   color: rgba(0, 0, 0, 0.87);

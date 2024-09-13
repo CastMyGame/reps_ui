@@ -10,78 +10,82 @@ import {
   Typography,
 } from "@mui/material";
 
-const IncidentsByStudentTable = ({ writeUps = [] }) => {
+const IncidentsByStudentTable = ({ writeUpResponse = [] }) => {
+  console.log("Prop here", writeUpResponse)
   const uniqueStudents = {};
-  const totalIncidents = writeUps.length;
-  const [searchQuery, setSearchQuery] = useState("");
-  const [filteredData, setFilteredData] = useState([]);
+  const totalIncidents = writeUpResponse.length;
+  // const [searchQuery, setSearchQuery] = useState("");
+  // const [filteredData, setFilteredData] = useState([]);
 
-  const studentsWithIncidentsList = Object.entries(uniqueStudents).map(
-    ([studentEmail, incidents]) => {
-      const studentRecord = writeUps.find(
-        (item) => item.studentEmail === studentEmail
-      );
+  const studentsWithIncidentsList = 
+  // Object.entries(writeUpResponse).map(
+  //   ([studentEmail, incidents]) => {
+  //     const studentRecord = writeUpResponse.find(
+  //       (item) => item.studentEmail === studentEmail
+  //     );
 
-      const firstName =
-        studentRecord.firstName || studentRecord.studentFirstName;
-      const lastName = studentRecord.lastName || studentRecord.studentLastName;
+  //     const firstName =
+  //       studentRecord.firstName || studentRecord.studentFirstName;
+  //     const lastName = studentRecord.lastName || studentRecord.studentLastName;
+  writeUpResponse.filter((teacherDto) => {
 
-      return {
-        studentEmail,
-        firstName,
-        lastName,
-        incidents,
-        percent: ((incidents / totalIncidents) * 100).toFixed(2),
-      };
-    }
-  );
+  })
 
-  useEffect(() => {
-    // Filter the data based on the search query
-    const filteredRecords = writeUps.filter((record) => {
-      const fullName =
-        `${record.studentFirstName} ${record.studentLastName}`.toLowerCase();
+      // return {
+      //   studentEmail,
+      //   firstName,
+      //   lastName,
+      //   incidents,
+      //   percent: ((incidents / totalIncidents) * 100).toFixed(2),
+      // };
 
-      return (
-        fullName.includes(searchQuery.toLowerCase()) ||
-        record.infractionName.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-    });
+  // useEffect(() => {
+  //   // Filter the data based on the search query
+  //   const filteredRecords = writeUpResponse.filter((record) => {
+  //     const fullName =
+  //       `${record.studentFirstName} ${record.studentLastName}`.toLowerCase();
 
-    // Sort the filtered records based on the number of incidents in descending order
-    const sortedData = [...filteredRecords];
-    const uniqueStudentIds = sortedData.reduce((uniqueIds, record) => {
-      const studentEmail = record.studentEmail;
+  //     return (
+  //       fullName.includes(searchQuery.toLowerCase()) ||
+  //       record.infractionName.toLowerCase().includes(searchQuery.toLowerCase())
+  //     );
+  //   });
 
-      // Check if the studentId is not already in the uniqueIds array
-      if (!uniqueIds.includes(studentEmail)) {
-        uniqueIds.push(studentEmail);
-      }
+  //   // Sort the filtered records based on the number of incidents in descending order
+  //   const sortedData = [...filteredRecords];
+  //   const uniqueStudentIds = sortedData.reduce((uniqueIds, record) => {
+  //     const studentEmail = record.studentEmail;
 
-      return uniqueIds;
-    }, []);
+  //     // Check if the studentId is not already in the uniqueIds array
+  //     if (!uniqueIds.includes(studentEmail)) {
+  //       uniqueIds.push(studentEmail);
+  //     }
 
-    const recentRecords = [];
+  //     return uniqueIds;
+  //   }, []);
 
-    // sortedData.reverse();
-    // const recentContacts = uniqueStudentIds.map((studentEmail) => {
-    //   // Find the most recent record for each unique studentId
-    //   const mostRecentRecord = sortedData.find(
-    //     (record) => record.studentEmail === studentEmail
-    //   );
-    //   return mostRecentRecord;
-    // });
+  //   const recentRecords = [];
 
-    setFilteredData(studentsWithIncidentsList);
-  }, [writeUps, searchQuery]);
+  //   // sortedData.reverse();
+  //   // const recentContacts = uniqueStudentIds.map((studentEmail) => {
+  //   //   // Find the most recent record for each unique studentId
+  //   //   const mostRecentRecord = sortedData.find(
+  //   //     (record) => record.studentEmail === studentEmail
+  //   //   );
+  //   //   return mostRecentRecord;
+  //   // });
+
+  //   setFilteredData(studentsWithIncidentsList);
+  // }, [writeUpResponse, searchQuery]);
 
   // //Get Unique Students Info
-  writeUps.forEach((item) => {
+  writeUpResponse.forEach((item) => {
     const studentEmail = item.studentEmail;
     uniqueStudents[studentEmail] = (uniqueStudents[studentEmail] || 0) + 1;
   });
 
-  filteredData.sort((a, b) => b.incidents - a.incidents);
+  studentsWithIncidentsList.sort((a, b) => b.incidents - a.incidents);
+  console.log("students list:" ,studentsWithIncidentsList)
 
   return (
     <TableContainer component={Paper}>
@@ -103,16 +107,16 @@ const IncidentsByStudentTable = ({ writeUps = [] }) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {filteredData.map((record, index) => (
+          {writeUpResponse.map((record, index) => (
             <TableRow key={index}>
               <TableCell style={{ fontSize: "1.5rem" }}>
-                {record.firstName || record.studentEmail} {record.lastName}
+                {record.studentFirstName} {record.studentLastName}
               </TableCell>
               <TableCell style={{ fontSize: "1.5rem" }}>
-                {record.incidents}
+                {record.timeCreated}
               </TableCell>
               <TableCell style={{ fontSize: "1.5rem" }}>
-                {record.percent}%
+                {record.status}%
               </TableCell>
             </TableRow>
           ))}
