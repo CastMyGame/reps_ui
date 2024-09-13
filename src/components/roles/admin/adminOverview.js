@@ -50,7 +50,7 @@ const AdminOverviewPanel = ({ data = [] }) => {
       <div className="card-title">
         <Typography
           color="white"
-          variant="h6"
+          variant="h3"
           style={{ flexGrow: 1, outline: "1px solid  white", padding: "5px" }}
         >
           Week At a Glance
@@ -83,7 +83,7 @@ const AdminOverviewPanel = ({ data = [] }) => {
       <div className="card-title">
         <Typography
           color="white"
-          variant="h6"
+          variant="h3"
           style={{ flexGrow: 1, outline: "1px solid  white", padding: "5px" }}
         >
           Coaching Information
@@ -93,8 +93,8 @@ const AdminOverviewPanel = ({ data = [] }) => {
       <div className="overview-row">
         <div className="card-overview-third">
           <IncidentByTeacherPieChart
-            data={data.writeUpResponse}
-            teacherData={data.teachers}
+            writeUpResponse={data.writeUpResponse}
+            teachers={data.teachers}
           />
         </div>
 
@@ -118,7 +118,7 @@ const AdminOverviewPanel = ({ data = [] }) => {
       <div className="card-title">
         <Typography
           color="white"
-          variant="h6"
+          variant="h3"
           style={{ flexGrow: 1, outline: "1px solid  white", padding: "5px" }}
         >
           Longitudinal Reports

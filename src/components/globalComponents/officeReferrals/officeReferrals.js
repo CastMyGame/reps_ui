@@ -16,12 +16,11 @@ import { baseUrl } from "src/utils/jsonData";
 import axios from "axios";
 
 const OfficeReferrals = ({ data = [] }) => {
-  const [activeIndex, setActiveIndex] = useState(null);
   const [updatePage, setUpdatePage] = useState(false);
-  const [referralList, setReferralList] = useState([null]);
   const [deletePayload, setDeletePayload] = useState(null);
   const [toast, setToast] = useState({ visible: false, message: "" });
   const [textareaValue, setTextareaValue] = useState("");
+  const [barOpen, setBarOpen] = useState(true);
 
   const [openModal, setOpenModal] = useState({
     display: false,
@@ -68,7 +67,7 @@ const OfficeReferrals = ({ data = [] }) => {
     });
     const url = `${baseUrl}/officeReferral/v1/rejected/${obj.officeReferralId}`;
     axios
-      .put(url, [textareaValue] , { headers }) // Pass the headers option with the JWT token
+      .put(url, [textareaValue], { headers }) // Pass the headers option with the JWT token
       .then(function (response) {
         setToast({
           visible: true,
@@ -92,105 +91,49 @@ const OfficeReferrals = ({ data = [] }) => {
     setTextareaValue(event.target.value);
   };
 
-  return (
+  return !barOpen ? (
+    <div className="shout-out-bar-container">
+      <div className="bar-content">
+        <ArrowDropDownCircleIcon
+          className="arrowIcon"
+          style={{
+            transform: "rotate(0deg)",
+            cursor: "pointer",
+            marginTop: "3px",
+            fontSize: "large",
+          }}
+          onClick={() => setBarOpen(true)}
+        />{" "}
+        <h5
+          style={{
+            marginLeft: "20px",
+            fontSize: 24,
+            fontWeight: "bold",
+          }}
+        >
+          Office Managed Referrals
+        </h5>
+      </div>
+    </div>
+  ) : (
     <>
-      {openModal.display && (
-        <div className="modal-overlay">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h3>{openModal.message}</h3>
-              <div className="answer-container">
-                {openModal.data.referralDescription.map((item, index) => {
-                  if (index > 1) {
-                    const match = item.match(
-                      /question=([\s\S]+?),\s*answer=([\s\S]+?)(?=\))/
-                    );
-                    if (match) {
-                      const question = match[1].trim();
-                      const answer = match[2].trim();
-
-                      return (
-                        <div
-                          key={index}
-                          style={{
-                            display: "flex",
-                            flexDirection: "row",
-                            border: "1px solid black",
-                          }}
-                        >
-                          <div
-                            style={{
-                              backgroundColor: "grey",
-                              minHeight: "15px",
-                              width: "40%",
-                            }}
-                          >
-                            <strong>Question:</strong> {question}
-                          </div>
-                          <div
-                            style={{
-                              color: "black",
-                              backgroundColor: "lightBlue",
-                              minHeight: "50px",
-                              width: "60%",
-                              textAlign: "left",
-                              paddingLeft: "10px",
-                            }}
-                          >
-                            <strong>Answer:</strong> {answer}
-                          </div>
-                        </div>
-                      );
-                    }
-                  }
-                })}
-              </div>
-            </div>
-            <div className="modal-body">
-              <textarea
-                value={textareaValue} // Set the value of the textarea to the state variable
-                onChange={handleTextareaChange} // Handle changes to the textarea
-                className="multi-line-input"
-                placeholder="Enter additional comments"
-                rows={4} // This sets the initial height to show 4 rows
-              ></textarea>
-            </div>
-            <div className="modal-buttons">
-              <button
-                onClick={() => {
-                  setOpenModal({ display: false, message: "" });
-                  setTextareaValue("");
-                }}
-              >
-                Cancel
-              </button>
-              <button
-                disabled={textareaValue.length === 0}
-                style={{
-                  backgroundColor: textareaValue === "" ? "grey" : "red",
-                }}
-                onClick={() => handleRejectPunishment(deletePayload)}
-              >
-                Reject Answers
-              </button>
-              <button
-                disabled={textareaValue.length === 0}
-                style={{
-                  backgroundColor: textareaValue === "" ? "grey" : "green",
-                }}
-                onClick={() => {
-                  handleClosePunishment(
-                    deletePayload.officeReferralId,
-                    textareaValue
-                  );
-                }}
-              >
-                Accept Answers
-              </button>
-            </div>
-          </div>
+      <div className="bar-container open">
+        <div className="bar-content">
+          <ArrowDropDownCircleIcon
+            className="arrowIcon"
+            style={{
+              transform: "rotate(180deg)",
+              cursor: "pointer",
+              marginTop: "3px",
+              fontSize: "large",
+            }}
+            onClick={() => setBarOpen(false)}
+          />{" "}
+          <h5 style={{ marginLeft: "20px", fontSize: 24, fontWeight: "bold" }}>
+            Office Managed Referrals
+          </h5>{" "}
         </div>
-      )}
+      </div>
       <TableContainer
         style={{
           width: "100%",
@@ -329,6 +272,103 @@ const OfficeReferrals = ({ data = [] }) => {
           </TableBody>
         </Table>
       </TableContainer>{" "}
+      {openModal.display && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h3>{openModal.message}</h3>
+              <div className="answer-container">
+                {openModal.data.referralDescription.map((item, index) => {
+                  if (index > 1) {
+                    const match = item.match(
+                      /question=([\s\S]+?),\s*answer=([\s\S]+?)(?=\))/
+                    );
+                    if (match) {
+                      const question = match[1].trim();
+                      const answer = match[2].trim();
+
+                      return (
+                        <div
+                          key={index}
+                          style={{
+                            display: "flex",
+                            flexDirection: "row",
+                            border: "1px solid black",
+                          }}
+                        >
+                          <div
+                            style={{
+                              backgroundColor: "grey",
+                              minHeight: "15px",
+                              width: "40%",
+                            }}
+                          >
+                            <strong>Question:</strong> {question}
+                          </div>
+                          <div
+                            style={{
+                              color: "black",
+                              backgroundColor: "lightBlue",
+                              minHeight: "50px",
+                              width: "60%",
+                              textAlign: "left",
+                              paddingLeft: "10px",
+                            }}
+                          >
+                            <strong>Answer:</strong> {answer}
+                          </div>
+                        </div>
+                      );
+                    }
+                  }
+                })}
+              </div>
+            </div>
+            <div className="modal-body">
+              <textarea
+                value={textareaValue} // Set the value of the textarea to the state variable
+                onChange={handleTextareaChange} // Handle changes to the textarea
+                className="multi-line-input"
+                placeholder="Enter additional comments"
+                rows={4} // This sets the initial height to show 4 rows
+              ></textarea>
+            </div>
+            <div className="modal-buttons">
+              <button
+                onClick={() => {
+                  setOpenModal({ display: false, message: "" });
+                  setTextareaValue("");
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                disabled={textareaValue.length === 0}
+                style={{
+                  backgroundColor: textareaValue === "" ? "grey" : "red",
+                }}
+                onClick={() => handleRejectPunishment(deletePayload)}
+              >
+                Reject Answers
+              </button>
+              <button
+                disabled={textareaValue.length === 0}
+                style={{
+                  backgroundColor: textareaValue === "" ? "grey" : "green",
+                }}
+                onClick={() => {
+                  handleClosePunishment(
+                    deletePayload.officeReferralId,
+                    textareaValue
+                  );
+                }}
+              >
+                Accept Answers
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 };

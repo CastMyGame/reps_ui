@@ -54,11 +54,14 @@ export const IncidentByStudentPieChart: React.FC<AdminOverviewDto> = ({
       {
         type: "pie",
         radius: "50%",
+        label: {
+          show: false,
+        },
         data: [
           ...meetsThreshold.map((student) => ({
             value: student.incidents,
             name: `${student.studentFirstName} ${student.studentLastName}`,
-          }))
+          })),
         ],
         emphasis: {
           itemStyle: {

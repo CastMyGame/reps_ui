@@ -1,91 +1,99 @@
 import React from "react";
-import { BarChart } from "@mui/x-charts/BarChart";
-import Typography from "@mui/material/Typography";
 import { axisClasses } from "@mui/x-charts";
 import { getIncidentByBehavior } from "src/helperFunctions/helperFunctions";
+import ReactEcharts from "echarts-for-react";
 
 const TeacherInfractionOverPeriodBarChart = ({ data = [] }) => {
-  const chartSetting = {
-    yAxis: [{}],
-
-    width: 500,
-    height: 290,
-    sx: {
-      [`.${axisClasses.left} .${axisClasses.label}`]: {
-        transform: "translate(-20px, 0)",
-      },
-    },
+  const tardybehavior = {
+    incidents: getIncidentByBehavior("Tardy", data),
+    behavior: "Tardy",
+  };
+  const disruptivebehavior = {
+    incidents: getIncidentByBehavior("Disruptive Behavior", data),
+    behavior: "Disruptive Behavior",
+  };
+  const horseplay = {
+    incidents: getIncidentByBehavior("Horseplay", data),
+    behavior: "Horseplay",
+  };
+  const dressCode = {
+    incidents: getIncidentByBehavior("Dress Code", data),
+    behavior: "Dress Code",
+  };
+  const cellPhone = {
+    incidents: 8,
+    // incidents: getIncidentByBehavior("Unauthorized Device/Cell Phone", data),
+    behavior: "Unauthorized Device/Cell Phone",
+  };
+  const behavioralConcern = {
+    incidents: 3,
+    // incidents: getIncidentByBehavior("Behavioral Concern", data),
+    behavior: "Behavioral Concern",
+  };
+  const ftc = {
+    incidents: 6,
+    // incidents: getIncidentByBehavior("Failure to Complete Work", data),
+    behavior: "Failure to Complete Work",
   };
 
-  const dataset = [
-    {
-      incidents: getIncidentByBehavior("Tardy", data),
-      behavior: "Tardy",
+  const option = {
+    tooltip: {
+      trigger: "item",
     },
-    {
-      incidents: getIncidentByBehavior("Disruptive Behavior", data),
-      behavior: "Dis. Behavior",
+    legend: {
+      show: true,
+      orient: "horizontal",
+      top: "top",
     },
-    {
-      incidents: getIncidentByBehavior("Horseplay", data),
-      behavior: "Horseplay",
+    xAxis: {
+      type: "category",
+      show: false,
     },
-    {
-      incidents: getIncidentByBehavior("Dress Code", data),
-      behavior: "Dress Code",
+    yAxis: {
+      type: "value",
     },
-    {
-      incidents: getIncidentByBehavior("Unauthorized Device/Cell Phone", data),
-      behavior: "Device",
-    },
-    {
-      incidents: getIncidentByBehavior("Behavioral Concern", data),
-      behavior: "B. Concern",
-    },
-    {
-      incidents: getIncidentByBehavior("Failure to Complete Work", data),
-      behavior: "FTC",
-    },
-  ];
+    series: [
+      {
+        name: "Tardy",
+        type: "bar",
+        data: [tardybehavior.incidents],
+      },
+      {
+        name: "Dress Code",
+        type: "bar",
+        data: [dressCode.incidents],
+      },
+      {
+        name: "Disruptive Behavior",
+        type: "bar",
+        data: [disruptivebehavior.incidents],
+      },
+      {
+        name: "Behavioral Concern",
+        type: "bar",
+        data: [behavioralConcern.incidents],
+      },
+      {
+        name: "Horseplay",
+        type: "bar",
+        data: [horseplay.incidents],
+      },
+      {
+        name: "Unauthorized Device/Cell Phone",
+        type: "bar",
+        data: [cellPhone.incidents],
+      },
+      {
+        name: "Failure to Complete Work",
+        type: "bar",
+        data: [ftc.incidents],
+      },
+    ],
+  };
 
   return (
     <div>
-      <Typography
-        marginLeft={"25%"}
-        alignContent={"justify"}
-        style={{ fontSize: "2rem" }}
-      >
-        Referral Overview
-      </Typography>
-      <BarChart
-        dataset={dataset}
-        leftAxis={null}
-        slotProps={{
-          legend: {
-            labelStyle: {
-              fontSize: "1.5rem",
-            },
-          },
-        }}
-        xAxis={[
-          {
-            scaleType: "band",
-            width: 1200,
-            dataKey: "behavior",
-            categoryGapRatio: 0.0005,
-            tickLabelStyle: {
-              angle: 25,
-              textAnchor: "start",
-              fontSize: 12,
-            },
-          },
-        ]}
-        series={[{ dataKey: "incidents", label: "Referrals" }]}
-        sx={{
-          "& .MuiChartsLegend-series text": { fontSize: "1.5rem !important" },
-        }}
-        {...chartSetting}
-      />
+      <ReactEcharts option={option} />
     </div>
   );
 };
