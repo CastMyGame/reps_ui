@@ -77,7 +77,7 @@ export const AdminSchoolReferralByTypePieChart: React.FC<AdminOverviewDto> = ({
     responsive: true,
     maintainAspectRatio: false,
     title: {
-      text: "All Referrals by Type",
+      text: "All School Referrals by Type",
       left: "center",
     },
     tooltip: {
