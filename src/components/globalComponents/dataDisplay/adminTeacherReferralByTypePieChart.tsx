@@ -39,10 +39,10 @@ export const AdminTeacherReferralByTypePieChart: React.FC<AdminOverviewDto> = ({
   const option = {
     responsive: true,
     maintainAspectRatio: false,
-    title: {
-      text: "Teacher Managed Referrals by Type",
-      left: "center",
-    },
+    // title: {
+    //   text: "Teacher Managed Referrals by Type",
+    //   left: "center",
+    // },
     tooltip: {
       trigger: "item",
     },
@@ -60,7 +60,7 @@ export const AdminTeacherReferralByTypePieChart: React.FC<AdminOverviewDto> = ({
         label: {
           show: false,
         },
-        radius: "80%",
+        radius: "87%",
         data: [
           ...infractionsWithIncidentsList.map((student) => ({
             value: student.incidents,
