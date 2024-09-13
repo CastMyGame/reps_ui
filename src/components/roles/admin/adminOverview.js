@@ -14,6 +14,7 @@ import ShoutOuts from "src/components/globalComponents/shoutOuts";
 import OfficeReferrals from "src/components/globalComponents/officeReferrals/officeReferrals";
 
 const AdminOverviewPanel = ({ data = [] }) => {
+  console.log("Overview Drill: ", data)
   //Fetch Data to Prop Drill to Components
 
   const punishments = data.punishmentResponse;
@@ -60,7 +61,7 @@ const AdminOverviewPanel = ({ data = [] }) => {
         </div>
 
         <div className="card-overview-third">
-          <IncidentsByStudentTable writeUps={data.writeUpResponse} />
+          <IncidentsByStudentTable writeUpResponse={data.writeUpResponse} />
         </div>
 
         <div className="card-overview-third">
