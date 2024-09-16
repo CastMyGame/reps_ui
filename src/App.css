@@ -507,7 +507,9 @@ justify-content: space-between;
   background-color: white;
   display: flex;
   flex-direction: row;
+  height: auto;
 justify-content: space-between;
+overflow: auto;
   white-space: nowrap; /* This will prevent content from wrapping to the next line */
 
 

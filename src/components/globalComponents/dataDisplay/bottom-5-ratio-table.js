@@ -3,8 +3,11 @@ import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 
-export const Top5TeacherRatioTable = ({ data = [], teacherData = [] }) => {
-  const [mostPositiveRowData, setMostPositiveRowData] = useState([]);
+export const Bottom4PositiveTeacherTable = ({
+  data = [],
+  teacherData = [],
+}) => {
+  const [leastPositiveRowData, setLeastPositiveRowData] = useState([]);
 
   useEffect(() => {
     // Create a list of teachers with incidents
@@ -29,13 +32,13 @@ export const Top5TeacherRatioTable = ({ data = [], teacherData = [] }) => {
       })
       .filter(Boolean); // Remove any null values
 
-    // Sort by posRatio in descending order and slice the top two teachers for "Most Positive"
-    const topTwoTeachers = teachersWithIncidentsList
-      .sort((a, b) => b.posRatio - a.posRatio)
-      .slice(0, 2);
+    // Sort by posRatio in ascending order and slice the bottom four teachers for "Least Positive"
+    const bottomFourTeachers = teachersWithIncidentsList
+      .sort((a, b) => a.posRatio - b.posRatio)
+      .slice(0, 4);
 
     // Set the rowData for both tables
-    setMostPositiveRowData(topTwoTeachers);
+    setLeastPositiveRowData(bottomFourTeachers);
   }, [data, teacherData]);
 
   const colDefs = [
@@ -46,14 +49,14 @@ export const Top5TeacherRatioTable = ({ data = [], teacherData = [] }) => {
   return (
     <div>
       <h3 style={{ textAlign: "center", marginBottom: "10px" }}>
-        Most Positive
+        Least Positive
       </h3>
       <div
         className="ag-theme-quartz"
-        style={{ height: "25vh", width: "100%", marginBottom: "20px" }}
+        style={{ height: "25vh", width: "100%" }}
       >
         <AgGridReact
-          rowData={mostPositiveRowData}
+          rowData={leastPositiveRowData}
           columnDefs={colDefs}
           domLayout="autoHeight" // Ensures that the height is handled properly
         />
