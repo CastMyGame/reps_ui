@@ -14,6 +14,7 @@ import ShoutOuts from "src/components/globalComponents/shoutOuts";
 import OfficeReferrals from "src/components/globalComponents/officeReferrals/officeReferrals";
 import { AdminSchoolReferralByTypePieChart } from "src/components/globalComponents/dataDisplay/adminSchoolReferralByTypePieChart";
 import { AdminTeacherReferralByTypePieChart } from "src/components/globalComponents/dataDisplay/adminTeacherReferralByTypePieChart";
+import { Bottom4PositiveTeacherTable } from "src/components/globalComponents/dataDisplay/bottom-5-ratio-table";
 
 const AdminOverviewPanel = ({ data = [] }) => {
   console.log("Overview Drill: ", data);
@@ -98,12 +99,19 @@ const AdminOverviewPanel = ({ data = [] }) => {
           />
         </div>
 
-        <div className="card-overview-third">
+        <div className="card-overview-third" style={{ overflow: "scroll" }}>
           {data.teachers && (
-            <Top5TeacherRatioTable
-              data={data.punishmentResponse}
-              teacherData={data.teachers}
-            />
+            <>
+              <Top5TeacherRatioTable
+                data={data.punishmentResponse}
+                teacherData={data.teachers}
+              />
+              <br></br>
+              <Bottom4PositiveTeacherTable
+                data={data.punishmentResponse}
+                teacherData={data.teachers}
+              />
+            </>
           )}
         </div>
 
