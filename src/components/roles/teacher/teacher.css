@@ -192,33 +192,30 @@ width: 95%;
 
 .card-overview-half {
   margin-right: 5px;
-  
-  height: 400px;
+  min-height: 100%;
   padding: 1%;
   background-color: #fff;
-  min-width: 900px;
-  max-width: 49%;
-  color: rgba(0, 0, 0, 0.87);
-  -webkit-transition: box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
-  transition: box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
-  border-radius: 4px;
-  box-shadow: 0px 2px 1px -1px rgba(0,0,0,0.2),0px 1px 1px 0px rgba(0,0,0,0.14),0px 1px 3px 0px rgba(0,0,0,0.12);
-  overflow-y: scroll;
-}
-
-.card-overview-third {
-  margin-right: 5px;
-  min-width: 600px;
-  max-width: 33%;
-  height: 300px;
-  padding: 1%;
-  background-color: #fff;
+  min-width: 50vw;
   color: rgba(0, 0, 0, 0.87);
   -webkit-transition: box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
   transition: box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
   border-radius: 4px;
   box-shadow: 0px 2px 1px -1px rgba(0,0,0,0.2),0px 1px 1px 0px rgba(0,0,0,0.14),0px 1px 3px 0px rgba(0,0,0,0.12);
   overflow: hidden;
+}
+
+.card-overview-third {
+  margin-right: 5px;
+  min-width: 33vw;
+  min-height: 100%;
+  padding: 1%;
+  background-color: #fff;
+  color: rgba(0, 0, 0, 0.87);
+  -webkit-transition: box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+  transition: box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+  border-radius: 4px;
+  box-shadow: 0px 2px 1px -1px rgba(0,0,0,0.2),0px 1px 1px 0px rgba(0,0,0,0.14),0px 1px 3px 0px rgba(0,0,0,0.12);
+  overflow: auto;
 }
 
 .card-title{

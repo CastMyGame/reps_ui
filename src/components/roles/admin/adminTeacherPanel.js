@@ -20,13 +20,8 @@ import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css"; // Using "alpine" for a modern theme
 
-const AdminTeacherPanel = ({
-  writeUpResponse = [],
-  officeReferrals = [],
-  teachers = [],
-}) => {
-  console.log("The datas!", writeUpResponse, officeReferrals, teachers);
-  const [data, setData] = useState([]);
+const AdminTeacherPanel = ({ data = [] }) => {
+  console.log(" The data ", data);
   const [teacherProfileModal, setTeacherProfileModal] = useState(false);
   const [teacherProfileData, setTeacherProfileData] = useState([]);
   const [activeTeacher, setActiveTeacher] = useState(null);
@@ -37,7 +32,14 @@ const AdminTeacherPanel = ({
     setSearchQuery(e.target.value);
   };
 
-  // Process the data to match teachers with their referrals
+  // Ensure that all data properties are safely handled (default to empty arrays)
+  const teachers = data.teachers || [];
+  const officeReferrals = data.officeReferrals || [];
+  const shoutOutsResponse = data.shoutOutsResponse || [];
+  const writeUpsResponse = data.writeUpsResponse || [];
+  const punishmentResponse = data.punishmentResponse || [];
+
+  // Process the data to map teachers with their referrals, shoutouts, and behavior concerns
   useEffect(() => {
     const processTeacherData = () => {
       const teacherDataMap = new Map();
@@ -49,13 +51,19 @@ const AdminTeacherPanel = ({
           fullName,
           teacherManagedReferrals: 0,
           officeManagedReferrals: 0,
+          shoutOuts: 0,
+          behaviorConcerns: 0,
         });
       });
 
       // Update teacher-managed referrals
-      writeUpResponse.forEach((referral) => {
-        const email = referral.teacherEmail;
-        if (teacherDataMap.has(email)) {
+      punishmentResponse.forEach((writeUp) => {
+        const email = writeUp.teacherEmail;
+        if (
+          teacherDataMap.has(email) &&
+          writeUp.infractionName !== "Behavior Concern" &&
+          writeUp.infractionName !== "Positive Behavior Shout Out!"
+        ) {
           teacherDataMap.get(email).teacherManagedReferrals += 1;
         }
       });
@@ -68,14 +76,36 @@ const AdminTeacherPanel = ({
         }
       });
 
+      // Update positive shoutouts
+      punishmentResponse.forEach((writeUp) => {
+        const email = writeUp.teacherEmail;
+        if (
+          teacherDataMap.has(email) &&
+          writeUp.infractionName === "Positive Behavior Shout Out!"
+        ) {
+          teacherDataMap.get(email).shoutOuts += 1;
+        }
+      });
+
+      // Update behavior concerns
+      punishmentResponse.forEach((writeUp) => {
+        const email = writeUp.teacherEmail;
+        if (
+          teacherDataMap.has(email) &&
+          writeUp.infractionName === "Behavior Concern"
+        ) {
+          teacherDataMap.get(email).behaviorConcerns += 1;
+        }
+      });
+
       const formattedData = Array.from(teacherDataMap.values());
       setFilteredData(formattedData);
     };
 
-    if (teachers.length > 0) {
+    if (data.teachers.length > 0) {
       processTeacherData();
     }
-  }, [writeUpResponse, officeReferrals, teachers]);
+  }, [data]);
 
   const handleProfileClick = (x) => {
     setActiveTeacher(x);
@@ -86,6 +116,8 @@ const AdminTeacherPanel = ({
 
   const columnDefs = [
     { headerName: "Teacher Name", field: "fullName" },
+    { headerName: "Positive Shout Outs", field: "shoutOuts" },
+    { headerName: "Behavior Concerns", field: "behaviorConcerns" },
     {
       headerName: "Teacher Managed Referrals",
       field: "teacherManagedReferrals",
@@ -144,17 +176,17 @@ const AdminTeacherPanel = ({
           setDisplayBoolean={setTeacherProfileModal}
         />
       )}
-        <div
-          className="ag-theme-alpine"
-          style={{ height: "60vh", width: "100%" }}
-        >
-          <AgGridReact
-            rowData={filteredData} // The filtered data for the teachers
-            columnDefs={columnDefs}
-            domLayout="autoHeight"
-            onRowClicked={(row) => handleProfileClick(row.data)}
-          />
-        </div>
+      <div
+        className="ag-theme-alpine"
+        style={{ height: "60vh", width: "100%" }}
+      >
+        <AgGridReact
+          rowData={filteredData} // The filtered data for the teachers
+          columnDefs={columnDefs}
+          domLayout="autoHeight"
+          onRowClicked={(row) => handleProfileClick(row.data)}
+        />
+      </div>
     </>
   );
 };

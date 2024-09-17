@@ -146,9 +146,7 @@ const AdminDashboard = () => {
                 )}
                 {panelName === "viewTeacher" && (
                   <AdminTeacherPanel
-                    writeUpResponse={adminDto.writeUpResponse}
-                    officeReferrals={adminDto.officeReferrals}
-                    teachers={adminDto.teachers}
+                    data={adminDto}
                   />
                 )}
                 {panelName === "student" && (

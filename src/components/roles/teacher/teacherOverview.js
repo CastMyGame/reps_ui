@@ -111,8 +111,7 @@ const TeacherOverviewPanel = ({ setPanelName, data = [], students = [] }) => {
       </div>
 
       <div className="overview-row">
-        <div className="card-overview-third" style={{ height: "100%"
-        }}>
+        <div className="card-overview-half">
           <PieChartParentCommunication
             data={data.punishmentResponse}
             shoutOutsResponse={data.shoutOutsResponse}

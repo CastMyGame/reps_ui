@@ -12,6 +12,7 @@ import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css"; // Using "alpine" for a modern theme
 
 const TeacherStudentPanel = ({ setPanelName, data = [] }) => {
+  console.log(" The data ", data);
   const [listOfStudents, setListOfStudents] = useState([]);
   const [listOfSchool, setListOfSchool] = useState([]);
   const [studentDisplay, setStudentDisplay] = useState(false);
