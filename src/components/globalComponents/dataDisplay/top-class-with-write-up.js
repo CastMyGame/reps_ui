@@ -3,7 +3,7 @@ import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css"; // Using "alpine" for a modern theme
 
-export const WorseClassTable = ({ data = [], teacherData = [] }) => {
+export const WorseClassTable = ({ punishmentResponse = [], teachers = [] }) => {
   // Initialize structures to track write-ups and the corresponding teacher
   const writeUpsByPeriod = {
     block1: { count: 0, teacher: "" },
@@ -12,8 +12,8 @@ export const WorseClassTable = ({ data = [], teacherData = [] }) => {
     block4: { count: 0, teacher: "" },
   };
 
-  teacherData.forEach((teacher) => {
-    const negWriteUpData = data.filter(
+  teachers.forEach((teacher) => {
+    const negWriteUpData = punishmentResponse.filter(
       (item) =>
         item.infractionName !== "Positive Behavior Shout Out!" &&
         item.teacherEmail === teacher.email

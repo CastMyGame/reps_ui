@@ -106,43 +106,36 @@ export default function ReferralByBehavior({ data = [] }) {
       {
         name: "Tardy",
         type: "line",
-        stack: "Total",
         data: tardyData,
       },
       {
         name: "Dress Code",
         type: "line",
-        stack: "Total",
         data: dressCodeData,
       },
       {
         name: "Disruptive Behavior",
         type: "line",
-        stack: "Total",
         data: disruptiveData,
       },
       {
         name: "Behavioral Concern",
         type: "line",
-        stack: "Total",
         data: concernData,
       },
       {
         name: "Positive Shout Out!",
         type: "line",
-        stack: "Total",
         data: shoutOutData,
       },
       {
         name: "Horseplay",
         type: "line",
-        stack: "Total",
         data: horseplayData,
       },
       {
         name: "Unauthorized Device/Cell Phone",
         type: "line",
-        stack: "Total",
         data: unauthorizedDevice,
       },
     ],

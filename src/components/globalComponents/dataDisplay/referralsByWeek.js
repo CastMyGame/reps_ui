@@ -7,7 +7,10 @@ import {
 } from "../../../helperFunctions/helperFunctions";
 import { useState } from "react";
 
-export const TotalReferralByWeek = ({ punishmentResponse = [] }) => {
+export const TotalReferralByWeek = ({
+  punishmentResponse = [],
+  officeReferrals = [],
+}) => {
   const [rangeWeeks, setRangeWeek] = useState(10);
   const currentWeek = getCurrentWeekOfYear();
 
@@ -62,7 +65,7 @@ export const TotalReferralByWeek = ({ punishmentResponse = [] }) => {
 
   // Convert the weekMap to the format suitable for LineChart
   const xAxisData = displayDate.map((obj) => Object.keys(obj)[0]); // Extract the keys (labels)
-  
+
   const tardyData = GenerateBxByWeek("Tardy", rangeWeeks, punishmentResponse);
   const horseplayData = GenerateBxByWeek(
     "Horseplay",
@@ -94,6 +97,22 @@ export const TotalReferralByWeek = ({ punishmentResponse = [] }) => {
     rangeWeeks,
     punishmentResponse
   );
+  const officeReferralData = GenerateBxByWeek(
+    "Office Referral",
+    rangeWeeks,
+    officeReferrals
+  );
+
+  // Calculate Teacher Managed Referrals as the sum of selected infractions
+  const teacherManagedReferrals = tardyData.map((_, index) => {
+    return (
+      tardyData[index] +
+      horseplayData[index] +
+      dressCodeData[index] +
+      unauthorizedDeviceData[index] +
+      disruptiveBehaviorData[index]
+    );
+  });
 
   const option = {
     responsive: true,
@@ -103,13 +122,10 @@ export const TotalReferralByWeek = ({ punishmentResponse = [] }) => {
     },
     legend: {
       data: [
-        "Tardy",
-        "Dress Code",
-        "Disruptive Behavior",
         "Behavioral Concern",
         "Positive Shout Out!",
-        "Horseplay",
-        "Unauthorized Device/Cell Phone",
+        "Teacher Managed Referrals",
+        "Office Managed Referrals",
       ],
     },
     grid: {
@@ -133,46 +149,24 @@ export const TotalReferralByWeek = ({ punishmentResponse = [] }) => {
     },
     series: [
       {
-        name: "Tardy",
-        type: "line",
-        stack: "Total",
-        data: tardyData,
-      },
-      {
-        name: "Dress Code",
-        type: "line",
-        stack: "Total",
-        data: dressCodeData,
-      },
-      {
-        name: "Disruptive Behavior",
-        type: "line",
-        stack: "Total",
-        data: disruptiveBehaviorData,
-      },
-      {
         name: "Behavioral Concern",
         type: "line",
-        stack: "Total",
         data: behavioralConcernData,
       },
       {
         name: "Positive Shout Out!",
         type: "line",
-        stack: "Total",
         data: positiveData,
       },
       {
-        name: "Horseplay",
+        name: "Teacher Managed Referrals",
         type: "line",
-        stack: "Total",
-        data: horseplayData,
+        data: teacherManagedReferrals,
       },
       {
-        name: "Unauthorized Device/Cell Phone",
+        name: "Office Managed Referrals",
         type: "line",
-        stack: "Total",
-        data: unauthorizedDeviceData,
+        data: officeReferralData,
       },
     ],
   };

@@ -117,8 +117,8 @@ const AdminOverviewPanel = ({ data = [] }) => {
 
         <div className="card-overview-third" style={{ overflow: "scroll" }}>
           <WorseClassTable
-            data={data.punishmentResponse}
-            teacherData={data.teachers}
+            punishmentResponse={data.punishmentResponse}
+            teachers={data.teachers}
           />
         </div>
       </div>
@@ -135,7 +135,10 @@ const AdminOverviewPanel = ({ data = [] }) => {
 
       <div className="overview-row">
         <div className="card-overview-third">
-          <TotalReferralByWeek punishmentResponse={data.punishmentResponse} />
+          <TotalReferralByWeek
+            punishmentResponse={data.punishmentResponse}
+            officeReferrals={data.officeReferrals}
+          />
         </div>
 
         <div className="card-overview-third">
