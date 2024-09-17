@@ -33,14 +33,14 @@ const TeacherOverviewPanel = ({ setPanelName, data = [], students = [] }) => {
     return itemDate > sevenDaysAgo;
   });
 
-  const weeklyDataIncSOBxConcern = data.punishmentResponse.filter((x) => {
-    const currentDate = new Date();
-    const itemDate = new Date(x.timeCreated);
-    const sevenDaysAgo = new Date(
-      currentDate.setDate(currentDate.getDate() - 7)
-    );
-    return itemDate > sevenDaysAgo;
-  });
+  // const weeklyDataIncSOBxConcern = data.punishmentResponse.filter((x) => {
+  //   const currentDate = new Date();
+  //   const itemDate = new Date(x.timeCreated);
+  //   const sevenDaysAgo = new Date(
+  //     currentDate.setDate(currentDate.getDate() - 7)
+  //   );
+  //   return itemDate > sevenDaysAgo;
+  // });
 
   useEffect(() => {
     const statusQuo = data.punishmentResponse.filter(
@@ -112,7 +112,7 @@ const TeacherOverviewPanel = ({ setPanelName, data = [], students = [] }) => {
 
       <div className="overview-row">
         <div className="card-overview-half">
-          <PieChartParentCommunication data={weeklyDataIncSOBxConcern} />
+          <PieChartParentCommunication data={data.punishmentResponse} />
         </div>
 
         <div className="card-overview-half">
