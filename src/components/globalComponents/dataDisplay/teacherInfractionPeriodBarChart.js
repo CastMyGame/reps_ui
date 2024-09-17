@@ -1,5 +1,4 @@
 import React from "react";
-import { axisClasses } from "@mui/x-charts";
 import { getIncidentByBehavior } from "src/helperFunctions/helperFunctions";
 import ReactEcharts from "echarts-for-react";
 

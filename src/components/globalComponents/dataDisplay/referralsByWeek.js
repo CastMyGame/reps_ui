@@ -1,14 +1,16 @@
-import { LineChart } from "@mui/x-charts/LineChart";
-import { Typography } from "@mui/material";
+import ReactEcharts from "echarts-for-react";
 import {
   extractDataByWeek,
-  extractDataByWeekFirstDay,
   getCurrentWeekOfYear,
   getFirstDayOfWeek,
+  findDataByWeekAndByPunishment,
 } from "../../../helperFunctions/helperFunctions";
 import { useState } from "react";
 
-export default function TotalReferralByWeek({ data = [] }) {
+export const TotalReferralByWeek = ({
+  punishmentResponse = [],
+  officeReferrals = [],
+}) => {
   const [rangeWeeks, setRangeWeek] = useState(10);
   const currentWeek = getCurrentWeekOfYear();
 
@@ -18,6 +20,17 @@ export default function TotalReferralByWeek({ data = [] }) {
     if (cw <= 0) {
       return 52 + cw;
     }
+  };
+
+  const GenerateBxByWeek = (bx, numOfWeeks, data) => {
+    const bxData = [];
+    for (let i = 0; i < numOfWeeks; i++) {
+      console.log(" teacher data ", data);
+      const weekNum = yearAdj(currentWeek - i);
+      const dataForWeek = findDataByWeekAndByPunishment(weekNum, bx, data);
+      bxData.push(dataForWeek);
+    }
+    return bxData;
   };
 
   const GenerateChartData = (currentWeek, rangeWeeks, data) => {
@@ -41,51 +54,126 @@ export default function TotalReferralByWeek({ data = [] }) {
     return genData;
   };
 
-  const displayDate = GenerateChartData(currentWeek, rangeWeeks, data);
+  const displayDate = GenerateChartData(
+    currentWeek,
+    rangeWeeks,
+    punishmentResponse
+  );
 
   //This reverses the x axis
   displayDate.reverse();
 
   // Convert the weekMap to the format suitable for LineChart
   const xAxisData = displayDate.map((obj) => Object.keys(obj)[0]); // Extract the keys (labels)
-  const seriesData = displayDate.map((obj) => Object.values(obj)[0] || 0); // Extract the values associated with the keys
+
+  const tardyData = GenerateBxByWeek("Tardy", rangeWeeks, punishmentResponse);
+  const horseplayData = GenerateBxByWeek(
+    "Horseplay",
+    rangeWeeks,
+    punishmentResponse
+  );
+  const dressCodeData = GenerateBxByWeek(
+    "Dress Code",
+    rangeWeeks,
+    punishmentResponse
+  );
+  const unauthorizedDeviceData = GenerateBxByWeek(
+    "Unauthorized Device/Cell Phone",
+    rangeWeeks,
+    punishmentResponse
+  );
+  const disruptiveBehaviorData = GenerateBxByWeek(
+    "Disruptive Behavior",
+    rangeWeeks,
+    punishmentResponse
+  );
+  const positiveData = GenerateBxByWeek(
+    "Positive Shout Out!",
+    rangeWeeks,
+    punishmentResponse
+  );
+  const behavioralConcernData = GenerateBxByWeek(
+    "Behavioral Concern",
+    rangeWeeks,
+    punishmentResponse
+  );
+  const officeReferralData = GenerateBxByWeek(
+    "Office Referral",
+    rangeWeeks,
+    officeReferrals
+  );
+
+  // Calculate Teacher Managed Referrals as the sum of selected infractions
+  const teacherManagedReferrals = tardyData.map((_, index) => {
+    return (
+      tardyData[index] +
+      horseplayData[index] +
+      dressCodeData[index] +
+      unauthorizedDeviceData[index] +
+      disruptiveBehaviorData[index]
+    );
+  });
+
+  const option = {
+    responsive: true,
+    maintainAspectRatio: false,
+    tooltip: {
+      trigger: "axis",
+    },
+    legend: {
+      data: [
+        "Behavioral Concern",
+        "Positive Shout Out!",
+        "Teacher Managed Referrals",
+        "Office Managed Referrals",
+      ],
+    },
+    grid: {
+      left: "3%",
+      right: "4%",
+      bottom: "8%",
+      containLabel: true,
+    },
+    toolbox: {
+      feature: {
+        saveAsImage: {},
+      },
+    },
+    xAxis: {
+      type: "category",
+      boundaryGap: false,
+      data: xAxisData,
+    },
+    yAxis: {
+      type: "value",
+    },
+    series: [
+      {
+        name: "Behavioral Concern",
+        type: "line",
+        data: behavioralConcernData,
+      },
+      {
+        name: "Positive Shout Out!",
+        type: "line",
+        data: positiveData,
+      },
+      {
+        name: "Teacher Managed Referrals",
+        type: "line",
+        data: teacherManagedReferrals,
+      },
+      {
+        name: "Office Managed Referrals",
+        type: "line",
+        data: officeReferralData,
+      },
+    ],
+  };
 
   return (
-    data && (
-      <>
-        <Typography variant="h4" gutterBottom>
-          Number of Referrals By Week
-        </Typography>{" "}
-        <button
-          onClick={() => setRangeWeek((prev) => prev - 1)}
-          style={{ height: "20px", width: "20px", padding: 0, borderRadius: 0 }}
-        >
-          -
-        </button>{" "}
-        <button
-          onClick={() => setRangeWeek((prev) => prev + 1)}
-          style={{ height: "20px", width: "20px", padding: 0, borderRadius: 0 }}
-        >
-          +
-        </button>
-        <LineChart
-          xAxis={[
-            {
-              scaleType: "band",
-              data: xAxisData,
-              label: "Weeks",
-            },
-          ]}
-          yAxis={[{ label: "Number of Incidents" }]}
-          series={[
-            {
-              data: seriesData, // Number of punishments
-            },
-          ]}
-          width={400}
-          height={250}
-        />
-      </>
-    )
+    <div style={{ maxHeight: "100%", maxWidth: "100%" }}>
+      <ReactEcharts option={option} />
+    </div>
   );
-}
+};
