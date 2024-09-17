@@ -11,33 +11,30 @@ import {
 } from "@mui/material";
 
 const IncidentsByStudentTable = ({ writeUpResponse = [] }) => {
-  console.log("Prop here", writeUpResponse)
   const uniqueStudents = {};
   const totalIncidents = writeUpResponse.length;
   // const [searchQuery, setSearchQuery] = useState("");
   // const [filteredData, setFilteredData] = useState([]);
 
-  const studentsWithIncidentsList = 
-  // Object.entries(writeUpResponse).map(
-  //   ([studentEmail, incidents]) => {
-  //     const studentRecord = writeUpResponse.find(
-  //       (item) => item.studentEmail === studentEmail
-  //     );
+  const studentsWithIncidentsList =
+    // Object.entries(writeUpResponse).map(
+    //   ([studentEmail, incidents]) => {
+    //     const studentRecord = writeUpResponse.find(
+    //       (item) => item.studentEmail === studentEmail
+    //     );
 
-  //     const firstName =
-  //       studentRecord.firstName || studentRecord.studentFirstName;
-  //     const lastName = studentRecord.lastName || studentRecord.studentLastName;
-  writeUpResponse.filter((teacherDto) => {
+    //     const firstName =
+    //       studentRecord.firstName || studentRecord.studentFirstName;
+    //     const lastName = studentRecord.lastName || studentRecord.studentLastName;
+    writeUpResponse.filter((teacherDto) => {});
 
-  })
-
-      // return {
-      //   studentEmail,
-      //   firstName,
-      //   lastName,
-      //   incidents,
-      //   percent: ((incidents / totalIncidents) * 100).toFixed(2),
-      // };
+  // return {
+  //   studentEmail,
+  //   firstName,
+  //   lastName,
+  //   incidents,
+  //   percent: ((incidents / totalIncidents) * 100).toFixed(2),
+  // };
 
   // useEffect(() => {
   //   // Filter the data based on the search query
@@ -85,7 +82,6 @@ const IncidentsByStudentTable = ({ writeUpResponse = [] }) => {
   });
 
   studentsWithIncidentsList.sort((a, b) => b.incidents - a.incidents);
-  console.log("students list:" ,studentsWithIncidentsList)
 
   return (
     <TableContainer component={Paper}>

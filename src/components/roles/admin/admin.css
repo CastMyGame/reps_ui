@@ -193,12 +193,10 @@ width: 95%;
 
 .card-overview-half {
   margin-right: 5px;
-  
-  height: 400px;
+  min-height: 100%;
   padding: 1%;
   background-color: #fff;
-  min-width: 870px;
-  max-width: 49%;
+  min-width: 50%;
   color: rgba(0, 0, 0, 0.87);
   -webkit-transition: box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
   transition: box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
@@ -209,8 +207,8 @@ width: 95%;
 
 .card-overview-third {
   margin-right: 5px;
-  min-height: auto;
-  width: 33vh;
+  min-width: 33%;
+  min-height: 100%;
   padding: 1%;
   background-color: #fff;
   color: rgba(0, 0, 0, 0.87);

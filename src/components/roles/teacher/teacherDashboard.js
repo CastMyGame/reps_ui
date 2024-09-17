@@ -96,7 +96,9 @@ const TeacherDashboard = () => {
                     />
                   )}
                   {panelName === "student" && (
-                    <TeacherStudentPanel listOfStudents={data} />
+                    <TeacherStudentPanel
+                    setPanelName={setPanelName}
+                    data={data} />
                   )}
                   {panelName === "punishment" && (
                     <GlobalPunishmentPanel
