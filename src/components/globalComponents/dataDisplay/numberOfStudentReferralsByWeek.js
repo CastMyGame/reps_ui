@@ -7,6 +7,7 @@ import {
 import { useState } from "react";
 
 export default function TotalStudentReferredByWeek({ data = [] }) {
+  console.log(" The data: ", data);
   const [rangeWeeks, setRangeWeek] = useState(10);
   const currentWeek = getCurrentWeekOfYear();
 
@@ -17,44 +18,77 @@ export default function TotalStudentReferredByWeek({ data = [] }) {
     }
   };
 
-  const GenerateChartData = (currentWeek, rangeWeeks, data) => {
-    const genData = [];
+  // Helper function to filter data by referral level
+  const filterByLevel = (data, level) => {
+    return data.filter((item) => item.infractionLevel === level);
+  };
 
+  // Generate chart data for a specific referral level
+  const GenerateLevelDataByWeek = (level, currentWeek, rangeWeeks, data) => {
+    const levelData = [];
     for (let i = 0; i < rangeWeeks; i++) {
-      const weekKey = `W${yearAdj(currentWeek - i)}`;
-      const weekData = extractDataByWeek(yearAdj(currentWeek - i), data).length; // Assuming findDataByWeek and yearAdj are defined elsewhere
+      const weekKey = yearAdj(currentWeek - i);
+      const filteredData = filterByLevel(
+        extractDataByWeek(weekKey, data),
+        level
+      );
+      levelData.push(filteredData.length); // Count of referrals for this level in the given week
+    }
+    return levelData;
+  };
 
+  // Generate labels for xAxis
+  const GenerateChartData = (currentWeek, rangeWeeks) => {
+    const genData = [];
+    for (let i = 0; i < rangeWeeks; i++) {
       const startDate = getFirstDayOfWeek(yearAdj(currentWeek - i));
       const endDate = new Date(startDate);
-      endDate.setDate(startDate.getDate() + 6); // Assuming you want to show the end date of the week
-
-      const label = `${startDate.getMonth() + 1}/${startDate.getDate()} - ${endDate.getMonth() + 1}/${endDate.getDate()}`;
-
-      genData.push({
-        [label]: weekData,
-      });
+      endDate.setDate(startDate.getDate() + 6);
+      const label = `${startDate.getMonth() + 1}/${startDate.getDate()} - ${
+        endDate.getMonth() + 1
+      }/${endDate.getDate()}`;
+      genData.push(label);
     }
-
     return genData;
   };
 
-  const displayDate = GenerateChartData(currentWeek, rangeWeeks, data);
+  // Generate xAxis data (weeks)
+  const xAxisData = GenerateChartData(currentWeek, rangeWeeks);
 
-  //This reverses the x axis
-  displayDate.reverse();
+  // Generate series data for each level
+  const level1Data = GenerateLevelDataByWeek(
+    "1",
+    currentWeek,
+    rangeWeeks,
+    data
+  );
+  const level2Data = GenerateLevelDataByWeek(
+    "2",
+    currentWeek,
+    rangeWeeks,
+    data
+  );
+  const level3Data = GenerateLevelDataByWeek(
+    "3",
+    currentWeek,
+    rangeWeeks,
+    data
+  );
+  const level4Data = GenerateLevelDataByWeek(
+    "4",
+    currentWeek,
+    rangeWeeks,
+    data
+  );
 
-  // Convert the weekMap to the format suitable for LineChart
-  const xAxisData = displayDate.map((obj) => Object.keys(obj)[0]); // Extract the keys (labels)
-  const seriesData = displayDate.map((obj) => Object.values(obj)[0] || 0); // Extract the values associated with the keys
   const option = {
     responsive: true,
     maintainAspectRatio: false,
-    title: {
-      text: "Total School Referrals",
-      left: "center",
-    },
     tooltip: {
       trigger: "axis",
+    },
+    legend: {
+      data: ["Level 1", "Level 2", "Level 3", "Level 4"],
     },
     grid: {
       left: "3%",
@@ -77,10 +111,24 @@ export default function TotalStudentReferredByWeek({ data = [] }) {
     },
     series: [
       {
-        name: "Tardy",
+        name: "Level 1",
         type: "line",
-        stack: "Total",
-        data: seriesData,
+        data: level1Data,
+      },
+      {
+        name: "Level 2",
+        type: "line",
+        data: level2Data,
+      },
+      {
+        name: "Level 3",
+        type: "line",
+        data: level3Data,
+      },
+      {
+        name: "Level 4",
+        type: "line",
+        data: level4Data,
       },
     ],
   };
