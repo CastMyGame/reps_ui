@@ -9,8 +9,10 @@ import {
   getCurrentWeekOfYear,
 } from "../../../helperFunctions/helperFunctions";
 
-export const PieChartParentCommunication = ({ data = [] }) => {
-  console.log(" The data boys ", data);
+export const PieChartParentCommunication = ({
+  data = [],
+  shoutOutsResponse = [],
+}) => {
   const [rangeWeeks, setRangeWeek] = useState(10);
   const currentWeek = getCurrentWeekOfYear();
 
@@ -21,11 +23,9 @@ export const PieChartParentCommunication = ({ data = [] }) => {
       return 52 + cw;
     }
   };
-  const numShoutout = findDataByWeekAndByPunishment(currentWeek,
-    "Positive Behavior Shout Out!",
-    data
-  );
-  const numBxConcern = findDataByWeekAndByPunishment(currentWeek,
+  const numShoutout = extractDataByWeek(currentWeek, shoutOutsResponse);
+  const numBxConcern = findDataByWeekAndByPunishment(
+    currentWeek,
     "Behavioral Concern",
     data
   );
@@ -53,11 +53,7 @@ export const PieChartParentCommunication = ({ data = [] }) => {
     return genData;
   };
 
-  const displayDate = GenerateChartData(
-    currentWeek,
-    rangeWeeks,
-    data
-  );
+  const displayDate = GenerateChartData(currentWeek, rangeWeeks, data);
 
   const option = {
     responsive: true,
@@ -79,18 +75,18 @@ export const PieChartParentCommunication = ({ data = [] }) => {
       {
         type: "pie",
         stillShowZeroSum: false,
-        left: "30%",
+        left: "20%",
         label: {
           show: false,
         },
-        radius: "87%",
+        radius: "95%",
         data: [
           {
             value: numBxConcern,
             name: "Behavioral Concern",
           },
           {
-            value: numShoutout,
+            value: numShoutout.length,
             name: "Positive Behavior Shout Out!",
           },
           // {
@@ -98,7 +94,7 @@ export const PieChartParentCommunication = ({ data = [] }) => {
           //   name: "Office Referrals",
           // },
           {
-            value: teachReferrals,
+            value: teachReferrals.length,
             name: "Teacher Referrals",
           },
         ],

@@ -7,7 +7,6 @@ import {
 import { useState } from "react";
 
 export default function TotalStudentReferredByWeek({ data = [] }) {
-  console.log(" The data: ", data);
   const [rangeWeeks, setRangeWeek] = useState(10);
   const currentWeek = getCurrentWeekOfYear();
 

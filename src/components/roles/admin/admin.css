@@ -194,7 +194,7 @@ width: 95%;
 .card-overview-half {
   margin-right: 5px;
   
-  height: 400px;
+  height: 100%;
   padding: 1%;
   background-color: #fff;
   min-width: 870px;
@@ -209,6 +209,7 @@ width: 95%;
 
 .card-overview-third {
   margin-right: 5px;
+  height: 100%;
   min-height: auto;
   width: 33vh;
   padding: 1%;
