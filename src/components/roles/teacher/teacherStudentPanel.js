@@ -439,7 +439,6 @@ const TeacherStudentPanel = ({ setPanelName, data = [] }) => {
             </div>
           )}
         </div>
-      </div>
     </>
   );
 };

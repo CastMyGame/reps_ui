@@ -144,9 +144,18 @@ const AdminDashboard = () => {
                     <AdminOverviewPanel data={adminDto} />
                   )
                 )}
-                {panelName === "viewTeacher" && <AdminTeacherPanel />}
+                {panelName === "viewTeacher" && (
+                  <AdminTeacherPanel
+                    writeUpResponse={adminDto.writeUpResponse}
+                    officeReferrals={adminDto.officeReferrals}
+                    teachers={adminDto.teachers}
+                  />
+                )}
                 {panelName === "student" && (
-                  <TeacherStudentPanel setPanelName={setPanelName} data={adminDto}/>
+                  <TeacherStudentPanel
+                    setPanelName={setPanelName}
+                    data={adminDto}
+                  />
                 )}
                 {panelName === "punishment" && (
                   <GlobalPunishmentPanel roleType={"admin"} />
