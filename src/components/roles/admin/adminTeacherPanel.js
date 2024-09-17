@@ -14,53 +14,84 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 
-import { IncidentByStudentPieChart } from "src/components/globalComponents/dataDisplay/incident-by-student-pie-chart";
-import IncidentsByStudentTable from "src/components/globalComponents/dataDisplay/incidentsByStudentTable";
 import { get } from "../../../utils/api/api";
 import { TeacherDetailsModal } from "./modals/teacher_profile_modal";
+import { AgGridReact } from "ag-grid-react";
+import "ag-grid-community/styles/ag-grid.css";
+import "ag-grid-community/styles/ag-theme-alpine.css"; // Using "alpine" for a modern theme
 
-const AdminTeacherPanel = () => {
+const AdminTeacherPanel = ({
+  writeUpResponse = [],
+  officeReferrals = [],
+  teachers = [],
+}) => {
+  console.log("The datas!", writeUpResponse, officeReferrals, teachers);
   const [data, setData] = useState([]);
   const [teacherProfileModal, setTeacherProfileModal] = useState(false);
   const [teacherProfileData, setTeacherProfileData] = useState([]);
-  const [activeTeacher, setActiveTeacher] = useState();
+  const [activeTeacher, setActiveTeacher] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredData, setFilteredData] = useState([]);
-
-  useEffect(() => {
-    const fetchEmployeeData = async () => {
-      try {
-        const result = await get("employees/v1/employees/TEACHER");
-        setData(result);
-      } catch (err) {
-        console.error("Error Fetching Data: ", err);
-      }
-    };
-
-    fetchEmployeeData();
-  }, []);
-
 
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
   };
 
+  // Process the data to match teachers with their referrals
   useEffect(() => {
-    // Filter the data based on the search query
-    const filteredRecords = data.filter((employee) => {
-      const fullName =
-        `${employee.firstName} ${employee.lastName}`.toLowerCase();
+    const processTeacherData = () => {
+      const teacherDataMap = new Map();
 
-      return fullName.includes(searchQuery.toLowerCase());
-    });
-    setFilteredData(filteredRecords);
-  }, [data, searchQuery]);
+      // Initialize teachers data in the map
+      teachers.forEach((teacher) => {
+        const fullName = `${teacher.firstName} ${teacher.lastName}`;
+        teacherDataMap.set(teacher.email, {
+          fullName,
+          teacherManagedReferrals: 0,
+          officeManagedReferrals: 0,
+        });
+      });
+
+      // Update teacher-managed referrals
+      writeUpResponse.forEach((referral) => {
+        const email = referral.teacherEmail;
+        if (teacherDataMap.has(email)) {
+          teacherDataMap.get(email).teacherManagedReferrals += 1;
+        }
+      });
+
+      // Update office-managed referrals
+      officeReferrals.forEach((referral) => {
+        const email = referral.teacherEmail;
+        if (teacherDataMap.has(email)) {
+          teacherDataMap.get(email).officeManagedReferrals += 1;
+        }
+      });
+
+      const formattedData = Array.from(teacherDataMap.values());
+      setFilteredData(formattedData);
+    };
+
+    if (teachers.length > 0) {
+      processTeacherData();
+    }
+  }, [writeUpResponse, officeReferrals, teachers]);
 
   const handleProfileClick = (x) => {
-    
     setActiveTeacher(x);
     setTeacherProfileModal(true);
   };
+
+  console.log("The filtered data ", filteredData);
+
+  const columnDefs = [
+    { headerName: "Teacher Name", field: "fullName" },
+    {
+      headerName: "Teacher Managed Referrals",
+      field: "teacherManagedReferrals",
+    },
+    { headerName: "Office Managed Referrals", field: "officeManagedReferrals" },
+  ];
 
   // const pdfRef = useRef();
 
@@ -106,90 +137,25 @@ const AdminTeacherPanel = () => {
   const hasScroll = data.length > 10;
   return (
     <>
-     
-     {teacherProfileModal && teacherProfileData &&(<TeacherDetailsModal teacherProfileData={teacherProfileData} activeTeacher={activeTeacher} setDisplayBoolean={setTeacherProfileModal}/>) }
-      <div
-        style={{
-          backgroundColor: "rgb(25, 118, 210)",
-          marginTop: "10px",
-          marginBlock: "5px",
-        }}
-      >
-        <Typography
-          color="white"
-          variant="h6"
-          style={{ flexGrow: 1, outline: "1px solid  white", padding: "5px" }}
+      {teacherProfileModal && activeTeacher && (
+        <TeacherDetailsModal
+          teacherProfileData={teacherProfileData}
+          activeTeacher={activeTeacher}
+          setDisplayBoolean={setTeacherProfileModal}
+        />
+      )}
+        <div
+          className="ag-theme-alpine"
+          style={{ height: "60vh", width: "100%" }}
         >
-          Teachers
-        </Typography>
-      </div>
-
-      <TableContainer
-        component={Paper}
-        style={{
-          maxHeight: hasScroll ? "720px" : "auto",
-          overflowY: hasScroll ? "scroll" : "visible",
-        }}
-      >
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TextField
-                label="Search"
-                variant="outlined"
-                fullWidth
-                value={searchQuery}
-                onChange={handleSearchChange}
-              />
-            </TableRow>
-            <TableRow>
-              <TableCell variant="head" style={{ fontWeight: "bold" }}>
-                Name
-              </TableCell>
-              <TableCell variant="head" style={{ fontWeight: "bold" }}>
-                Email
-              </TableCell>
-              <TableCell variant="head" style={{ fontWeight: "bold" }}>
-                Role
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {filteredData.length > 0 ? (
-              filteredData.map((x, key) => (
-                <TableRow
-                  key={key}
-                  onClick={() => {
-                    handleProfileClick(x);
-                  }}
-                >
-                  <TableCell>
-                    <div style={{ display: "flex", alignItems: "center" }}>
-                      <AccountCircleIcon
-                        style={{
-                          fontSize: "2rem", // Adjust the size as needed
-                          color: "rgb(25, 118, 210)", // Change the color to blue
-                        }}
-                      />
-                      <span>
-                        {x.firstName} {x.lastName}
-                      </span>
-                    </div>
-                  </TableCell>
-                  <TableCell>{x.email}</TableCell>
-                  <TableCell>{String(x.roles.map((x) => x.role))}</TableCell>
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell colSpan="5">No open Data found.</TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </TableContainer>
+          <AgGridReact
+            rowData={filteredData} // The filtered data for the teachers
+            columnDefs={columnDefs}
+            domLayout="autoHeight"
+            onRowClicked={(row) => handleProfileClick(row.data)}
+          />
+        </div>
     </>
   );
 };
-
 export default AdminTeacherPanel;

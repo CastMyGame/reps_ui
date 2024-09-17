@@ -1,16 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import {
-  Table,
-  TableContainer,
-  TableHead,
-  TableBody,
-  TableRow,
-  TableCell,
-  Paper,
-  TextField,
-} from "@mui/material";
-import Typography from "@mui/material/Typography";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import { TextField, Select, MenuItem, FormControl, InputLabel } from "@mui/material";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
@@ -18,20 +7,25 @@ import { IncidentByTypePieChart } from "src/components/globalComponents/dataDisp
 import { get } from "../../../utils/api/api";
 import axios from "axios";
 import { baseUrl } from "src/utils/jsonData";
+import { AgGridReact } from "ag-grid-react";
+import "ag-grid-community/styles/ag-grid.css";
+import "ag-grid-community/styles/ag-theme-alpine.css"; // Using "alpine" for a modern theme
 
 const TeacherStudentPanel = ({ setPanelName, data = [] }) => {
   const [listOfStudents, setListOfStudents] = useState([]);
+  const [listOfSchool, setListOfSchool] = useState([]);
   const [studentDisplay, setStudentDisplay] = useState(false);
   const [studentData, setStudentData] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredData, setFilteredData] = useState([]);
+  const [selectedGrade, setSelectedGrade] = useState(""); // State for selected grade
   const [spotEmail, setSpotEmail] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await get("student/v1/allStudents"); // Pass the headers option with the JWT token
-        setListOfStudents(response);
+        setListOfSchool(response);
       } catch (error) {
         console.error(error);
       }
@@ -80,10 +74,6 @@ const TeacherStudentPanel = ({ setPanelName, data = [] }) => {
     }
   };
 
-  const handleSearchChange = (e) => {
-    setSearchQuery(e.target.value);
-  };
-
   useEffect(() => {
     // Filter the data based on the search query
     const filteredRecords = listOfStudents.filter((student) => {
@@ -94,57 +84,154 @@ const TeacherStudentPanel = ({ setPanelName, data = [] }) => {
     setFilteredData(filteredRecords);
   }, [listOfStudents, searchQuery]);
 
-  const handleProfileClick = (x) => {
-    fetchStudentData(x.studentEmail);
-    setSpotEmail(x.studentEmail);
-  };
+  // const handleProfileClick = (x) => {
+  //   fetchStudentData(x.studentEmail);
+  //   setSpotEmail(x.studentEmail);
+  // };
 
-  const pdfRef = useRef();
+  // const pdfRef = useRef();
 
-  const generatePDF = (studentData) => {
-    const pdf = new jsPDF();
-    // Add logo
-    const logoWidth = 50; // Adjust the width of the logo as needed
-    const logoHeight = 50; // Adjust the height of the logo as needed
-    const logoX = 130; // Adjust the X coordinate of the logo as needed
-    const logoY = 15; // Adjust the Y coordinate of the logo as needed
+  // const generatePDF = (studentData) => {
+  //   const pdf = new jsPDF();
+  //   // Add logo
+  //   const logoWidth = 50; // Adjust the width of the logo as needed
+  //   const logoHeight = 50; // Adjust the height of the logo as needed
+  //   const logoX = 130; // Adjust the X coordinate of the logo as needed
+  //   const logoY = 15; // Adjust the Y coordinate of the logo as needed
 
-    //https://medium.com/dont-leave-me-out-in-the-code/5-steps-to-create-a-pdf-in-react-using-jspdf-1af182b56cee
-    //Resource for adding image and how pdf text works
-    var image = new Image();
-    image.src = "/burke-logo.png";
-    pdf.addImage(image, "PNG", logoX, logoY, logoWidth, logoHeight);
+  //   //https://medium.com/dont-leave-me-out-in-the-code/5-steps-to-create-a-pdf-in-react-using-jspdf-1af182b56cee
+  //   //Resource for adding image and how pdf text works
+  //   var image = new Image();
+  //   image.src = "/burke-logo.png";
+  //   pdf.addImage(image, "PNG", logoX, logoY, logoWidth, logoHeight);
 
-    // Add student details section
-    pdf.setFontSize(12);
-    pdf.rect(15, 15, 180, 50);
-    pdf.text(`${studentData[0].firstName} ${studentData[0].lastName}`, 20, 20);
-    pdf.text(`Email: ${studentData[0].studentEmail}`, 20, 30);
-    pdf.text(`Phone: ${studentData[0].studentPhoneNumber}`, 20, 40);
-    pdf.text(`Grade: ${studentData[0].grade}`, 20, 50);
-    pdf.text(`Address: ${studentData[0].address}`, 20, 60);
+  //   // Add student details section
+  //   pdf.setFontSize(12);
+  //   pdf.rect(15, 15, 180, 50);
+  //   pdf.text(`${studentData[0].firstName} ${studentData[0].lastName}`, 20, 20);
+  //   pdf.text(`Email: ${studentData[0].studentEmail}`, 20, 30);
+  //   pdf.text(`Phone: ${studentData[0].studentPhoneNumber}`, 20, 40);
+  //   pdf.text(`Grade: ${studentData[0].grade}`, 20, 50);
+  //   pdf.text(`Address: ${studentData[0].address}`, 20, 60);
 
-    // Add punishment details table
-    pdf.autoTable({
-      startY: 70, // Adjust the Y-coordinate as needed
-      head: [["Status", "Description", "Date", "Infraction"]],
-      body: studentData.map((student) => [
-        student.status,
-        student.infraction.infractionDescription,
-        student.timeCreated,
-        student.infraction.infractionName,
-      ]),
-    });
+  //   // Add punishment details table
+  //   pdf.autoTable({
+  //     startY: 70, // Adjust the Y-coordinate as needed
+  //     head: [["Status", "Description", "Date", "Infraction"]],
+  //     body: studentData.map((student) => [
+  //       student.status,
+  //       student.infraction.infractionDescription,
+  //       student.timeCreated,
+  //       student.infraction.infractionName,
+  //     ]),
+  //   });
 
-    // Save or open the PDF
-    pdf.save("student_report.pdf");
-  };
+  //   // Save or open the PDF
+  //   pdf.save("student_report.pdf");
+  // };
 
-  const hasScroll = listOfStudents.length > 10;
+  // const hasScroll = listOfStudents.length > 10;
+
+  console.log("ListOfSchool ", listOfSchool);
+
+  useEffect(() => {
+    const processData = () => {
+      // Create a map to store student data
+      const studentDataMap = new Map();
+
+      // Function to get the grade for a student by their email
+      const getGradeByEmail = (email) => {
+        const student = listOfSchool.find(
+          (student) => student.studentEmail === email
+        );
+        return student ? student.grade : ""; // Return grade if found, otherwise return an empty string
+      };
+
+      // Process teacher-managed referrals (writeUpResponse)
+      data.writeUpResponse.forEach((teacherDTO) => {
+        const email = teacherDTO.studentEmail;
+
+        // If the student is already in the map, update their info
+        if (!studentDataMap.has(email)) {
+          studentDataMap.set(email, {
+            fullName: `${teacherDTO.studentFirstName} ${teacherDTO.studentLastName}`,
+            grade: getGradeByEmail(email), // Get the grade by studentEmail
+            teacherManagedReferrals: 0,
+            officeManagedReferrals: 0,
+          });
+        }
+
+        // Increment the teacher-managed referral count
+        const studentData = studentDataMap.get(email);
+        studentData.teacherManagedReferrals += 1;
+        studentDataMap.set(email, studentData);
+      });
+
+      // Process office-managed referrals (officeReferrals)
+      data.officeReferrals.forEach((referral) => {
+        const email = referral.studentEmail;
+
+        // If the student isn't in the map yet, create a new entry
+        if (!studentDataMap.has(email)) {
+          studentDataMap.set(email, {
+            fullName: `${referral.studentFirstName} ${referral.studentLastName}`,
+            grade: getGradeByEmail(email), // Get the grade by studentEmail
+            teacherManagedReferrals: 0,
+            officeManagedReferrals: 0,
+          });
+        }
+
+        // Increment the office-managed referral count
+        const studentData = studentDataMap.get(email);
+        studentData.officeManagedReferrals += 1;
+        studentDataMap.set(email, studentData);
+      });
+
+      // Convert the map to an array to be used in rowData
+      const formattedData = Array.from(studentDataMap.values());
+
+      setListOfStudents(formattedData); // Update state with formatted data
+    };
+
+    if (data) {
+      processData();
+    }
+  }, [data, listOfSchool]);
+
+    // Filter data based on search query and selected grade
+    useEffect(() => {
+      const filteredRecords = listOfStudents.filter((student) => {
+        const fullName = `${student.fullName}`.toLowerCase();
+        const matchesQuery = fullName.includes(searchQuery.toLowerCase());
+        const matchesGrade =
+          selectedGrade === "" || student.grade === selectedGrade;
+        return matchesQuery && matchesGrade;
+      });
+      setFilteredData(filteredRecords);
+    }, [listOfStudents, searchQuery, selectedGrade]);
+  
+    const handleSearchChange = (e) => {
+      setSearchQuery(e.target.value);
+    };
+  
+    const handleGradeChange = (e) => {
+      setSelectedGrade(e.target.value);
+    };
+
+  // Define column definitions
+  const columnDefs = [
+    { headerName: "Student Name", field: "fullName" },
+    { headerName: "Grade", field: "grade" }, // Assuming you can get the grade
+    {
+      headerName: "Teacher Managed Referrals",
+      field: "teacherManagedReferrals",
+    },
+    { headerName: "Office Managed Referrals", field: "officeManagedReferrals" },
+  ];
 
   return (
     <>
-      {studentDisplay && studentData.length === 0 && (
+        {/* {studentDisplay && studentData.length === 0 && (
         <div
           style={{
             display: "flex",
@@ -330,145 +417,28 @@ const TeacherStudentPanel = ({ setPanelName, data = [] }) => {
             </div>
           </div>
         </div>
-      )}
+      )} */}
 
-      <div
-        style={{
-          backgroundColor: "rgb(25, 118, 210)",
-          marginTop: "10px",
-          marginBlock: "5px",
-        }}
-      >
-        <Typography
-          color="white"
-          variant="h6"
+        <div
           style={{
-            flexGrow: 1,
-            outline: "1px solid  white",
-            padding: "5px",
-            fontSize: 36,
-            fontWeight: "bolder",
+            backgroundColor: "rgb(25, 118, 210)",
+            marginTop: "10px",
+            marginBlock: "5px",
           }}
         >
-          Students Overview
-        </Typography>
-      </div>
-
-      <TableContainer
-        component={Paper}
-        style={{
-          maxHeight: hasScroll ? "400px" : "auto",
-          overflowY: hasScroll ? "scroll" : "visible",
-        }}
-      >
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TextField
-                label="Search"
-                variant="outlined"
-                fullWidth
-                value={searchQuery}
-                onChange={handleSearchChange}
+          {listOfStudents.length > 0 && (
+            <div
+              className="ag-theme-alpine"
+              style={{ height: "60vh", width: "100%" }}
+            >
+              <AgGridReact
+                rowData={listOfStudents} // Pass the processed list of students here
+                columnDefs={columnDefs}
+                domLayout="autoHeight"
               />
-            </TableRow>
-            <TableRow>
-              <TableCell
-                variant="head"
-                style={{ fontWeight: "bold", fontSize: 24 }}
-              >
-                Name
-              </TableCell>
-              <TableCell
-                variant="head"
-                style={{ fontWeight: "bold", fontSize: 24 }}
-              >
-                Email
-              </TableCell>
-              <TableCell
-                variant="head"
-                style={{ fontWeight: "bold", fontSize: 24 }}
-              >
-                Grade
-              </TableCell>
-              {/* <TableCell
-                variant="head"
-                style={{ fontWeight: "bold", fontSize: 24 }}
-              >
-              //   Phone Number 
-              // </TableCell>
-              {/* <TableCell variant="head" style={{ fontWeight: 'bold' }}>
-             Actions
-            </TableCell> */}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {filteredData.length > 0 ? (
-              filteredData.map((x, key) => (
-                <TableRow
-                  className="page-scroll"
-                  key={key}
-                  onClick={() => {
-                    handleProfileClick(x);
-                  }}
-                >
-                  <TableCell>
-                    <div style={{ display: "flex", alignItems: "center" }}>
-                      <AccountCircleIcon
-                        style={{
-                          fontSize: "2rem", // Adjust the size as needed
-                          color: "rgb(25, 118, 210)", // Change the color to blue
-                        }}
-                      />
-                      <span
-                        style={{
-                          fontSize: 18,
-                        }}
-                      >
-                        {x.firstName} {x.lastName}
-                      </span>
-                    </div>
-                  </TableCell>
-                  <TableCell
-                    style={{
-                      fontSize: 18,
-                    }}
-                  >
-                    {x.studentEmail}
-                  </TableCell>
-                  <TableCell
-                    style={{
-                      fontSize: 18,
-                    }}
-                  >
-                    {x.grade}
-                  </TableCell>
-                  {/* <TableCell
-                    style={{
-                      fontSize: 18,
-                    }}
-                  >
-                    {x.studentPhoneNumber}
-                  </TableCell> */}
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell
-                  colSpan="5"
-                  style={{
-                    fontSize: 18,
-                    fontWeight: "lighter",
-                    fontStyle: "italic",
-                  }}
-                >
-                  No open assignments found.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </TableContainer>
+            </div>
+          )}
+        </div>
     </>
   );
 };

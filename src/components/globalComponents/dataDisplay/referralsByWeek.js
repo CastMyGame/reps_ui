@@ -25,7 +25,6 @@ export const TotalReferralByWeek = ({
   const GenerateBxByWeek = (bx, numOfWeeks, data) => {
     const bxData = [];
     for (let i = 0; i < numOfWeeks; i++) {
-      console.log(" teacher data ", data);
       const weekNum = yearAdj(currentWeek - i);
       const dataForWeek = findDataByWeekAndByPunishment(weekNum, bx, data);
       bxData.push(dataForWeek);
