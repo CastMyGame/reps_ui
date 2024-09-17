@@ -115,7 +115,7 @@ const AdminOverviewPanel = ({ data = [] }) => {
           )}
         </div>
 
-        <div className="card-overview-third">
+        <div className="card-overview-third" style={{ overflow: "scroll" }}>
           <WorseClassTable
             data={data.punishmentResponse}
             teacherData={data.teachers}
