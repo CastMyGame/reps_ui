@@ -1,6 +1,6 @@
 import Typography from "@mui/material/Typography";
 import Card from "@mui/material/Card";
-import TotalReferralByWeek from "src/components/globalComponents/dataDisplay/referralsByWeek";
+import { TotalReferralByWeek } from "src/components/globalComponents/dataDisplay/referralsByWeek";
 import TotalStudentReferredByWeek from "src/components/globalComponents/dataDisplay/numberOfStudentReferralsByWeek";
 import ReferralByBehavior from "src/components/globalComponents/dataDisplay/referralsByBehavior";
 import IncidentsByStudentTable from "src/components/globalComponents/dataDisplay/incidentsByStudentTable";
@@ -135,7 +135,7 @@ const AdminOverviewPanel = ({ data = [] }) => {
 
       <div className="overview-row">
         <div className="card-overview-third">
-          <TotalReferralByWeek data={data.punishmentResponse} />
+          <TotalReferralByWeek punishmentResponse={data.punishmentResponse} />
         </div>
 
         <div className="card-overview-third">

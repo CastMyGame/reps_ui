@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import Typography from "@mui/material/Typography";
 import IncidentsByStudentTable from "src/components/globalComponents/dataDisplay/incidentsByStudentTable.js";
-import TotalReferralByWeek from "src/components/globalComponents/dataDisplay/referralsByWeek.js";
+import { TotalReferralByWeek } from "src/components/globalComponents/dataDisplay/referralsByWeek";
 import TotalStudentReferredByWeek from "src/components/globalComponents/dataDisplay/numberOfStudentReferralsByWeek.js";
 import Card from "@mui/material/Card";
 import ReferralByBehavior from "src/components/globalComponents/dataDisplay/referralsByBehavior.js";

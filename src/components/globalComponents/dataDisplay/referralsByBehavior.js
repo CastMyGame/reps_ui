@@ -1,5 +1,4 @@
-import { LineChart } from "@mui/x-charts/LineChart";
-import { Typography } from "@mui/material";
+import ReactEcharts from "echarts-for-react";
 import {
   findDataByWeekAndByPunishment,
   getCurrentWeekOfYear,
@@ -31,11 +30,28 @@ export default function ReferralByBehavior({ data = [] }) {
   const tardyData = GenerateBxByWeek("Tardy", rangeWeeks, data);
   const horseplayData = GenerateBxByWeek("Horseplay", rangeWeeks, data);
   const dressCodeData = GenerateBxByWeek("Dress Code", rangeWeeks, data);
+  const shoutOutData = GenerateBxByWeek(
+    "Positive Shout Out!",
+    rangeWeeks,
+    data
+  );
+  const concernData = GenerateBxByWeek("Behavioral Concern", rangeWeeks, data);
+  const disruptiveData = GenerateBxByWeek(
+    "Disruptive Behavior",
+    rangeWeeks,
+    data
+  );
   const unauthorizedDevice = GenerateBxByWeek(
     "Unauthorized Device/Cell Phone",
     rangeWeeks,
     data
   );
+  const teacherManagedData =
+    GenerateBxByWeek("Disruptive Behavior", rangeWeeks, data) +
+    GenerateBxByWeek("Unauthorized Device/Cell Phone", rangeWeeks, data) +
+    GenerateBxByWeek("Tardy", rangeWeeks, data) +
+    GenerateBxByWeek("Horseplay", rangeWeeks, data) +
+    GenerateBxByWeek("Dress Code", rangeWeeks, data);
 
   const GenerateLabels = (rangeWeeks, currentWeek) => {
     const labels = [];
@@ -51,50 +67,90 @@ export default function ReferralByBehavior({ data = [] }) {
   };
 
   const xLabels = GenerateLabels(rangeWeeks, currentWeek);
+  const option = {
+    responsive: true,
+    maintainAspectRatio: false,
+    tooltip: {
+      trigger: "axis",
+    },
+    legend: {
+      data: [
+        "Teacher Managed Referrals",
+        "Horseplay",
+        "Dress Code",
+        "Unauthorized Device/Cell Phone",
+        "Positive Shout Out!",
+        "Behavioral Concern",
+      ],
+    },
+    grid: {
+      left: "3%",
+      right: "4%",
+      bottom: "8%",
+      containLabel: true,
+    },
+    toolbox: {
+      feature: {
+        saveAsImage: {},
+      },
+    },
+    xAxis: {
+      type: "category",
+      boundaryGap: false,
+      data: xLabels,
+    },
+    yAxis: {
+      type: "value",
+    },
+    series: [
+      {
+        name: "Tardy",
+        type: "line",
+        stack: "Total",
+        data: tardyData,
+      },
+      {
+        name: "Dress Code",
+        type: "line",
+        stack: "Total",
+        data: dressCodeData,
+      },
+      {
+        name: "Disruptive Behavior",
+        type: "line",
+        stack: "Total",
+        data: disruptiveData,
+      },
+      {
+        name: "Behavioral Concern",
+        type: "line",
+        stack: "Total",
+        data: concernData,
+      },
+      {
+        name: "Positive Shout Out!",
+        type: "line",
+        stack: "Total",
+        data: shoutOutData,
+      },
+      {
+        name: "Horseplay",
+        type: "line",
+        stack: "Total",
+        data: horseplayData,
+      },
+      {
+        name: "Unauthorized Device/Cell Phone",
+        type: "line",
+        stack: "Total",
+        data: unauthorizedDevice,
+      },
+    ],
+  };
 
   return (
-    data && (
-      <>
-        <Typography variant="h4" gutterBottom>
-          Behavior Trends
-        </Typography>
-        <button
-          onClick={() => setRangeWeek((prev) => prev - 1)}
-          style={{ height: "20px", width: "20px", padding: 0, borderRadius: 0 }}
-        >
-          -
-        </button>
-        <button
-          onClick={() => setRangeWeek((prev) => prev + 1)}
-          style={{ height: "20px", width: "20px", padding: 0, borderRadius: 0 }}
-        >
-          +
-        </button>
-        <LineChart
-          width={550}
-          height={250}
-          series={[
-            { data: tardyData.reverse(), label: "Tardy" },
-            { data: dressCodeData.reverse(), label: "Dress Code" },
-            { data: horseplayData.reverse(), label: "Horseplay" },
-            {
-              data: unauthorizedDevice.reverse(),
-              label: "Unauthorized Device",
-            },
-          ]}
-          xAxis={[{ scaleType: "point", data: xLabels }]}
-          slotProps={{
-            legend: {
-              itemGap: 25,
-            },
-          }}
-          sx={{
-            "& .MuiChartsLegend-series text": {
-              fontSize: "1em !important",
-            },
-          }}
-        />
-      </>
-    )
+    <div style={{ maxHeight: "100%", maxWidth: "100%" }}>
+      <ReactEcharts option={option} />
+    </div>
   );
 }

@@ -1,11 +1,8 @@
-import { LineChart } from "@mui/x-charts/LineChart";
-import { Typography } from "@mui/material";
+import ReactEcharts from "echarts-for-react";
 import {
   extractDataByWeek,
-  extractDataByWeekFirstDay,
   getCurrentWeekOfYear,
   getFirstDayOfWeek,
-  getUniqueStudentIdFromList,
 } from "../../../helperFunctions/helperFunctions";
 import { useState } from "react";
 
@@ -49,43 +46,48 @@ export default function TotalStudentReferredByWeek({ data = [] }) {
   // Convert the weekMap to the format suitable for LineChart
   const xAxisData = displayDate.map((obj) => Object.keys(obj)[0]); // Extract the keys (labels)
   const seriesData = displayDate.map((obj) => Object.values(obj)[0] || 0); // Extract the values associated with the keys
+  const option = {
+    responsive: true,
+    maintainAspectRatio: false,
+    title: {
+      text: "Total School Referrals",
+      left: "center",
+    },
+    tooltip: {
+      trigger: "axis",
+    },
+    grid: {
+      left: "3%",
+      right: "4%",
+      bottom: "8%",
+      containLabel: true,
+    },
+    toolbox: {
+      feature: {
+        saveAsImage: {},
+      },
+    },
+    xAxis: {
+      type: "category",
+      boundaryGap: false,
+      data: xAxisData,
+    },
+    yAxis: {
+      type: "value",
+    },
+    series: [
+      {
+        name: "Tardy",
+        type: "line",
+        stack: "Total",
+        data: seriesData,
+      },
+    ],
+  };
 
   return (
-    data && (
-      <>
-        <Typography variant="h4" gutterBottom>
-          Number of Students Receiving Referrals By Week
-        </Typography>{" "}
-        <button
-          onClick={() => setRangeWeek((prev) => prev - 1)}
-          style={{ height: "20px", width: "20px", padding: 0, borderRadius: 0 }}
-        >
-          -
-        </button>{" "}
-        <button
-          onClick={() => setRangeWeek((prev) => prev + 1)}
-          style={{ height: "20px", width: "20px", padding: 0, borderRadius: 0 }}
-        >
-          +
-        </button>
-        <LineChart
-          xAxis={[
-            {
-              scaleType: "band",
-              data: xAxisData,
-              label: "Weeks",
-            },
-          ]}
-          yAxis={[{ label: "Number of Student Referred" }]}
-          series={[
-            {
-              data: seriesData, // Number of punishments
-            },
-          ]}
-          width={400}
-          height={250}
-        />
-      </>
-    )
+    <div style={{ maxHeight: "100%", maxWidth: "100%" }}>
+      <ReactEcharts option={option} />
+    </div>
   );
 }

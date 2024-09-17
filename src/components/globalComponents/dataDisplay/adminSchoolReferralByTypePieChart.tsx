@@ -13,8 +13,6 @@ export const AdminSchoolReferralByTypePieChart: React.FC<AdminOverviewDto> = ({
   shoutOutsResponse = [],
   officeReferrals = [],
 }) => {
-  console.log("Punishment Response ", punishmentResponse);
-  console.log("Office Referrals ", officeReferrals);
   let uniqueInfractions: Record<string, number> = {};
   const totalIncidents = (punishmentResponse as TeacherDto[]).length;
 
@@ -99,10 +97,6 @@ export const AdminSchoolReferralByTypePieChart: React.FC<AdminOverviewDto> = ({
         },
         radius: "87%",
         data: [
-          //   ...infractionsWithIncidentsList.map((student) => ({
-          //     value: student.incidents,
-          //     name: `${student.infractionName}`,
-          //   })),
           {
             value: behavioralConcerns.length,
             name: "Behavioral Concern",
