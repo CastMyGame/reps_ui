@@ -1,0 +1,130 @@
+.landing-header{
+    display: flex;
+    height: 7em;
+    background-color: #25444C;
+    width: 100%;
+    justify-content: left;
+    align-content: center;
+    padding: 0.5em 2em;
+}
+
+.logo-text{
+width: 25%;
+
+}
+
+.logo-text >h1{
+    height: 20em;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    color:#DE8455;
+    font-weight: bolder;
+
+}
+
+.logo-text >h1 >span{
+    color: white;
+}
+
+
+.landing-header-menu{
+    position: relative;
+    width: 20%;
+    color: white;
+    height: max-content;
+    padding: 1.0em;
+    font-size: x-large;
+}
+
+.landing-header-menu-login{
+    position: relative;
+    
+    width: 20%;
+    color: white;
+    height: max-content;
+    padding: 1.0em;
+    font-size: x-large;
+    border-radius: 16px;
+    text-align: center;
+    background-color:#6ce2ec ;
+}
+
+.intro-panel{
+    background-image: url(/public/repsbg.png);
+    height: 1200px;
+    background-repeat: no-repeat;
+    background-size: cover;
+    
+}
+
+.intro-panel-cards{
+    display: flex;
+    width: 100%;
+    overflow-x: auto;
+    
+
+}
+.ip-card{
+    display: flex;
+    flex-direction: column;
+    width: 20%;
+    height:300px;
+    background-color: #25444C;
+    padding: 1em;
+    border: silver solid 1px;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+
+
+}
+
+.ip-card-img{
+    padding: 1em;
+    height: 200px;
+    width: 200px;
+
+}
+
+.ip-card-content{
+    color:white;
+    font-size: x-large;
+    overflow-wrap: break-word;
+    height: 200px;
+    text-align: center;
+}
+
+.landing-summary-container{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    width: 100%;
+
+    
+
+}
+
+.landing-summary-container-points {
+    padding: 1em;
+    height: 300px;
+    width: 48%; /* Adjust to 48% so two items fit in a row with some spacing */
+    border: #febd73 solid 5px;
+    border-radius: 10px;
+    box-sizing: border-box; /* Ensures the width includes padding and borders */
+    margin-bottom: 1em; /* Adds space between rows */
+}
+
+.point-title{
+    font-size: xx-large;
+    text-align: center;
+
+
+}
+.point-bullet::before{
+    text-align: left;
+    content: "• "; /* Adds the bullet point as content */
+    font-size: 1.5em; /* Adjust size of the bullet if needed */
+    color: #febd73; /* Optional: Change the bullet color */
+    margin-right: 0.5em; /* Adds space between bullet and text */
+    vertical-align: middle; 
+
+}

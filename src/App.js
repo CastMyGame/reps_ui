@@ -17,6 +17,7 @@ import { useState } from "react";
 import IdleTimerContainer from "./security/IdleTimerContainer";
 import SinglePageSignIn from "./security/single-page-login";
 import GuidanceDashboard from "./components/roles/guidance/guidance-dashboard";
+import LandingPage from "./components/globalComponents/updatedLanding/landing";
 
 function App() {
   const [isLoggedOut, setIsLoggedOut] = useState(false);
@@ -31,6 +32,7 @@ function App() {
       <Router>
         <div>
           <Routes>
+          <Route path="/landing" element={<LandingPage/>} />
             <Route path="/student-login" element={<SinglePageSignIn />} />
             <Route path="/login" element={<Login />} />
             <Route path="/reset-password/:token" element={<ResetPassword />} />
