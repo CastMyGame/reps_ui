@@ -6,15 +6,15 @@ export interface Role {
 }
 
 export interface OfficeReferralCode {
-    codeKey: number;
-    codeName: string;
+  codeKey: number;
+  codeName: string;
 }
 
 export interface GuidanceResponse {
   guidanceId: string;
   studentEmail: string;
   schoolName: string;
-  timeCreated: null | [];
+  timeCreated: Date | [];
   teacherEmail: string;
   guidanceEmail: string;
   referralDescription: [string];
@@ -68,6 +68,22 @@ export interface TeacherReferral {
   studentEmail: string;
   schoolName: string;
   infractionName: string;
+  infractionLevel: string;
+  status: string;
+  closedTimes: number;
+  closedExplanation: string;
+  timeCreated: Date;
+  timeClosed: Date;
+  classPeriod: string;
+  teacherEmail: string;
+  isArchived: boolean;
+  isStateFiled: boolean;
+  stateIncidentNumber: string;
+  archivedBy: string;
+  archivedExplanation: string;
+  archivedOn: Date;
+  mapIndex: number;
+  infractionDescription: [string];
 }
 
 export interface StudentPunishment {
@@ -83,7 +99,7 @@ export interface TeacherDto {
   infractionDescription: [string];
   teacherEmail: string;
   status: string;
-  level: string;
+  infractionLevel: string;
 }
 
 export interface TeacherOverviewDto {

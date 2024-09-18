@@ -1,56 +1,34 @@
 import axios from "axios";
 import { baseUrl } from "../utils/jsonData";
 import { CLERICAL, BEHAVIORAL } from "src/types/constants";
+import { TeacherDto, TeacherReferral } from "src/types/responses";
+import { DateTimeFormatOptions } from "luxon";
+import { Student } from "src/types/school";
 
-export const getCurrentWeekOfYear = () => {
+export const getCurrentWeekOfYear = (): number => {
   const today = new Date();
   const startOfYear = new Date(today.getFullYear(), 0, 1);
-  const dayOfYear = (today - startOfYear) / 86400000; // 86400000 ms in a day
-  return Math.ceil(dayOfYear / 7);
+  
+  // Get the time difference in milliseconds and convert to days
+  const dayOfYear = Math.floor((today.getTime() - startOfYear.getTime()) / 86400000) + 1;
+
+  // Calculate the week number
+  const weekNumber = Math.ceil(dayOfYear / 7);
+
+  return weekNumber;
 };
 
-export const getWeekNumber = (date) => {
+export const getWeekNumber = (date: Date): number => {
   const oneJan = new Date(date.getFullYear(), 0, 1);
   const millisecondsInDay = 86400000; // 24 * 60 * 60 * 1000
-  return Math.ceil(
-    ((date - oneJan) / millisecondsInDay + oneJan.getDay() + 1) / 7
-  );
-};
-
-export const fetchDataFromApi = async (url) => {
-  const headers = {
-    Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
-  };
-  try {
-    const response = await axios.get(url, { headers });
-    return response.data;
-  } catch (error) {
-    console.error("Error fetching data:", error);
-    throw error; // You can also handle the error in a different manner based on your requirement
-  }
-};
-
-//This returns list of student id that the teacher has had interaction with
-// argument
-export const getUniqueStudentIdFromList = (data) => {
-  const studentIdArray = [];
-  const uniqueMap = new Map();
-
-  data.forEach((item) => {
-    const studentId = item.student.studentIdNumber;
-
-    // If the studentIdNumber is not in the map, add it to studentIdArray and set its value in the map to true
-    if (!uniqueMap.has(studentId)) {
-      uniqueMap.set(studentId, true);
-      studentIdArray.push(studentId); // Add the studentId to the array
-    }
-  });
-
-  return studentIdArray; // Return the array containing unique student IDs
+  const dayOfYear = Math.floor((date.getTime() - oneJan.getTime()) / millisecondsInDay) + 1;
+  const weekNumber = Math.ceil(dayOfYear / 7);
+  
+  return weekNumber;
 };
 
 //The Method filter the list of punihsment by logged in user
-export const filterPunishementsByLoggedInUser = (data) => {
+export const filterPunishementsByLoggedInUser = (data: TeacherReferral[]) => {
   const teachReferrals = data.filter(
     (x) => x.teacherEmail === sessionStorage.getItem("email")
   ).length;
@@ -58,7 +36,7 @@ export const filterPunishementsByLoggedInUser = (data) => {
 };
 
 //This Method Returns a subset of punishments from a list by the week of year the punishment was created
-export const extractDataByWeek = (week, data) => {
+export const extractDataByWeek = (week: number, data: (TeacherDto[]) => {
   const thisWeek = data.filter((punish) => {
     const date = new Date(punish.timeCreated);
     const weekNumber = getWeekNumber(date);
@@ -69,7 +47,7 @@ export const extractDataByWeek = (week, data) => {
   return thisWeek; // Return the filtered array
 };
 
-export const extractDataByWeekFirstDay = (week, data, format = "MM/DD") => {
+export const extractDataByWeekFirstDay = (week:number, data:TeacherDto[], format = "MM/DD") => {
   const firstDayOfWeek = getFirstDayOfWeek(week); // Get the first day of the specified week
   const thisWeek = data.filter((punish) => {
     const date = new Date(punish.timeCreated);
@@ -82,7 +60,7 @@ export const extractDataByWeekFirstDay = (week, data, format = "MM/DD") => {
 };
 
 // Helper function to get the first day of a week
-export const getFirstDayOfWeek = (week) => {
+export const getFirstDayOfWeek = (week:number) => {
   const year = new Date().getFullYear(); // Use the current year, you can adjust this if needed
   const januaryFirst = new Date(year, 0, 1); // January 1st of the year
 
@@ -93,7 +71,7 @@ export const getFirstDayOfWeek = (week) => {
 };
 
 // Helper function to check if two dates are the same day
-const isSameDay = (date1, date2) => {
+const isSameDay = (date1:Date, date2:Date) => {
   return (
     date1.getDate() === date2.getDate() &&
     date1.getMonth() === date2.getMonth() &&
@@ -101,7 +79,7 @@ const isSameDay = (date1, date2) => {
   );
 };
 
-export const findDataByWeekAndByPunishment = (week, behavioral, data) => {
+export const findDataByWeekAndByPunishment = (week:number, behavioral:string, data:TeacherDto[]) => {
   // Filter data based on the behavioral infraction name
   const thisWeek = data
     .filter((punish) => punish.infractionName === behavioral)
@@ -115,18 +93,18 @@ export const findDataByWeekAndByPunishment = (week, behavioral, data) => {
   return thisWeek.length; // Return the filtered array
 };
 
-export const getIncidentByBehavior = (bx, fetchedData) => {
+export const getIncidentByBehavior = (bx:string, fetchedData:TeacherDto[]) => {
   const data = fetchedData.filter((item) => item.infractionName === bx);
   return data.length;
 };
 
-export const dateCreateFormat = (inputDate) => {
+export const dateCreateFormat = (inputDate:Date) => {
   const date = new Date(inputDate);
   const options = { year: "numeric", month: "2-digit", day: "2-digit" };
-  return date.toLocaleDateString("en-US", options);
+  return date.toLocaleDateString("en-US", (options as DateTimeFormatOptions));
 };
 
-export const categoryBadgeGenerator = (infractionName) => {
+export const categoryBadgeGenerator = (infractionName:string) => {
     if (CLERICAL.includes(infractionName)) {
       return (
         <div style={{ backgroundColor: "gold" }} className="cat-badge">
@@ -145,7 +123,7 @@ export const getStudentList = () => {
     Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
   };
 
-  let studentList = []
+  let studentList: Student[] = []
 
   const url = `${baseUrl}/student/v1/allStudents`; // Replace with your actual API endpoint
 

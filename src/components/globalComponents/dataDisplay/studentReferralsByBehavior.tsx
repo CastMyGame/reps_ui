@@ -6,7 +6,7 @@ import {
   findDataByWeekAndByPunishment,
 } from "../../../helperFunctions/helperFunctions";
 import { useState } from "react";
-import { StudentPunishment, TeacherReferral } from "src/types/responses";
+import { StudentPunishment, TeacherDto, TeacherReferral } from "src/types/responses";
 
 const StudentReferralsByWeek: React.FC<StudentPunishment> = ({ data = [] }) => {
   const [rangeWeeks, setRangeWeek] = useState(10);
@@ -20,7 +20,7 @@ const StudentReferralsByWeek: React.FC<StudentPunishment> = ({ data = [] }) => {
   const GenerateChartData = (
     currentWeek: number,
     rangeWeeks: number,
-    data: TeacherReferral[]
+    data: TeacherDto[]
   ) => {
     const genData = [];
 
@@ -45,7 +45,7 @@ const StudentReferralsByWeek: React.FC<StudentPunishment> = ({ data = [] }) => {
   const displayDate = GenerateChartData(
     currentWeek,
     rangeWeeks,
-    data as TeacherReferral[]
+    data as TeacherDto[]
   );
   displayDate.reverse();
 
@@ -55,7 +55,7 @@ const StudentReferralsByWeek: React.FC<StudentPunishment> = ({ data = [] }) => {
   const GenerateBxByWeek = (
     bx: string,
     numOfWeeks: number,
-    data: TeacherReferral[]
+    data: TeacherDto[]
   ) => {
     const bxData = [];
     for (let i = 0; i < numOfWeeks; i++) {
@@ -69,37 +69,37 @@ const StudentReferralsByWeek: React.FC<StudentPunishment> = ({ data = [] }) => {
   const tardyData = GenerateBxByWeek(
     "Tardy",
     rangeWeeks,
-    data as TeacherReferral[]
+    data as TeacherDto[]
   );
   const horseplayData = GenerateBxByWeek(
     "Horseplay",
     rangeWeeks,
-    data as TeacherReferral[]
+    data as TeacherDto[]
   );
   const dressCodeData = GenerateBxByWeek(
     "Dress Code",
     rangeWeeks,
-    data as TeacherReferral[]
+    data as TeacherDto[]
   );
   const unauthorizedDeviceData = GenerateBxByWeek(
     "Unauthorized Device/Cell Phone",
     rangeWeeks,
-    data as TeacherReferral[]
+    data as TeacherDto[]
   );
   const disruptiveBehaviorData = GenerateBxByWeek(
     "Disruptive Behavior",
     rangeWeeks,
-    data as TeacherReferral[]
+    data as TeacherDto[]
   );
   const positiveData = GenerateBxByWeek(
     "Positive Shout Out!",
     rangeWeeks,
-    data as TeacherReferral[]
+    data as TeacherDto[]
   );
   const behavioralConcernData = GenerateBxByWeek(
     "Behavioral Concern",
     rangeWeeks,
-    data as TeacherReferral[]
+    data as TeacherDto[]
   );
 
   const option = {
