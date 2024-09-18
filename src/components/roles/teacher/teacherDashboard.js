@@ -16,7 +16,6 @@ import { NavigationLoggedIn } from "src/components/landing/navigation-loggedIn.j
 import { handleLogout } from "src/utils/helperFunctions.js";
 import SpendPage from "src/components/globalComponents/spend-page/spend-page.js";
 import CreateOfficeReferralPanel from "src/components/globalComponents/referrals/createOfficeReferral.js";
-import { ManageSpotters } from "src/components/globalComponents/components/generic-components/manageSpotters.tsx";
 import { ManageSpottersPopup } from "src/components/globalComponents/components/generic-components/manageSpottersPopup.js";
 
 const TeacherDashboard = () => {

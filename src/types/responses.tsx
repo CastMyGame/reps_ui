@@ -125,3 +125,8 @@ export interface OfficeReferral {
   mapIndex: number;
   referralDescription: string;
 }
+
+export interface IncidentList {
+  teacherName: string;
+  posRatio: number;
+}

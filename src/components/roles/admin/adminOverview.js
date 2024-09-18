@@ -103,13 +103,13 @@ const AdminOverviewPanel = ({ data = [] }) => {
           {data.teachers && (
             <>
               <Top5TeacherRatioTable
-                data={data.punishmentResponse}
-                teacherData={data.teachers}
+                punishmentResponse={data.punishmentResponse}
+                teachers={data.teachers}
               />
               <br></br>
               <Bottom4PositiveTeacherTable
-                data={data.punishmentResponse}
-                teacherData={data.teachers}
+                punishmentResponse={data.punishmentResponse}
+                teachers={data.teachers}
               />
             </>
           )}
