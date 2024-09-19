@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import "../admin/admin.css";
 import Typography from "@mui/material/Typography";
 import IncidentsByStudentTable from "src/components/globalComponents/dataDisplay/incidentsByStudentTable.js";
 import { TotalReferralByWeek } from "src/components/globalComponents/dataDisplay/referralsByWeek";
@@ -20,18 +21,6 @@ const TeacherOverviewPanel = ({ setPanelName, data = [], students = [] }) => {
   useEffect(() => {
     setStudentList(students);
   }, [students]);
-
-  const dataExcludeNonReferrals = data.punishmentResponse.filter((x) => {
-    return x.infractionName !== "Positive Behavior Shout Out!";
-  });
-  const weeklyData = dataExcludeNonReferrals.filter((x) => {
-    const currentDate = new Date();
-    const itemDate = new Date(x.timeCreated);
-    const sevenDaysAgo = new Date(
-      currentDate.setDate(currentDate.getDate() - 7)
-    );
-    return itemDate > sevenDaysAgo;
-  });
 
   // const weeklyDataIncSOBxConcern = data.punishmentResponse.filter((x) => {
   //   const currentDate = new Date();
@@ -115,11 +104,15 @@ const TeacherOverviewPanel = ({ setPanelName, data = [], students = [] }) => {
           <PieChartParentCommunication
             data={data.punishmentResponse}
             shoutOutsResponse={data.shoutOutsResponse}
+            officeReferrals={data.officeReferrals}
+            writeUpResponse={data.writeUpResponse}
           />
         </div>
 
         <div className="card-overview-half">
-          <TeacherInfractionOverPeriodBarChart data={weeklyData} />
+          <TeacherInfractionOverPeriodBarChart
+            data={data.punishmentResponse}
+          />
         </div>
       </div>
 

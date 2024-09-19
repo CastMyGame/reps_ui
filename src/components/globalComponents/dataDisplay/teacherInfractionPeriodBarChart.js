@@ -1,36 +1,50 @@
 import React from "react";
-import { getIncidentByBehavior } from "src/helperFunctions/helperFunctions";
+import {
+  currentWeek,
+  extractDataByWeek,
+  findDataByWeekAndByPunishment,
+  getIncidentByBehavior,
+} from "src/helperFunctions/helperFunctions";
 import ReactEcharts from "echarts-for-react";
 
 const TeacherInfractionOverPeriodBarChart = ({ data = [] }) => {
-  const tardybehavior = {
-    incidents: getIncidentByBehavior("Tardy", data),
-    behavior: "Tardy",
-  };
-  const disruptivebehavior = {
-    incidents: getIncidentByBehavior("Disruptive Behavior", data),
-    behavior: "Disruptive Behavior",
-  };
-  const horseplay = {
-    incidents: getIncidentByBehavior("Horseplay", data),
-    behavior: "Horseplay",
-  };
-  const dressCode = {
-    incidents: getIncidentByBehavior("Dress Code", data),
-    behavior: "Dress Code",
-  };
-  const cellPhone = {
-    incidents: getIncidentByBehavior("Unauthorized Device/Cell Phone", data),
-    behavior: "Unauthorized Device/Cell Phone",
-  };
-  const behavioralConcern = {
-    incidents: getIncidentByBehavior("Behavioral Concern", data),
-    behavior: "Behavioral Concern",
-  };
-  const ftc = {
-    incidents: getIncidentByBehavior("Failure to Complete Work", data),
-    behavior: "Failure to Complete Work",
-  };
+  const weekData = extractDataByWeek(currentWeek, data);
+  console.log("The week data ", weekData);
+  const tardybehavior = findDataByWeekAndByPunishment(
+    currentWeek,
+    "Tardy",
+    weekData
+  );
+  const disruptivebehavior = findDataByWeekAndByPunishment(
+    currentWeek,
+    "Disruptive Behavior",
+    weekData
+  );
+  const horseplay = findDataByWeekAndByPunishment(
+    currentWeek,
+    "Horseplay",
+    weekData
+  );
+  const dressCode = findDataByWeekAndByPunishment(
+    currentWeek,
+    "Dress Code",
+    weekData
+  );
+  const cellPhone = findDataByWeekAndByPunishment(
+    currentWeek,
+    "Unauthorized Device/Cell Phone",
+    weekData
+  );
+  const behavioralConcern = findDataByWeekAndByPunishment(
+    currentWeek,
+    "Behavioral Concern",
+    weekData
+  );
+  const ftc = findDataByWeekAndByPunishment(
+    currentWeek,
+    "Failure to Complete Work",
+    weekData
+  );
 
   const option = {
     tooltip: {
@@ -52,37 +66,37 @@ const TeacherInfractionOverPeriodBarChart = ({ data = [] }) => {
       {
         name: "Tardy",
         type: "bar",
-        data: [tardybehavior.incidents],
+        data: [tardybehavior],
       },
       {
         name: "Dress Code",
         type: "bar",
-        data: [dressCode.incidents],
+        data: [dressCode],
       },
       {
         name: "Disruptive Behavior",
         type: "bar",
-        data: [disruptivebehavior.incidents],
+        data: [disruptivebehavior],
       },
       {
         name: "Behavioral Concern",
         type: "bar",
-        data: [behavioralConcern.incidents],
+        data: [behavioralConcern],
       },
       {
         name: "Horseplay",
         type: "bar",
-        data: [horseplay.incidents],
+        data: [horseplay],
       },
       {
         name: "Unauthorized Device/Cell Phone",
         type: "bar",
-        data: [cellPhone.incidents],
+        data: [cellPhone],
       },
       {
         name: "Failure to Complete Work",
         type: "bar",
-        data: [ftc.incidents],
+        data: [ftc],
       },
     ],
   };
