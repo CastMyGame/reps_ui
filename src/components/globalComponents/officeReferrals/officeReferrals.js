@@ -206,7 +206,7 @@ const OfficeReferrals = ({ data = [] }) => {
                             setOpenModal({
                               display: true,
                               message:
-                                "You are attempting to remove the restorative assignment and close out a referral. If this was not your intent click cancel. If this is your intent, provide a brief explanation for why the restorative assignment is being removed and click Close",
+                                "You are attempting to close out this referral. If this was not your intent click cancel. If this is your intent, provide a brief explanation of the remediation being provided and click Close",
                               buttonType: "close",
                               data: x,
                             });
@@ -234,7 +234,7 @@ const OfficeReferrals = ({ data = [] }) => {
                             setOpenModal({
                               display: true,
                               message:
-                                "You are attempting to delete the record of this referral. If you were attempting to remove the restorative assignment and close out the referral please click cancel and hit the “Close Referral” button. If you still want to delete the record of this referral, provide a brief explanation for this action and click Delete Referral.",
+                                "You are attempting to delete the record of this referral. If you were attempting to close out the referral please click cancel and hit the “Close Referral” button. If you still want to delete the record of this referral, provide a brief explanation for this action and click Delete Referral.",
                               buttonType: "delete",
                               data: x,
                             });

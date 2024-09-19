@@ -31,25 +31,6 @@ const TeacherManagedReferralByLevelByWeek: React.FC<AdminOverviewDto> = ({
     return data.filter((item) => item.infractionLevel === level);
   };
 
-  // Generate chart data for a specific referral level
-  const GenerateLevelDataByWeek = (
-    level: string,
-    currentWeek: number,
-    rangeWeeks: number,
-    data: TeacherDto[]
-  ) => {
-    const levelData = [];
-    for (let i = 0; i < rangeWeeks; i++) {
-      const weekKey = yearAdj(currentWeek - i);
-      const filteredData = filterByLevel(
-        extractDataByWeek(weekKey, data),
-        level
-      );
-      levelData.push(filteredData.length); // Count of referrals for this level in the given week
-    }
-    return levelData;
-  };
-
   // Generate labels for xAxis
   const GenerateChartData = (currentWeek: number, rangeWeeks: number) => {
     const genData = [];
@@ -64,44 +45,23 @@ const TeacherManagedReferralByLevelByWeek: React.FC<AdminOverviewDto> = ({
     }
     return genData;
   };
-
-  // Generate xAxis data (weeks)
-  const xAxisData = GenerateChartData(currentWeek, rangeWeeks);
-
+  
   // Generate series data for each level
-  const level1Data = GenerateLevelDataByWeek(
-    "1",
-    currentWeek,
-    rangeWeeks,
-    punishmentResponse as TeacherDto[]
-  );
-  const level2Data = GenerateLevelDataByWeek(
-    "2",
-    currentWeek,
-    rangeWeeks,
-    punishmentResponse as TeacherDto[]
-  );
-  const level3Data = GenerateLevelDataByWeek(
-    "3",
-    currentWeek,
-    rangeWeeks,
-    punishmentResponse as TeacherDto[]
-  );
-  const level4Data = GenerateLevelDataByWeek(
-    "4",
-    currentWeek,
-    rangeWeeks,
-    punishmentResponse as TeacherDto[]
-  );
+  const level1Data = filterByLevel(punishmentResponse as TeacherDto[], "1");
+  const level2Data = filterByLevel(punishmentResponse as TeacherDto[], "2");
+  const level3Data = filterByLevel(punishmentResponse as TeacherDto[], "3");
+  const level4Data = filterByLevel(punishmentResponse as TeacherDto[], "4");
 
   const option = {
     responsive: true,
     maintainAspectRatio: false,
     tooltip: {
-      trigger: "axis",
+      trigger: "item",
     },
     legend: {
-      data: ["Level 1", "Level 2", "Level 3", "Level 4"],
+      show: true,
+      orient: "horizontal",
+      top: "top",
     },
     grid: {
       left: "3%",
@@ -116,8 +76,8 @@ const TeacherManagedReferralByLevelByWeek: React.FC<AdminOverviewDto> = ({
     },
     xAxis: {
       type: "category",
-      boundaryGap: false,
-      data: xAxisData,
+      boundaryGap: true,
+      show: false,
     },
     yAxis: {
       type: "value",
@@ -125,23 +85,23 @@ const TeacherManagedReferralByLevelByWeek: React.FC<AdminOverviewDto> = ({
     series: [
       {
         name: "Level 1",
-        type: "line",
-        data: level1Data,
+        type: "bar",
+        data: [level1Data.length],
       },
       {
         name: "Level 2",
-        type: "line",
-        data: level2Data,
+        type: "bar",
+        data: [level2Data.length],
       },
       {
         name: "Level 3",
-        type: "line",
-        data: level3Data,
+        type: "bar",
+        data: [level3Data.length],
       },
       {
         name: "Level 4",
-        type: "line",
-        data: level4Data,
+        type: "bar",
+        data: [level4Data.length],
       },
     ],
   };

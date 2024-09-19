@@ -15,7 +15,6 @@ import { Bottom4PositiveTeacherTable } from "src/components/globalComponents/dat
 import TeacherManagedReferralByLevelByWeek from "src/components/globalComponents/dataDisplay/teacherManagedReferralByLevelByWeek";
 
 const AdminOverviewPanel = ({ data = [] }) => {
-  console.log("Overview Drill: ", data);
   //Fetch Data to Prop Drill to Components
 
   const punishments = data.punishmentResponse;

@@ -146,3 +146,15 @@ export interface IncidentList {
   teacherName: string;
   posRatio: number;
 }
+
+export interface StudentIncidentList {
+  studentName: string;
+  totalIncidents: number;
+}
+
+export interface StudentContactList {
+  studentName: string;
+  timeCreated: string;
+  infractionName: string;
+  infractionDescription: string;
+}

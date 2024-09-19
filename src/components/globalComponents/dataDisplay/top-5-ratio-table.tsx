@@ -9,6 +9,10 @@ import {
 } from "src/types/responses";
 import { Employee } from "src/types/school";
 import { ColDef } from "ag-grid-community";
+import {
+  currentWeek,
+  extractDataByWeek,
+} from "src/helperFunctions/helperFunctions";
 
 export const Top5TeacherRatioTable: React.FC<AdminOverviewDto> = ({
   punishmentResponse = [],
@@ -27,8 +31,12 @@ export const Top5TeacherRatioTable: React.FC<AdminOverviewDto> = ({
         );
 
         if (teacherIncidents.length > 0) {
-          const totalIncidents = teacherIncidents.length;
-          const posIncidents = teacherIncidents.filter(
+          const incidentsForWeek = extractDataByWeek(
+            currentWeek,
+            teacherIncidents
+          );
+          const totalIncidents = incidentsForWeek.length;
+          const posIncidents = incidentsForWeek.filter(
             (item) => item.infractionName === "Positive Behavior Shout Out!"
           ).length;
 
@@ -56,6 +64,8 @@ export const Top5TeacherRatioTable: React.FC<AdminOverviewDto> = ({
     setMostPositiveRowData(topTwoTeachers);
   }, [punishmentResponse, teachers]);
 
+  console.log("Positive Row Data ", mostPositiveRowData);
+
   const colDefs = [
     { field: "teacherName", headerName: "Teacher Name" },
     { field: "posRatio", headerName: "Positive Ratio (%)" },
@@ -66,10 +76,7 @@ export const Top5TeacherRatioTable: React.FC<AdminOverviewDto> = ({
       <h3 style={{ textAlign: "center", marginBottom: "10px" }}>
         Most Positive
       </h3>
-      <div
-        className="ag-theme-quartz"
-        style={{ height: "25vh", width: "100%", marginBottom: "20px" }}
-      >
+      <div className="ag-theme-quartz">
         <AgGridReact
           rowData={mostPositiveRowData}
           columnDefs={colDefs as ColDef[]}
