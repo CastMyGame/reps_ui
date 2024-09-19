@@ -2,6 +2,7 @@ import React from "react";
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css"; // Using "alpine" for a modern theme
+import { currentWeek, extractDataByWeek } from "src/helperFunctions/helperFunctions";
 
 export const WorseClassTable = ({ punishmentResponse = [], teachers = [] }) => {
   // Initialize structures to track write-ups and the corresponding teacher
@@ -13,7 +14,8 @@ export const WorseClassTable = ({ punishmentResponse = [], teachers = [] }) => {
   };
 
   teachers.forEach((teacher) => {
-    const negWriteUpData = punishmentResponse.filter(
+    const weekData = extractDataByWeek(currentWeek, punishmentResponse);
+    const negWriteUpData = weekData.filter(
       (item) =>
         item.infractionName !== "Positive Behavior Shout Out!" &&
         item.teacherEmail === teacher.email

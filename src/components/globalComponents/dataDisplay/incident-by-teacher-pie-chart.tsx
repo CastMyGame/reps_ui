@@ -2,30 +2,46 @@ import React from "react";
 import { AdminOverviewDto, TeacherDto } from "src/types/responses";
 import { Employee } from "src/types/school";
 import ReactEcharts from "echarts-for-react";
+import {
+  extractDataByWeek,
+  getCurrentWeekOfYear,
+} from "src/helperFunctions/helperFunctions";
 
 export const IncidentByTeacherPieChart: React.FC<AdminOverviewDto> = ({
   writeUpResponse = [],
+  officeReferrals = [],
   teachers = [],
 }) => {
+  const currentWeek = getCurrentWeekOfYear();
   //grab total indcidents
   const totalIncidents = (writeUpResponse as TeacherDto[]).length;
 
   let uniqueTeachers: Record<string, number> = {};
 
-  // Get Unique Teachers Info
-  (writeUpResponse as TeacherDto[]).forEach((item) => {
-    const teacherEmail = item.teacherEmail;
-    uniqueTeachers[teacherEmail] = (uniqueTeachers[teacherEmail] || 0) + 1;
-  });
+  // Filter data for the current week
+  const weeklyTmIncidents = extractDataByWeek(currentWeek, writeUpResponse as TeacherDto[]);
+  const weeklyOmIncidents = extractDataByWeek(currentWeek, officeReferrals as TeacherDto[]);
 
-  //Grab teachers and extract emails
-  const teachersWithIncidentsList = Object.entries(uniqueTeachers).map(
+  // Combine both arrays into one
+  const combinedIncidents = [...weeklyTmIncidents, ...weeklyOmIncidents];
+
+  // Get Unique Teachers Info by aggregating incidents by teacherEmail
+  const teacherIncidentMap = combinedIncidents.reduce<Record<string, number>>((acc, item) => {
+    const teacherEmail = item.teacherEmail;
+    acc[teacherEmail] = (acc[teacherEmail] || 0) + 1;
+    return acc;
+  }, {});
+
+  // Map over unique teacher emails and get the incidents and teacher details
+  const teachersWithIncidentsList = Object.entries(teacherIncidentMap).map(
     ([teacherEmail, incidents]) => {
-      let teacher = (writeUpResponse as TeacherDto[]).find(
+      // Find the first occurrence of the teacher in the combined incidents list
+      const teacher = combinedIncidents.find(
         (item) => item.teacherEmail === teacherEmail
       );
 
-      let employee = (teachers as Employee[]).find(
+      // Find the teacher details from the teachers list (Employee)
+      const employee = (teachers as Employee[]).find(
         (teacher) => teacher.email === teacherEmail
       );
       const teacherFirstName = employee?.firstName || "Unknown";
@@ -36,14 +52,14 @@ export const IncidentByTeacherPieChart: React.FC<AdminOverviewDto> = ({
         teacherFirstName,
         teacherLastName,
         incidents: Number(incidents),
-        percent: ((Number(incidents) / totalIncidents) * 100).toFixed(2),
+        percent: ((Number(incidents) / combinedIncidents.length) * 100).toFixed(2),
       };
     }
   );
 
   const option = {
     title: {
-      text: "Total Contacts by Teacher",
+      text: "Total Referrals by Teacher",
       left: "center",
     },
     tooltip: {

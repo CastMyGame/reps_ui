@@ -19,6 +19,8 @@ export const getCurrentWeekOfYear = (): number => {
   return weekNumber;
 };
 
+export const currentWeek = getCurrentWeekOfYear();
+
 export const getWeekNumber = (date: Date): number => {
   const oneJan = new Date(date.getFullYear(), 0, 1);
   const millisecondsInDay = 86400000; // 24 * 60 * 60 * 1000
