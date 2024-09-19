@@ -1,40 +1,54 @@
-import React from "react";
+import React, { useState } from "react";
 import ReactEcharts from "echarts-for-react";
 import "./CustomPieChart.css";
 import { AdminOverviewDto, TeacherDto } from "src/types/responses";
+import {
+  extractDataByWeek,
+  getCurrentWeekOfYear,
+  GenerateBxByWeek,
+} from "src/helperFunctions/helperFunctions";
 
 export const AdminTeacherReferralByTypePieChart: React.FC<AdminOverviewDto> = ({
   writeUpResponse = [],
 }) => {
-  let uniqueInfractions: Record<string, number> = {};
-  const totalIncidents = (writeUpResponse as TeacherDto[]).length;
+  const [rangeWeeks, setRangeWeek] = useState(10);
+  const currentWeek = getCurrentWeekOfYear();
 
-  // Get Unique Students Info
-  (writeUpResponse as TeacherDto[]).forEach((item) => {
-    const infractionType = item.infractionName;
-    uniqueInfractions[infractionType] =
-      (uniqueInfractions[infractionType] || 0) + 1;
-  });
-
-  const infractionsWithIncidentsList = Object.entries(uniqueInfractions).map(
-    ([uniqueName, incidents]) => {
-      let theOne = (writeUpResponse as TeacherDto[]).find(
-        (item) => item.infractionName === uniqueName
-      );
-
-      const infractionName = theOne?.infractionName || "Unknown";
-
-      return {
-        uniqueName,
-        infractionName,
-        incidents: Number(incidents),
-      };
-    }
+  const tardyData = GenerateBxByWeek(
+    "Tardy",
+    rangeWeeks,
+    writeUpResponse as TeacherDto[]
   );
-
-  //   const meetsThreshold = studentsWithIncidentsList
-  //     .filter((ind) => parseFloat(ind.percent) > 8.0)
-  //     .sort((a, b) => b.incidents - a.incidents);
+  const horseplayData = GenerateBxByWeek(
+    "Horseplay",
+    rangeWeeks,
+    writeUpResponse as TeacherDto[]
+  );
+  const dressCodeData = GenerateBxByWeek(
+    "Dress Code",
+    rangeWeeks,
+    writeUpResponse as TeacherDto[]
+  );
+  const unauthorizedDeviceData = GenerateBxByWeek(
+    "Unauthorized Device/Cell Phone",
+    rangeWeeks,
+    writeUpResponse as TeacherDto[]
+  );
+  const disruptiveBehaviorData = GenerateBxByWeek(
+    "Disruptive Behavior",
+    rangeWeeks,
+    writeUpResponse as TeacherDto[]
+  );
+  const behavioralConcernData = GenerateBxByWeek(
+    "Behavioral Concern",
+    rangeWeeks,
+    writeUpResponse as TeacherDto[]
+  );
+  const academicConcernData = GenerateBxByWeek(
+    "Academic Concern",
+    rangeWeeks,
+    writeUpResponse as TeacherDto[]
+  );
 
   const option = {
     responsive: true,
@@ -62,10 +76,34 @@ export const AdminTeacherReferralByTypePieChart: React.FC<AdminOverviewDto> = ({
         },
         radius: "87%",
         data: [
-          ...infractionsWithIncidentsList.map((student) => ({
-            value: student.incidents,
-            name: `${student.infractionName}`,
-          })),
+          {
+            value: tardyData,
+            name: "Tardy",
+          },
+          {
+            value: horseplayData,
+            name: "Horseplay",
+          },
+          {
+            value: unauthorizedDeviceData,
+            name: "Unauthorized Device/Cell Phone",
+          },
+          {
+            value: dressCodeData,
+            name: "Dress Code",
+          },
+          {
+            value: disruptiveBehaviorData,
+            name: "Disruptive Behavior",
+          },
+          {
+            value: behavioralConcernData,
+            name: "Behavioral Concern",
+          },
+          {
+            value: academicConcernData,
+            name: "Academic Concern",
+          },
         ],
         emphasis: {
           itemStyle: {

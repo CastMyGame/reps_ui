@@ -1,9 +1,8 @@
 import ReactEcharts from "echarts-for-react";
 import {
-  extractDataByWeek,
   getCurrentWeekOfYear,
-  getFirstDayOfWeek,
-  findDataByWeekAndByPunishment,
+  GenerateBxByWeek,
+  GenerateChartData
 } from "../../../helperFunctions/helperFunctions";
 import { useState } from "react";
 import { StudentPunishment, TeacherDto, TeacherReferral } from "src/types/responses";
@@ -11,36 +10,6 @@ import { StudentPunishment, TeacherDto, TeacherReferral } from "src/types/respon
 const StudentReferralsByWeek: React.FC<StudentPunishment> = ({ data = [] }) => {
   const [rangeWeeks, setRangeWeek] = useState(10);
   const currentWeek = getCurrentWeekOfYear();
-
-  // Adjust the week number if current week extends prior to this year
-  const yearAdj = (cw: number) => {
-    return cw > 0 ? cw : 52 + cw;
-  };
-
-  const GenerateChartData = (
-    currentWeek: number,
-    rangeWeeks: number,
-    data: TeacherDto[]
-  ) => {
-    const genData = [];
-
-    for (let i = 0; i < rangeWeeks; i++) {
-      const weekKey = yearAdj(currentWeek - i);
-      const weekData = extractDataByWeek(weekKey, data).length;
-
-      const startDate = getFirstDayOfWeek(weekKey);
-      const endDate = new Date(startDate);
-      endDate.setDate(startDate.getDate() + 6);
-
-      const label = `${startDate.getMonth() + 1}/${startDate.getDate()} - ${endDate.getMonth() + 1}/${endDate.getDate()}`;
-
-      genData.push({
-        [label]: weekData,
-      });
-    }
-
-    return genData;
-  };
 
   const displayDate = GenerateChartData(
     currentWeek,
@@ -51,20 +20,6 @@ const StudentReferralsByWeek: React.FC<StudentPunishment> = ({ data = [] }) => {
 
   const xAxisData = displayDate.map((obj) => Object.keys(obj)[0]);
   const seriesData = displayDate.map((obj) => Object.values(obj)[0] || 0);
-
-  const GenerateBxByWeek = (
-    bx: string,
-    numOfWeeks: number,
-    data: TeacherDto[]
-  ) => {
-    const bxData = [];
-    for (let i = 0; i < numOfWeeks; i++) {
-      const weekNum = yearAdj(currentWeek - i);
-      const dataForWeek = findDataByWeekAndByPunishment(weekNum, bx, data);
-      bxData.push(dataForWeek);
-    }
-    return bxData;
-  };
 
   const tardyData = GenerateBxByWeek(
     "Tardy",
