@@ -11,7 +11,7 @@ import LevelThreePanel from "src/components/globalComponents/referrals/levelThre
 import { ContactUsModal } from "../../../security/contactUsModal.js";
 import { get } from "../../../utils/api/api.js";
 import LoadingWheelPanel from "src/components/roles/student/blankPanelForTest.js";
-import "../teacher/teacher.css";
+import "../admin/admin.css";
 import { NavigationLoggedIn } from "src/components/landing/navigation-loggedIn.jsx";
 import { handleLogout } from "src/utils/helperFunctions.js";
 import SpendPage from "src/components/globalComponents/spend-page/spend-page.js";
@@ -96,8 +96,9 @@ const TeacherDashboard = () => {
                   )}
                   {panelName === "student" && (
                     <TeacherStudentPanel
-                    setPanelName={setPanelName}
-                    data={data} />
+                      setPanelName={setPanelName}
+                      data={data}
+                    />
                   )}
                   {panelName === "punishment" && (
                     <GlobalPunishmentPanel

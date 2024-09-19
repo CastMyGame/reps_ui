@@ -1,7 +1,6 @@
 .App {
   width: 98%;      
-  margin: 0 auto;
-  background-color: #f4f4f4;  
+  margin: 0 auto;  
   height: auto;
 
 }
@@ -48,7 +47,7 @@
   justify-content: center;
   align-items: center;
   height: 50vh;
-  background-color: #f4f4f4;
+  /* background-color: #f4f4f4; */
 
 }
 
@@ -485,7 +484,6 @@ justify-content: space-between;
 
 .overview-row{
   width: 100%;
-  background-color: white;
   display: flex;
   flex-direction: row;
   height: auto;
@@ -646,7 +644,6 @@ height: 60px;
 }
 
 .main-content-panel{
-  background-color: rgb(25, 118, 210);
 margin-top:"10px";
 height: 100%;
 
