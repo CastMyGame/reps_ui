@@ -2,19 +2,28 @@ import React, { useState, useEffect } from "react";
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
+import {
+  AdminOverviewDto,
+  TeacherDto,
+  IncidentList,
+} from "src/types/responses";
+import { Employee } from "src/types/school";
+import { ColDef } from "ag-grid-community";
 
-export const Bottom4PositiveTeacherTable = ({
-  data = [],
-  teacherData = [],
+export const Bottom4PositiveTeacherTable: React.FC<AdminOverviewDto> = ({
+  punishmentResponse = [],
+  teachers = [],
 }) => {
-  const [leastPositiveRowData, setLeastPositiveRowData] = useState([]);
+  const [leastPositiveRowData, setLeastPositiveRowData] = useState<
+    IncidentList[]
+  >([]);
 
   useEffect(() => {
     // Create a list of teachers with incidents
-    const teachersWithIncidentsList = teacherData
-      .map((teacher) => {
-        const teacherIncidents = data.filter(
-          (item) => item.teacherEmail === teacher.email
+    const teachersWithIncidentsList = (teachers as Employee[])
+      .map((teacher: Employee) => {
+        const teacherIncidents = (punishmentResponse as TeacherDto[]).filter(
+          (item: TeacherDto) => item.teacherEmail === teacher.email
         );
 
         if (teacherIncidents.length > 0) {
@@ -23,9 +32,15 @@ export const Bottom4PositiveTeacherTable = ({
             (item) => item.infractionName === "Positive Behavior Shout Out!"
           ).length;
 
+          // Avoid division by zero and ensure posRatio is a number
+          const posRatio =
+            totalIncidents > 0
+              ? Number(((posIncidents / totalIncidents) * 100).toFixed(2))
+              : 0;
+
           return {
             teacherName: `${teacher.firstName} ${teacher.lastName}`,
-            posRatio: ((posIncidents / totalIncidents) * 100).toFixed(2),
+            posRatio,
           };
         }
         return null;
@@ -33,13 +48,13 @@ export const Bottom4PositiveTeacherTable = ({
       .filter(Boolean); // Remove any null values
 
     // Sort by posRatio in ascending order and slice the bottom four teachers for "Least Positive"
-    const bottomFourTeachers = teachersWithIncidentsList
-      .sort((a, b) => a.posRatio - b.posRatio)
+    const bottomFourTeachers = (teachersWithIncidentsList as IncidentList[])
+      .sort((a: IncidentList, b: IncidentList) => a.posRatio - b.posRatio)
       .slice(0, 4);
 
     // Set the rowData for both tables
     setLeastPositiveRowData(bottomFourTeachers);
-  }, [data, teacherData]);
+  }, [punishmentResponse, teachers]);
 
   const colDefs = [
     { field: "teacherName", headerName: "Teacher Name" },
@@ -57,7 +72,7 @@ export const Bottom4PositiveTeacherTable = ({
       >
         <AgGridReact
           rowData={leastPositiveRowData}
-          columnDefs={colDefs}
+          columnDefs={colDefs as ColDef<IncidentList>[]}
           domLayout="autoHeight" // Ensures that the height is handled properly
         />
       </div>
