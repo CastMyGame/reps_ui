@@ -36,7 +36,7 @@ export const filterPunishementsByLoggedInUser = (data: TeacherReferral[]) => {
 };
 
 //This Method Returns a subset of punishments from a list by the week of year the punishment was created
-export const extractDataByWeek = (week: number, data: (TeacherDto[]) => {
+export const extractDataByWeek = (week: number, data: (TeacherDto[])) => {
   const thisWeek = data.filter((punish) => {
     const date = new Date(punish.timeCreated);
     const weekNumber = getWeekNumber(date);

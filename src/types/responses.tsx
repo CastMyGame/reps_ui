@@ -14,14 +14,14 @@ export interface GuidanceResponse {
   guidanceId: string;
   studentEmail: string;
   schoolName: string;
-  timeCreated: Date | [];
+  timeCreated: Date | null;
   teacherEmail: string;
   guidanceEmail: string;
   referralDescription: [string];
   status: string;
-  notesArray: null | [];
-  linkToPunishment: null | string;
-  followUpDate: null | [];
+  notesArray: [string];
+  linkToPunishment: string;
+  followUpDate: Date | null;
 }
 
 export interface StudentResponse {

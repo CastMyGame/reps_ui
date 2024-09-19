@@ -5,9 +5,16 @@ import {
   getFirstDayOfWeek,
 } from "../../../helperFunctions/helperFunctions";
 import { useState } from "react";
-import { AdminOverviewDto, StudentPunishment, TeacherDto, TeacherReferral } from "src/types/responses";
+import {
+  AdminOverviewDto,
+  StudentPunishment,
+  TeacherDto,
+  TeacherReferral,
+} from "src/types/responses";
 
-export const TeacherManagedReferralByLevelByWeek: React.FC<AdminOverviewDto> = ({ punishmentResponse = [] }) => {
+const TeacherManagedReferralByLevelByWeek: React.FC<AdminOverviewDto> = ({
+  punishmentResponse = [],
+}) => {
   const [rangeWeeks, setRangeWeek] = useState(10);
   const currentWeek = getCurrentWeekOfYear();
 
@@ -25,7 +32,12 @@ export const TeacherManagedReferralByLevelByWeek: React.FC<AdminOverviewDto> = (
   };
 
   // Generate chart data for a specific referral level
-  const GenerateLevelDataByWeek = (level:string, currentWeek:number, rangeWeeks:number, data:TeacherDto[]) => {
+  const GenerateLevelDataByWeek = (
+    level: string,
+    currentWeek: number,
+    rangeWeeks: number,
+    data: TeacherDto[]
+  ) => {
     const levelData = [];
     for (let i = 0; i < rangeWeeks; i++) {
       const weekKey = yearAdj(currentWeek - i);
@@ -39,7 +51,7 @@ export const TeacherManagedReferralByLevelByWeek: React.FC<AdminOverviewDto> = (
   };
 
   // Generate labels for xAxis
-  const GenerateChartData = (currentWeek:number, rangeWeeks:number) => {
+  const GenerateChartData = (currentWeek: number, rangeWeeks: number) => {
     const genData = [];
     for (let i = 0; i < rangeWeeks; i++) {
       const startDate = getFirstDayOfWeek(yearAdj(currentWeek - i));
@@ -61,25 +73,25 @@ export const TeacherManagedReferralByLevelByWeek: React.FC<AdminOverviewDto> = (
     "1",
     currentWeek,
     rangeWeeks,
-    (punishmentResponse as TeacherDto[])
+    punishmentResponse as TeacherDto[]
   );
   const level2Data = GenerateLevelDataByWeek(
     "2",
     currentWeek,
     rangeWeeks,
-    (punishmentResponse as TeacherDto[])
+    punishmentResponse as TeacherDto[]
   );
   const level3Data = GenerateLevelDataByWeek(
     "3",
     currentWeek,
     rangeWeeks,
-    (punishmentResponse as TeacherDto[])
+    punishmentResponse as TeacherDto[]
   );
   const level4Data = GenerateLevelDataByWeek(
     "4",
     currentWeek,
     rangeWeeks,
-    (punishmentResponse as TeacherDto[])
+    punishmentResponse as TeacherDto[]
   );
 
   const option = {
@@ -139,4 +151,6 @@ export const TeacherManagedReferralByLevelByWeek: React.FC<AdminOverviewDto> = (
       <ReactEcharts option={option} />
     </div>
   );
-}
+};
+
+export default TeacherManagedReferralByLevelByWeek;

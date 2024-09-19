@@ -2,13 +2,13 @@ import { useState, useEffect } from "react";
 import Typography from "@mui/material/Typography";
 import IncidentsByStudentTable from "src/components/globalComponents/dataDisplay/incidentsByStudentTable.js";
 import { TotalReferralByWeek } from "src/components/globalComponents/dataDisplay/referralsByWeek";
-import TotalStudentReferredByWeek from "src/components/globalComponents/dataDisplay/teacherManagedReferralByLevelByWeek.js";
 import Card from "@mui/material/Card";
 import ReferralByBehavior from "src/components/globalComponents/dataDisplay/referralsByBehavior.js";
 import TeacherInfractionOverPeriodBarChart from "src/components/globalComponents/dataDisplay/teacherInfractionPeriodBarChart.js";
 import { PieChartParentCommunication } from "src/components/globalComponents/dataDisplay/pieChartParentCommunication.js";
 import RecentIncidents from "src/components/globalComponents/dataDisplay/studentRecentContacts.js";
 import ShoutOuts from "src/components/globalComponents/shoutOuts";
+import TeacherManagedReferralByLevelByWeek from "src/components/globalComponents/dataDisplay/teacherManagedReferralByLevelByWeek";
 
 const TeacherOverviewPanel = ({ setPanelName, data = [], students = [] }) => {
   const [openModal, setOpenModal] = useState({
@@ -178,7 +178,7 @@ const TeacherOverviewPanel = ({ setPanelName, data = [], students = [] }) => {
         </div>
         <div className="card-overview-third">
           {/* <Card style={{padding:"5px"}}> */}
-          <TotalStudentReferredByWeek data={data.writeUpResponse} />
+          <TeacherManagedReferralByLevelByWeek data={data.writeUpResponse} />
           {/* </Card> */}
         </div>
 

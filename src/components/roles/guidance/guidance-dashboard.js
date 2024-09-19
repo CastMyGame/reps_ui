@@ -26,11 +26,6 @@ import { StudentDetailsModal } from "src/components/globalComponents/components/
 import NavbarCustom from "src/components/globalComponents/modals/navBar/navBar";
 import CreatePunishmentPanel from "src/components/globalComponents/modals/functions/createPunishmentPanel.js";
 import { TeacherDetailsModal } from "src/components/globalComponents/components/modals/teacherDetailsModal ";
-import {
-  GuidanceResponse,
-  StudentResponse,
-  TeacherResponse,
-} from "src/types/responses";
 import { guidanceButtonData } from "src/types/navbars";
 import { BEHAVIORAL, CLERICAL } from "src/types/constants";
 
@@ -41,16 +36,16 @@ const GuidanceDashboard = () => {
   const [categoryFilter, setCategoryFilter] = useState("");
 
   const [updatePage, setUpdatePage] = useState(false);
-  const [data, setData] = useState<any>([]);
+  const [data, setData] = useState([]);
   const [panelName, setPanelName] = useState("overview");
 
   //Indicators - UI display of processing e.g. loading wheel
   const [closeIndicator, setCloseIndicator] = useState(false);
 
-  const [openTask, setOpenTask] = useState<any>([]);
-  const [activeIndex, setActiveIndex] = useState<number | null>(null);
-  const [activeTask, setActiveTask] = useState<any | null>(null);
-  const [guidanceFilter, setGuidanceFilter] = useState<boolean>(false);
+  const [openTask, setOpenTask] = useState([]);
+  const [activeIndex, setActiveIndex] = useState(null);
+  const [activeTask, setActiveTask] = useState(null);
+  const [guidanceFilter, setGuidanceFilter] = useState(false);
   const [displayStudentModal, setDisplayStudentModal] = useState(false);
   const [displayTeacherModal, setDisplayTeacherModal] = useState(false);
 
@@ -59,23 +54,23 @@ const GuidanceDashboard = () => {
 
   const handleUpdatePage = () => {
     setTimeout(() => {
-      setUpdatePage((prev: any) => !prev);
+      setUpdatePage((prev) => !prev);
     }, 500);
   };
 
-  const handleTaskTypeChange = (event: any, newTaskType: string) => {
+  const handleTaskTypeChange = (event, newTaskType) => {
     if (newTaskType !== null) {
       setTaskType(newTaskType);
     }
   };
 
-  const handleCategoryChange = (event: any, category: string) => {
+  const handleCategoryChange = (event, category) => {
     if (category !== null) {
       setCategoryFilter(category);
     }
   };
 
-  const handleStatusChange = (status: any, id: string) => {
+  const handleStatusChange = (status, id) => {
     const payload = { status: status };
     const headers = {
       Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
@@ -92,20 +87,20 @@ const GuidanceDashboard = () => {
       });
   };
 
-  const handleReferralFilterChange = (filterBoolean: boolean) => {
+  const handleReferralFilterChange = (filterBoolean) => {
     if (filterBoolean !== null) {
       setGuidanceFilter(filterBoolean);
       setUpdatePage((prev) => !prev);
     }
   };
 
-  const handleChange = (event: any) => {
+  const handleChange = (event) => {
     handleReferralFilterChange(event.target.checked);
   };
 
   //Status Change Actions for Closing and Scheduling Task
 
-  const handlePunishmentClose = (id: string) => {
+  const handlePunishmentClose = (id) => {
     setCloseIndicator(true);
 
     const headers = {
@@ -125,7 +120,7 @@ const GuidanceDashboard = () => {
       });
   };
 
-  const [punishmentRecord, setPunishmentRecord] = useState<any>();
+  const [punishmentRecord, setPunishmentRecord] = useState();
   //
   const getPunishmentRecord = useCallback(async () => {
     if (activeIndex !== null) {
@@ -153,7 +148,7 @@ const GuidanceDashboard = () => {
         result = await get(`punish/v1/punishStatus/${taskType}`);
       }
       setData(
-        result.filter((item: any) => {
+        result.filter((item) => {
           return !item.guidance;
         })
       );
@@ -188,14 +183,12 @@ const GuidanceDashboard = () => {
       if (Array.isArray(result)) {
         if (categoryFilter === "CLERICAL") {
           setData(
-            result.filter((item: { infractionName: string }) =>
-              CLERICAL.includes(item.infractionName)
-            )
+            result.filter((infractionName) => CLERICAL.includes(infractionName))
           );
         } else if (categoryFilter === "BEHAVIORAL") {
           setData(
-            result.filter((item: { infractionName: string }) =>
-              BEHAVIORAL.includes(item.infractionName)
+            result.filter((infractionName) =>
+              BEHAVIORAL.includes(infractionName)
             )
           );
         } else {
@@ -210,7 +203,7 @@ const GuidanceDashboard = () => {
   }, [taskType, guidanceFilter, categoryFilter, updatePage]);
 
   //Handle Functions
-  const deleteRecord = (punishment: any) => {
+  const deleteRecord = (punishment) => {
     const headers = {
       Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
     };
@@ -264,7 +257,7 @@ const GuidanceDashboard = () => {
     }
   }, []);
 
-  const formatDate = (dateString: any) => {
+  const formatDate = (dateString) => {
     if (!dateString) {
       return "";
     }
@@ -285,7 +278,7 @@ const GuidanceDashboard = () => {
 
   //Badge Generatores
 
-  const statusBadgeGenerator = (status: string) => {
+  const statusBadgeGenerator = (status) => {
     if (status === "OPEN") {
       return (
         <div style={{ backgroundColor: "green" }} className="cat-badge">
@@ -471,7 +464,7 @@ const GuidanceDashboard = () => {
                   {" "}
                   <h1 className="main-panel-title">Parent Contacts</h1>
                 </div>
-                {data.map((item: any, index: any) => {
+                {data.map((item, index) => {
                   return (
                     <div
                       className="task-card"
@@ -564,7 +557,7 @@ const GuidanceDashboard = () => {
                   {" "}
                   <h1 className="main-panel-title">Teacher Records</h1>
                 </div>
-                {data?.map((item: TeacherResponse, index: any) => {
+                {data?.map((item, index) => {
                   return (
                     <div
                       className="task-card"
@@ -614,7 +607,7 @@ const GuidanceDashboard = () => {
                   {" "}
                   <h1 className="main-panel-title">Active Referrals</h1>
                 </div>
-                {data.map((item: GuidanceResponse, index: any) => {
+                {data.map((item, index) => {
                   return (
                     <div
                       className="task-card"
@@ -719,7 +712,7 @@ const GuidanceDashboard = () => {
                   {" "}
                   <h1 className="main-panel-title">Student Records</h1>
                 </div>
-                {data?.map((item: StudentResponse, index: any) => {
+                {data?.map((item, index) => {
                   return (
                     <div
                       className="task-card"
@@ -814,17 +807,15 @@ const GuidanceDashboard = () => {
               {activeIndex != null &&
                 activeIndex >= 0 &&
                 data[activeIndex]?.notesArray?.length > 0 &&
-                data[activeIndex].notesArray.map(
-                  (thread: any, index: number) => {
-                    return (
-                      <div className="thread-card" key={index}>
-                        <p>Event: {thread.event}</p>
-                        <p>Date: {dateCreateFormat(thread.date)}</p>
-                        <p>Content: {thread.content}</p>
-                      </div>
-                    );
-                  }
-                )}
+                data[activeIndex].notesArray.map((thread, index) => {
+                  return (
+                    <div className="thread-card" key={index}>
+                      <p>Event: {thread.event}</p>
+                      <p>Date: {dateCreateFormat(thread.date)}</p>
+                      <p>Content: {thread.content}</p>
+                    </div>
+                  );
+                })}
 
               {activeIndex == null && (
                 <p>Click on Acitve Task to see details</p>
