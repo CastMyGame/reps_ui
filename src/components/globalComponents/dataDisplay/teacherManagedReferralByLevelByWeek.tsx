@@ -121,14 +121,6 @@ const TeacherManagedReferralByLevelByWeek: React.FC<AdminOverviewDto> = ({
     ],
   };
 
-  console.log(
-    "The level data ",
-    level1Data,
-    level2Data,
-    level3Data,
-    level4Data
-  );
-
   return (
     <div style={{ maxHeight: "100%", maxWidth: "100%" }}>
       <ReactEcharts option={option} />

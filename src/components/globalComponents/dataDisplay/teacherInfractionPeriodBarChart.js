@@ -20,18 +20,15 @@ const TeacherInfractionOverPeriodBarChart = ({ data = [] }) => {
     behavior: "Dress Code",
   };
   const cellPhone = {
-    incidents: 8,
-    // incidents: getIncidentByBehavior("Unauthorized Device/Cell Phone", data),
+    incidents: getIncidentByBehavior("Unauthorized Device/Cell Phone", data),
     behavior: "Unauthorized Device/Cell Phone",
   };
   const behavioralConcern = {
-    incidents: 3,
-    // incidents: getIncidentByBehavior("Behavioral Concern", data),
+    incidents: getIncidentByBehavior("Behavioral Concern", data),
     behavior: "Behavioral Concern",
   };
   const ftc = {
-    incidents: 6,
-    // incidents: getIncidentByBehavior("Failure to Complete Work", data),
+    incidents: getIncidentByBehavior("Failure to Complete Work", data),
     behavior: "Failure to Complete Work",
   };
 

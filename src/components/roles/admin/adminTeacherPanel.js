@@ -21,7 +21,6 @@ import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css"; // Using "alpine" for a modern theme
 
 const AdminTeacherPanel = ({ data = [] }) => {
-  console.log(" The data ", data);
   const [teacherProfileModal, setTeacherProfileModal] = useState(false);
   const [teacherProfileData, setTeacherProfileData] = useState([]);
   const [activeTeacher, setActiveTeacher] = useState(null);
@@ -111,8 +110,6 @@ const AdminTeacherPanel = ({ data = [] }) => {
     setActiveTeacher(x);
     setTeacherProfileModal(true);
   };
-
-  console.log("The filtered data ", filteredData);
 
   const columnDefs = [
     { headerName: "Teacher Name", field: "fullName" },
