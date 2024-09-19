@@ -9,7 +9,6 @@ import ReactEcharts from "echarts-for-react";
 
 const TeacherInfractionOverPeriodBarChart = ({ data = [] }) => {
   const weekData = extractDataByWeek(currentWeek, data);
-  console.log("The week data ", weekData);
   const tardybehavior = findDataByWeekAndByPunishment(
     currentWeek,
     "Tardy",

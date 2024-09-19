@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
 import "../admin/admin.css";
 import Typography from "@mui/material/Typography";
-import IncidentsByStudentTable from "src/components/globalComponents/dataDisplay/incidentsByStudentTable.js";
+import IncidentsByStudentTable from "src/components/globalComponents/dataDisplay/incidentsByStudentTable.tsx";
 import { TotalReferralByWeek } from "src/components/globalComponents/dataDisplay/referralsByWeek";
 import Card from "@mui/material/Card";
 import ReferralByBehavior from "src/components/globalComponents/dataDisplay/referralsByBehavior.js";
 import TeacherInfractionOverPeriodBarChart from "src/components/globalComponents/dataDisplay/teacherInfractionPeriodBarChart.js";
 import { PieChartParentCommunication } from "src/components/globalComponents/dataDisplay/pieChartParentCommunication.js";
-import RecentIncidents from "src/components/globalComponents/dataDisplay/studentRecentContacts.js";
+import RecentIncidents from "src/components/globalComponents/dataDisplay/studentRecentContacts.tsx";
 import ShoutOuts from "src/components/globalComponents/shoutOuts";
 import TeacherManagedReferralByLevelByWeek from "src/components/globalComponents/dataDisplay/teacherManagedReferralByLevelByWeek";
 
@@ -110,9 +110,7 @@ const TeacherOverviewPanel = ({ setPanelName, data = [], students = [] }) => {
         </div>
 
         <div className="card-overview-half">
-          <TeacherInfractionOverPeriodBarChart
-            data={data.punishmentResponse}
-          />
+          <TeacherInfractionOverPeriodBarChart data={data.punishmentResponse} />
         </div>
       </div>
 
@@ -133,12 +131,13 @@ const TeacherOverviewPanel = ({ setPanelName, data = [], students = [] }) => {
 
       <div className="overview-row">
         <div className="card-overview-half">
-          <div className="studentIncidentTable">
-            <IncidentsByStudentTable writeUps={data.punishmentResponse} />
-          </div>
+            <IncidentsByStudentTable
+              punishmentResponse={data.punishmentResponse}
+              officeReferrals={data.officeReferrals}
+            />
         </div>
         <div className="card-overview-half">
-          <RecentIncidents data={data.punishmentResponse} />
+          <RecentIncidents punishmentResponse={data.punishmentResponse} />
         </div>
       </div>
 
@@ -171,7 +170,7 @@ const TeacherOverviewPanel = ({ setPanelName, data = [], students = [] }) => {
         </div>
         <div className="card-overview-third">
           {/* <Card style={{padding:"5px"}}> */}
-          <TeacherManagedReferralByLevelByWeek data={data.writeUpResponse} />
+          <TeacherManagedReferralByLevelByWeek punishmentResponse={data.writeUpResponse} />
           {/* </Card> */}
         </div>
 

@@ -31,18 +31,6 @@ const TeacherManagedReferralByLevelByWeek: React.FC<AdminOverviewDto> = ({
     return data.filter((item) => item.infractionLevel === level);
   };
 
-  // Generate chart data for a specific referral level
-  const GenerateLevelDataByWeek = (
-    level: string,
-    currentWeek: number,
-    data: TeacherDto[]
-  ) => {
-    const levelData = [];
-    const filteredData = filterByLevel(data, level);
-    levelData.push(filteredData.length); // Count of referrals for this level in the given week
-    return levelData;
-  };
-
   // Generate labels for xAxis
   const GenerateChartData = (currentWeek: number, rangeWeeks: number) => {
     const genData = [];
@@ -57,10 +45,7 @@ const TeacherManagedReferralByLevelByWeek: React.FC<AdminOverviewDto> = ({
     }
     return genData;
   };
-
-  // Generate xAxis data (weeks)
-  const xAxisData = GenerateChartData(currentWeek, rangeWeeks);
-
+  
   // Generate series data for each level
   const level1Data = filterByLevel(punishmentResponse as TeacherDto[], "1");
   const level2Data = filterByLevel(punishmentResponse as TeacherDto[], "2");
