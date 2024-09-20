@@ -43,20 +43,31 @@ const testimonialData = [
 ]
 
  const  LandingPage =()=>{
+
+    const handleScroll = (event:any) => {
+        const targetId = event.target.getAttribute('data-target');
+        const targetElement = document.getElementById(targetId);
+    
+        if (targetElement) {
+          targetElement.scrollIntoView({ behavior: 'smooth' });
+        }
+      };
+    
+
     return(
         <div >
             <header id='landing-header'  className='landing-header'>
                 <div id='logo-text' className='logo-text'><h1>REPS <span >BMS</span></h1></div>
-                <div className='landing-header-menu'>Features</div>
-                <div className='landing-header-menu'>About</div>
-                <div className='landing-header-menu'>Testimonials</div>
-                <div className='landing-header-menu'>Book a Demo</div>
+                <div className='landing-header-menu' data-target='features' onClick={handleScroll}>Features</div>
+                <div className='landing-header-menu' data-target='about' onClick={handleScroll}>About</div>
+                <div className='landing-header-menu' data-target='testimonials' onClick={handleScroll} >Testimonials</div>
+                <div className='landing-header-menu' data-target='book-your-demo' onClick={handleScroll} >Book a Demo</div>
                 <div className='landing-header-menu-login'>Login</div>
             </header>
             <div className='intro-panel'>
 
             </div>
-            <div className='intro-panel-cards'>
+            <div id='features' className='intro-panel-cards'>
                 <div className='ip-card'>
                         <img className='ip-card-img' src="thumbimg.png" alt='thumbs up'/>
                   
@@ -120,12 +131,12 @@ const testimonialData = [
                     </div>
 
                 </div>
-                <div className='about-us'>
+                <div className='about-us' id='about'>
                     <div className='about-us-title'>About Us</div>
                     <div className='about-us-content'>REPS Behavior Management was created by two math teachers and coaches who wanted to increase data collection, streamline decision making processes and leverage coaching principles in the classroom. We believe good coaches approach with an asset focus, maintain high expectations, use productive means to hold athletes accountable, develop a sense of community and continue to grow themselves. REPS mirrors this approach by starting with what’s going well, when necessary providing support and accountability that is designed to benefit the student, involves the parents/guardians, improves communication between teachers, administrators and school counselors and provides data for continued improvement.</div>
                 </div>
 
-                <div className='testimonials-container'>
+                <div className='testimonials-container' id='testimonials'>
                     <div className='testimonial-title'>Testimonial</div>
                     <div className='testimonial-carrousel'>
                          {testimonialData.map((item)=>{
@@ -143,7 +154,7 @@ const testimonialData = [
 
                 </div>
 
-                <div className='book-your-demo-container'>
+                <div className='book-your-demo-container' id='book-your-demo'>
                     <div className='demo-text'>
                     <span className='form-logo-text'>REPS <span className='form-logo-2' >BMS</span></span> <span className='form-text-content'> is looking to partner with 3 more schools this year to take part in a free pilot program. We’re looking for schools that want to: 
 <ul className='bullet'>
