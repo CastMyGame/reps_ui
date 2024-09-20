@@ -17,6 +17,7 @@ import { useState } from "react";
 import IdleTimerContainer from "./security/IdleTimerContainer";
 import SinglePageSignIn from "./security/single-page-login";
 import GuidanceDashboard from "./components/roles/guidance/guidance-dashboard";
+import LandingPage from "./components/globalComponents/updatedLanding/landing";
 
 function App() {
   const [isLoggedOut, setIsLoggedOut] = useState(false);
@@ -32,7 +33,7 @@ function App() {
         <div>
           <Routes>
             <Route path="/student-login" element={<SinglePageSignIn />} />
-            <Route path="/login" element={<Login />} />
+            <Route path="/login" element={<LandingPage/>} />
             <Route path="/reset-password/:token" element={<ResetPassword />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
 
@@ -41,7 +42,7 @@ function App() {
               path="/infractionAssignments/:param1/:param2"
               element={<ViolationPage />}
             />
-            <Route path="/" element={<Login />} />
+            <Route path="/" element={<LandingPage/>} />
 
             {/* Use AuthRoute for role-based access control */}
             <Route

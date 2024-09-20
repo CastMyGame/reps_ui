@@ -1,0 +1,352 @@
+.page{
+    width: 90%;
+}
+.landing-header{
+    display: flex;
+    height: 7em;
+    background-color: #25444C;
+    width: 100%;
+    justify-content: left;
+    align-content: center;
+    padding: 0.5em 2em;
+}
+
+.logo-text{
+width: 25%;
+
+}
+
+.logo-text >h1{
+    height: 20em;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    color:#DE8455;
+    font-weight: bolder;
+
+}
+
+.logo-text >h1 >span{
+    color: white;
+}
+
+
+.landing-header-menu{
+    text-align: center;
+    position: relative;
+    width: 20%;
+    color: white;
+    height: max-content;
+    padding: 1.0em;
+    font-size: x-large;
+}
+
+.landing-header-menu:hover{
+    background-color: #5d949d;
+}
+
+.landing-header-menu-login{
+    position: relative;
+    margin-left: 1em;
+    width: 15%;
+    color: white;
+    height: max-content;
+    padding: 1.0em;
+    font-size: x-large;
+    border-radius: 16px;
+    text-align: center;
+    background-color:#6ce2ec ;
+}
+
+.landing-header-menu-login:hover{
+    background-color: #4a9fa7;
+}
+
+.intro-panel {
+    background-image: url(/public/backgroundPanel.png);
+    height: 1250px; /* Default height for large screens */
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center; /* Ensures the image is centered */
+}
+
+/* Media query for smaller screens */
+@media (max-width: 768px) {
+    .intro-panel {
+        height: 800px; /* Adjust the height for smaller screens */
+    }
+}
+
+@media (max-width: 480px) {
+    .intro-panel {
+        height: 600px; /* Further reduce height for very small screens */
+    }
+}
+
+
+.intro-panel-cards{
+    display: flex;
+    width: 100%;
+    overflow-x: auto;
+    
+
+}
+.ip-card{
+    display: flex;
+    flex-direction: column;
+    width: 20%;
+    height:300px;
+    background-color: #5d949d;
+    padding: 1em;
+    border: silver solid 1px;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+
+
+}
+
+.ip-card-img{
+    padding: 1em;
+    height: 200px;
+    width: 200px;
+
+}
+
+.ip-card-content{
+    color:white;
+    font-size: x-large;
+    overflow-wrap: break-word;
+    height: 200px;
+    text-align: center;
+}
+
+.landing-summary-container{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    width: 100%;
+    background-color: #5d949d;
+    padding: 2em;
+
+    
+
+}
+
+.landing-summary-container-points {
+    color: white;
+    font-size: x-large;
+    padding: 2em;
+    height: auto;
+    width: 48%; /* Adjust to 48% so two items fit in a row with some spacing */
+    border: #febd73 solid 5px;
+    border-radius: 10px;
+    box-sizing: border-box; /* Ensures the width includes padding and borders */
+    margin-bottom: 1em; /* Adds space between rows */
+}
+
+.point-title{
+    font-size: xx-large;
+    text-align: center;
+    font-weight: bolder;
+
+}
+
+
+.about-us{
+   
+}
+.about-container{
+    padding: 3em;
+}
+.about-us-title{
+    font-size: xx-large;
+    margin-bottom: 1em;
+    font-weight: bold;
+
+}
+.about-us-content{
+    font-size: large;
+    margin-bottom: 1em;
+
+
+}
+
+.testimonials-container {
+    background-color: #5d949d;
+    padding: 2em;
+}
+
+.testimonial-title {
+    color: black;
+    font-size: xx-large;
+    text-align: center;
+    font-weight: bolder;
+    background-color: #5d949d ;
+    padding: 1em;
+}
+
+.testimonial-carrousel {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    width: 100%;
+    background-color: #5d949d;
+    padding: 2em;
+}
+
+.testimonial {
+    align-content: center;
+    color: black;
+    background-color: white;
+    padding: 1.5em;
+    height: 300px;
+    width: 33%;
+    border: #143c3c solid 5px;
+    border-radius: 10px;
+    box-sizing: border-box;
+    margin-bottom: 1em;
+    position: relative; /* Allows positioning of pseudo-elements */
+}
+
+.testimonial::before {
+    content: "“"; /* Opening quotation mark */
+    font-size: 5em; /* Larger size for dramatic effect */
+    color: #febd73;
+    position: absolute;
+    top: 1em;
+    left: 10px;
+    line-height: 0; /* Removes extra space around the quotation mark */
+}
+
+.testimonial::after {
+    content: "”"; /* Closing quotation mark */
+    font-size: 5em;
+    color: #febd73;
+    position: absolute;
+    bottom: 1em;
+    right: 10px;
+    line-height: 0; /* Removes extra space around the quotation mark */
+}
+
+.testimonial p {
+    margin-top: 1em;
+    margin: 0;
+    padding: 0;
+    font-size: 1em;
+    line-height: 1.5em;
+    text-align: justify;
+    position: relative; /* Ensure text is in front of the pseudo-elements */
+}
+
+
+.book-your-demo-container{
+    background-color: #143c3c;
+    height: 700px;
+    display: flex;
+
+}
+.demo-text{
+    color:white;
+    padding: 2em;
+    width: 48%;
+
+}
+ul.bullet{
+    margin-top: 1em;
+    color: white;
+    list-style-type: disc ;
+    list-style-position: outside;
+    
+
+}
+
+
+.book-your-demo-form{
+    padding:2em;
+    height: 100%;
+    width: 48%;
+    color: white;
+    text-align: center;
+}
+.form-header{
+}
+
+
+ .form{}
+
+
+ .form-logo-text{
+    font-size: xx-large;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    color:#DE8455;
+    font-weight: bolder;
+
+}
+
+.form-logo-2{    
+    font-size: xx-large;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    color:white;
+    font-weight: bolder;}
+
+.form-text-content{
+    font-size: large;
+}
+
+
+.form-container {
+    display: flex;
+    flex-wrap: wrap;
+    background-color:#143c3c;
+    border: 0;
+    height: 80%;
+
+ }
+  
+  .form-row {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 1em;
+  }
+  
+  .form-column {
+    width: 48%; /* Adjust for two columns with space in between */
+  }
+  
+  .full-width {
+    width: 100%; /* Full width for the last textarea */
+  }
+  
+  input[type="text"],
+  input[type="email"],
+  input[type='password'],
+  textarea {
+    width: 100%; /* Ensure inputs take up full column width */
+    padding: 0.5em;
+    height: 50px;
+    box-sizing: border-box;
+  }
+  
+  input[type="submit"] {
+    margin-left: 25%;
+    font-size: large;
+    background-color: orange;
+    margin-top: 1em;
+    width: 50%;
+    color: white;
+    height: max-content;
+    padding: 1.0em;
+    font-size: medium;
+    border-radius: 16px;
+    text-align: center;  }
+  
+.panel-text{
+    position: absolute;
+    font-size: xx-large;
+    top: 65%;
+    left:40%;
+    width: 500px;
+}
+.form-container{
+    color:black
+}
