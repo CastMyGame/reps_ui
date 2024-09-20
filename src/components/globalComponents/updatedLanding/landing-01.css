@@ -30,6 +30,7 @@ width: 25%;
 
 
 .landing-header-menu{
+    text-align: center;
     position: relative;
     width: 20%;
     color: white;
@@ -38,10 +39,14 @@ width: 25%;
     font-size: x-large;
 }
 
+.landing-header-menu:hover{
+    background-color: #5d949d;
+}
+
 .landing-header-menu-login{
     position: relative;
-    
-    width: 20%;
+    margin-left: 1em;
+    width: 15%;
     color: white;
     height: max-content;
     padding: 1.0em;
@@ -49,6 +54,10 @@ width: 25%;
     border-radius: 16px;
     text-align: center;
     background-color:#6ce2ec ;
+}
+
+.landing-header-menu-login:hover{
+    background-color: #4a9fa7;
 }
 
 .intro-panel {
@@ -143,7 +152,10 @@ width: 25%;
 
 
 .about-us{
-    padding: 2em;
+   
+}
+.about-container{
+    padding: 3em;
 }
 .about-us-title{
     font-size: xx-large;
@@ -165,9 +177,11 @@ width: 25%;
 
 .testimonial-title {
     color: black;
-    font-size: x-large;
+    font-size: xx-large;
     text-align: center;
     font-weight: bolder;
+    background-color: #5d949d ;
+    padding: 1em;
 }
 
 .testimonial-carrousel {

@@ -306,8 +306,11 @@ const testimonialData = [
 
                 </div>
                 <div className='about-us' id='about'>
-                    <div className='about-us-title'>About Us</div>
-                    <div className='about-us-content'>REPS Behavior Management was created by two math teachers and coaches who wanted to increase data collection, streamline decision making processes and leverage coaching principles in the classroom. We believe good coaches approach with an asset focus, maintain high expectations, use productive means to hold athletes accountable, develop a sense of community and continue to grow themselves. REPS mirrors this approach by starting with what’s going well, when necessary providing support and accountability that is designed to benefit the student, involves the parents/guardians, improves communication between teachers, administrators and school counselors and provides data for continued improvement.</div>
+                    <div className='about-container'>
+                     <div className='about-us-title'>About Us</div>
+                        <div className='about-us-content'>REPS Behavior Management was created by two math teachers and coaches who wanted to increase data collection, streamline decision making processes and leverage coaching principles in the classroom. We believe good coaches approach with an asset focus, maintain high expectations, use productive means to hold athletes accountable, develop a sense of community and continue to grow themselves. REPS mirrors this approach by starting with what’s going well, when necessary providing support and accountability that is designed to benefit the student, involves the parents/guardians, improves communication between teachers, administrators and school counselors and provides data for continued improvement.</div>
+
+                    </div>
                 </div>
 
                 <div className='testimonials-container' id='testimonials'>
