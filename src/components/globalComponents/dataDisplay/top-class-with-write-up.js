@@ -43,6 +43,10 @@ export const WorseClassTable = ({ punishmentResponse = [], teachers = [] }) => {
     .sort((a, b) => b.count - a.count)
     .slice(0, 4);
 
+    const autoSizeStrategy = {
+      type: 'fitCellContents'
+  };
+
   // Define column definitions
   const columnDefs = [
     { headerName: "Period", field: "period" },
@@ -57,12 +61,13 @@ export const WorseClassTable = ({ punishmentResponse = [], teachers = [] }) => {
       </h3>
       <div
         className="ag-theme-alpine"
-        style={{ height: "25vh", width: "100%" }}
+        style={{ height: "25vh" }}
       >
         <AgGridReact
           rowData={sortedPeriods}
           columnDefs={columnDefs}
           domLayout="autoHeight" // Ensures that the height is handled properly
+          autoSizeStrategy={autoSizeStrategy}
         />
       </div>
     </div>

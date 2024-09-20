@@ -131,10 +131,10 @@ const TeacherOverviewPanel = ({ setPanelName, data = [], students = [] }) => {
 
       <div className="overview-row">
         <div className="card-overview-half">
-            <IncidentsByStudentTable
-              punishmentResponse={data.punishmentResponse}
-              officeReferrals={data.officeReferrals}
-            />
+          <IncidentsByStudentTable
+            punishmentResponse={data.punishmentResponse}
+            officeReferrals={data.officeReferrals}
+          />
         </div>
         <div className="card-overview-half">
           <RecentIncidents punishmentResponse={data.punishmentResponse} />
@@ -161,7 +161,10 @@ const TeacherOverviewPanel = ({ setPanelName, data = [], students = [] }) => {
           {/* <Card style={{padding:"5px"}}> */}
 
           {data ? (
-            <TotalReferralByWeek data={data.writeUpResponse} />
+            <TotalReferralByWeek
+              punishmentResponse={data.punishmentResponse}
+              officeReferrals={data.officeReferrals}
+            />
           ) : (
             <h1>loading</h1>
           )}
@@ -170,7 +173,9 @@ const TeacherOverviewPanel = ({ setPanelName, data = [], students = [] }) => {
         </div>
         <div className="card-overview-third">
           {/* <Card style={{padding:"5px"}}> */}
-          <TeacherManagedReferralByLevelByWeek punishmentResponse={data.writeUpResponse} />
+          <TeacherManagedReferralByLevelByWeek
+            punishmentResponse={data.writeUpResponse}
+          />
           {/* </Card> */}
         </div>
 
