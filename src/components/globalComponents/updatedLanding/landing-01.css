@@ -194,6 +194,7 @@ width: 25%;
 }
 
 .testimonial {
+    align-content: center;
     color: black;
     background-color: white;
     padding: 1.5em;
@@ -211,7 +212,7 @@ width: 25%;
     font-size: 5em; /* Larger size for dramatic effect */
     color: #febd73;
     position: absolute;
-    top: 30px;
+    top: 1em;
     left: 10px;
     line-height: 0; /* Removes extra space around the quotation mark */
 }
@@ -221,7 +222,7 @@ width: 25%;
     font-size: 5em;
     color: #febd73;
     position: absolute;
-    bottom: 30px;
+    bottom: 1em;
     right: 10px;
     line-height: 0; /* Removes extra space around the quotation mark */
 }
