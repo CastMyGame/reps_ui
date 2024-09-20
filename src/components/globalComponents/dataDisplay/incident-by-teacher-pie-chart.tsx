@@ -74,7 +74,7 @@ export const IncidentByTeacherPieChart: React.FC<AdminOverviewDto> = ({
     series: [
       {
         type: "pie",
-        radius: "80%",
+        radius: "65%",
         label: {
           show: false,
         },

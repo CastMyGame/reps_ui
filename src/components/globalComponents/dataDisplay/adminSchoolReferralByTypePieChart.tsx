@@ -54,7 +54,7 @@ export const AdminSchoolReferralByTypePieChart: React.FC<AdminOverviewDto> = ({
         label: {
           show: false,
         },
-        radius: "87%",
+        radius: "70%",
         data: [
           {
             value: behavioralConcerns,

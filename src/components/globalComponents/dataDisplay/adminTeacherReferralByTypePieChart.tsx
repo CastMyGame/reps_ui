@@ -74,8 +74,12 @@ export const AdminTeacherReferralByTypePieChart: React.FC<AdminOverviewDto> = ({
         label: {
           show: false,
         },
-        radius: "87%",
+        radius: "70%",
         data: [
+          {
+            value: unauthorizedDeviceData,
+            name: "Unauthorized Device/Cell Phone",
+          },
           {
             value: tardyData,
             name: "Tardy",
@@ -83,10 +87,6 @@ export const AdminTeacherReferralByTypePieChart: React.FC<AdminOverviewDto> = ({
           {
             value: horseplayData,
             name: "Horseplay",
-          },
-          {
-            value: unauthorizedDeviceData,
-            name: "Unauthorized Device/Cell Phone",
           },
           {
             value: dressCodeData,

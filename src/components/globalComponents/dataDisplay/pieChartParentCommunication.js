@@ -11,7 +11,6 @@ export const PieChartParentCommunication = ({
   officeReferrals = [],
   writeUpResponse = [],
 }) => {
-
   const numShoutout = extractDataByWeek(currentWeek, shoutOutsResponse);
   const numOfficeReferral = extractDataByWeek(currentWeek, officeReferrals);
   const numBxConcern = findDataByWeekAndByPunishment(
@@ -39,7 +38,7 @@ export const PieChartParentCommunication = ({
         type: "pie",
         stillShowZeroSum: false,
         left: "20%",
-        bottom: "5%",
+        bottom: "15%",
         label: {
           show: false,
         },
