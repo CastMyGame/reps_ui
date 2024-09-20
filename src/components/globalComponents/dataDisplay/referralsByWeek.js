@@ -3,6 +3,7 @@ import {
   extractDataByWeek,
   getCurrentWeekOfYear,
   getFirstDayOfWeek,
+  GenerateBxByWeek,
   findDataByWeekAndByPunishment,
 } from "../../../helperFunctions/helperFunctions";
 import { useState } from "react";
@@ -20,16 +21,6 @@ export const TotalReferralByWeek = ({
     if (cw <= 0) {
       return 52 + cw;
     }
-  };
-
-  const GenerateBxByWeek = (bx, numOfWeeks, data) => {
-    const bxData = [];
-    for (let i = 0; i < numOfWeeks; i++) {
-      const weekNum = yearAdj(currentWeek - i);
-      const dataForWeek = findDataByWeekAndByPunishment(weekNum, bx, data);
-      bxData.push(dataForWeek);
-    }
-    return bxData;
   };
 
   const GenerateChartData = (currentWeek, rangeWeeks, data) => {

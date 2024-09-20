@@ -5,39 +5,34 @@ import {
   getFirstDayOfWeek,
 } from "../../../helperFunctions/helperFunctions";
 import { useState } from "react";
+import {
+  AdminOverviewDto,
+  StudentPunishment,
+  TeacherDto,
+  TeacherReferral,
+} from "src/types/responses";
 
-export default function TotalStudentReferredByWeek({ data = [] }) {
+const TeacherManagedReferralByLevelByWeek: React.FC<AdminOverviewDto> = ({
+  punishmentResponse = [],
+}) => {
   const [rangeWeeks, setRangeWeek] = useState(10);
   const currentWeek = getCurrentWeekOfYear();
 
-  const yearAdj = (cw) => {
+  const yearAdj = (cw: number): number => {
     if (cw > 0) return cw;
     if (cw <= 0) {
       return 52 + cw;
     }
+    return 1; // Fallback to week 1 in case of unexpected input
   };
 
   // Helper function to filter data by referral level
-  const filterByLevel = (data, level) => {
+  const filterByLevel = (data: TeacherDto[], level: string) => {
     return data.filter((item) => item.infractionLevel === level);
   };
 
-  // Generate chart data for a specific referral level
-  const GenerateLevelDataByWeek = (level, currentWeek, rangeWeeks, data) => {
-    const levelData = [];
-    for (let i = 0; i < rangeWeeks; i++) {
-      const weekKey = yearAdj(currentWeek - i);
-      const filteredData = filterByLevel(
-        extractDataByWeek(weekKey, data),
-        level
-      );
-      levelData.push(filteredData.length); // Count of referrals for this level in the given week
-    }
-    return levelData;
-  };
-
   // Generate labels for xAxis
-  const GenerateChartData = (currentWeek, rangeWeeks) => {
+  const GenerateChartData = (currentWeek: number, rangeWeeks: number) => {
     const genData = [];
     for (let i = 0; i < rangeWeeks; i++) {
       const startDate = getFirstDayOfWeek(yearAdj(currentWeek - i));
@@ -50,44 +45,23 @@ export default function TotalStudentReferredByWeek({ data = [] }) {
     }
     return genData;
   };
-
-  // Generate xAxis data (weeks)
-  const xAxisData = GenerateChartData(currentWeek, rangeWeeks);
-
+  
   // Generate series data for each level
-  const level1Data = GenerateLevelDataByWeek(
-    "1",
-    currentWeek,
-    rangeWeeks,
-    data
-  );
-  const level2Data = GenerateLevelDataByWeek(
-    "2",
-    currentWeek,
-    rangeWeeks,
-    data
-  );
-  const level3Data = GenerateLevelDataByWeek(
-    "3",
-    currentWeek,
-    rangeWeeks,
-    data
-  );
-  const level4Data = GenerateLevelDataByWeek(
-    "4",
-    currentWeek,
-    rangeWeeks,
-    data
-  );
+  const level1Data = filterByLevel(punishmentResponse as TeacherDto[], "1");
+  const level2Data = filterByLevel(punishmentResponse as TeacherDto[], "2");
+  const level3Data = filterByLevel(punishmentResponse as TeacherDto[], "3");
+  const level4Data = filterByLevel(punishmentResponse as TeacherDto[], "4");
 
   const option = {
     responsive: true,
     maintainAspectRatio: false,
     tooltip: {
-      trigger: "axis",
+      trigger: "item",
     },
     legend: {
-      data: ["Level 1", "Level 2", "Level 3", "Level 4"],
+      show: true,
+      orient: "horizontal",
+      top: "top",
     },
     grid: {
       left: "3%",
@@ -102,8 +76,8 @@ export default function TotalStudentReferredByWeek({ data = [] }) {
     },
     xAxis: {
       type: "category",
-      boundaryGap: false,
-      data: xAxisData,
+      boundaryGap: true,
+      show: false,
     },
     yAxis: {
       type: "value",
@@ -111,23 +85,23 @@ export default function TotalStudentReferredByWeek({ data = [] }) {
     series: [
       {
         name: "Level 1",
-        type: "line",
-        data: level1Data,
+        type: "bar",
+        data: [level1Data.length],
       },
       {
         name: "Level 2",
-        type: "line",
-        data: level2Data,
+        type: "bar",
+        data: [level2Data.length],
       },
       {
         name: "Level 3",
-        type: "line",
-        data: level3Data,
+        type: "bar",
+        data: [level3Data.length],
       },
       {
         name: "Level 4",
-        type: "line",
-        data: level4Data,
+        type: "bar",
+        data: [level4Data.length],
       },
     ],
   };
@@ -137,4 +111,6 @@ export default function TotalStudentReferredByWeek({ data = [] }) {
       <ReactEcharts option={option} />
     </div>
   );
-}
+};
+
+export default TeacherManagedReferralByLevelByWeek;

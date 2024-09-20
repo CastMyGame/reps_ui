@@ -1,11 +1,12 @@
 import React from "react";
 import ReactEcharts from "echarts-for-react";
 import "./CustomPieChart.css";
+import { AdminOverviewDto, TeacherDto } from "src/types/responses";
 import {
-  AdminOverviewDto,
-  OfficeReferral,
-  TeacherDto,
-} from "src/types/responses";
+  extractDataByWeek,
+  getCurrentWeekOfYear,
+  findDataByWeekAndByPunishment,
+} from "src/helperFunctions/helperFunctions";
 
 export const AdminSchoolReferralByTypePieChart: React.FC<AdminOverviewDto> = ({
   punishmentResponse = [],
@@ -13,71 +14,29 @@ export const AdminSchoolReferralByTypePieChart: React.FC<AdminOverviewDto> = ({
   shoutOutsResponse = [],
   officeReferrals = [],
 }) => {
-  let uniqueInfractions: Record<string, number> = {};
-  const totalIncidents = (punishmentResponse as TeacherDto[]).length;
+  const currentWeek = getCurrentWeekOfYear();
 
-  // Get Unique Students Info
-  (punishmentResponse as TeacherDto[]).forEach((item) => {
-    const infractionType = item.infractionName;
-    uniqueInfractions[infractionType] =
-      (uniqueInfractions[infractionType] || 0) + 1;
-  });
-
-  const behavioralConcerns = Object.entries(uniqueInfractions).map(
-    ([uniqueName, incidents]) => {
-      let theOne = (punishmentResponse as TeacherDto[]).find(
-        (item) => item.infractionName === "Behavioral Concern"
-      );
-
-      const infractionName = theOne?.infractionName || "Unknown";
-
-      return {
-        uniqueName,
-        infractionName,
-        incidents: Number(incidents),
-      };
-    }
+  const behavioralConcerns = findDataByWeekAndByPunishment(
+    currentWeek,
+    "Behavioral Concern",
+    punishmentResponse as TeacherDto[]
   );
-
-  const positives = Object.entries(uniqueInfractions).map(
-    ([uniqueName, incidents]) => {
-      let theOne = (punishmentResponse as TeacherDto[]).find(
-        (item) => item.infractionName === "Positive Behavior Shout Out!"
-      );
-
-      const infractionName = theOne?.infractionName || "Unknown";
-
-      return {
-        uniqueName,
-        infractionName,
-        incidents: Number(incidents),
-      };
-    }
+  const shoutOutWeek = extractDataByWeek(
+    currentWeek,
+    shoutOutsResponse as TeacherDto[]
   );
-
-  //   const meetsThreshold = studentsWithIncidentsList
-  //     .filter((ind) => parseFloat(ind.percent) > 8.0)
-  //     .sort((a, b) => b.incidents - a.incidents);
-
-  // Aggregate total incidents for "Positive Behavior Shout Out!"
-  const totalPositives = (punishmentResponse as TeacherDto[]).reduce(
-    (acc, item) => {
-      if (item.infractionName === "Positive Behavior Shout Out!") {
-        // Assuming each entry represents 1 incident
-        return acc + 1;
-      }
-      return acc;
-    },
-    0
+  const officeReferralWeek = extractDataByWeek(
+    currentWeek,
+    officeReferrals as TeacherDto[]
+  );
+  const teacherReferralWeek = extractDataByWeek(
+    currentWeek,
+    writeUpResponse as TeacherDto[]
   );
 
   const option = {
     responsive: true,
     maintainAspectRatio: false,
-    // title: {
-    //   text: "All School Referrals by Type",
-    //   left: "center",
-    // },
     tooltip: {
       trigger: "item",
     },
@@ -98,19 +57,19 @@ export const AdminSchoolReferralByTypePieChart: React.FC<AdminOverviewDto> = ({
         radius: "87%",
         data: [
           {
-            value: behavioralConcerns.length,
+            value: behavioralConcerns,
             name: "Behavioral Concern",
           },
           {
-            value: (shoutOutsResponse as TeacherDto[]).length,
+            value: shoutOutWeek.length,
             name: "Positive Behavior Shout Out!",
           },
           {
-            value: (officeReferrals as OfficeReferral[]).length,
+            value: officeReferralWeek.length,
             name: "Office Referrals",
           },
           {
-            value: (writeUpResponse as TeacherDto[]).length,
+            value: teacherReferralWeek.length,
             name: "Teacher Referrals",
           },
         ],

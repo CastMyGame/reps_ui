@@ -1,23 +1,20 @@
 import Typography from "@mui/material/Typography";
 import Card from "@mui/material/Card";
 import { TotalReferralByWeek } from "src/components/globalComponents/dataDisplay/referralsByWeek";
-import TotalStudentReferredByWeek from "src/components/globalComponents/dataDisplay/numberOfStudentReferralsByWeek";
 import ReferralByBehavior from "src/components/globalComponents/dataDisplay/referralsByBehavior";
-import IncidentsByStudentTable from "src/components/globalComponents/dataDisplay/incidentsByStudentTable";
 import TeacherInfractionOverPeriodBarChart from "src/components/globalComponents/dataDisplay/teacherInfractionPeriodBarChart";
 import { IncidentByTeacherPieChart } from "src/components/globalComponents/dataDisplay/incident-by-teacher-pie-chart";
 import { Top5TeacherRatioTable } from "src/components/globalComponents/dataDisplay/top-5-ratio-table";
 import { WorseClassTable } from "src/components/globalComponents/dataDisplay/top-class-with-write-up";
-import { IncidentByStudentPieChart } from "src/components/globalComponents/dataDisplay/incident-by-student-pie-chart";
 import "./admin.css";
 import ShoutOuts from "src/components/globalComponents/shoutOuts";
 import OfficeReferrals from "src/components/globalComponents/officeReferrals/officeReferrals";
 import { AdminSchoolReferralByTypePieChart } from "src/components/globalComponents/dataDisplay/adminSchoolReferralByTypePieChart";
 import { AdminTeacherReferralByTypePieChart } from "src/components/globalComponents/dataDisplay/adminTeacherReferralByTypePieChart";
 import { Bottom4PositiveTeacherTable } from "src/components/globalComponents/dataDisplay/bottom-5-ratio-table";
+import TeacherManagedReferralByLevelByWeek from "src/components/globalComponents/dataDisplay/teacherManagedReferralByLevelByWeek";
 
 const AdminOverviewPanel = ({ data = [] }) => {
-  console.log("Overview Drill: ", data);
   //Fetch Data to Prop Drill to Components
 
   const punishments = data.punishmentResponse;
@@ -103,13 +100,13 @@ const AdminOverviewPanel = ({ data = [] }) => {
           {data.teachers && (
             <>
               <Top5TeacherRatioTable
-                data={data.punishmentResponse}
-                teacherData={data.teachers}
+                punishmentResponse={data.punishmentResponse}
+                teachers={data.teachers}
               />
               <br></br>
               <Bottom4PositiveTeacherTable
-                data={data.punishmentResponse}
-                teacherData={data.teachers}
+                punishmentResponse={data.punishmentResponse}
+                teachers={data.teachers}
               />
             </>
           )}
@@ -142,7 +139,7 @@ const AdminOverviewPanel = ({ data = [] }) => {
         </div>
 
         <div className="card-overview-third">
-          <TotalStudentReferredByWeek data={data.punishmentResponse} />
+          <TeacherManagedReferralByLevelByWeek punishmentResponse={data.punishmentResponse} />
         </div>
 
         <div className="card-overview-third">
