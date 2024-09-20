@@ -1,4 +1,12 @@
+import react, {useState,useEffect} from 'react'
 import './landing-01.css'
+import { useNavigate } from 'react-router-dom'
+import axios from 'axios'
+import { baseUrl } from 'src/utils/jsonData'
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
+import { AlertProps } from '@mui/material/Alert';
+
 
 
 
@@ -43,6 +51,8 @@ const testimonialData = [
 ]
 
  const  LandingPage =()=>{
+    const [text, setText] = useState("");  // Initialize state for the textarea
+
 
     const handleScroll = (event:any) => {
         const targetId = event.target.getAttribute('data-target');
@@ -52,7 +62,133 @@ const testimonialData = [
           targetElement.scrollIntoView({ behavior: 'smooth' });
         }
       };
-    
+
+
+
+      const openLogin = ()=>{
+        if(modalType === 'login'){
+            setModalType('')
+        }else{
+            setModalType('login')
+
+        }
+      }
+
+      const [bookingMessage,setBookingMessage] = useState(false)
+
+      const HandleDemoBooking = async (event: { preventDefault: () => void; currentTarget: HTMLFormElement | undefined }) => {
+        event.preventDefault();
+        const data = new FormData(event.currentTarget);
+
+          const payload = {
+            email: data.get('email'),
+            subject: "Book A Demo",
+            message:    `Name:  ${data.get('firstName')} ${data.get('lastName')}
+                        Contact: Phone ${data.get('phoneNumber')}, Email: ${data.get('email')}
+                        Distict/State: ${data.get("district")} / ${data.get('state')}
+                        Inquiry Message: ${data.get('multiline-text')}
+                    
+                            `,
+          };
+
+
+  
+          axios.post(`${baseUrl}/contact-us`, payload )
+  .then((response) => {
+    setText('')
+    setBookingMessage(true);
+    setTimeout(() => {
+      setBookingMessage(false);
+    }, 3000);
+  })
+  .catch((error) => console.error(error));
+};
+      
+
+
+      const [warningToast, setWarningToast] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const navigate = useNavigate();
+
+  const routeChange = (role:string) => {
+    if (role === "TEACHER") {
+      let path = "/dashboard/teacher";
+      navigate(path);
+    }
+    if (role === "STUDENT") {
+      let path = "/dashboard/student";
+      navigate(path);
+    }
+    if (role === "ADMIN") {
+      let path = "/dashboard/admin";
+      navigate(path);
+    }
+    if (role === "GUIDANCE") {
+      let path = "/dashboard/guidance";
+      navigate(path);
+    }
+  };
+
+  const [modalType, setModalType] = useState("");
+
+
+
+  const HandleLogin = async (event: { preventDefault: () => void; currentTarget: HTMLFormElement | undefined }) => {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    const payload = {
+      username: data.get("username"),
+      password: data.get("password"),
+    };
+    setLoading(true);
+
+    try {
+      const res = await axios.post(`${baseUrl}/auth`, payload);
+      if (res.data && res.data.userModel) {
+        const token = res.data.response;
+        const userName = res.data.userModel.firstName;
+        const schoolName = res.data.userModel.schoolName;
+        const email = res.data.userModel.username;
+        const role = res.data.userModel.roles[0]["role"];
+        sessionStorage.setItem("Authorization", token);
+        sessionStorage.setItem("userName", userName);
+        sessionStorage.setItem("schoolName", schoolName);
+        sessionStorage.setItem("email", email);
+        sessionStorage.setItem("role", role);
+        setLoading(false)
+        routeChange(role);
+        setModalType("");
+      } else {
+        // Handle the case where the expected data is missing
+        console.error(
+          "Data or userModel is null or undefined in the response."
+        );
+        // You can set a warning or error state here if needed
+        setLoading(false);
+        setWarningToast(true);
+        setTimeout(() => {
+          setWarningToast(false);
+        }, 2000);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      setLoading(false);
+      setWarningToast(true);
+      setTimeout(() => {
+        setWarningToast(false);
+      }, 2000);
+      //
+      // Handle the error as needed
+    }
+  };
+
+  const handleClose = (event: React.SyntheticEvent | Event, reason?: string) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setWarningToast(false);
+  };
 
     return(
         <div >
@@ -62,8 +198,46 @@ const testimonialData = [
                 <div className='landing-header-menu' data-target='about' onClick={handleScroll}>About</div>
                 <div className='landing-header-menu' data-target='testimonials' onClick={handleScroll} >Testimonials</div>
                 <div className='landing-header-menu' data-target='book-your-demo' onClick={handleScroll} >Book a Demo</div>
-                <div className='landing-header-menu-login'>Login</div>
+                <div className='landing-header-menu-login' onClick={()=>openLogin()}>Login</div>
             </header>
+            {modalType === 'login' && 
+            <div style={{height:"auto",background:"red"}}className='login-modal'>
+                 <form 
+  className="form-container"
+  onSubmit={HandleLogin}
+>
+  <div className="form-row">
+    <div className="form-column">
+      <label htmlFor="uName">User Name*</label><br />
+      <input type="text" id="uName" name="username" />
+    </div>
+    <div className="form-column">
+      <label htmlFor="password">Password*</label><br />
+      <input type="password" id="password" name="password" />
+    </div>
+  </div>
+  <a href='/forgot-password'>Forgot Password?</a>
+
+ 
+
+  <Snackbar
+                    open={warningToast}
+                    autoHideDuration={6000}
+                    onClose={handleClose}
+                  >
+                    <Alert
+                      onClose={handleClose}
+                      severity="error"
+                      sx={{ width: "100%" }}
+                    >
+                      Email or Password is incorrect
+                    </Alert>
+                  </Snackbar>
+  <input type="submit" value={loading ? "Loading..." : "Sign In"} />
+</form>
+
+
+                </div>}
             <div className='intro-panel'>
 
             </div>
@@ -165,7 +339,8 @@ const testimonialData = [
 
 </span>
                     </div>
-                    <div className='book-your-demo-form'>
+                   { bookingMessage? <div className='book-your-demo-form'><h1>Thank you for your Interest</h1>
+                   <h2>A REP BMS representative you contact you shortly.</h2></div> : <div className='book-your-demo-form'>
                         <div className='form-header'>
                             <h1>Book Your Demo!</h1>
                             <span>Fill out the form below and we’ll reach out as soon as possible to discuss ways that we can help meet your school’s needs.</span>
@@ -173,7 +348,7 @@ const testimonialData = [
                         </div>
                         <form 
   className="form-container"
-  // onSubmit={handleSubmit}
+  onSubmit={HandleDemoBooking}
 >
   <div className="form-row">
     <div className="form-column">
@@ -210,23 +385,21 @@ const testimonialData = [
   <label htmlFor="multiline-text">What do you hope to learn more about:</label><br />
 
   <div className="form-row full-width">
-    <textarea
-      id="multiline-text"
-      name="multiline-text"
-      rows={4}
-      cols={50}
-      value={"text"}
-      // onChange={(e) => setText(e.target.value)}
-    />
+  <textarea
+  id="multiline-text"
+  name="multiline-text"
+  rows={4}
+  cols={50}
+  value={text}   // Bind the value to the state variable 'text'
+  onChange={(e) => setText(e.target.value)}  // Update 'text' when user types
+/>
   </div>
 
   <input type="submit" value="Submit" />
 </form>
 
-   
-  
 
-</div>
+</div>}
 
 
                         </div>

@@ -32,9 +32,8 @@ function App() {
       <Router>
         <div>
           <Routes>
-          <Route path="/landing" element={<LandingPage/>} />
             <Route path="/student-login" element={<SinglePageSignIn />} />
-            <Route path="/login" element={<Login />} />
+            <Route path="/login" element={<LandingPage/>} />
             <Route path="/reset-password/:token" element={<ResetPassword />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
 
@@ -43,7 +42,7 @@ function App() {
               path="/infractionAssignments/:param1/:param2"
               element={<ViolationPage />}
             />
-            <Route path="/" element={<Login />} />
+            <Route path="/" element={<LandingPage/>} />
 
             {/* Use AuthRoute for role-based access control */}
             <Route

@@ -304,9 +304,11 @@ ul.bullet{
   
   input[type="text"],
   input[type="email"],
+  input[type='password'],
   textarea {
     width: 100%; /* Ensure inputs take up full column width */
     padding: 0.5em;
+    height: 50px;
     box-sizing: border-box;
   }
   
@@ -329,4 +331,7 @@ ul.bullet{
     top: 65%;
     left:40%;
     width: 500px;
+}
+.form-container{
+    color:black
 }
