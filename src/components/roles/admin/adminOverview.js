@@ -96,7 +96,7 @@ const AdminOverviewPanel = ({ data = [] }) => {
           />
         </div>
 
-        <div className="card-overview-third" style={{ overflow: "scroll" }}>
+        <div className="card-overview-third">
           {data.teachers && (
             <>
               <Top5TeacherRatioTable
@@ -112,7 +112,7 @@ const AdminOverviewPanel = ({ data = [] }) => {
           )}
         </div>
 
-        <div className="card-overview-third" style={{ overflow: "scroll" }}>
+        <div className="card-overview-third">
           <WorseClassTable
             punishmentResponse={data.punishmentResponse}
             teachers={data.teachers}

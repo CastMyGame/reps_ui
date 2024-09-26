@@ -181,7 +181,7 @@ const TeacherOverviewPanel = ({ setPanelName, data = [], students = [] }) => {
 
         <div className="card-overview-third">
           {/* <Card style={{padding:"5px"}}> */}
-          <ReferralByBehavior data={data.writeUpResponse} />
+          <ReferralByBehavior data={data.punishmentResponse} />
           {/* </Card> */}
         </div>
       </div>
