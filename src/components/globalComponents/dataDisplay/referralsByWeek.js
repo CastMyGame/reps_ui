@@ -133,7 +133,7 @@ export const TotalReferralByWeek = ({
       type: "category",
       boundaryGap: false,
       inverse: true,
-      data: xAxisData.reverse(),
+      data: xAxisData,
     },
     yAxis: {
       type: "value",
