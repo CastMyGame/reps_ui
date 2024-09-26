@@ -108,7 +108,7 @@ export default function ReferralByBehavior({ data = [] }) {
       type: "category",
       boundaryGap: false,
       inverse: true,
-      data: xAxisData.reverse(), // Use the recalculated date ranges for the x-axis
+      data: xAxisData, // Use the recalculated date ranges for the x-axis
     },
     yAxis: {
       type: "value",
