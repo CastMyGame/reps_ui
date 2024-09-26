@@ -486,9 +486,9 @@ justify-content: space-between;
   width: 100%;
   display: flex;
   flex-direction: row;
-  height: auto;
+  /* height: 45vh; */
 justify-content: space-between;
-overflow: auto;
+overflow: hidden;
   white-space: nowrap; /* This will prevent content from wrapping to the next line */
 
 
