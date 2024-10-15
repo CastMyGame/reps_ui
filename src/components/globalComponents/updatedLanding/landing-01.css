@@ -62,25 +62,23 @@ width: 25%;
 
 .intro-panel {
     background-image: url(/public/backgroundPanel.png);
-    height: 732px; /* Default height for large screens */
+    height: 1250px; /* Default height for large screens */
     width: 97vw;
     background-repeat: no-repeat;
-    background-size: 100vw 732px;
+    background-size: cover;
     background-position: center; /* Ensures the image is centered */
 }
 
 /* Media query for smaller screens */
 @media (max-width: 768px) {
     .intro-panel {
-        height: 550px; /* Adjust the height for smaller screens */
-        width: 97vw;
+        height: 800px; /* Adjust the height for smaller screens */
     }
 }
 
 @media (max-width: 480px) {
     .intro-panel {
-        height: 470px; /* Further reduce height for very small screens */
-        width: 97vw;
+        height: 600px; /* Further reduce height for very small screens */
     }
 }
 
