@@ -1,6 +1,5 @@
 import React from "react";
 import "./landing.css";
-import { Diversity2 } from "@mui/icons-material";
 
 export const NavigationAdmin = (props) => {
   const dropdownHandler = (panel) => {
@@ -10,16 +9,31 @@ export const NavigationAdmin = (props) => {
 
   return (
     <nav id="menu" className="navbar navbar-default navbar-fixed-top">
-      <div className="container">
-        <div style={{ display: "flex" }} className="navbar-header">
-          <a
-            className="navbar-brand page-scroll"
-            href="#page-top"
-            style={{ fontSize: 16 }}
-          >
-            Welcome {sessionStorage.getItem("userName")}!
-          </a>
-        </div>
+      <div
+        className="container"
+        style={{
+          width: "100%",
+          display: "inline-block",
+        }}
+      >
+        <button
+          type="button"
+          className="navbar-toggle collapsed"
+          data-toggle="collapse"
+          data-target="#bs-example-navbar-collapse-1"
+        >
+          {" "}
+          <span className="sr-only">Toggle navigation</span>{" "}
+          <span className="icon-bar"></span> <span className="icon-bar"></span>{" "}
+          <span className="icon-bar"></span>{" "}
+        </button>
+        <a
+          className="navbar-brand page-scroll"
+          href="#page-top"
+          style={{ fontSize: 16 }}
+        >
+          Welcome {sessionStorage.getItem("userName")}!
+        </a>
 
         <div
           className="collapse navbar-collapse"
@@ -36,39 +50,45 @@ export const NavigationAdmin = (props) => {
             </li>
             <li>
               <div
-              className="page-scroll"
+                className="page-scroll"
                 onClick={() =>
                   props.setDropdown((prev) =>
                     prev === "referral" ? "" : "referral"
                   )
                 }
               >
-                Parent Contact
+                Referrals
               </div>
               <div
                 style={{
                   display:
                     props.isDropdownOpen === "referral" ? "block" : "none",
                 }}
-                class="feature-menu-dropdown"
+                className="feature-menu-dropdown"
               >
                 <div
                   onClick={() => dropdownHandler("createPunishment")}
                   className="item page-scroll"
                 >
-                  New Parent Contact
+                  New Teacher Referral/Shout Out
                 </div>
                 <div
                   onClick={() => dropdownHandler("punishment")}
                   className="item page-scroll"
                 >
-                  Existing Parent Contacts
+                  Existing Referrals/Shout Outs
+                </div>
+                <div
+                  onClick={() => dropdownHandler("createOfficeReferral")}
+                  className="item page-scroll"
+                >
+                  New Office Referral
                 </div>
               </div>
             </li>
             <li>
               <div
-              className="page-scroll"
+                className="page-scroll"
                 onClick={() =>
                   props.setDropdown((prev) =>
                     prev === "reports" ? "" : "reports"
@@ -82,7 +102,7 @@ export const NavigationAdmin = (props) => {
                   display:
                     props.isDropdownOpen === "reports" ? " block" : "none",
                 }}
-                class="feature-menu-dropdown page-scroll"
+                className="feature-menu-dropdown page-scroll"
               >
                 <div
                   onClick={() => dropdownHandler("student")}
@@ -100,7 +120,7 @@ export const NavigationAdmin = (props) => {
             </li>
             <li>
               <div
-              className="page-scroll"
+                className="page-scroll"
                 onClick={() =>
                   props.setDropdown((prev) => (prev === "tools" ? "" : "tools"))
                 }
@@ -111,7 +131,7 @@ export const NavigationAdmin = (props) => {
                 style={{
                   display: props.isDropdownOpen === "tools" ? " block" : "none",
                 }}
-                class="feature-menu-dropdown page-scroll"
+                className="feature-menu-dropdown page-scroll"
               >
                 <div
                   onClick={() => dropdownHandler("createEditAssignments")}
@@ -154,17 +174,20 @@ export const NavigationAdmin = (props) => {
               </div>
             </li>
             <li>
-              <div 
-              className="page-scroll"
-              onClick={()=>{
-                props.setPanelName("spendPoints")
-              }}
+              <div
+                className="page-scroll"
+                onClick={() => {
+                  props.setPanelName("spendPoints");
+                }}
               >
-              Store Redeem
+                Store Redeem
               </div>
             </li>
             <li>
-              <button className="login-btn page-scroll" onClick={() => props.setLogin()}>
+              <button
+                className="login-btn page-scroll"
+                onClick={() => props.setLogin()}
+              >
                 Logout
               </button>
             </li>

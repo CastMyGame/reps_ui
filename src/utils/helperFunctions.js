@@ -8,7 +8,6 @@ export const handleLogout = async()=>{
     try{
         const res = await axios.post(`${baseUrl}/v1/logout`, [],{headers});
         const response = res;
-        console.log(response)
        clearSessionStorage();
         window.location.href = "/login";
 

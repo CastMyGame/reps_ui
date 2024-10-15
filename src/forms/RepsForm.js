@@ -147,7 +147,6 @@ function MyForm() {
                  setSuccessDisplay(false)
              },3000)
              resetForm();
-             console.log(res)
          })
             .catch(function (error){
              console.error(error);

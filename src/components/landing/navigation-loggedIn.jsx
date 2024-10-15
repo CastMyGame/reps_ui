@@ -1,27 +1,40 @@
 import React from "react";
 import "./landing.css";
 
-
 export const NavigationLoggedIn = (props) => {
+  const dropdownHandler = (panel) => {
+    props.setPanelName(panel);
+    props.setDropdown("");
+  };
 
-
-  const dropdownHandler = (panel) =>{
-    props.setPanelName(panel)
-    props.setDropdown("")
-  }
-  
   return (
     <nav id="menu" className="navbar navbar-default navbar-fixed-top">
-      <div className="container">
-        <div style={{display:"flex"}}className="navbar-header">
-      
-          <a className="navbar-brand page-scroll" href="#page-top" style={{ fontSize: 16}}>
-            Welcome {sessionStorage.getItem("userName")}!
-          </a>
-    
+      <div
+        className="container"
+        style={{
+          width: "100%",
+          display: "inline-block",
+        }}
+      >
+        <button
+          type="button"
+          className="navbar-toggle collapsed"
+          data-toggle="collapse"
+          data-target="#bs-example-navbar-collapse-1"
+        >
+          {" "}
+          <span className="sr-only">Toggle navigation</span>{" "}
+          <span className="icon-bar"></span> <span className="icon-bar"></span>{" "}
+          <span className="icon-bar"></span>{" "}
+        </button>
 
-   
-        </div>
+        <a
+          className="navbar-brand page-scroll"
+          href="#page-top"
+          style={{ fontSize: 16 }}
+        >
+          Welcome {sessionStorage.getItem("userName")}!
+        </a>
 
         <div
           className="collapse navbar-collapse"
@@ -29,84 +42,132 @@ export const NavigationLoggedIn = (props) => {
         >
           <ul className="nav navbar-nav navbar-right">
             <li>
-              <div 
-              onClick={()=>dropdownHandler("overview")}
-              className="page-scroll">
+              <div
+                onClick={() => dropdownHandler("overview")}
+                className="page-scroll"
+              >
                 Overview
               </div>
             </li>
             <li>
-            <div
-            className="page-scroll"
-             onClick={() => props.setDropdown(prev => prev === "referral" ? "" : "referral")} >
-                Parent Contact
-            </div>
-            <div style={{display: props.isDropdownOpen === "referral"?"block":"none"}} class="feature-menu-dropdown">
-  <div 
-  onClick={()=>dropdownHandler("createPunishment")}
-  className="item page-scroll">New Parent Contact</div>
-  <div 
-  onClick={()=>dropdownHandler("punishment")}
-  className="item page-scroll">Existing Parent Contacts</div>
-</div>
-              
-            </li>
-            <li>
-              <div 
-              className="page-scroll"
-               onClick={()=>dropdownHandler("student")}
+              <div
+                className="page-scroll"
+                onClick={() =>
+                  props.setDropdown((prev) =>
+                    prev === "referral" ? "" : "referral"
+                  )
+                }
               >
-              My Students
+                Referrals
+              </div>
+              <div
+                style={{
+                  display:
+                    props.isDropdownOpen === "referral" ? "block" : "none",
+                }}
+                class="feature-menu-dropdown"
+              >
+                <div
+                  onClick={() => dropdownHandler("createPunishment")}
+                  className="item page-scroll"
+                >
+                  New Teacher Referral/Shout Out
+                </div>
+                <div
+                  onClick={() => dropdownHandler("punishment")}
+                  className="item page-scroll"
+                >
+                  Existing Referrals/Shout Outs
+                </div>
+                <div
+                  onClick={() => dropdownHandler("createOfficeReferral")}
+                  className="item page-scroll"
+                >
+                  New Office Managed Referral
+                </div>
               </div>
             </li>
             <li>
-              <div 
-              className="page-scroll"
-              onClick={()=>{
-                props.setPanelName("levelThree")
-              }}
+              <div
+                className="page-scroll"
+                onClick={() =>
+                  props.setDropdown((prev) =>
+                    prev === "student" ? "" : "student"
+                  )
+                }
               >
-              My Tasks
+                Students
+              </div>
+              <div
+                style={{
+                  display:
+                    props.isDropdownOpen === "student" ? "block" : "none",
+                }}
+                class="feature-menu-dropdown"
+              >
+                <div
+                  onClick={() => dropdownHandler("student")}
+                  className="item page-scroll"
+                >
+                  School Roster
+                </div>
+                <div
+                  onClick={() => props.setModalType("spotter")}
+                  className="item page-scroll"
+                >
+                  Spot Students
+                </div>
               </div>
             </li>
             <li>
-              <div 
-              className="page-scroll"
-              onClick={()=>{
-                props.setModalType("contact")
-              }}
+              <div
+                className="page-scroll"
+                onClick={() => {
+                  props.setPanelName("levelThree");
+                }}
               >
-              Contact Us
+                My Tasks
               </div>
             </li>
             <li>
-              <div 
-              className="page-scroll"
-              onClick={()=>{
-                props.toggleNotificationDrawer(true)
-              }}
+              <div
+                className="page-scroll"
+                onClick={() => {
+                  props.setModalType("contact");
+                }}
               >
-              Detention/ISS List
+                Contact Us
               </div>
             </li>
             <li>
-              <div 
-              className="page-scroll"
-              onClick={()=>{
-                props.setPanelName("spendPoints")
-              }}
+              <div
+                className="page-scroll"
+                onClick={() => {
+                  props.toggleNotificationDrawer(true);
+                }}
               >
-              Store Redeem
+                Detention/ISS List
               </div>
             </li>
-           
             <li>
-              <button className="login-btn page-scroll"
-              onClick={()=>props.setLogin()}>
+              <div
+                className="page-scroll"
+                onClick={() => {
+                  props.setPanelName("spendPoints");
+                }}
+              >
+                Store Redeem
+              </div>
+            </li>
+
+            <li>
+              <button
+                className="login-btn page-scroll"
+                onClick={() => props.setLogin()}
+              >
                 Logout
               </button>
             </li>
-          
           </ul>
         </div>
       </div>

@@ -8,15 +8,12 @@ import {
   TableCell,
 } from "@mui/material";
 import ArrowDropDownCircleIcon from "@mui/icons-material/ArrowDropDownCircle";
-import { dateCreateFormat } from "../dashboard/global/helperFunctions";
+import { dateCreateFormat } from "../../helperFunctions/helperFunctions";
 
 const ShoutOuts = ({ data = [] }) => {
   const [barOpen, setBarOpen] = useState(true);
 
-  //We need to fix the cfr issues
-  console.log("shoutout", data);
-
-  const hasScroll = data.shoutOutsResponse.length > 2;
+  const hasScroll = data.shoutOutsResponse?.length > 2;
 
   return !barOpen ? (
     <div className="shout-out-bar-container">
@@ -38,8 +35,7 @@ const ShoutOuts = ({ data = [] }) => {
             fontWeight: "bold",
           }}
         >
-          Positive Behavior | Wallet: {data.teacher.currency}{" "}
-          {data.school.currency}
+          Positive Behavior | Wallet: {data.teacher?.currency} {data.school?.currency}
         </h5>
       </div>
     </div>
@@ -58,8 +54,7 @@ const ShoutOuts = ({ data = [] }) => {
             onClick={() => setBarOpen(false)}
           />{" "}
           <h5 style={{ marginLeft: "20px", fontSize: 24, fontWeight: "bold" }}>
-            Positive Behavior | Wallet: {data.teacher.currency}{" "}
-            {data.school.currency}
+            Positive Behavior | Wallet: {data.teacher?.currency} {data.school?.currency}
           </h5>{" "}
         </div>
       </div>
@@ -100,8 +95,8 @@ const ShoutOuts = ({ data = [] }) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {data.shoutOutsResponse.length > 0 ? (
-              data.shoutOutsResponse.map((x, key) => (
+            {data.shoutOutsResponse?.length > 0 ? (
+              data.shoutOutsResponse?.map((x, key) => (
                 <TableRow key={key}>
                   <TableCell style={{ width: "20%", fontSize: 14 }}>
                     {dateCreateFormat(x.timeCreated)}

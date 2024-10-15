@@ -208,12 +208,12 @@ a:focus,
   display: table;
   width: 100%;
   padding: 0;
-  background: url(../img/intro-bg.jpg) center center no-repeat;
-  background-color: #e5e5e5;
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  background-size: cover;
-  -o-background-size: cover;
+  background: url(../img/main-page-header.png) center center no-repeat;
+  background-color: #cccccc;
+  -webkit-background-size:auto;
+  -moz-background-size: auto;
+  background-size: auto;
+  -o-background-size: auto;
 }
 .intro .overlay {
   background: rgba(0, 0, 0, 0.2);
@@ -243,6 +243,7 @@ header .intro-text {
   padding-top: 350px;
   padding-bottom: 200px;
   text-align: center;
+  display: flex;
 }
 /* Features Section */
 #features {

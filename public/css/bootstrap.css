@@ -239,7 +239,10 @@ th {
     page-break-after: avoid;
   }
   .navbar {
-    display: none;
+    display: block;
+    max-height: 15vh;
+    font-size: 30px;
+    font-size: 3.5vw;
   }
   .btn > .caret,
   .dropup > .btn > .caret {
@@ -1587,11 +1590,36 @@ pre code {
   margin-right: auto;
   margin-left: auto;
 }
-@media (min-width: 768px) {
-  .container {
-    width: 750px;
+/*@media only screen and (min-width: 768px) {
+   Hide the burger!
+  .hamburger {
+      display: none;
+    }
+    .HamburgerMenu {
+      display: none;
+    }
+    /* Show all the nav bar content
+  .navbar {
+    display: inline-block;
   }
 }
+/* @media only screen and (max-width: 767px) {
+
+   Hide the burger! 
+  .hamburger {
+    display: block;
+  }
+
+  .navbar {
+    display: none;
+  }
+
+  .HamburgerMenu {
+    position: absolute;
+    left: 2%;
+    cursor: pointer;
+  }
+} */
 @media (min-width: 992px) {
   .container {
     width: 970px;
@@ -3474,7 +3502,7 @@ input[type="button"].btn-block {
   opacity: 1;
 }
 .collapse {
-  display: none;
+  /* display: none; */
 }
 .collapse.in {
   display: block;
@@ -3521,7 +3549,7 @@ tbody.collapse.in {
   position: absolute;
   top: 100%;
   left: 0;
-  z-index: 1000;
+  z-index: 991;
   display: none;
   float: left;
   min-width: 160px;
@@ -4292,8 +4320,8 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
   }
 }
 .navbar-toggle {
-  position: relative;
-  float: right;
+  position: absolute;
+  float: left;
   padding: 9px 10px;
   margin-top: 8px;
   margin-right: 15px;
@@ -4317,7 +4345,7 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
 }
 @media (min-width: 768px) {
   .navbar-toggle {
-    display: none;
+    /* display: none; */
   }
 }
 .navbar-nav {
@@ -4495,6 +4523,7 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
 .navbar-default {
   background-color: #f8f8f8;
   border-color: #e7e7e7;
+  min-width: 100%;
 }
 .navbar-default .navbar-brand {
   color: #777;

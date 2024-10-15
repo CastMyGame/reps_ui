@@ -14,7 +14,6 @@ export default function ViolationPage(props) {
 
   useEffect(() => {
     setMapIndex(props.data.mapIndex);
-    console.log(mapIndex);
   }, []);
 
   useEffect(() => {
@@ -22,7 +21,7 @@ export default function ViolationPage(props) {
       Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
     };
 
-    console.log("ENJPY", props.data);
+    let theName = props.data.infractionName || "Office Referral";
 
     const url = `${baseUrl}/assignments/v1/`;
     axios
@@ -30,7 +29,7 @@ export default function ViolationPage(props) {
       .then((response) => {
         const essay = response.data.filter(
           (essay) =>
-            essay.infractionName === props.data.infractionName &&
+            essay.infractionName === theName &&
             essay.level == parseInt(props.data.infractionLevel)
         );
         setEssay(essay[0]);
@@ -46,13 +45,16 @@ export default function ViolationPage(props) {
       const headers = {
         Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
       };
-
-      const url = `${baseUrl}/punish/v1/${props.data.punishmentId}/index/${mapIndex}`;
+      let url = "";
+      if (props.data.officeReferralId === undefined) {
+        url = `${baseUrl}/punish/v1/${props.data.punishmentId}/index/${mapIndex}`;
+      } else {
+        url = `${baseUrl}/officeReferral/v1/${props.data.officeReferralId}/index/${mapIndex}`;
+      }
 
       axios
         .put(url, {}, { headers }) // Include headers directly in the request config
         .then((response) => {
-          console.log(response.data);
         })
         .catch((error) => {
           console.error(error);
@@ -110,6 +112,10 @@ export default function ViolationPage(props) {
         ? "Unauthorized Device/Cell Phone"
         : essay.infractionName;
 
+    const headers = {
+      Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
+    };
+
     var payload = {
       studentEmail: loggedInUser,
       infractionName: formattedInfraction,
@@ -117,21 +123,35 @@ export default function ViolationPage(props) {
       timeClosed: Date.now,
     };
 
-    const headers = {
-      Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
-    };
+    if (formattedInfraction === "Office Referral") {
+      let url = `${baseUrl}/officeReferral/v1/submit/${props.data.officeReferralId}`;
 
-    const url = `${baseUrl}/punish/v1/punishId/close`;
+      axios
+        .post(url, payload, { headers })
+        .then(function (res) {
+          window.alert(
+            `You Work Has been Recorded for ${payload.studentEmail}`
+          );
+          // window.location.href = "/dashboard/student";
+        })
+        .catch(function (error) {
+          console.error(error);
+        });
+    } else {
+      let url = `${baseUrl}/punish/v1/punishId/close`;
 
-    axios
-      .post(url, payload, { headers })
-      .then(function (res) {
-        window.alert(`You Work Has been Recorded for ${payload.studentEmail}`);
-        window.location.href = "/dashboard/student";
-      })
-      .catch(function (error) {
-        console.error(error);
-      });
+      axios
+        .post(url, payload, { headers })
+        .then(function (res) {
+          window.alert(
+            `You Work Has been Recorded for ${payload.studentEmail}`
+          );
+          // window.location.href = "/dashboard/student";
+        })
+        .catch(function (error) {
+          console.error(error);
+        });
+    }
   };
 
   return (

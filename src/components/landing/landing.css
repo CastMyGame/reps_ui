@@ -68,11 +68,12 @@
     color: white;
     left: 0 !important;
     /* bottom: -1px !important; */
-    width: 80% !important;
+    width: 100% !important;
     /* height: 2px !important; */
     background: linear-gradient(to right, #6372ff 0%, #5ca9fb 100%) !important;
     content: "" !important;
     /* transition: width 0.2s !important; */
+    z-index: 999;
     
   }
 
@@ -80,7 +81,7 @@
     height: 100%;
     padding: 5px;
     font-size: smaller;
-
+    z-index: 999;
     color:white;
 
   }
@@ -88,7 +89,40 @@
   .feature-menu-dropdown .item:hover {
     height: 100%;
     background-color: silver;
+    z-index: 999;
     
   }
-  
-  
+
+
+/* General styles for the hamburger container */
+.hamburger-container {
+  display: none; /* Hide by default */
+  padding-right: 5%;
+}
+
+@media only screen and (max-width: 768px) {
+  /* Show the hamburger menu when the screen width is below 768px */
+  .hamburger-container {
+    display: block; /* Show hamburger menu */
+    width: 100%;
+  }
+
+  /* Hide the regular navbar content */
+  .navbar-header .navbar-brand,
+  .navbar-header .container {
+    display: none;
+  }
+}
+
+@media only screen and (min-width: 769px) {
+  /* Hide the hamburger menu when the screen width is 769px or more */
+  .hamburger-container {
+    display: none;
+  }
+
+  /* Show the regular navbar content */
+  .navbar-header .navbar-brand,
+  .navbar-header .container {
+    display: inline-block;
+  }
+}

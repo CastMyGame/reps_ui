@@ -1,0 +1,113 @@
+.details-modal-container{
+    display: "flex";
+    background-color: white;
+    align-self: center;
+    margin-left: 5%;
+}
+
+.details-modal-container-inner{
+    display: flex;
+    flex-direction: column;
+    height: 70vh;
+    width: 90%;
+    align-self: center;
+    background-color: lightblue;
+    border: 3px solid black;
+    position: absolute;
+    z-index: 4;
+    padding: 5px;  
+    border-radius: 8px;   
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1)
+      
+}
+
+/* HEADER */
+
+.details-modal-header{
+   height: 40%;
+   background-color:white;
+   border-radius: 8px 0px 0px 0px;
+   margin-bottom: 5px;
+
+}
+.header-section-left{
+    border-radius: 8px 0px 0px 0px;
+    width: 25%;
+    height: 250px;
+    padding-left: 10px;
+    border: 2px solid black
+}
+
+.header-section-center{
+    border-radius: 0px 0px 0px 0px;
+    width: 25%;
+    height: 250px;
+    overflow-y: scroll;
+    padding-left: 10px;
+    border: 2px solid black
+
+
+}
+
+.header-section-right{
+    border-radius: 0px 0px 0px 8px;
+    width: 25%;
+    height: 250px;
+    padding-left: 10px;
+    border: 2px solid black;
+    overflow-y: scroll;
+
+
+}
+
+/* PUNIHSMENT TABLE */
+
+.profile-modal-body{
+    height: 50%;
+}
+
+.modal-buttons-teacher-profile{
+    height: 10%;
+}
+
+::-webkit-scrollbar {
+    width: 20px;
+  }
+
+  ::-webkit-scrollbar-track {
+    display: none;
+    background-color: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: #d6dee1;
+    border-radius: 20px;
+    border: 6px solid transparent;
+    background-clip: content-box;
+  }
+
+  .spot-student-modal{
+    position: relative;
+    background-color:cornflowerblue;
+    /* padding: 5px; */
+    width: 100%;
+    padding: 5px;
+    z-index: 3;
+    height: 100%;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
+  }
+.btn-add-student-roster{
+    margin-top: 5px;
+
+}
+
+.btn-close-student-roster{
+    margin-top: 5px;
+    margin-left: 5px;
+
+}
+
+
+  

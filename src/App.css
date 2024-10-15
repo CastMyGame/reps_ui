@@ -1,8 +1,7 @@
 .App {
   width: 98%;      
-  margin: 0 auto;
-  background-color: #f4f4f4;  
-  height: 100vh;
+  margin: 0 auto;  
+  height: 95%;
 
 }
 
@@ -39,25 +38,6 @@
   height: 300px;
 
 }
-.RH5hzf{
-background-color: transparent;
--webkit-box-shadow: none;
-box-shadow: none;
-margin-bottom: 0;
-padding-bottom: 0;
-word-wrap: break-word;
-}
-
-.m7w29c {
-  margin-top: 12px;
-  background-color: #fff;
-  border: 1px solid #dadce0;
-  border-radius: 8px;
-  margin-bottom: 12px;
-  padding: 24px;
-  padding-top: 22px;
-  position: relative;
-}
 
 /* MyForm.css */
 
@@ -67,7 +47,7 @@ word-wrap: break-word;
   justify-content: center;
   align-items: center;
   height: 50vh;
-  background-color: #f4f4f4;
+  /* background-color: #f4f4f4; */
 
 }
 
@@ -504,10 +484,11 @@ justify-content: space-between;
 
 .overview-row{
   width: 100%;
-  background-color: white;
   display: flex;
   flex-direction: row;
+  /* height: 45vh; */
 justify-content: space-between;
+overflow: hidden;
   white-space: nowrap; /* This will prevent content from wrapping to the next line */
 
 
@@ -577,10 +558,11 @@ margin-right: 20px;
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: 80vh;
+  height: auto;
 }
 
 .student-panel{
+  margin-top: auto;
   width: 100%;
 }
 
@@ -632,24 +614,24 @@ height: 60px;
   display:flex;
   flex-direction: row;
   width: 100%;
-  height: 200px;
+  height: auto;
   margin-bottom: 10px;
   margin-top: 5px;
 
 
 }
 .student-overview-first{
-  width: 70%;
-  height: 200px;
+  width: auto;
+  height: 100%;
   margin-right: 10px;
   background-color: white;
-
-
+  justify-content: stretch;
+  overflow: hidden;
 }
 .student-overview-second{
-  width: 30%;
+  width: auto;
   text-align: center;
-  height: 300px;
+  height: auto;
 
 
 }
@@ -662,7 +644,6 @@ height: 60px;
 }
 
 .main-content-panel{
-  background-color: rgb(25, 118, 210);
 margin-top:"10px";
 height: 100%;
 
@@ -813,6 +794,8 @@ table th tr {
 .modal-content {
   background: #2980b9;
   padding: 20px;
+  position: absolute;
+  top: 25%;
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   width: 90%;
@@ -1045,6 +1028,7 @@ button:hover {
 
 .page-scroll {
   cursor: pointer;
+  width: fit-content;
 }
 
 .points-container{
@@ -1070,10 +1054,6 @@ margin-bottom: -10px;
   color: white;
   width:200px;
   background-color: white;
-}
-
-.points-arrows{
-
 }
 
 .shout-message{

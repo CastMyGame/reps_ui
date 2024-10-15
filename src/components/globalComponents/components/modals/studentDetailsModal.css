@@ -1,0 +1,129 @@
+.student-details-modal{
+    top:20%;
+    position: absolute;
+    width: 90%;
+    height: 90vh;
+    background-color: grey;
+    border:5px solid white;
+    padding: 10px 10px;
+    z-index: 9;
+    text-align: left;
+
+}
+
+.sdm-header{
+    display: flex;
+    flex-direction: column;
+    height:10%;
+    width: 100%;
+    background-color: aqua;
+
+}
+
+.sdm-charts{    
+    border: black solid 2px;
+    padding: 2px 2px;
+    width: 100%;
+    height:40%;
+    background-color: grey;
+
+    
+}
+
+.sdm-tables{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height:45%;
+
+
+    
+}
+
+.sdm-table-half{
+    position: relative;
+    height: 100%;
+    width: 50%;
+    border: black solid 2px;
+    background-color: white;  
+      overflow-y: scroll;
+
+
+
+
+
+}
+
+
+.sdm-table-half > table {
+    background-color: lightblue;
+    width: 100%;
+    border-collapse: collapse;
+    
+}
+
+
+
+.sdm-table-half > table th,
+.sdm-table-half > table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+
+.sdm-table-half > table th {
+    background-color: #f2f2f2;
+    text-align: left;
+    color: black;
+}
+
+.sdm-table-half > table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.sdm-table-half > table tr:hover {
+    background-color: #ddd;
+}
+
+.sdm-student-details{
+    display: flex;
+    background-color: lightblue;
+
+}
+
+.sdm-student-details > p{
+    width: 100%
+
+}
+
+.thread-container{
+    overflow-y: auto;
+
+}
+
+.thread-card{
+    margin-top: 10px;
+    width: 100%;
+    height: 120px;
+    background-color: white;
+    padding: 10px 10px;
+    border-radius: 10px;
+    overflow-y: auto;
+
+
+}
+
+.thread-card:hover{
+    background-color: grey;
+}
+
+.sdm-button-container{
+    position: relative;
+    height: 5%;
+    width: 100%;
+}
+
+.sdm-button-container > button{
+    margin-right: 10px;
+    padding: 10px 10px;
+}
