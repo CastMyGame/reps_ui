@@ -792,7 +792,7 @@ table th tr {
 }
 
 .modal-content {
-  background: #2980b9;
+  background: #25444C;
   position: absolute;
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -802,7 +802,7 @@ table th tr {
 
 
 .modal-header {
-  background-color: #2980b9;
+  background-color: #25444C;
   padding: 10px;
   border-radius: 8px 8px 0 0;
   text-align: center;

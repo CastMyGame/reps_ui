@@ -28,6 +28,7 @@ const TeacherStudentPanel = ({ setPanelName, data = [] }) => {
   const [listOfSchool, setListOfSchool] = useState([]);
   const [studentDisplay, setStudentDisplay] = useState(false);
   const [studentData, setStudentData] = useState(null);
+  const [punishmentData, setPunishmentData] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredData, setFilteredData] = useState([]);
   const [selectedGrade, setSelectedGrade] = useState(""); // State for selected grade
@@ -230,6 +231,7 @@ const TeacherStudentPanel = ({ setPanelName, data = [] }) => {
       headerName: "Student Name",
       field: "fullName",
       onCellClicked: (params) => {handleProfileClick(params);
+        console.log("params ", params)
       },
     },
     { headerName: "Grade", field: "grade" },
@@ -308,7 +310,7 @@ const TeacherStudentPanel = ({ setPanelName, data = [] }) => {
               maxHeight: "80rem",
               width: "80%",
               position: "relative",
-              backgroundColor: "white", // Adjust background color as needed
+              backgroundColor: "#25444C", // Adjust background color as needed
               padding: "20px", // Adjust padding as needed
               borderRadius: "8px", // Add border radius as needed
               boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)", // Add box shadow as needed
@@ -321,7 +323,6 @@ const TeacherStudentPanel = ({ setPanelName, data = [] }) => {
                 style={{
                   display: "flex",
                   flexDirection: "row",
-                  maxHeight: "20rem",
                 }}
               >
                 <div className="box-left">
@@ -356,7 +357,7 @@ const TeacherStudentPanel = ({ setPanelName, data = [] }) => {
                   style={{ color: "white", marginLeft: "auto" }}
                   className="box-right"
                 >
-                  <IncidentByTypePieChart data={studentData[0].student} />
+                  <IncidentByTypePieChart data={studentData} />
                 </div>
               </div>
             </div>
