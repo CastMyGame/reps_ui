@@ -56,6 +56,8 @@ const TeacherStudentPanel = ({ setPanelName, data = [] }) => {
       );
       if (response != null) {
         console.log("Student Data:", response); // Ensure student data is fetched
+        setStudentData(response);
+        setStudentDisplay(true);
         // Handle the display of fetched student data here
       }
     } catch (error) {
@@ -100,8 +102,8 @@ const TeacherStudentPanel = ({ setPanelName, data = [] }) => {
   }, [listOfStudents, searchQuery]);
 
   const handleProfileClick = (x) => {
-    fetchStudentData(x.studentEmail);
-    setSpotEmail(x.studentEmail);
+    fetchStudentData(x.data.studentEmail);
+    setSpotEmail(x.data.studentEmail);
   };
 
   const pdfRef = useRef();
@@ -227,24 +229,8 @@ const TeacherStudentPanel = ({ setPanelName, data = [] }) => {
     {
       headerName: "Student Name",
       field: "fullName",
-      cellRendererFramework: (params) => (
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            console.log(" PARAMS: ", params);
-            fetchStudentData(params.label);
-          }} // Pass student email to fetch function
-          style={{
-            background: "none",
-            border: "none",
-            color: "blue",
-            textDecoration: "underline",
-            cursor: "pointer",
-          }}
-        >
-          {params.value}
-        </button>
-      ),
+      onCellClicked: (params) => {handleProfileClick(params);
+      },
     },
     { headerName: "Grade", field: "grade" },
     {
@@ -256,7 +242,7 @@ const TeacherStudentPanel = ({ setPanelName, data = [] }) => {
 
   return (
     <>
-      {studentDisplay && studentData.length === 0 && (
+      {studentDisplay && studentData && studentData.length === 0 && (
         <div
           style={{
             display: "flex",
@@ -303,7 +289,7 @@ const TeacherStudentPanel = ({ setPanelName, data = [] }) => {
           </div>
         </div>
       )}
-      {studentDisplay && studentData.length > 0 && (
+      {studentDisplay && studentData && studentData.length > 0 && (
         <div
           style={{
             display: "flex",
