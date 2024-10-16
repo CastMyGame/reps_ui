@@ -5,42 +5,36 @@ import { get } from "../../../utils/api/api";
 
 export const IncidentByTypePieChart = ({ data = [] }) => {
   const [writeUps, setWriteUps] = useState([]);
+  console.log("DATA ", data);
 
   useEffect(() => {
-    const fetchWriteUps = async () => {
-      try {
-        const response = await get(
-          `punish/v1/punishments/${data.studentEmail}`
-        );
-        setWriteUps(response);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    fetchWriteUps();
-  }, []);
+    setWriteUps(data);
+  }, [data]);
 
   const tardyList = writeUps.filter(
-    (punishment) => punishment.infraction.infractionName === "Tardy"
+    (punishment) => punishment.infractionName === "Tardy"
   );
   const disruptiveList = writeUps.filter(
-    (punishment) =>
-      punishment.infraction.infractionName === "Disruptive Behavior"
+    (punishment) => punishment.infractionName === "Disruptive Behavior"
   );
   const cellList = writeUps.filter(
     (punishment) =>
-      punishment.infraction.infractionName === "Unauthorized Device/Cell Phone"
+      punishment.infractionName === "Unauthorized Device/Cell Phone"
   );
   const horseplayList = writeUps.filter(
-    (punishment) => punishment.infraction.infractionName === "Horseplay"
+    (punishment) => punishment.infractionName === "Horseplay"
   );
   const dressCodeList = writeUps.filter(
-    (punishment) => punishment.infraction.infractionName === "Dress Code"
+    (punishment) => punishment.infractionName === "Dress Code"
   );
   const ftcList = writeUps.filter(
-    (punishment) =>
-      punishment.infraction.infractionName === "Failure To Complete Work"
+    (punishment) => punishment.infractionName === "Failure To Complete Work"
+  );
+  const posList = writeUps.filter(
+    (punishment) => punishment.infractionName === "Positive Shout Out!"
+  );
+  const behavioralConcernList = writeUps.filter(
+    (punishment) => punishment.infractionName === "Behavioral Concern"
   );
 
   const refList = [];
@@ -59,58 +53,22 @@ export const IncidentByTypePieChart = ({ data = [] }) => {
     dressCodeList.length +
     ftcList.length;
 
-  const listReturn = [
-    {
-      id: 0,
-      value: total > 0 ? ((tardyList.length / total) * 100).toFixed(0) : 0,
-      label: "Tardy",
-    },
-    {
-      id: 1,
-      value: total > 0 ? ((disruptiveList.length / total) * 100).toFixed(0) : 0,
-      label: "Disruptive Behavior",
-    },
-    {
-      id: 2,
-      value: total > 0 ? ((cellList.length / total) * 100).toFixed(0) : 0,
-      label: "Cell Phone",
-    },
-    {
-      id: 3,
-      value: total > 0 ? ((horseplayList.length / total) * 100).toFixed(0) : 0,
-      label: "Horseplay",
-    },
-    {
-      id: 4,
-      value: total > 0 ? ((dressCodeList.length / total) * 100).toFixed(0) : 0,
-      label: "Dress Code",
-    },
-    {
-      id: 5,
-      value: total > 0 ? ((ftcList.length / total) * 100).toFixed(0) : 0,
-      label: "Failure to Complete Work",
-    },
-  ];
   const option = {
-    title: {
-      text: "Referral Breakdown",
-      left: "center",
-    },
     tooltip: {
       trigger: "item",
     },
     legend: {
       orient: "vertical",
-      left: "left",
+      top: "top",
     },
     series: [
       {
         type: "pie",
         radius: "50%",
         data: [
-          { value: "", name: "Behavioral Concern" },
-          { value: "", name: "Positive Shout Out!" },
-          { value: "", name: "Teacher Referrals" },
+          { value: behavioralConcernList.length, name: "Behavioral Concern" },
+          { value: posList.length, name: "Positive Shout Out!" },
+          { value: total, name: "Teacher Referrals" },
         ],
         emphasis: {
           itemStyle: {
