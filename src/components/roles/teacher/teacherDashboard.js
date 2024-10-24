@@ -81,11 +81,6 @@ const TeacherDashboard = () => {
           {data.length === 0 ? (
             <LoadingWheelPanel />
           ) : (
-            <div className="teacher-overview">
-              <div
-                style={{ width: false ? "70%" : "100%" }}
-                className="left-main"
-              >
                 <div className="teacher-panel">
                   {panelName === "overview" && (
                     <TeacherOverviewPanel
@@ -122,8 +117,6 @@ const TeacherDashboard = () => {
                   {panelName === "levelThree" && <LevelThreePanel />}
                   {panelName === "spendPoints" && <SpendPage data={data} />}
                 </div>
-              </div>
-            </div>
           )}
         </div>
 
