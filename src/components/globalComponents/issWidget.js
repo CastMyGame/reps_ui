@@ -3,6 +3,7 @@ import Typography from "@mui/material/Typography";
 import axios from "axios";
 import { baseUrl } from "../../utils/jsonData";
 import jsPDF from "jspdf";
+import DetentionTimer from "./detentionTimer/detentionTimer.tsx";
 
 const ISSWidget = () => {
   const [data, setData] = useState([]);
@@ -87,11 +88,13 @@ const ISSWidget = () => {
             <th>First Name</th>
             <th>Last Name</th>
             <th>Infraction Period</th>
+            <th>Detention Timer</th>
           </tr>
         </thead>
         <tbody>
           {data.length > 0 ? (
             data.map((x, key) => {
+              console.log("X Student ", x);
               const rowBackgroundColor = key % 2 === 0 ? "#f2f2f2" : "white"; // Alternate colors
               return (
                 <tr key={key} style={{ backgroundColor: rowBackgroundColor }}>
@@ -115,6 +118,9 @@ const ISSWidget = () => {
                         {x.punishment.classPeriod}
                       </span>
                     </div>
+                  </td>
+                  <td>
+                    <DetentionTimer studentEmail={x.studentEmail} />
                   </td>
                 </tr>
               );

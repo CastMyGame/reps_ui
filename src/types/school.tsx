@@ -34,3 +34,13 @@ export type School = {
     maxPunishLevel: number;
     currency: string;
 }
+
+// Define the props type
+export interface DetentionTimerProps {
+  studentEmail: string; // Student email is used instead of ID
+}
+
+export interface TimeBank {
+  hours: number;
+  minutes: number;
+}

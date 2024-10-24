@@ -16,7 +16,7 @@ import LoadingWheelPanel from "src/components/roles/student/blankPanelForTest";
 import { ContactUsModal } from "src/security/contactUsModal";
 import { NavigationAdmin } from "src/components/landing/navigation-admin";
 import { handleLogout } from "src/utils/helperFunctions";
-import SpendPage from "src/components/globalComponents/spend-page/spend-page";
+import SpendPage from "src/components/globalComponents/spendPage/spend-page";
 import CreateOfficeReferralPanel from "src/components/globalComponents/referrals/createOfficeReferral";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
@@ -145,9 +145,7 @@ const AdminDashboard = () => {
                   )
                 )}
                 {panelName === "viewTeacher" && (
-                  <AdminTeacherPanel
-                    data={adminDto}
-                  />
+                  <AdminTeacherPanel data={adminDto} />
                 )}
                 {panelName === "student" && (
                   <TeacherStudentPanel
