@@ -14,7 +14,7 @@ import LoadingWheelPanel from "src/components/roles/student/blankPanelForTest.js
 import "../admin/admin.css";
 import { NavigationLoggedIn } from "src/components/landing/navigation-loggedIn.jsx";
 import { handleLogout } from "src/utils/helperFunctions.js";
-import SpendPage from "src/components/globalComponents/spend-page/spend-page.js";
+import SpendPage from "src/components/globalComponents/spendPage/spend-page.js";
 import CreateOfficeReferralPanel from "src/components/globalComponents/referrals/createOfficeReferral.js";
 import { ManageSpottersPopup } from "src/components/globalComponents/components/generic-components/manageSpottersPopup.js";
 
