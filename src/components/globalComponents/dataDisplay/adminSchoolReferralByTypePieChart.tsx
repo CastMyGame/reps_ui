@@ -59,18 +59,30 @@ export const AdminSchoolReferralByTypePieChart: React.FC<AdminOverviewDto> = ({
           {
             value: behavioralConcerns,
             name: "Behavioral Concern",
+            itemStyle: {
+              color: '#FFFF00'
+            }
           },
           {
             value: shoutOutWeek.length,
             name: "Positive Behavior Shout Out!",
+            itemStyle: {
+              color: '#008000'
+            }
           },
           {
             value: officeReferralWeek.length,
             name: "Office Referrals",
+            itemStyle: {
+              color: '#ff0000'
+            }
           },
           {
             value: teacherReferralWeek.length,
             name: "Teacher Referrals",
+            itemStyle: {
+              color: '#ffA500'
+            }
           },
         ],
         emphasis: {

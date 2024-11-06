@@ -45,7 +45,7 @@ const TeacherManagedReferralByLevelByWeek: React.FC<AdminOverviewDto> = ({
     }
     return genData;
   };
-  
+
   // Generate series data for each level
   const level1Data = filterByLevel(punishmentResponse as TeacherDto[], "1");
   const level2Data = filterByLevel(punishmentResponse as TeacherDto[], "2");
@@ -87,21 +87,33 @@ const TeacherManagedReferralByLevelByWeek: React.FC<AdminOverviewDto> = ({
         name: "Level 1",
         type: "bar",
         data: [level1Data.length],
+        itemStyle: {
+          color: "#008000",
+        },
       },
       {
         name: "Level 2",
         type: "bar",
         data: [level2Data.length],
+        itemStyle: {
+          color: "#FFFF00",
+        },
       },
       {
         name: "Level 3",
         type: "bar",
         data: [level3Data.length],
+        itemStyle: {
+          color: "#ffA500",
+        },
       },
       {
         name: "Level 4",
         type: "bar",
         data: [level4Data.length],
+        itemStyle: {
+          color: "#ff0000",
+        },
       },
     ],
   };
