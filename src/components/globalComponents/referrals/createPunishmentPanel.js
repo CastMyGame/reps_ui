@@ -558,6 +558,7 @@ const CreatePunishmentPanel = ({ setPanelName, data = [] }) => {
                       : "Description of Behavior/Event. This will be sent directly to the student and guardian so be sure to provide accurate and objective facts as well as do NOT include the names of any other students."}
                   </p>
                   <div>
+                  {studentNames.length < 2 && infractionTypeSelected !== "Positive Behavior Shout Out!" && (
                     <div className="guidance-box">
                       <FormGroup>
                         <FormControlLabel
@@ -576,11 +577,13 @@ const CreatePunishmentPanel = ({ setPanelName, data = [] }) => {
                           }
                           label="Create Guidance Referral"
                         />
-                        {isGuidance.isGuidanceBoolean && (
+                        {isGuidance.isGuidanceBoolean && studentNames.length < 2 && (
                           <h4>Description goes here</h4>
                         )}
                       </FormGroup>
                     </div>
+                  )}
+                    {studentNames.length < 2 && (
                     <div className="guidance-box">
                       <FormGroup>
                         <FormControlLabel
@@ -599,11 +602,13 @@ const CreatePunishmentPanel = ({ setPanelName, data = [] }) => {
                           }
                           label="Log Phone Call"
                         />
+                        
                         {isPhoneLog.isPhoneLogBoolean && (
                           <h4>Phone Log goes here</h4>
                         )}
                       </FormGroup>
                     </div>
+                    )}
                     {infractionTypeSelected ===
                       "Positive Behavior Shout Out!" && (
                       <div className="points-container">
@@ -655,8 +660,7 @@ const CreatePunishmentPanel = ({ setPanelName, data = [] }) => {
                             Thank you for celebrating the positive behavior of a
                             student. Please include a description of the
                             students behavior below. Refrain from using any
-                            other student’s name in this description unless they
-                            were also involved in what caused this shout out.
+                            student’s name in this description.
                             Remember you can not give away more currency than
                             you have in your wallet and it does not replenish!
                           </p>

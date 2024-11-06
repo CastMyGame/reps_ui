@@ -82,24 +82,36 @@ export const TotalReferralByWeek = ({
         type: "line",
         stack: "Total",
         data: positiveData,
+        itemStyle: {
+          color: '#008000'
+        }
       },
       {
         name: "Behavioral Concern",
         type: "line",
         stack: "Total",
         data: behavioralConcernData,
+        itemStyle: {
+          color: '#FFFF00'
+        }
       },
       {
         name: "Teacher Managed",
         type: "line",
         stack: "Total",
         data: teacherManagedReferrals,
+        itemStyle: {
+          color: '#ffA500'
+        }
       },
       {
         name: "Office Managed",
         type: "line",
         stack: "Total",
         data: officeReferralData,
+        itemStyle: {
+          color: '#ff0000'
+        }
       },
     ]);
   }, [rangeWeeks, punishmentResponse, officeReferrals, currentWeek]);

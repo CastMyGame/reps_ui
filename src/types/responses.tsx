@@ -106,6 +106,7 @@ export interface TeacherOverviewDto {
   punishmentResponse: TeacherDto;
   writeUpResponse: TeacherDto;
   shoutOutsResponse: TeacherDto;
+  officeReferrals: TeacherDto;
   teacher: Employee;
   school: School;
 }

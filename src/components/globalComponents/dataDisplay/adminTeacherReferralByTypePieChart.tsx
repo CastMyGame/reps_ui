@@ -79,30 +79,51 @@ export const AdminTeacherReferralByTypePieChart: React.FC<AdminOverviewDto> = ({
           {
             value: unauthorizedDeviceData,
             name: "Unauthorized Device/Cell Phone",
+            itemStyle: {
+              color: "#ff0000",
+            },
           },
           {
             value: tardyData,
             name: "Tardy",
+            itemStyle: {
+              color: "#800080",
+            },
           },
           {
             value: horseplayData,
             name: "Horseplay",
+            itemStyle: {
+              color: "#964B00",
+            },
           },
           {
             value: dressCodeData,
             name: "Dress Code",
+            itemStyle: {
+              color: "#C7EA46",
+            },
           },
           {
             value: disruptiveBehaviorData,
             name: "Disruptive Behavior",
+            itemStyle: {
+              color: "#ffA500",
+            },
           },
           {
             value: behavioralConcernData,
             name: "Behavioral Concern",
+            itemStyle: {
+              color: "#0000FF",
+            },
           },
           {
             value: academicConcernData,
             name: "Academic Concern",
+            itemStyle: {
+              color: "#000000",
+            },
           },
         ],
         emphasis: {

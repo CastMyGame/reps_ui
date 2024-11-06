@@ -66,36 +66,57 @@ const TeacherInfractionOverPeriodBarChart = ({ data = [] }) => {
         name: "Tardy",
         type: "bar",
         data: [tardybehavior],
+        itemStyle: {
+          color: "#800080",
+        },
       },
       {
         name: "Dress Code",
         type: "bar",
         data: [dressCode],
+        itemStyle: {
+          color: "#C7EA46",
+        },
       },
       {
         name: "Disruptive Behavior",
         type: "bar",
         data: [disruptivebehavior],
+        itemStyle: {
+          color: "#ffA500",
+        },
       },
       {
         name: "Behavioral Concern",
         type: "bar",
         data: [behavioralConcern],
+        itemStyle: {
+          color: "#0000FF",
+        },
       },
       {
         name: "Horseplay",
         type: "bar",
         data: [horseplay],
+        itemStyle: {
+          color: "#964B00",
+        },
       },
       {
         name: "Unauthorized Device/Cell Phone",
         type: "bar",
         data: [cellPhone],
+        itemStyle: {
+          color: "#ff0000",
+        },
       },
       {
         name: "Failure to Complete Work",
         type: "bar",
         data: [ftc],
+        itemStyle: {
+          color: "#000000",
+        },
       },
     ],
   };
