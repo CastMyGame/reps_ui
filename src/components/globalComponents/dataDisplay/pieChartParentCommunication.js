@@ -45,20 +45,32 @@ export const PieChartParentCommunication = ({
         radius: "90%",
         data: [
           {
-            value: numBxConcern,
-            name: "Behavioral Concern",
-          },
-          {
             value: numShoutout.length,
             name: "Positive Behavior Shout Out!",
+            itemStyle: {
+              color: '#008000'
+            }
           },
           {
-            value: numOfficeReferral.length,
-            name: "Office Referrals",
+            value: numBxConcern,
+            name: "Behavioral Concern",
+            itemStyle: {
+              color: '#FFFF00'
+            }
           },
           {
             value: teachReferrals.length,
             name: "Teacher Referrals",
+            itemStyle: {
+              color: "#ffA500",
+            },
+          },
+          {
+            value: numOfficeReferral.length,
+            name: "Office Referrals",
+            itemStyle: {
+              color: "#ff0000",
+            },
           },
         ],
         emphasis: {
