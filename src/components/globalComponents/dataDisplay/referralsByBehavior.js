@@ -48,32 +48,68 @@ export default function ReferralByBehavior({ data = [] }) {
 
     // Set the series data
     setSeriesData([
-      { name: "Tardy", type: "line", stack: "Total", data: tardyData },
-      { name: "Horseplay", type: "line", stack: "Total", data: horseplayData },
+      {
+        name: "Tardy",
+        type: "line",
+        stack: "Total",
+        data: tardyData,
+        itemStyle: {
+          color: "#800080",
+        },
+      },
+      {
+        name: "Horseplay",
+        type: "line",
+        stack: "Total",
+        data: horseplayData,
+        itemStyle: {
+          color: "#964B00",
+        },
+      },
       {
         name: "Positive Shout Out!",
         type: "line",
         stack: "Total",
         data: positiveData,
+        itemStyle: {
+          color: "#008000",
+        },
       },
-      { name: "Dress Code", type: "line", stack: "Total", data: dressCodeData },
+      {
+        name: "Dress Code",
+        type: "line",
+        stack: "Total",
+        data: dressCodeData,
+        itemStyle: {
+          color: "#C7EA46",
+        },
+      },
       {
         name: "Behavioral Concern",
         type: "line",
         stack: "Total",
         data: behavioralConcernData,
+        itemStyle: {
+          color: "#0000FF",
+        },
       },
       {
         name: "Disruptive Behavior",
         type: "line",
         stack: "Total",
         data: disruptiveBehaviorData,
+        itemStyle: {
+          color: "#ffA500",
+        },
       },
       {
         name: "Unauthorized Device/Cell Phone",
         type: "line",
         stack: "Total",
         data: unauthorizedDeviceData,
+        itemStyle: {
+          color: "#ff0000",
+        },
       },
     ]);
   }, [rangeWeeks, data, currentWeek]);
