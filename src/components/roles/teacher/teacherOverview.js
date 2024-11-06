@@ -132,7 +132,7 @@ const TeacherOverviewPanel = ({ setPanelName, data = [], students = [] }) => {
       <div className="overview-row">
         <div className="card-overview-half">
           <IncidentsByStudentTable
-            punishmentResponse={data.punishmentResponse}
+            writeUpResponse={data.writeUpResponse}
             officeReferrals={data.officeReferrals}
           />
         </div>

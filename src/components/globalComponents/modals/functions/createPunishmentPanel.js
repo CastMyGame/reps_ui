@@ -504,7 +504,7 @@ const CreatePunishmentPanel = () => {
                     infractionTypeSelected === "Positive Behavior Shout Out!" ||
                     infractionTypeSelected === "Behavioral Concern"
                       ? getDescription(infractionTypeSelected)
-                      : "Description of Behavior/Event. This will be sent directly to the student and guardian so be sure to provide accurate and objective facts as well as do NOT include the names of any other students."}
+                      : "Description of Behavior/Event. This will be sent directly to the student and guardian so be sure to provide accurate and objective facts as well as do NOT include the names of any students."}
                   </p>
                   <div>
                   <div className="guidance-box">
@@ -525,7 +525,7 @@ const CreatePunishmentPanel = () => {
   }
   label="Create Guidance Referral"
 />
-      {isGuidance.isGuidanceBoolean && <h4>Description goes here</h4>}
+      {isGuidance.isGuidanceBoolean && studentNames.length < 2 && <h4>Description goes here</h4>}
     </FormGroup>
 
                   </div>
@@ -648,7 +648,7 @@ const CreatePunishmentPanel = () => {
                     }}
                   />
                 </div>
-                {isGuidance.isGuidanceBoolean && (
+                {isGuidance.isGuidanceBoolean && studentNames.length < 2 &&(
               <TextField
                 margin="normal"
                 required

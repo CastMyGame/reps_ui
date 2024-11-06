@@ -3,7 +3,6 @@ import { AgGridReact } from "ag-grid-react";
 import { ColDef } from "ag-grid-community";
 import {
   AdminOverviewDto,
-  IncidentList,
   StudentIncidentList,
   TeacherDto,
 } from "src/types/responses";
@@ -15,16 +14,16 @@ import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 
 const IncidentsByStudentTable: React.FC<AdminOverviewDto> = ({
-  punishmentResponse = [],
+  writeUpResponse = [],
   officeReferrals = [],
 }) => {
   const [studentIncidentRowData, setStudentIncidentRowData] = useState<
-  StudentIncidentList[]
+    StudentIncidentList[]
   >([]);
 
   const weekTmData = extractDataByWeek(
     currentWeek,
-    punishmentResponse as TeacherDto[]
+    writeUpResponse as TeacherDto[]
   );
 
   const weekOmData = extractDataByWeek(
@@ -63,7 +62,7 @@ const IncidentsByStudentTable: React.FC<AdminOverviewDto> = ({
 
     // Set the rowData for the table
     setStudentIncidentRowData(sortedStudentsByIncidents);
-  }, [punishmentResponse, officeReferrals]);
+  }, [writeUpResponse, officeReferrals]);
 
   // Column definitions for AgGrid
   const colDefs: ColDef[] = [
@@ -75,7 +74,7 @@ const IncidentsByStudentTable: React.FC<AdminOverviewDto> = ({
     },
     {
       field: "totalIncidents",
-      headerName: "Total Incidents",
+      headerName: "Total Referrals",
       flex: 1, // Allow flexible sizing
       resizable: true,
     },
@@ -91,7 +90,7 @@ const IncidentsByStudentTable: React.FC<AdminOverviewDto> = ({
         style={{ height: "25vh", width: "100%" }}
       >
         <AgGridReact
-          rowData={(studentIncidentRowData as StudentIncidentList[])}
+          rowData={studentIncidentRowData as StudentIncidentList[]}
           columnDefs={colDefs as ColDef<StudentIncidentList>[]}
           domLayout="autoHeight" // Ensures that the height is handled properly
         />
