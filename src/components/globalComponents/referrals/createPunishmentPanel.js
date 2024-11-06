@@ -558,7 +558,7 @@ const CreatePunishmentPanel = ({ setPanelName, data = [] }) => {
                       : "Description of Behavior/Event. This will be sent directly to the student and guardian so be sure to provide accurate and objective facts as well as do NOT include the names of any other students."}
                   </p>
                   <div>
-                  {studentNames.length < 2 && (
+                  {studentNames.length < 2 && infractionTypeSelected !== "Positive Behavior Shout Out!" && (
                     <div className="guidance-box">
                       <FormGroup>
                         <FormControlLabel

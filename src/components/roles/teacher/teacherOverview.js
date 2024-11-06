@@ -137,7 +137,10 @@ const TeacherOverviewPanel = ({ setPanelName, data = [], students = [] }) => {
           />
         </div>
         <div className="card-overview-half">
-          <RecentIncidents punishmentResponse={data.punishmentResponse} />
+          <RecentIncidents
+            punishmentResponse={data.punishmentResponse}
+            officeReferrals={data.officeReferrals}
+          />
         </div>
       </div>
 

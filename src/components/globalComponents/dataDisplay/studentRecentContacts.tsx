@@ -1,18 +1,25 @@
 import React, { useEffect, useState } from "react";
-import { AdminOverviewDto, StudentContactList, TeacherDto } from "src/types/responses";
+import {
+  AdminOverviewDto,
+  StudentContactList,
+  TeacherDto,
+  TeacherOverviewDto,
+} from "src/types/responses";
 import { AgGridReact } from "ag-grid-react";
 import { ColDef } from "ag-grid-community";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 import { dateCreateFormat } from "src/helperFunctions/helperFunctions";
 
-const RecentContacts: React.FC<AdminOverviewDto> = ({
+const RecentContacts: React.FC<TeacherOverviewDto> = ({
   punishmentResponse = [],
+  officeReferrals = [],
 }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredData, setFilteredData] = useState<StudentContactList[]>([]);
 
   useEffect(() => {
+    console.log(punishmentResponse);
     // Filter the data based on the search query
     const filteredRecords = (punishmentResponse as TeacherDto[]).filter(
       (record) => {
@@ -28,12 +35,13 @@ const RecentContacts: React.FC<AdminOverviewDto> = ({
       }
     );
 
-    //Sort the data before mapping it
+    // Sort the data in descending order by `timeCreated` to display the most recent first
     const sortedData = filteredRecords.sort((a, b) => {
       const dateA = new Date(a.timeCreated);
       const dateB = new Date(b.timeCreated);
-      return dateA.getTime() - dateB.getTime(); // Ascending order (oldest first)
+      return dateB.getTime() - dateA.getTime(); // Descending order (most recent first)
     });
+
     const uniqueStudentEmails = new Set<string>();
     const recentContacts: StudentContactList[] = [];
 
@@ -51,6 +59,13 @@ const RecentContacts: React.FC<AdminOverviewDto> = ({
             : record.infractionDescription, // Fallback in case it's not an array
         });
       }
+    });
+
+    // Sort recentContacts to display farthest date in the past on top in the table
+    recentContacts.sort((a, b) => {
+      const dateA = new Date(a.timeCreated);
+      const dateB = new Date(b.timeCreated);
+      return dateA.getTime() - dateB.getTime(); // Ascending order (oldest to most recent)
     });
 
     setFilteredData(recentContacts);

@@ -50,7 +50,7 @@ const TeacherDashboard = () => {
     if (panelName === "overview") {
       fetchPunishmentData();
     }
-  }, [panelName]);
+  }, [panelName, data]);
 
   const toggleNotificationDrawer = (open) => {
     setOpenNotificationDrawer(open);
@@ -81,42 +81,39 @@ const TeacherDashboard = () => {
           {data.length === 0 ? (
             <LoadingWheelPanel />
           ) : (
-                <div className="teacher-panel">
-                  {panelName === "overview" && (
-                    <TeacherOverviewPanel
-                      setPanelName={setPanelName}
-                      data={data}
-                      students={studentList}
-                    />
-                  )}
-                  {panelName === "student" && (
-                    <TeacherStudentPanel
-                      setPanelName={setPanelName}
-                      data={data}
-                    />
-                  )}
-                  {panelName === "punishment" && (
-                    <GlobalPunishmentPanel
-                      filter={punishmentFilter}
-                      roleType={"teacher"}
-                    />
-                  )}
-                  {panelName === "createPunishment" && (
-                    <CreatePunishmentPanel
-                      setPanelName={setPanelName}
-                      data={data}
-                    />
-                  )}
-                  {panelName === "createOfficeReferral" && (
-                    <CreateOfficeReferralPanel
-                      setPanelName={setPanelName}
-                      data={data}
-                    />
-                  )}
-                  {panelName === "ftc" && <TeacherFTCPanel />}
-                  {panelName === "levelThree" && <LevelThreePanel />}
-                  {panelName === "spendPoints" && <SpendPage data={data} />}
-                </div>
+            <div className="teacher-panel">
+              {panelName === "overview" && (
+                <TeacherOverviewPanel
+                  setPanelName={setPanelName}
+                  data={data}
+                  students={studentList}
+                />
+              )}
+              {panelName === "student" && (
+                <TeacherStudentPanel setPanelName={setPanelName} data={data} />
+              )}
+              {panelName === "punishment" && (
+                <GlobalPunishmentPanel
+                  filter={punishmentFilter}
+                  roleType={"teacher"}
+                />
+              )}
+              {panelName === "createPunishment" && (
+                <CreatePunishmentPanel
+                  setPanelName={setPanelName}
+                  data={data}
+                />
+              )}
+              {panelName === "createOfficeReferral" && (
+                <CreateOfficeReferralPanel
+                  setPanelName={setPanelName}
+                  data={data}
+                />
+              )}
+              {panelName === "ftc" && <TeacherFTCPanel />}
+              {panelName === "levelThree" && <LevelThreePanel />}
+              {panelName === "spendPoints" && <SpendPage data={data} />}
+            </div>
           )}
         </div>
 
