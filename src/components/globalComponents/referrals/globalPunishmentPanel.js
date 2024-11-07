@@ -69,51 +69,47 @@ const GlobalPunishmentPanel = ({ roleType }) => {
       .then(function (response) {
         const sortedData = response.data.sort(
           (a, b) =>
-            new Date(a.punishment.timeCreated) -
-            new Date(b.punishment.timeCreated)
+            new Date(b.punishment.timeCreated) -
+            new Date(a.punishment.timeCreated)
         );
         if (roleType === "teacher") {
-          setLoading(false);
-
           const sortedByRole = sortedData.filter(
             (x) => x.punishment.teacherEmail === sessionStorage.getItem("email")
           );
           setListOfPunishments(sortedByRole);
         } else {
-          setLoading(false);
-
           const sortedByRole = sortedData;
           setListOfPunishments(sortedByRole);
         }
       })
       .catch(function (error) {
-        setLoading(false);
         console.error(error);
-      });
-
-    axios
-      .get(urlArchive, { headers }) // Pass the headers option with the JWT token
-      .then(function (response) {
-        const sortedData = response.data.sort(
-          (a, b) =>
-            new Date(a.punishment.timeCreated) -
-            new Date(b.punishment.timeCreated)
-        );
-        if (roleType === "teacher") {
-          setLoading(false);
-
-          const sortedByRole = sortedData.filter(
-            (x) => x.teacherEmail === sessionStorage.getItem("email")
-          );
-          setArchivedData(sortedByRole);
-        } else {
-        }
       })
-      .catch(function (error) {
-        setLoading(false);
-        console.error(error);
+      .finally(() => {
+        setLoading(false); // Set loading to false when both requests are completed;
+
+        axios
+          .get(urlArchive, { headers }) // Pass the headers option with the JWT token
+          .then(function (response) {
+            const sortedData = response.data.sort(
+              (a, b) =>
+                new Date(b.punishment.timeCreated) -
+                new Date(a.punishment.timeCreated)
+            );
+            if (roleType === "teacher") {
+              const sortedByRole = sortedData.filter(
+                (x) => x.teacherEmail === sessionStorage.getItem("email")
+              );
+              setArchivedData(sortedByRole);
+              setListOfPunishments(sortedByRole);
+            }
+          })
+          .catch(function (error) {
+            setLoading(false);
+            console.error(error);
+          });
       });
-  }, [toast.visible]);
+  }, [roleType, filter]);
 
   //Merging the punishment and arhcived data
 
@@ -320,80 +316,80 @@ const GlobalPunishmentPanel = ({ roleType }) => {
           overflowY: hasScroll ? "scroll" : "visible",
         }}
       >
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell
-                variant="head"
-                style={{ fontWeight: "bold", fontSize: 18 }}
-              >
-                Name
-              </TableCell>
-              <TableCell
-                variant="head"
-                style={{ fontWeight: "bold", fontSize: 18, maxWidth: "15%" }}
-              >
-                Referral Type
-              </TableCell>
-              <TableCell
-                variant="head"
-                style={{
-                  fontWeight: "bold",
-                  fontSize: 18,
-                  maxWidth: "40%",
-                  whiteSpace: "normal",
-                  wordBreak: "break-word",
-                }}
-              >
-                Description
-              </TableCell>
-              {roleType === "admin" ? (
+        {loading ? (
+          <div style={{ position: "absolute", marginLeft: "50%" }}>
+            <LoadingWheelPanel />
+          </div>
+        ) : (
+          <Table>
+            <TableHead>
+              <TableRow>
                 <TableCell
                   variant="head"
                   style={{ fontWeight: "bold", fontSize: 18 }}
                 >
-                  Created By
+                  Name
                 </TableCell>
-              ) : (
                 <TableCell
                   variant="head"
-                  style={{ fontWeight: "bold", fontSize: 18 }}
+                  style={{ fontWeight: "bold", fontSize: 18, maxWidth: "15%" }}
                 >
-                  Level
+                  Referral Type
                 </TableCell>
-              )}
+                <TableCell
+                  variant="head"
+                  style={{
+                    fontWeight: "bold",
+                    fontSize: 18,
+                    maxWidth: "40%",
+                    whiteSpace: "normal",
+                    wordBreak: "break-word",
+                  }}
+                >
+                  Description
+                </TableCell>
+                {roleType === "admin" ? (
+                  <TableCell
+                    variant="head"
+                    style={{ fontWeight: "bold", fontSize: 18 }}
+                  >
+                    Created By
+                  </TableCell>
+                ) : (
+                  <TableCell
+                    variant="head"
+                    style={{ fontWeight: "bold", fontSize: 18 }}
+                  >
+                    Level
+                  </TableCell>
+                )}
 
-              <TableCell
-                variant="head"
-                style={{ fontWeight: "bold", fontSize: 18 }}
-              >
-                Status
-              </TableCell>
-              <TableCell
-                variant="head"
-                style={{ fontWeight: "bold", fontSize: 18 }}
-              >
-                Date Created
-              </TableCell>
-              <TableCell
-                variant="head"
-                style={{
-                  fontWeight: "bold",
-                  fontSize: 18,
-                  maxWidth: "40%",
-                  textAlign: "center",
-                  alignItems: "center",
-                }}
-              >
-                Action
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          {loading ? (
-            <div style={{ position: "absolute", marginLeft: "50%" }}>
-              <LoadingWheelPanel />
-            </div>
-          ) : (
+                <TableCell
+                  variant="head"
+                  style={{ fontWeight: "bold", fontSize: 18 }}
+                >
+                  Status
+                </TableCell>
+                <TableCell
+                  variant="head"
+                  style={{ fontWeight: "bold", fontSize: 18 }}
+                >
+                  Date Created
+                </TableCell>
+                <TableCell
+                  variant="head"
+                  style={{
+                    fontWeight: "bold",
+                    fontSize: 18,
+                    maxWidth: "40%",
+                    textAlign: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  Action
+                </TableCell>
+              </TableRow>
+            </TableHead>
             <TableBody>
               {data.length > 0 ? (
                 data.map((x, key) => {
@@ -613,8 +609,8 @@ const GlobalPunishmentPanel = ({ roleType }) => {
                 </TableRow>
               )}
             </TableBody>
-          )}
-        </Table>
+          </Table>
+        )}
       </TableContainer>
     </>
   );
