@@ -50,7 +50,6 @@ const TeacherStudentPanel = ({ setPanelName, data = [] }) => {
 
   // Fetch specific student data when clicking the student name
   const fetchStudentData = async (studentEmail) => {
-    console.log(studentEmail);
     try {
       const response = await get(
         `punish/v1/student/punishments/${studentEmail}`

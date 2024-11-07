@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Drawer from "@mui/material/Drawer";
 import CreatePunishmentPanel from "src/components/globalComponents/referrals/createPunishmentPanel.js";
 import TeacherStudentPanel from "src/components/roles/teacher/teacherStudentPanel.js";
@@ -26,7 +26,6 @@ const TeacherDashboard = () => {
   const [modalType, setModalType] = useState("");
   const [isDropdownOpen, setIsDropdownOpen] = useState("");
   const [studentList, setStudentList] = useState([]);
-
   const [punishmentFilter, setPunishmentFilter] = useState("OPEN");
 
   useEffect(() => {
@@ -50,7 +49,9 @@ const TeacherDashboard = () => {
     if (panelName === "overview") {
       fetchPunishmentData();
     }
-  }, [panelName, data]);
+    // Close modal on panel change
+    setModalType("");
+  }, [panelName]);
 
   const toggleNotificationDrawer = (open) => {
     setOpenNotificationDrawer(open);
@@ -61,10 +62,16 @@ const TeacherDashboard = () => {
       <div>
         <div>
           {modalType === "contact" && (
-            <ContactUsModal setContactUsDisplayModal={setModalType} />
+            <ContactUsModal
+              setContactUsDisplayModal={setModalType}
+              contactUsDisplayModal={modalType}
+            />
           )}
           {modalType === "spotter" && (
-            <ManageSpottersPopup setContactUsDisplayModal={setModalType} />
+            <ManageSpottersPopup
+              setContactUsDisplayModal={setModalType}
+              contactUsDisplayModal={modalType}
+            />
           )}
 
           <NavigationLoggedIn
