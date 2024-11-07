@@ -13,7 +13,7 @@ export function ManageSpottersPopup({setContactUsDisplayModal, contactUsDisplayM
     Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
   };
 
-  // Happends on load
+  // Happens on load
   useEffect(() => {
     axios.get(`${baseUrl}/student/v1/allStudents`, { headers }).then((res) => {
       setSelectOption(res.data);
@@ -25,6 +25,13 @@ export function ManageSpottersPopup({setContactUsDisplayModal, contactUsDisplayM
       setSpottedStudents(res.data);
     });
   }, []);
+
+  useEffect(() => {
+    // Close modal if `contactUsDisplayModal` changes to anything else
+    if (contactUsDisplayModal !== "spotter") {
+      setContactUsDisplayModal("");
+    }
+  }, [contactUsDisplayModal, setContactUsDisplayModal]);
 
   const selectOptions = selectOption.map((student) => ({
     value: student.studentEmail, // Use a unique value for each option

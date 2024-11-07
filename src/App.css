@@ -1076,3 +1076,8 @@ margin-bottom: -10px;
 .MuiInputBase-root {
   font-size: large;
 }
+
+.pop-modal {
+  border: #000;
+  border-width: 5px;
+}
