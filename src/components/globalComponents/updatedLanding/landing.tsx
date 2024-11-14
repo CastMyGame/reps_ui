@@ -271,9 +271,7 @@ const LandingPage = () => {
           </form>
         </div>
       )}
-      <div className="intro-panel">
-
-      </div>
+      <div className="intro-panel"></div>
       <div id="features" className="intro-panel-cards">
         <div className="ip-card">
           <img className="ip-card-img" src="thumbimg.png" alt="thumbs up" />

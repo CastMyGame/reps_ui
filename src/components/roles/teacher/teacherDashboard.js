@@ -40,10 +40,11 @@ const TeacherDashboard = () => {
     const fetchPunishmentData = async () => {
       try {
         const response = await get(`DTO/v1/TeacherOverviewData`);
+        console.log("Fetched data: ", response); // Log full response for debugging
         setData(response);
-        setStudentList(response.studentPopulation);
+        setStudentList(response.teacher.classes);
       } catch (err) {
-        console.error(err);
+        console.error("Error happens here: ", err);
       }
     };
     if (panelName === "overview") {

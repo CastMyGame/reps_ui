@@ -24,6 +24,7 @@ import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css"; // Using "alpine" for a modern theme
 
 const TeacherStudentPanel = ({ setPanelName, data = [] }) => {
+  console.log(data, " THE DATA ");
   const [listOfStudents, setListOfStudents] = useState([]);
   const [listOfSchool, setListOfSchool] = useState([]);
   const [studentDisplay, setStudentDisplay] = useState(false);
@@ -152,51 +153,31 @@ const TeacherStudentPanel = ({ setPanelName, data = [] }) => {
   // Process and format the list of students and referral data
   useEffect(() => {
     const processData = () => {
-      const studentDataMap = new Map();
+      const studentsArray = [];
 
-      const getGradeByEmail = (email) => {
-        const student = listOfSchool.find(
-          (student) => student.studentEmail === email
-        );
-        return student ? student.grade : "";
-      };
-
-      // Process teacher-managed referrals
-      data.writeUpResponse.forEach((teacherDTO) => {
-        const email = teacherDTO.studentEmail;
-        if (!studentDataMap.has(email)) {
-          studentDataMap.set(email, {
-            fullName: `${teacherDTO.studentFirstName} ${teacherDTO.studentLastName}`,
-            studentEmail: email, // Ensure the email is stored for the click handler
-            grade: getGradeByEmail(email),
-            teacherManagedReferrals: 0,
-            officeManagedReferrals: 0,
-          });
-        }
-        const studentData = studentDataMap.get(email);
-        studentData.teacherManagedReferrals += 1;
-        studentDataMap.set(email, studentData);
+      data.teacher.classes.forEach((classEntry) => {
+        classEntry.classRoster.forEach((student) => {
+          const foundStudent = listOfSchool.find(
+            (s) => s.studentEmail === student.studentEmail
+          );
+          if (foundStudent) {
+            studentsArray.push({
+              fullName: `${foundStudent.firstName} ${foundStudent.lastName}`,
+              studentEmail: student.studentEmail,
+              grade: foundStudent.grade,
+              teacherManagedReferrals: data.writeUpResponse.filter(
+                (w) => w.studentEmail === student.studentEmail
+              ).length,
+              officeManagedReferrals: data.officeReferrals.filter(
+                (o) => o.studentEmail === student.studentEmail
+              ).length,
+              className: classEntry.className, // Optionally add class information if needed
+            });
+          }
+        });
       });
 
-      // Process office-managed referrals
-      data.officeReferrals.forEach((referral) => {
-        const email = referral.studentEmail;
-        if (!studentDataMap.has(email)) {
-          studentDataMap.set(email, {
-            fullName: `${referral.studentFirstName} ${referral.studentLastName}`,
-            studentEmail: email,
-            grade: getGradeByEmail(email),
-            teacherManagedReferrals: 0,
-            officeManagedReferrals: 0,
-          });
-        }
-        const studentData = studentDataMap.get(email);
-        studentData.officeManagedReferrals += 1;
-        studentDataMap.set(email, studentData);
-      });
-
-      const formattedData = Array.from(studentDataMap.values());
-      setListOfStudents(formattedData);
+      setListOfStudents(studentsArray);
     };
 
     if (data) {
@@ -229,8 +210,9 @@ const TeacherStudentPanel = ({ setPanelName, data = [] }) => {
     {
       headerName: "Student Name",
       field: "fullName",
-      onCellClicked: (params) => {handleProfileClick(params);
-        console.log("params ", params)
+      onCellClicked: (params) => {
+        handleProfileClick(params);
+        console.log("params ", params);
       },
     },
     { headerName: "Grade", field: "grade" },
@@ -243,45 +225,36 @@ const TeacherStudentPanel = ({ setPanelName, data = [] }) => {
 
   return (
     <>
+      {/* Modal for No Punishment Data */}
       {studentDisplay && studentData && studentData.length === 0 && (
         <div
+          className="modal-overlay"
           style={{
             display: "flex",
-            alignItems: "center",
             justifyContent: "center",
             position: "fixed",
             top: 300,
             left: 0,
             width: "100%",
           }}
-          className="modal-overlay"
         >
           <div
+            className="modal-content"
             style={{
               width: "80%",
-              position: "relative",
-              backgroundColor: "white", // Adjust background color as needed
-              padding: "20px", // Adjust padding as needed
-              borderRadius: "8px", // Add border radius as needed
-              boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)", // Add box shadow as needed
+              backgroundColor: "white",
+              padding: "20px",
+              borderRadius: "8px",
+              boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
             }}
-            className="modal-content"
           >
             <div className="modal-header">
               <h1>Student has No punishments</h1>
             </div>
-            <div style={{ padding: "10px" }} className="modal-buttons">
+            <div className="modal-buttons" style={{ padding: "10px" }}>
+              <button onClick={() => setStudentDisplay(false)}>Cancel</button>
               <button
-                onClick={() => {
-                  setStudentDisplay(false);
-                }}
-              >
-                Cancel
-              </button>
-              <button
-                onClick={() => {
-                  generatePDF(studentData);
-                }}
+                onClick={() => generatePDF(studentData)}
                 style={{ backgroundColor: "#CF9FFF" }}
               >
                 Print
@@ -290,11 +263,13 @@ const TeacherStudentPanel = ({ setPanelName, data = [] }) => {
           </div>
         </div>
       )}
+
+      {/* Modal for Student Data Display */}
       {studentDisplay && studentData && studentData.length > 0 && (
         <div
+          className="modal-overlay"
           style={{
             display: "flex",
-            alignItems: "center",
             justifyContent: "center",
             position: "fixed",
             top: 0,
@@ -302,125 +277,78 @@ const TeacherStudentPanel = ({ setPanelName, data = [] }) => {
             width: "100%",
             height: "100%",
           }}
-          className="modal-overlay"
         >
           <div
+            className="modal-content"
             style={{
               maxHeight: "80rem",
               width: "80%",
-              position: "relative",
-              backgroundColor: "#25444C", // Adjust background color as needed
-              padding: "20px", // Adjust padding as needed
-              borderRadius: "8px", // Add border radius as needed
-              boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)", // Add box shadow as needed
+              backgroundColor: "#25444C",
+              padding: "20px",
+              borderRadius: "8px",
+              boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
               overflowY: "hidden",
             }}
-            className="modal-content"
           >
-            <div className="modal-header">
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                }}
-              >
-                <div className="box-left">
-                  <div className="student-info-box" style={{}}>
-                    <div
-                      style={{ display: "flex", backgroundColor: "" }}
-                      className="icon"
-                    >
-                      <AccountBoxIcon style={{ fontSize: "100px" }} />
-                    </div>
-                    <h4 style={{ textAlign: "left" }}>
-                      {studentData[0].firstName} {studentData[0].lastName}
-                    </h4>
-                    <div className="details-box">
-                      <div style={{ textAlign: "left" }}>
-                        Email: {studentData[0].studentEmail}
-                      </div>
-                      <div style={{ textAlign: "left" }}>
-                        Phone: {studentData[0].studentPhoneNumber}
-                      </div>
-                      <div style={{ textAlign: "left" }}>
-                        Grade: {studentData[0].grade}
-                      </div>
-                      <div style={{ textAlign: "left" }}>
-                        Address: {studentData[0].address}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div
-                  style={{ color: "white", marginLeft: "auto" }}
-                  className="box-right"
-                >
-                  <IncidentByTypePieChart data={studentData} />
+            <div
+              className="modal-header"
+              style={{ display: "flex", flexDirection: "row" }}
+            >
+              <div className="box-left">
+                <AccountBoxIcon style={{ fontSize: "100px" }} />
+                <h4>
+                  {studentData[0].firstName} {studentData[0].lastName}
+                </h4>
+                <div className="details-box">
+                  <p>Email: {studentData[0].studentEmail}</p>
+                  <p>Phone: {studentData[0].studentPhoneNumber}</p>
+                  <p>Grade: {studentData[0].grade}</p>
+                  <p>Address: {studentData[0].address}</p>
                 </div>
               </div>
+              <div
+                className="box-right"
+                style={{ marginLeft: "auto", color: "white" }}
+              >
+                <IncidentByTypePieChart data={studentData} />
+              </div>
             </div>
-            <div style={{ height: "320px" }} className="modal-body-student">
+            <div className="modal-body-student" style={{ height: "320px" }}>
               <TableContainer
                 style={{ height: "300px", backgroundColor: "white" }}
               >
                 <Table stickyHeader>
                   <TableHead>
                     <TableRow>
-                      <TableCell style={{ width: "5%" }}>Status</TableCell>
-                      <TableCell style={{ width: "45%" }}>
-                        Description
-                      </TableCell>
-                      <TableCell style={{ width: "15%" }}>Date</TableCell>
-                      <TableCell style={{ width: "35%" }}>Infraction</TableCell>
+                      <TableCell>Status</TableCell>
+                      <TableCell>Description</TableCell>
+                      <TableCell>Date</TableCell>
+                      <TableCell>Infraction</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
                     {studentData.map((student, index) => (
                       <TableRow
+                        key={index}
                         style={{
                           background: index % 2 === 0 ? "lightgrey" : "white",
                         }}
-                        key={index}
                       >
-                        <TableCell style={{ width: "25%" }}>
-                          {student.status}
-                        </TableCell>
-                        <TableCell style={{ width: "25%" }}>
-                          {student.infractionDescription}
-                        </TableCell>
-                        <TableCell style={{ width: "25%" }}>
-                          {student.timeCreated}
-                        </TableCell>
-                        <TableCell style={{ width: "25%" }}>
-                          {student.infractionName}
-                        </TableCell>
+                        <TableCell>{student.status}</TableCell>
+                        <TableCell>{student.infractionDescription}</TableCell>
+                        <TableCell>{student.timeCreated}</TableCell>
+                        <TableCell>{student.infractionName}</TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
                 </Table>
               </TableContainer>
             </div>
-
-            <div style={{ padding: "10px" }} className="modal-buttons">
+            <div className="modal-buttons" style={{ padding: "10px" }}>
+              <button onClick={() => setStudentDisplay(false)}>Cancel</button>
+              <button onClick={addSpotter}>Spot this Student</button>
               <button
-                onClick={() => {
-                  setStudentDisplay(false);
-                }}
-              >
-                Cancel
-              </button>
-              <button
-                onClick={() => {
-                  addSpotter();
-                }}
-              >
-                Spot this Student
-              </button>
-              <button
-                onClick={() => {
-                  generatePDF(studentData);
-                }}
+                onClick={() => generatePDF(studentData)}
                 style={{ backgroundColor: "#CF9FFF" }}
               >
                 Print
@@ -430,25 +358,35 @@ const TeacherStudentPanel = ({ setPanelName, data = [] }) => {
         </div>
       )}
 
-      <div
-        style={{
-          backgroundColor: "rgb(25, 118, 210)",
-          marginTop: "10px",
-          marginBlock: "5px",
-        }}
-      >
-        {listOfStudents.length > 0 && (
-          <div
-            className="ag-theme-alpine"
-            style={{ height: "60vh", width: "100%" }}
-          >
-            <AgGridReact
-              rowData={listOfStudents} // Pass the processed list of students here
-              columnDefs={columnDefs}
-              domLayout="autoHeight"
-            />
-          </div>
-        )}
+      {/* Class-Specific AgGridReact Tables */}
+      <div style={{ backgroundColor: "rgb(25, 118, 210)", marginTop: "10px" }}>
+        {data.teacher.classes.map((classEntry, index) => {
+          // Filter students in this class's classRoster
+          const studentsInClass = filteredData.filter((student) =>
+            classEntry.classRoster.some(
+              (rosterStudent) =>
+                rosterStudent.studentEmail === student.studentEmail
+            )
+          );
+
+          return (
+            <div key={index} style={{ marginBlock: "20px" }}>
+              <h3 style={{ color: "white", padding: "10px" }}>
+                {classEntry.className}
+              </h3>
+              <div
+                className="ag-theme-alpine"
+                style={{ width: "100%" }}
+              >
+                <AgGridReact
+                  rowData={studentsInClass}
+                  columnDefs={columnDefs}
+                  domLayout="autoHeight"
+                />
+              </div>
+            </div>
+          );
+        })}
       </div>
     </>
   );
