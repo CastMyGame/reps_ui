@@ -96,7 +96,7 @@ export const NavigationLoggedIn = (props) => {
                   )
                 }
               >
-                Students
+                Classes
               </div>
               <div
                 style={{
@@ -109,7 +109,13 @@ export const NavigationLoggedIn = (props) => {
                   onClick={() => dropdownHandler("student")}
                   className="item page-scroll"
                 >
-                  School Roster
+                  Class Rosters
+                </div>
+                <div
+                  onClick={() => props.setModalType("classUpdate")}
+                  className="item page-scroll"
+                >
+                  Edit Class Rosters
                 </div>
                 <div
                   onClick={() => props.setModalType("spotter")}

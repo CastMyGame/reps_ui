@@ -17,6 +17,7 @@ import { handleLogout } from "src/utils/helperFunctions.js";
 import SpendPage from "src/components/globalComponents/spendPage/spend-page.js";
 import CreateOfficeReferralPanel from "src/components/globalComponents/referrals/createOfficeReferral.js";
 import { ManageSpottersPopup } from "src/components/globalComponents/components/generic-components/manageSpottersPopup.js";
+import ClassUpdate from "src/components/globalComponents/components/generic-components/classUpdate.js";
 
 const TeacherDashboard = () => {
   const [loggedIn, setLoggedIn] = useState(true);
@@ -40,10 +41,11 @@ const TeacherDashboard = () => {
     const fetchPunishmentData = async () => {
       try {
         const response = await get(`DTO/v1/TeacherOverviewData`);
+        console.log("Fetched data: ", response); // Log full response for debugging
         setData(response);
-        setStudentList(response.studentPopulation);
+        setStudentList(response.teacher.classes);
       } catch (err) {
-        console.error(err);
+        console.error("Error happens here: ", err);
       }
     };
     if (panelName === "overview") {
@@ -71,6 +73,13 @@ const TeacherDashboard = () => {
             <ManageSpottersPopup
               setContactUsDisplayModal={setModalType}
               contactUsDisplayModal={modalType}
+            />
+          )}
+          {modalType === "classUpdate" && (
+            <ClassUpdate
+              setContactUsDisplayModal={setModalType}
+              contactUsDisplayModal={modalType}
+              teacher={data.teacher}
             />
           )}
 

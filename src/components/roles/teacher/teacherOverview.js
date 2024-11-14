@@ -22,15 +22,6 @@ const TeacherOverviewPanel = ({ setPanelName, data = [], students = [] }) => {
     setStudentList(students);
   }, [students]);
 
-  // const weeklyDataIncSOBxConcern = data.punishmentResponse.filter((x) => {
-  //   const currentDate = new Date();
-  //   const itemDate = new Date(x.timeCreated);
-  //   const sevenDaysAgo = new Date(
-  //     currentDate.setDate(currentDate.getDate() - 7)
-  //   );
-  //   return itemDate > sevenDaysAgo;
-  // });
-
   useEffect(() => {
     const statusQuo = data.punishmentResponse.filter(
       (x) => x.status === "PENDING" && x.level === "3"
