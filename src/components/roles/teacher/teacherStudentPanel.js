@@ -34,6 +34,7 @@ const TeacherStudentPanel = ({ setPanelName, data = [] }) => {
   const [filteredData, setFilteredData] = useState([]);
   const [selectedGrade, setSelectedGrade] = useState(""); // State for selected grade
   const [spotEmail, setSpotEmail] = useState("");
+  const [selectedClass, setSelectedClass] = useState(""); // Selected class name
 
   // Fetch all students data when component mounts
   useEffect(() => {
@@ -154,7 +155,6 @@ const TeacherStudentPanel = ({ setPanelName, data = [] }) => {
   useEffect(() => {
     const processData = () => {
       const studentsArray = [];
-
       data.teacher.classes.forEach((classEntry) => {
         classEntry.classRoster.forEach((student) => {
           const foundStudent = listOfSchool.find(
@@ -171,19 +171,26 @@ const TeacherStudentPanel = ({ setPanelName, data = [] }) => {
               officeManagedReferrals: data.officeReferrals.filter(
                 (o) => o.studentEmail === student.studentEmail
               ).length,
-              className: classEntry.className, // Optionally add class information if needed
+              className: classEntry.className,
             });
           }
         });
       });
-
       setListOfStudents(studentsArray);
     };
 
     if (data) {
       processData();
+      // Automatically set the first class as the selected class if none is selected
+      if (data.teacher.classes.length > 0 && !selectedClass) {
+        setSelectedClass(data.teacher.classes[0].className);
+      }
     }
-  }, [data, listOfSchool]);
+  }, [data, listOfSchool, selectedClass]);
+
+  const filteredStudentData = listOfStudents.filter(
+    (student) => student.className === selectedClass
+  );
 
   // Filter data based on search query and selected grade
   useEffect(() => {
@@ -358,35 +365,41 @@ const TeacherStudentPanel = ({ setPanelName, data = [] }) => {
         </div>
       )}
 
-      {/* Class-Specific AgGridReact Tables */}
-      <div style={{ backgroundColor: "rgb(25, 118, 210)", marginTop: "10px" }}>
-        {data.teacher.classes.map((classEntry, index) => {
-          // Filter students in this class's classRoster
-          const studentsInClass = filteredData.filter((student) =>
-            classEntry.classRoster.some(
-              (rosterStudent) =>
-                rosterStudent.studentEmail === student.studentEmail
-            )
-          );
+      <div>
+        <label htmlFor="class-select" style={{ marginRight: "8px" }}>
+          Select Class:
+        </label>
+        <select
+          id="class-select"
+          value={selectedClass}
+          onChange={(e) => setSelectedClass(e.target.value)}
+          style={{
+            padding: "8px",
+            fontSize: "1rem",
+            borderRadius: "4px",
+            border: "1px solid #ccc",
+          }}
+        >
+          <option value="">-- Select a Class --</option>
+          {data.teacher.classes.map((classEntry, index) => (
+            <option key={index} value={classEntry.className}>
+              {classEntry.className}
+            </option>
+          ))}
+        </select>
 
-          return (
-            <div key={index} style={{ marginBlock: "20px" }}>
-              <h3 style={{ color: "white", padding: "10px" }}>
-                {classEntry.className}
-              </h3>
-              <div
-                className="ag-theme-alpine"
-                style={{ width: "100%" }}
-              >
-                <AgGridReact
-                  rowData={studentsInClass}
-                  columnDefs={columnDefs}
-                  domLayout="autoHeight"
-                />
-              </div>
+        {selectedClass && (
+          <div style={{ marginTop: "20px" }}>
+            <h3>{selectedClass}</h3>
+            <div className="ag-theme-alpine" style={{ width: "100%" }}>
+              <AgGridReact
+                rowData={filteredStudentData}
+                columnDefs={columnDefs}
+                domLayout="autoHeight"
+              />
             </div>
-          );
-        })}
+          </div>
+        )}
       </div>
     </>
   );
