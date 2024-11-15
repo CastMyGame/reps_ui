@@ -112,7 +112,7 @@ export const NavigationLoggedIn = (props) => {
                   Class Rosters
                 </div>
                 <div
-                  onClick={() => props.setModalType("classUpdate")}
+                  onClick={() => dropdownHandler("classUpdate")}
                   className="item page-scroll"
                 >
                   Edit Class Rosters

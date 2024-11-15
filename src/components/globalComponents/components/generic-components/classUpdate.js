@@ -2,32 +2,31 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { baseUrl } from "src/utils/jsonData";
 
-const ClassUpdate = ({ setContactUsDisplayModal, contactUsDisplayModal, teacher }) => {
+const ClassUpdate = ({ setPanelName, teacher }) => {
   const [listOfStudents, setListOfStudents] = useState([]);
   const [selectedClass, setSelectedClass] = useState(null);
+  const [teacherEmailSelected, setTeacherEmailSelected] = useState();
   const [studentEmails, setStudentEmails] = useState([]);
   const [className, setClassName] = useState("");
-  const [periodSelected, setPeriodSelected] = useState(""); 
+  const [periodSelected, setPeriodSelected] = useState("");
   const [loading, setLoading] = useState(false);
-  const [toast, setToast] = useState({ display: false, message: "" });
 
   // Set the first class in teacher's class roster when component mounts
   useEffect(() => {
     if (teacher && teacher.classes && teacher.classes.length > 0) {
-      const firstClass = teacher.classes[0];  // Select the first class
+      const firstClass = teacher.classes[0]; // Select the first class
       setSelectedClass(firstClass);
       setClassName(firstClass.className);
       setPeriodSelected(firstClass.classPeriod);
-      setStudentEmails(firstClass.classRoster.map((student) => student.studentEmail));
+      setStudentEmails(
+        firstClass.classRoster.map((student) => student.studentEmail)
+      );
     }
   }, [teacher]);
 
   useEffect(() => {
-    // Close modal if `contactUsDisplayModal` changes to anything else
-    if (contactUsDisplayModal !== "classUpdate") {
-      setContactUsDisplayModal("");
-    }
-  }, [contactUsDisplayModal, setContactUsDisplayModal]);
+    setTeacherEmailSelected(sessionStorage.getItem("email"));
+  }, [teacherEmailSelected]);
 
   // Fetch all students to populate the list of available students
   useEffect(() => {
@@ -65,7 +64,6 @@ const ClassUpdate = ({ setContactUsDisplayModal, contactUsDisplayModal, teacher 
   const handleSubmit = (event) => {
     event.preventDefault();
     setLoading(true);
-    setToast({ display: false, message: "" });
 
     // Prepare the payload for the API request
     const classRoster = studentEmails.map((email) => ({ studentEmail: email }));
@@ -86,20 +84,13 @@ const ClassUpdate = ({ setContactUsDisplayModal, contactUsDisplayModal, teacher 
         },
       })
       .then(function (res) {
-        setToast({ display: true, message: "Class Successfully Updated" });
         setTimeout(() => {
           setLoading(false);
-          setToast({ display: false, message: "" });
+          window.alert(`Class has been updated`);
         }, 1000);
-        setContactUsDisplayModal("login");
       })
       .catch(function (error) {
         console.error(error);
-        setToast({ display: true, message: "Something Went Wrong" });
-        setTimeout(() => {
-          setLoading(false);
-          setToast({ display: false, message: "" });
-        }, 2000);
       });
   };
 
@@ -121,7 +112,21 @@ const ClassUpdate = ({ setContactUsDisplayModal, contactUsDisplayModal, teacher 
           onChange={(e) => setPeriodSelected(e.target.value)}
         >
           <option value="">Select Period</option>
-          {["block1", "block2", "block3", "block4", "period1", "period2", "period3", "period4", "period5", "period6", "period7", "period8", "period9"].map((period) => (
+          {[
+            "block1",
+            "block2",
+            "block3",
+            "block4",
+            "period1",
+            "period2",
+            "period3",
+            "period4",
+            "period5",
+            "period6",
+            "period7",
+            "period8",
+            "period9",
+          ].map((period) => (
             <option key={period} value={period}>
               {period}
             </option>
@@ -138,8 +143,12 @@ const ClassUpdate = ({ setContactUsDisplayModal, contactUsDisplayModal, teacher 
             >
               <option value="">Select a student</option>
               {listOfStudents.map((studentOption) => (
-                <option key={studentOption.studentEmail} value={studentOption.studentEmail}>
-                  {studentOption.firstName} {studentOption.lastName} - {studentOption.studentEmail}
+                <option
+                  key={studentOption.studentEmail}
+                  value={studentOption.studentEmail}
+                >
+                  {studentOption.firstName} {studentOption.lastName} -{" "}
+                  {studentOption.studentEmail}
                 </option>
               ))}
             </select>
@@ -156,10 +165,7 @@ const ClassUpdate = ({ setContactUsDisplayModal, contactUsDisplayModal, teacher 
         <button onClick={handleSubmit} disabled={loading}>
           {loading ? "Submitting..." : "Submit"}
         </button>
-        <button onClick={setContactUsDisplayModal("login")}>Cancel</button>
-
-        {/* Toast Message */}
-        {toast.display && <div>{toast.message}</div>}
+        <button onClick={() => setPanelName("classUpdate")}>Cancel</button>
       </div>
     </div>
   );

@@ -75,13 +75,13 @@ const TeacherDashboard = () => {
               contactUsDisplayModal={modalType}
             />
           )}
-          {modalType === "classUpdate" && (
+          {/* {modalType === "classUpdate" && (
             <ClassUpdate
               setContactUsDisplayModal={setModalType}
               contactUsDisplayModal={modalType}
               teacher={data.teacher}
             />
-          )}
+          )} */}
 
           <NavigationLoggedIn
             toggleNotificationDrawer={toggleNotificationDrawer}
@@ -129,6 +129,12 @@ const TeacherDashboard = () => {
               {panelName === "ftc" && <TeacherFTCPanel />}
               {panelName === "levelThree" && <LevelThreePanel />}
               {panelName === "spendPoints" && <SpendPage data={data} />}
+              {panelName === "classUpdate" && (
+                <ClassUpdate
+                  setPanelName={setPanelName}
+                  teacher={data.teacher}
+                />
+              )}
             </div>
           )}
         </div>
