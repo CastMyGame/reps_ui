@@ -35,20 +35,15 @@ const TeacherStudentPanel = ({ setPanelName, data = [] }) => {
   const [selectedGrade, setSelectedGrade] = useState(""); // State for selected grade
   const [spotEmail, setSpotEmail] = useState("");
   const [selectedClass, setSelectedClass] = useState(""); // Selected class name
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [students, setStudents] = useState([]);
 
-  // Fetch all students data when component mounts
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await get("student/v1/allStudents");
-        setListOfSchool(response);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    fetchData();
-  }, []);
+    if (data.teacher.classes.length > 0 && !selectedClass) {
+      setSelectedClass(data.teacher.classes[0].className);
+    }
+  }, [data.teacher.classes, selectedClass]);
 
   // Fetch specific student data when clicking the student name
   const fetchStudentData = async (studentEmail) => {
@@ -154,39 +149,74 @@ const TeacherStudentPanel = ({ setPanelName, data = [] }) => {
   // Process and format the list of students and referral data
   useEffect(() => {
     const processData = () => {
-      const studentsArray = [];
-      data.teacher.classes.forEach((classEntry) => {
-        classEntry.classRoster.forEach((student) => {
-          const foundStudent = listOfSchool.find(
-            (s) => s.studentEmail === student.studentEmail
+      if (!data || data.length === 0) {
+        setError("No email list provided");
+        setLoading(false);
+        return;
+      }
+
+      const fetchStudents = async () => {
+        try {
+          setLoading(true);
+
+          // Extract all emails from the classRoster and ensure uniqueness
+          const uniqueEmails = Array.from(
+            new Set(
+              data.teacher.classes.flatMap((classItem) => classItem.classRoster)
+            )
           );
-          if (foundStudent) {
-            studentsArray.push({
-              fullName: `${foundStudent.firstName} ${foundStudent.lastName}`,
-              studentEmail: student.studentEmail,
-              grade: foundStudent.grade,
-              teacherManagedReferrals: data.writeUpResponse.filter(
-                (w) => w.studentEmail === student.studentEmail
-              ).length,
-              officeManagedReferrals: data.officeReferrals.filter(
-                (o) => o.studentEmail === student.studentEmail
-              ).length,
-              className: classEntry.className,
+
+          const url = `${baseUrl}/student/v1/getByEmailList`;
+          const response = await axios.post(
+            url,
+            uniqueEmails, // Sending the list of emails as the request body
+            {
+              headers: {
+                Authorization:
+                  "Bearer " + sessionStorage.getItem("Authorization"),
+              },
+            }
+          );
+
+          const fetchedStudents = response.data;
+          const studentsArray = [];
+          data.teacher.classes.forEach((classEntry) => {
+            classEntry.classRoster.forEach((student) => {
+              const foundStudent = fetchedStudents.find(
+                (s) => s.studentEmail === student
+              );
+              if (foundStudent) {
+                studentsArray.push({
+                  fullName: `${foundStudent.firstName} ${foundStudent.lastName}`,
+                  studentEmail: student.studentEmail,
+                  grade: foundStudent.grade,
+                  teacherManagedReferrals: data.writeUpResponse.filter(
+                    (w) => w.studentEmail === student.studentEmail
+                  ).length,
+                  officeManagedReferrals: data.officeReferrals.filter(
+                    (o) => o.studentEmail === student.studentEmail
+                  ).length,
+                  className: classEntry.className,
+                });
+              }
             });
-          }
-        });
-      });
-      setListOfStudents(studentsArray);
+          });
+          setListOfStudents(studentsArray); // Update state properly
+          setLoading(false);
+        } catch (err) {
+          console.error(err);
+          setError("Failed to fetch students");
+          setLoading(false);
+        }
+      };
+
+      fetchStudents();
     };
 
-    if (data) {
-      processData();
-      // Automatically set the first class as the selected class if none is selected
-      if (data.teacher.classes.length > 0 && !selectedClass) {
-        setSelectedClass(data.teacher.classes[0].className);
-      }
-    }
-  }, [data, listOfSchool, selectedClass]);
+    processData();
+  }, [data, selectedClass]); // Ensure these dependencies trigger updates
+
+  console.log("Filtered Students for Table:", listOfStudents);
 
   const filteredStudentData = listOfStudents.filter(
     (student) => student.className === selectedClass
@@ -229,6 +259,8 @@ const TeacherStudentPanel = ({ setPanelName, data = [] }) => {
     },
     { headerName: "Office Managed Referrals", field: "officeManagedReferrals" },
   ];
+
+  console.log("Filtered Data for Table:", filteredStudentData);
 
   return (
     <>
