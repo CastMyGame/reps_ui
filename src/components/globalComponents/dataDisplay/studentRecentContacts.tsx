@@ -29,7 +29,7 @@ const RecentContacts: React.FC<TeacherOverviewDto> = ({
     const recentContacts: StudentContactList[] = [];
 
     // Sort the data in descending order by `timeCreated` to display the most recent first
-    const sortedData = allContacts.toSorted((a, b) => {
+    const sortedData = [...allContacts].toSorted((a, b) => {
       const dateA = new Date(a.timeCreated);
       const dateB = new Date(b.timeCreated);
       return dateB.getTime() - dateA.getTime(); // Descending order (most recent first)
