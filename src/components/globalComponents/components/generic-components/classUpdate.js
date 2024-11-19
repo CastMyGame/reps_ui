@@ -19,15 +19,22 @@ const ClassUpdate = ({ setPanelName, teacher }) => {
       setSelectedClass(firstClass);
       setClassName(firstClass.className);
       setPeriodSelected(firstClass.classPeriod);
-      setStudentEmails(
-        firstClass.classRoster.map((student) => student)
-      );
+      setStudentEmails(firstClass.classRoster.map((student) => student));
     }
   }, [teacher]);
 
   useEffect(() => {
     setTeacherEmailSelected(sessionStorage.getItem("email"));
   }, [teacherEmailSelected]);
+
+  // Update the selected class and its details
+  const handleClassChange = (classId) => {
+    const selected = teacher.classes.find((cls) => cls.className === classId);
+    if (selected) {
+      setSelectedClass(selected);
+      setStudentEmails(selected.classRoster.map((student) => student));
+    }
+  };
 
   // Fetch all students for the dropdown
   useEffect(() => {
@@ -60,7 +67,9 @@ const ClassUpdate = ({ setPanelName, teacher }) => {
 
   // Remove a student from the class roster
   const handleRemoveStudent = (email) => {
-    setStudentEmails(studentEmails.filter((studentEmail) => studentEmail !== email));
+    setStudentEmails(
+      studentEmails.filter((studentEmail) => studentEmail !== email)
+    );
   };
 
   // Submit form
@@ -106,22 +115,27 @@ const ClassUpdate = ({ setPanelName, teacher }) => {
     <div style={{ padding: "20px" }}>
       <h2>Update Class</h2>
       <form onSubmit={handleSubmit} style={{ marginTop: "20px" }}>
-        {/* Class Name */}
+        {/* Class Name Dropdown */}
         <div style={{ marginBottom: "15px" }}>
           <label>Class Name</label>
-          <input
-            type="text"
-            value={className}
-            disabled
+          <select
+            value={selectedClass?.className || ""}
+            onChange={(e) => handleClassChange(e.target.value)}
             style={{
               padding: "8px",
               width: "100%",
               fontSize: "1rem",
               borderRadius: "4px",
               border: "1px solid #ccc",
-              backgroundColor: "#f5f5f5",
             }}
-          />
+          >
+            <option value="">Select a Class</option>
+            {teacher.classes.map((cls) => (
+              <option key={cls.id} value={cls.id}>
+                {cls.className}
+              </option>
+            ))}
+          </select>
         </div>
 
         {/* Class Period */}
@@ -129,7 +143,7 @@ const ClassUpdate = ({ setPanelName, teacher }) => {
           <label>Class Period</label>
           <input
             type="text"
-            value={periodSelected}
+            value={selectedClass?.classPeriod || ""}
             disabled
             style={{
               padding: "8px",
@@ -158,11 +172,19 @@ const ClassUpdate = ({ setPanelName, teacher }) => {
               }}
             >
               <option value="">Select a student</option>
-              {listOfStudents.map((student) => (
-                <option key={student.studentEmail} value={student.studentEmail}>
-                  {student.firstName} {student.lastName} - {student.studentEmail}
-                </option>
-              ))}
+              {listOfStudents
+                .filter(
+                  (student) => !studentEmails.includes(student.studentEmail)
+                )
+                .map((student) => (
+                  <option
+                    key={student.studentEmail}
+                    value={student.studentEmail}
+                  >
+                    {student.firstName} {student.lastName} -{" "}
+                    {student.studentEmail}
+                  </option>
+                ))}
             </select>
             <button
               type="button"
