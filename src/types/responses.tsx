@@ -1,4 +1,4 @@
-import { Employee, School, Student } from "./school";
+import { Employee, School } from "./school";
 
 export interface Role {
   role: string;
@@ -109,7 +109,6 @@ export interface TeacherOverviewDto {
   officeReferrals: TeacherDto;
   teacher: Employee;
   school: School;
-  students: Student[];
 }
 
 export interface AdminOverviewDto {
@@ -120,7 +119,6 @@ export interface AdminOverviewDto {
   school: School;
   teachers: Employee;
   officeReferrals: OfficeReferral;
-  students: Student[];
 }
 
 export interface OfficeReferral {
@@ -156,7 +154,6 @@ export interface StudentIncidentList {
 }
 
 export interface StudentContactList {
-  studentEmail: string;
   studentName: string;
   timeCreated: string;
   infractionName: string;
