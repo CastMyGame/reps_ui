@@ -18,10 +18,13 @@ import SpendPage from "src/components/globalComponents/spendPage/spend-page.js";
 import CreateOfficeReferralPanel from "src/components/globalComponents/referrals/createOfficeReferral.js";
 import { ManageSpottersPopup } from "src/components/globalComponents/components/generic-components/manageSpottersPopup.js";
 import ClassUpdate from "src/components/globalComponents/components/generic-components/classUpdate.js";
+import { baseUrl } from "src/utils/jsonData.js";
+import axios from "axios";
 
 const TeacherDashboard = () => {
   const [loggedIn, setLoggedIn] = useState(true);
   const [data, setData] = useState([]);
+  const [emailList, setEmailList] = useState([]);
   const [teacher, setTeacher] = useState([]);
   const [openNotificationDrawer, setOpenNotificationDrawer] = useState(false);
   const [panelName, setPanelName] = useState("overview");
@@ -29,6 +32,7 @@ const TeacherDashboard = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState("");
   const [studentList, setStudentList] = useState([]);
   const [punishmentFilter, setPunishmentFilter] = useState("OPEN");
+  const [filteredStudentList, setFilteredStudentList] = useState([]); // Filtered list of students
 
   useEffect(() => {
     if (sessionStorage.getItem("Authorization") === null) {
@@ -38,12 +42,29 @@ const TeacherDashboard = () => {
     }
   }, []);
 
+  const headers = {
+    Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
+  };
+
+  const url = `${baseUrl}/student/v1/allStudents`;
+
+  useEffect(() => {
+    axios
+      .get(url, { headers }) // Pass the headers option with the JWT token
+      .then(function (response) {
+        setStudentList(response.data);
+      })
+      .catch(function (error) {
+        console.error(error);
+      });
+  }, []);
+
   useEffect(() => {
     const fetchPunishmentData = async () => {
       try {
         const response = await get(`DTO/v1/TeacherOverviewData`);
         setData(response);
-        setStudentList(response.teacher.classes);
+        setEmailList(response.teacher.classes);
         setTeacher(response.teacher);
       } catch (err) {
         console.error("Error happens here: ", err);
@@ -55,6 +76,20 @@ const TeacherDashboard = () => {
     // Close modal on panel change
     setModalType("");
   }, [panelName]);
+
+  // Filter the studentList based on the emailList
+  useEffect(() => {
+    if (studentList.length > 0 && emailList.length > 0) {
+      // Flatten the classRoster arrays into a single array of emails
+    const allEmails = emailList.flatMap((classItem) =>
+      classItem.classRoster.map((student) => student)
+    );
+      const filteredStudents = studentList.filter((student) =>
+        allEmails.includes(student.studentEmail)
+      );
+      setFilteredStudentList(filteredStudents);
+    }
+  }, [studentList, emailList]);
 
   const toggleNotificationDrawer = (open) => {
     setOpenNotificationDrawer(open);
@@ -103,7 +138,7 @@ const TeacherDashboard = () => {
                 <TeacherOverviewPanel
                   setPanelName={setPanelName}
                   data={data}
-                  students={studentList}
+                  students={filteredStudentList}
                 />
               )}
               {panelName === "student" && (

@@ -14,61 +14,74 @@ import { dateCreateFormat } from "src/helperFunctions/helperFunctions";
 const RecentContacts: React.FC<TeacherOverviewDto> = ({
   punishmentResponse = [],
   officeReferrals = [],
+  teacher,
+  students = [],
 }) => {
+  console.log(" THE STUDENTS KID ", students);
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredData, setFilteredData] = useState<StudentContactList[]>([]);
 
   useEffect(() => {
-    // Filter the data based on the search query
-    const filteredRecords = (punishmentResponse as TeacherDto[]).filter(
-      (record) => {
-        const fullName =
-          `${record.studentFirstName} ${record.studentLastName}`.toLowerCase();
-
-        return (
-          fullName.includes(searchQuery.toLowerCase()) ||
-          record.infractionName
-            .toLowerCase()
-            .includes(searchQuery.toLowerCase())
-        );
-      }
-    );
+    const allContacts = [
+      ...(punishmentResponse as TeacherDto[]),
+      ...(officeReferrals as TeacherDto[]),
+    ];
+    const uniqueStudentEmails = new Set<string>();
+    const recentContacts: StudentContactList[] = [];
 
     // Sort the data in descending order by `timeCreated` to display the most recent first
-    const sortedData = filteredRecords.sort((a, b) => {
+    const sortedData = allContacts.toSorted((a, b) => {
       const dateA = new Date(a.timeCreated);
       const dateB = new Date(b.timeCreated);
       return dateB.getTime() - dateA.getTime(); // Descending order (most recent first)
     });
 
-    const uniqueStudentEmails = new Set<string>();
-    const recentContacts: StudentContactList[] = [];
-
-    // Collect most recent contact for each student
     sortedData.forEach((record) => {
       if (!uniqueStudentEmails.has(record.studentEmail)) {
         uniqueStudentEmails.add(record.studentEmail);
         recentContacts.push({
+          studentEmail: record.studentEmail,
           studentName: `${record.studentFirstName} ${record.studentLastName}`,
           timeCreated: dateCreateFormat(record.timeCreated),
           infractionName: record.infractionName,
-          // Join the infractionDescription array into a single string
           infractionDescription: Array.isArray(record.infractionDescription)
-            ? record.infractionDescription.join(", ") // Join with a comma and space
-            : record.infractionDescription, // Fallback in case it's not an array
+            ? record.infractionDescription.join(", ")
+            : record.infractionDescription,
         });
       }
     });
 
-    // Sort recentContacts to display farthest date in the past on top in the table
-    recentContacts.sort((a, b) => {
-      const dateA = new Date(a.timeCreated);
-      const dateB = new Date(b.timeCreated);
-      return dateA.getTime() - dateB.getTime(); // Ascending order (oldest to most recent)
+    // Ensure all students are displayed, even those without recent contacts
+    const allStudentsData = students.map((student) => {
+      const contact = recentContacts.find(
+        (contact) => contact.studentEmail === student.studentEmail
+      );
+
+      return (
+        contact || {
+          studentEmail: student.studentEmail,
+          studentName: `${student.firstName} ${student.lastName}`,
+          timeCreated: "N/A",
+          infractionName: "",
+          infractionDescription: "",
+        }
+      );
     });
 
-    setFilteredData(recentContacts);
-  }, [punishmentResponse, searchQuery]);
+    // Sort `allStudentsData`
+  const sortedAllStudentsData = allStudentsData.sort((a, b) => {
+    // Handle "N/A" for `timeCreated` first
+    if (a.timeCreated === "N/A" && b.timeCreated !== "N/A") return -1; // "N/A" at the top
+    if (b.timeCreated === "N/A" && a.timeCreated !== "N/A") return 1; // "N/A" at the top
+
+    // Sort by date (ascending: oldest date at the top)
+    const dateA = new Date(a.timeCreated);
+    const dateB = new Date(b.timeCreated);
+    return dateA.getTime() - dateB.getTime(); // Ascending order
+  });
+
+    setFilteredData(sortedAllStudentsData);
+  }, [punishmentResponse, students, officeReferrals]);
 
   // Column definitions for AgGrid
   const colDefs: ColDef[] = [
@@ -90,12 +103,6 @@ const RecentContacts: React.FC<TeacherOverviewDto> = ({
       flex: 1, // Allow flexible sizing
       resizable: true,
     },
-    // {
-    //   field: "infractionDescription",
-    //   headerName: "Description",
-    //   flex: 1, // Allow flexible sizing
-    //   resizable: true,
-    // },
   ];
 
   return (
@@ -108,7 +115,7 @@ const RecentContacts: React.FC<TeacherOverviewDto> = ({
         style={{ height: "25vh", width: "100%" }}
       >
         <AgGridReact
-          rowData={filteredData as StudentContactList[]}
+          rowData={filteredData}
           columnDefs={colDefs as ColDef<StudentContactList>[]}
           domLayout="autoHeight" // Ensures that the height is handled properly
         />
