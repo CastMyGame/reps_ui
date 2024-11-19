@@ -4,39 +4,34 @@ import { baseUrl } from "src/utils/jsonData";
 
 const ClassUpdate = ({ setPanelName, teacher }) => {
   const [listOfStudents, setListOfStudents] = useState([]);
-  const [selectedClass, setSelectedClass] = useState(null);
   const [teacherEmailSelected, setTeacherEmailSelected] = useState();
   const [studentEmails, setStudentEmails] = useState([]);
   const [className, setClassName] = useState("");
   const [periodSelected, setPeriodSelected] = useState("");
-  const [selectedStudent, setSelectedStudent] = useState(""); // Selected student for the search
+  const [selectedStudent, setSelectedStudent] = useState(""); // Selected student for adding
   const [loading, setLoading] = useState(false);
+  const [isNewClass, setIsNewClass] = useState(false); // Tracks if creating a new class
+  const [isModified, setIsModified] = useState(false);
 
-  // Initialize class and roster when component mounts
+  useEffect(() => {
+    setIsModified(true); // Triggered when emails or class details change
+  }, [studentEmails, className, periodSelected]);
+
   useEffect(() => {
     if (teacher && teacher.classes && teacher.classes.length > 0) {
       const firstClass = teacher.classes[0];
-      setSelectedClass(firstClass);
       setClassName(firstClass.className);
       setPeriodSelected(firstClass.classPeriod);
-      setStudentEmails(firstClass.classRoster.map((student) => student));
+      setStudentEmails(
+        firstClass.classRoster.map((student) => student.studentEmail || student)
+      ); // Ensure you get an array of emails
     }
   }, [teacher]);
 
   useEffect(() => {
     setTeacherEmailSelected(sessionStorage.getItem("email"));
-  }, [teacherEmailSelected]);
+  }, []);
 
-  // Update the selected class and its details
-  const handleClassChange = (classId) => {
-    const selected = teacher.classes.find((cls) => cls.className === classId);
-    if (selected) {
-      setSelectedClass(selected);
-      setStudentEmails(selected.classRoster.map((student) => student));
-    }
-  };
-
-  // Fetch all students for the dropdown
   useEffect(() => {
     const url = `${baseUrl}/student/v1/allStudents`;
     const headers = {
@@ -53,11 +48,29 @@ const ClassUpdate = ({ setPanelName, teacher }) => {
       });
   }, []);
 
-  // Add a student to the class roster
+  const handleClassChange = (classId) => {
+    if (classId === "new") {
+      setIsNewClass(true);
+      setClassName("");
+      setPeriodSelected("");
+      setStudentEmails([]);
+    } else {
+      setIsNewClass(false);
+      const selectedClass = teacher.classes.find(
+        (cls) => cls.className === classId
+      );
+      if (selectedClass) {
+        setClassName(selectedClass.className);
+        setPeriodSelected(selectedClass.classPeriod);
+        setStudentEmails(selectedClass.classRoster); // Already a list of email strings
+      }
+    }
+  };
+
   const handleAddStudent = () => {
     if (selectedStudent && !studentEmails.includes(selectedStudent)) {
       setStudentEmails([...studentEmails, selectedStudent]);
-      setSelectedStudent(""); // Reset the dropdown
+      setSelectedStudent("");
     } else if (!selectedStudent) {
       alert("Please select a student to add.");
     } else {
@@ -65,17 +78,31 @@ const ClassUpdate = ({ setPanelName, teacher }) => {
     }
   };
 
-  // Remove a student from the class roster
   const handleRemoveStudent = (email) => {
     setStudentEmails(
       studentEmails.filter((studentEmail) => studentEmail !== email)
     );
   };
 
-  // Submit form
   const handleSubmit = (event) => {
     event.preventDefault();
+    if (studentEmails.length === 0) {
+      alert("Class roster cannot be empty.");
+      return;
+    }
     setLoading(true);
+
+    if (isNewClass) {
+      // Validate unique class name
+      const classExists = teacher.classes.some(
+        (cls) => cls.className.toLowerCase() === className.toLowerCase()
+      );
+      if (classExists) {
+        setLoading(false);
+        alert("Class name already exists. Please choose another name.");
+        return;
+      }
+    }
 
     const payload = {
       classToUpdate: {
@@ -97,7 +124,18 @@ const ClassUpdate = ({ setPanelName, teacher }) => {
       )
       .then(() => {
         setLoading(false);
-        alert("Class has been updated.");
+        alert(
+          isNewClass ? "New class has been created." : "Class has been updated."
+        );
+        if (isNewClass) {
+          // Add the new class to teacher's classes
+          teacher.classes.push({
+            className,
+            classPeriod: periodSelected,
+            classRoster: studentEmails,
+          });
+        }
+        setPanelName("classUpdate"); // Redirect or reset as needed
       })
       .catch((error) => {
         setLoading(false);
@@ -106,20 +144,43 @@ const ClassUpdate = ({ setPanelName, teacher }) => {
       });
   };
 
-  // Students already in the class
   const mappedStudents = listOfStudents.filter((student) =>
     studentEmails.includes(student.studentEmail)
   );
 
+  const classPeriodSelectOptions = [
+    { value: "exchange", label: "Class Exchange" },
+    { value: "afterSchool", label: "After School" },
+    { value: "lunch", label: "Lunch" },
+    { value: "block1", label: "Block 1" },
+    { value: "block2", label: "Block 2" },
+    { value: "block3", label: "Block 3" },
+    { value: "block4", label: "Block 4" },
+    { value: "period1", label: "Period 1" },
+    { value: "period2", label: "Period 2" },
+    { value: "period3", label: "Period 3" },
+    { value: "period4", label: "Period 4" },
+    { value: "period5", label: "Period 5" },
+    { value: "period6", label: "Period 6" },
+    { value: "period7", label: "Period 7" },
+    { value: "period8", label: "Period 8" },
+    { value: "period9", label: "Period 9" },
+  ];
+
   return (
     <div style={{ padding: "20px" }}>
-      <h2>Update Class</h2>
+      {isModified && (
+        <div style={{ color: "red", marginTop: "10px" }}>
+          You have unsaved changes. Please submit to save.
+        </div>
+      )}
+      <h2>{isNewClass ? "Create New Class" : "Update Class"}</h2>
       <form onSubmit={handleSubmit} style={{ marginTop: "20px" }}>
         {/* Class Name Dropdown */}
         <div style={{ marginBottom: "15px" }}>
           <label>Class Name</label>
           <select
-            value={selectedClass?.className || ""}
+            value={isNewClass ? "new" : className || ""}
             onChange={(e) => handleClassChange(e.target.value)}
             style={{
               padding: "8px",
@@ -129,32 +190,62 @@ const ClassUpdate = ({ setPanelName, teacher }) => {
               border: "1px solid #ccc",
             }}
           >
-            <option value="">Select a Class</option>
+            <option value="">Select a class</option>
             {teacher.classes.map((cls) => (
-              <option key={cls.id} value={cls.id}>
+              <option key={cls.className} value={cls.className}>
                 {cls.className}
               </option>
             ))}
+            <option value="new">Create New Class</option>
           </select>
         </div>
 
-        {/* Class Period */}
-        <div style={{ marginBottom: "15px" }}>
-          <label>Class Period</label>
-          <input
-            type="text"
-            value={selectedClass?.classPeriod || ""}
-            disabled
-            style={{
-              padding: "8px",
-              width: "100%",
-              fontSize: "1rem",
-              borderRadius: "4px",
-              border: "1px solid #ccc",
-              backgroundColor: "#f5f5f5",
-            }}
-          />
-        </div>
+        {/* Class Name Input */}
+        {isNewClass && (
+          <div style={{ marginBottom: "15px" }}>
+            <label>Class Name</label>
+            <input
+              type="text"
+              value={className}
+              onChange={(e) => setClassName(e.target.value)}
+              placeholder="Enter new class name"
+              required
+              style={{
+                padding: "8px",
+                width: "100%",
+                fontSize: "1rem",
+                borderRadius: "4px",
+                border: "1px solid #ccc",
+              }}
+            />
+          </div>
+        )}
+
+        {/* Class Period Dropdown */}
+        {isNewClass && (
+          <div style={{ marginBottom: "15px" }}>
+            <label>Class Period</label>
+            <select
+              value={periodSelected}
+              onChange={(e) => setPeriodSelected(e.target.value)}
+              required
+              style={{
+                padding: "8px",
+                width: "100%",
+                fontSize: "1rem",
+                borderRadius: "4px",
+                border: "1px solid #ccc",
+              }}
+            >
+              <option value="">Select a period</option>
+              {classPeriodSelectOptions.map((period) => (
+                <option key={period} value={period}>
+                  {period.label}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
 
         {/* Search Bar */}
         <div style={{ marginBottom: "20px" }}>
@@ -226,18 +317,25 @@ const ClassUpdate = ({ setPanelName, teacher }) => {
                 <td style={{ border: "1px solid #ddd", padding: "10px" }}>
                   {student.studentEmail}
                 </td>
-                <td style={{ border: "1px solid #ddd", padding: "10px" }}>
+                <td
+                  style={{
+                    border: "1px solid #ddd",
+                    padding: "10px",
+                    textAlign: "center",
+                  }}
+                >
                   <button
                     type="button"
                     onClick={() => handleRemoveStudent(student.studentEmail)}
                     style={{
-                      background: "none",
+                      background: "red",
+                      color: "white",
                       border: "none",
-                      cursor: "pointer",
-                      color: "red",
+                      padding: "8px 10px",
+                      borderRadius: "4px",
                     }}
                   >
-                    🗑️
+                    Remove
                   </button>
                 </td>
               </tr>
@@ -245,36 +343,21 @@ const ClassUpdate = ({ setPanelName, teacher }) => {
           </tbody>
         </table>
 
-        {/* Form Buttons */}
-        <div style={{ marginTop: "20px" }}>
-          <button
-            type="submit"
-            disabled={loading}
-            style={{
-              background: "#4CAF50",
-              color: "white",
-              padding: "10px 20px",
-              border: "none",
-              borderRadius: "4px",
-              marginRight: "10px",
-            }}
-          >
-            {loading ? "Submitting..." : "Submit"}
-          </button>
-          <button
-            type="button"
-            onClick={() => setPanelName("classUpdate")}
-            style={{
-              background: "grey",
-              color: "white",
-              padding: "10px 20px",
-              border: "none",
-              borderRadius: "4px",
-            }}
-          >
-            Cancel
-          </button>
-        </div>
+        {/* Submit Button */}
+        <button
+          type="submit"
+          disabled={loading}
+          style={{
+            marginTop: "20px",
+            background: "blue",
+            color: "white",
+            border: "none",
+            padding: "10px 15px",
+            borderRadius: "4px",
+          }}
+        >
+          {loading ? "Loading..." : "Submit"}
+        </button>
       </form>
     </div>
   );
