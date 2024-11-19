@@ -63,9 +63,7 @@ export const Top5TeacherRatioTable: React.FC<AdminOverviewDto> = ({
     // Set the rowData for both tables
     setMostPositiveRowData(topTwoTeachers);
   }, [punishmentResponse, teachers]);
-
-  console.log("Positive Row Data ", mostPositiveRowData);
-
+  
   const colDefs = [
     { field: "teacherName", headerName: "Teacher Name" },
     { field: "posRatio", headerName: "Positive Ratio (%)" },

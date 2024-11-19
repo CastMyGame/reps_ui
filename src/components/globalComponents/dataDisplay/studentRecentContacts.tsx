@@ -19,7 +19,6 @@ const RecentContacts: React.FC<TeacherOverviewDto> = ({
   const [filteredData, setFilteredData] = useState<StudentContactList[]>([]);
 
   useEffect(() => {
-    console.log(punishmentResponse);
     // Filter the data based on the search query
     const filteredRecords = (punishmentResponse as TeacherDto[]).filter(
       (record) => {

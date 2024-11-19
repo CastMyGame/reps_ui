@@ -94,7 +94,6 @@ const ISSWidget = () => {
         <tbody>
           {data.length > 0 ? (
             data.map((x, key) => {
-              console.log("X Student ", x);
               const rowBackgroundColor = key % 2 === 0 ? "#f2f2f2" : "white"; // Alternate colors
               return (
                 <tr key={key} style={{ backgroundColor: rowBackgroundColor }}>

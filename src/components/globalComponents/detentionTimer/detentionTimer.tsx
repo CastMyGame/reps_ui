@@ -3,7 +3,6 @@ import { DetentionTimerProps, TimeBank } from "src/types/school";
 import { baseUrl } from "src/utils/jsonData";
 
 const DetentionTimer: React.FC<DetentionTimerProps> = ({ studentEmail }) => {
-  console.log("studentEmail prop ", studentEmail);
   const [isRunning, setIsRunning] = useState<boolean>(false); // Tracks if the timer is running
   const [timeBank, setTimeBank] = useState<TimeBank>({ hours: 0, minutes: 0 }); // TimeBank to track hours and minutes
   const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null); // Stores the interval ID
@@ -36,13 +35,11 @@ const DetentionTimer: React.FC<DetentionTimerProps> = ({ studentEmail }) => {
   // Function to handle the button click
   const handleButtonClick = async () => {
     if (isRunning) {
-      console.log("studentEmail prop 2", studentEmail);
       // Timer is stopping, send the time to the backend
       if (intervalId) clearInterval(intervalId);
       setIsRunning(false);
       await sendTimeToBackend(timeBank.hours, timeBank.minutes); // Send the accumulated hours and minutes
     } else {
-      console.log("studentEmail prop 3", studentEmail);
       // Timer is starting, reset the time and start the interval
       setTimeBank({ hours: 0, minutes: 0 });
       setIsRunning(true);

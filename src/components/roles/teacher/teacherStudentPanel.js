@@ -24,7 +24,6 @@ import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css"; // Using "alpine" for a modern theme
 
 const TeacherStudentPanel = ({ setPanelName, data = [] }) => {
-  console.log(data, " THE DATA ");
   const [listOfStudents, setListOfStudents] = useState([]);
   const [listOfSchool, setListOfSchool] = useState([]);
   const [studentDisplay, setStudentDisplay] = useState(false);
@@ -52,7 +51,6 @@ const TeacherStudentPanel = ({ setPanelName, data = [] }) => {
         `punish/v1/student/punishments/${studentEmail}`
       );
       if (response != null) {
-        console.log("Student Data:", response); // Ensure student data is fetched
         setStudentData(response);
         setStudentDisplay(true);
         // Handle the display of fetched student data here
@@ -216,8 +214,6 @@ const TeacherStudentPanel = ({ setPanelName, data = [] }) => {
     processData();
   }, [data, selectedClass]); // Ensure these dependencies trigger updates
 
-  console.log("Filtered Students for Table:", listOfStudents);
-
   const filteredStudentData = listOfStudents.filter(
     (student) => student.className === selectedClass
   );
@@ -249,7 +245,6 @@ const TeacherStudentPanel = ({ setPanelName, data = [] }) => {
       field: "fullName",
       onCellClicked: (params) => {
         handleProfileClick(params);
-        console.log("params ", params);
       },
     },
     { headerName: "Grade", field: "grade" },
@@ -260,7 +255,6 @@ const TeacherStudentPanel = ({ setPanelName, data = [] }) => {
     { headerName: "Office Managed Referrals", field: "officeManagedReferrals" },
   ];
 
-  console.log("Filtered Data for Table:", filteredStudentData);
 
   return (
     <>

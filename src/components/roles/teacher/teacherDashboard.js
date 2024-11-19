@@ -22,6 +22,7 @@ import ClassUpdate from "src/components/globalComponents/components/generic-comp
 const TeacherDashboard = () => {
   const [loggedIn, setLoggedIn] = useState(true);
   const [data, setData] = useState([]);
+  const [teacher, setTeacher] = useState([]);
   const [openNotificationDrawer, setOpenNotificationDrawer] = useState(false);
   const [panelName, setPanelName] = useState("overview");
   const [modalType, setModalType] = useState("");
@@ -41,9 +42,9 @@ const TeacherDashboard = () => {
     const fetchPunishmentData = async () => {
       try {
         const response = await get(`DTO/v1/TeacherOverviewData`);
-        console.log("Fetched data: ", response); // Log full response for debugging
         setData(response);
         setStudentList(response.teacher.classes);
+        setTeacher(response.teacher);
       } catch (err) {
         console.error("Error happens here: ", err);
       }
@@ -130,10 +131,7 @@ const TeacherDashboard = () => {
               {panelName === "levelThree" && <LevelThreePanel />}
               {panelName === "spendPoints" && <SpendPage data={data} />}
               {panelName === "classUpdate" && (
-                <ClassUpdate
-                  setPanelName={setPanelName}
-                  teacher={data.teacher}
-                />
+                <ClassUpdate setPanelName={setPanelName} teacher={teacher} />
               )}
             </div>
           )}

@@ -5,7 +5,6 @@ import { get } from "../../../utils/api/api";
 
 export const IncidentByTypePieChart = ({ data = [] }) => {
   const [writeUps, setWriteUps] = useState([]);
-  console.log("DATA ", data);
 
   useEffect(() => {
     setWriteUps(data);
