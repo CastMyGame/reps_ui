@@ -120,6 +120,7 @@ export interface AdminOverviewDto {
   school: School;
   teachers: Employee;
   officeReferrals: OfficeReferral;
+  students: Student[];
 }
 
 export interface OfficeReferral {

@@ -17,7 +17,6 @@ const RecentContacts: React.FC<TeacherOverviewDto> = ({
   teacher,
   students = [],
 }) => {
-  console.log(" THE STUDENTS KID ", students);
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredData, setFilteredData] = useState<StudentContactList[]>([]);
 
