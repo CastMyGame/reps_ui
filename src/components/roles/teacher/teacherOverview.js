@@ -125,15 +125,12 @@ const TeacherOverviewPanel = ({ setPanelName, data = [], students = [] }) => {
           <IncidentsByStudentTable
             writeUpResponse={data.writeUpResponse}
             officeReferrals={data.officeReferrals}
-            students={students}
           />
         </div>
         <div className="card-overview-half">
           <RecentIncidents
             punishmentResponse={data.punishmentResponse}
             officeReferrals={data.officeReferrals}
-            teacher={data.teacher}
-            students={students}
           />
         </div>
       </div>

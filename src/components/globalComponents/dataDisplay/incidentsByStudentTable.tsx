@@ -16,7 +16,6 @@ import "ag-grid-community/styles/ag-theme-quartz.css";
 const IncidentsByStudentTable: React.FC<AdminOverviewDto> = ({
   writeUpResponse = [],
   officeReferrals = [],
-  students = [],
 }) => {
   const [studentIncidentRowData, setStudentIncidentRowData] = useState<
     StudentIncidentList[]
@@ -54,20 +53,6 @@ const IncidentsByStudentTable: React.FC<AdminOverviewDto> = ({
 
       // Increment the total incidents count
       studentIncidentMap[studentEmail].totalIncidents += 1;
-    });
-
-    // Ensure all students from the `students` prop are included
-    students.forEach((student) => {
-      const studentEmail = student.studentEmail;
-      const studentName = `${student.firstName} ${student.lastName}`;
-
-      if (!studentIncidentMap[studentEmail]) {
-        // Add students with zero incidents
-        studentIncidentMap[studentEmail] = {
-          studentName,
-          totalIncidents: 0,
-        };
-      }
     });
 
     // Convert the object to an array and sort by total incidents in descending order
