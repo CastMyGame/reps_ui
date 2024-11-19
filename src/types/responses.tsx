@@ -96,7 +96,7 @@ export interface TeacherDto {
   studentLastName: string;
   infractionName: string;
   timeCreated: Date;
-  infractionDescription: [string];
+  infractionDescription: string[];
   teacherEmail: string;
   status: string;
   infractionLevel: string;

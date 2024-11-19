@@ -30,9 +30,11 @@ const RecentContacts: React.FC<TeacherOverviewDto> = ({
 
     // Sort the data in descending order by `timeCreated` to display the most recent first
     const sortedData = [...allContacts].toSorted((a, b) => {
-      const dateA = new Date(a.timeCreated);
-      const dateB = new Date(b.timeCreated);
-      return dateB.getTime() - dateA.getTime(); // Descending order (most recent first)
+      const dateA =
+        a.timeCreated === "N/A" ? new Date(0) : new Date(a.timeCreated);
+      const dateB =
+        b.timeCreated === "N/A" ? new Date(0) : new Date(b.timeCreated);
+      return dateA.getTime() - dateB.getTime();
     });
 
     sortedData.forEach((record) => {
@@ -68,16 +70,16 @@ const RecentContacts: React.FC<TeacherOverviewDto> = ({
     });
 
     // Sort `allStudentsData`
-  const sortedAllStudentsData = allStudentsData.sort((a, b) => {
-    // Handle "N/A" for `timeCreated` first
-    if (a.timeCreated === "N/A" && b.timeCreated !== "N/A") return -1; // "N/A" at the top
-    if (b.timeCreated === "N/A" && a.timeCreated !== "N/A") return 1; // "N/A" at the top
+    const sortedAllStudentsData = allStudentsData.sort((a, b) => {
+      // Handle "N/A" for `timeCreated` first
+      if (a.timeCreated === "N/A" && b.timeCreated !== "N/A") return -1; // "N/A" at the top
+      if (b.timeCreated === "N/A" && a.timeCreated !== "N/A") return 1; // "N/A" at the top
 
-    // Sort by date (ascending: oldest date at the top)
-    const dateA = new Date(a.timeCreated);
-    const dateB = new Date(b.timeCreated);
-    return dateA.getTime() - dateB.getTime(); // Ascending order
-  });
+      // Sort by date (ascending: oldest date at the top)
+      const dateA = new Date(a.timeCreated);
+      const dateB = new Date(b.timeCreated);
+      return dateA.getTime() - dateB.getTime(); // Ascending order
+    });
 
     setFilteredData(sortedAllStudentsData);
   }, [punishmentResponse, students, officeReferrals]);
