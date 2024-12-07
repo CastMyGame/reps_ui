@@ -17,7 +17,7 @@ const ShoutOutWidget = ({ listOfPunishments }) => {
         String(user.studentEmail).toLowerCase() ===
         String(loggedInUser).toLowerCase()
     )
-    .filter((punish) => punish.status === "SO" || punish.status === "CFR");
+    .filter((punish) => punish.status === "SO");
 
   const hasScroll = data.length > 2;
 
