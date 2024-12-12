@@ -14,12 +14,9 @@ const ClassUpdate = ({ setPanelName, teacher }) => {
   const [isModified, setIsModified] = useState(false);
 
   useEffect(() => {
-    setIsModified(true); // Triggered when emails or class details change
-  }, [studentEmails, className, periodSelected]);
-
-  useEffect(() => {
     if (teacher && teacher.classes && teacher.classes.length > 0) {
       const firstClass = teacher.classes[0];
+      console.log("TEACHER FIRST CLASS ", firstClass);
       setClassName(firstClass.className);
       setPeriodSelected(firstClass.classPeriod);
       setStudentEmails(
@@ -33,6 +30,7 @@ const ClassUpdate = ({ setPanelName, teacher }) => {
   }, []);
 
   useEffect(() => {
+    setLoading(true);
     const url = `${baseUrl}/student/v1/allStudents`;
     const headers = {
       Authorization: `Bearer ${sessionStorage.getItem("Authorization")}`,
@@ -42,6 +40,7 @@ const ClassUpdate = ({ setPanelName, teacher }) => {
       .get(url, { headers })
       .then((response) => {
         setListOfStudents(response.data);
+        setLoading(false);
       })
       .catch((error) => {
         console.error(error);
@@ -71,6 +70,7 @@ const ClassUpdate = ({ setPanelName, teacher }) => {
     if (selectedStudent && !studentEmails.includes(selectedStudent)) {
       setStudentEmails([...studentEmails, selectedStudent]);
       setSelectedStudent("");
+      setIsModified(true);
     } else if (!selectedStudent) {
       alert("Please select a student to add.");
     } else {
@@ -82,6 +82,57 @@ const ClassUpdate = ({ setPanelName, teacher }) => {
     setStudentEmails(
       studentEmails.filter((studentEmail) => studentEmail !== email)
     );
+    setIsModified(true);
+  };
+
+  const handleDeleteClass = (event) => {
+    event.preventDefault();
+    if (
+      window.confirm(
+        `Are you sure you want to delete the class "${className}"?`
+      )
+    ) {
+      setLoading(true);
+      const deleteClass = teacher.classes.filter(
+        (cls) => cls.className === className
+      );
+
+      const leftoverClasses = teacher.classes.filter(
+        (cls) => cls.className !== className
+      );
+
+      const payload = {
+        classToUpdate: {
+          className,
+          classPeriod: periodSelected,
+          classRoster: deleteClass.classRoster,
+        },
+      };
+
+      axios
+        .post(
+          `${baseUrl}/employees/v1/deleteClass/${teacherEmailSelected}`,
+          payload,
+          {
+            headers: {
+              Authorization: `Bearer ${sessionStorage.getItem("Authorization")}`,
+            },
+          }
+        )
+        .then(() => {
+          setLoading(false);
+          alert("Class deleted successfully.");
+          setClassName(""); // Reset class selection
+          teacher.classes = leftoverClasses;
+          setPeriodSelected("");
+          setStudentEmails([]);
+        })
+        .catch((error) => {
+          setLoading(false);
+          console.error(error);
+          alert("Error deleting class. Please try again.");
+        });
+    }
   };
 
   const handleSubmit = (event) => {
@@ -102,6 +153,7 @@ const ClassUpdate = ({ setPanelName, teacher }) => {
         alert("Class name already exists. Please choose another name.");
         return;
       }
+      setIsModified(false);
     }
 
     const payload = {
@@ -177,14 +229,13 @@ const ClassUpdate = ({ setPanelName, teacher }) => {
       <h2>{isNewClass ? "Create New Class" : "Update Class"}</h2>
       <form onSubmit={handleSubmit} style={{ marginTop: "20px" }}>
         {/* Class Name Dropdown */}
-        <div style={{ marginBottom: "15px" }}>
-          <label>Class Name</label>
+        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
           <select
             value={isNewClass ? "new" : className || ""}
             onChange={(e) => handleClassChange(e.target.value)}
             style={{
+              flex: 1,
               padding: "8px",
-              width: "100%",
               fontSize: "1rem",
               borderRadius: "4px",
               border: "1px solid #ccc",
@@ -198,6 +249,19 @@ const ClassUpdate = ({ setPanelName, teacher }) => {
             ))}
             <option value="new">Create New Class</option>
           </select>
+          <button
+            type="button"
+            onClick={handleDeleteClass}
+            style={{
+              background: "green",
+              color: "white",
+              border: "none",
+              padding: "8px 15px",
+              borderRadius: "4px",
+            }}
+          >
+            Delete Class
+          </button>
         </div>
 
         {/* Class Name Input */}
@@ -224,10 +288,9 @@ const ClassUpdate = ({ setPanelName, teacher }) => {
         {/* Class Period Dropdown */}
         {isNewClass && (
           <div style={{ marginBottom: "15px" }}>
-            <label>Class Period</label>
             <select
               value={periodSelected}
-              onChange={(e) => setPeriodSelected(e.target.value)}
+              onChange={(e) => setPeriodSelected(e.target.label)}
               required
               style={{
                 padding: "8px",
