@@ -241,7 +241,6 @@ const CreateOfficeReferralPanel = ({ data = [] }) => {
     data.teacher.currency -
     currency * (studentNames.length ? studentNames.length : 0);
 
-
   return (
     <>
       {toast.display === true && (
@@ -262,7 +261,6 @@ const CreateOfficeReferralPanel = ({ data = [] }) => {
             <div className="modal-header">
               <h3>{openModal.message}</h3>
             </div>
-            <div className="modal-body"></div>
             <div className="modal-buttons">
               <button
                 onClick={() => {

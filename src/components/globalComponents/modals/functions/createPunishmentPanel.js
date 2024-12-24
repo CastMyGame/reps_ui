@@ -6,7 +6,13 @@ import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { Autocomplete, Box, CircularProgress, FormControlLabel, FormGroup } from "@mui/material";
+import {
+  Autocomplete,
+  Box,
+  CircularProgress,
+  FormControlLabel,
+  FormGroup,
+} from "@mui/material";
 import Container from "@mui/material/Container";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
@@ -17,8 +23,6 @@ import Chip from "@mui/material/Chip";
 import KeyboardDoubleArrowUpIcon from "@mui/icons-material/KeyboardDoubleArrowUp";
 import KeyboardDoubleArrowDownIcon from "@mui/icons-material/KeyboardDoubleArrowDown";
 import Checkbox from "@mui/material/Checkbox";
-
-
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -51,7 +55,7 @@ const CreatePunishmentPanel = () => {
   const [teacherEmailSelected, setTeacherEmailSelected] = useState();
   const [infractionDescriptionSelected, setInfractionDescriptionSelected] =
     useState("");
-  const [data,setData] = useState([]);
+  const [data, setData] = useState([]);
   const [toast, setToast] = useState({ display: false, message: "" });
   const [studentNames, setStudentNames] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -67,7 +71,10 @@ const CreatePunishmentPanel = () => {
 
   const [currency, setCurrency] = useState(0);
 
-  const [isGuidance,setIsGuidance] = useState({isGuidanceBoolean:false,guidanceDescription:""});
+  const [isGuidance, setIsGuidance] = useState({
+    isGuidanceBoolean: false,
+    guidanceDescription: "",
+  });
 
   const defaultTheme = createTheme();
 
@@ -114,7 +121,6 @@ const CreatePunishmentPanel = () => {
     "Positive Behavior Shout Out!": "",
   };
 
-
   const getDescription = (selectedOption) => {
     return (
       descriptions[selectedOption] ||
@@ -125,7 +131,6 @@ const CreatePunishmentPanel = () => {
   const headers = {
     Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
   };
-
 
   useEffect(() => {
     const url = `${baseUrl}/student/v1/allStudents`; // Replace with your actual API endpoint
@@ -140,13 +145,12 @@ const CreatePunishmentPanel = () => {
       });
   }, []);
 
-
   useEffect(() => {
-    const url = `${baseUrl}/employees/v1/employees/email/${sessionStorage.getItem('email')}`; // Replace with your actual API endpoint
+    const url = `${baseUrl}/employees/v1/employees/email/${sessionStorage.getItem("email")}`; // Replace with your actual API endpoint
     axios
       .get(url, { headers }) // Pass the headers option with the JWT token
       .then(function (response) {
-        setData(response.data );
+        setData(response.data);
       })
       .catch(function (error) {
         console.error(error);
@@ -163,7 +167,7 @@ const CreatePunishmentPanel = () => {
     setInfractionPeriodSelected(null);
     setInfractionTypeSelected(null);
     setInfractionDescriptionSelected("");
-    setIsGuidance({isGuidanceBoolean:false,guidanceDescription:""})
+    setIsGuidance({ isGuidanceBoolean: false, guidanceDescription: "" });
   };
 
   //Mapping selected students pushing indivdual payloads to post
@@ -182,8 +186,7 @@ const CreatePunishmentPanel = () => {
         infractionName: infractionTypeSelected,
         infractionDescription: infractionDescriptionSelected,
         currency: currency,
-        guidanceDescription: isGuidance.guidanceDescription || ""
-
+        guidanceDescription: isGuidance.guidanceDescription || "",
       };
       payloadContent.push(studentPayload);
       return payloadContent;
@@ -240,7 +243,7 @@ const CreatePunishmentPanel = () => {
         }, 2000);
         setCurrency(0);
       } else {
-      setCurrency(enteredValue); // Update the state if it meets the validation criteria
+        setCurrency(enteredValue); // Update the state if it meets the validation criteria
       }
     } else {
       // Optionally, you can show an error message or handle the invalid input in some way
@@ -256,7 +259,8 @@ const CreatePunishmentPanel = () => {
     setToast({ display: false, message: "" });
   };
 
-  let difference = data.currency - currency * (studentNames.length ? studentNames.length : 0);
+  let difference =
+    data.currency - currency * (studentNames.length ? studentNames.length : 0);
 
   const handleGuidanceChange = (event) => {
     const { name, value } = event.target;
@@ -294,7 +298,6 @@ const CreatePunishmentPanel = () => {
             <div className="modal-header">
               <h3>{openModal.message}</h3>
             </div>
-            <div className="modal-body"></div>
             <div className="modal-buttons">
               <button
                 onClick={() => {
@@ -309,8 +312,7 @@ const CreatePunishmentPanel = () => {
                     !infractionPeriodSelected ||
                     !infractionTypeSelected ||
                     !infractionDescriptionSelected ||
-                    studentNames.length === 0 
-                    ||
+                    studentNames.length === 0 ||
                     difference < 0
                   }
                   type="submit"
@@ -498,7 +500,6 @@ const CreatePunishmentPanel = () => {
                   </div>
                 </div>
                 <div className="question-container-text-area">
-
                   <p style={{ fontSize: 24 }}>
                     {infractionTypeSelected === "Failure to Complete Work" ||
                     infractionTypeSelected === "Positive Behavior Shout Out!" ||
@@ -507,28 +508,30 @@ const CreatePunishmentPanel = () => {
                       : "Description of Behavior/Event. This will be sent directly to the student and guardian so be sure to provide accurate and objective facts as well as do NOT include the names of any students."}
                   </p>
                   <div>
-                  <div className="guidance-box">
-                  <FormGroup>
-                  <FormControlLabel
-  style={{ color: "black" }}
-  componentsProps={{ typography: { variant: 'h4' } }}
-  value="end"
-  labelPlacement="end"
-  control={
-    <Checkbox
-      color="primary"
-      checked={isGuidance.isGuidanceBoolean }
-      sx={{ "& .MuiSvgIcon-root": { fontSize: 28 } }}
-      onChange={handleGuidanceCheckboxChange}
-      name="isGuidanceBoolean"
-    />
-  }
-  label="Create Guidance Referral"
-/>
-      {isGuidance.isGuidanceBoolean && studentNames.length < 2 && <h4>Description goes here</h4>}
-    </FormGroup>
-
-                  </div>
+                    <div className="guidance-box">
+                      <FormGroup>
+                        <FormControlLabel
+                          style={{ color: "black" }}
+                          componentsProps={{ typography: { variant: "h4" } }}
+                          value="end"
+                          labelPlacement="end"
+                          control={
+                            <Checkbox
+                              color="primary"
+                              checked={isGuidance.isGuidanceBoolean}
+                              sx={{ "& .MuiSvgIcon-root": { fontSize: 28 } }}
+                              onChange={handleGuidanceCheckboxChange}
+                              name="isGuidanceBoolean"
+                            />
+                          }
+                          label="Create Guidance Referral"
+                        />
+                        {isGuidance.isGuidanceBoolean &&
+                          studentNames.length < 2 && (
+                            <h4>Description goes here</h4>
+                          )}
+                      </FormGroup>
+                    </div>
                     {infractionTypeSelected ===
                       "Positive Behavior Shout Out!" && (
                       <div className="points-container">
@@ -582,17 +585,15 @@ const CreatePunishmentPanel = () => {
                             students behavior below. Refrain from using any
                             other student’s name in this description unless they
                             were also involved in what caused this shout out.
-                            Remember you can not give away more currency than you have in your wallet
-                            and it does not replenish!
+                            Remember you can not give away more currency than
+                            you have in your wallet and it does not replenish!
                           </p>
                         </div>
                       </div>
                     )}
-                     
                   </div>
                 </div>
                 <div>
-              
                   <TextField
                     margin="normal"
                     required
@@ -648,18 +649,18 @@ const CreatePunishmentPanel = () => {
                     }}
                   />
                 </div>
-                {isGuidance.isGuidanceBoolean && studentNames.length < 2 &&(
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                id="guidanceDescription"
-                label="Brief Guidance Description"
-                name="guidanceDescription"
-                value={isGuidance.guidanceDescription}
-                onChange={handleGuidanceChange}
-              />
-            )}
+                {isGuidance.isGuidanceBoolean && studentNames.length < 2 && (
+                  <TextField
+                    margin="normal"
+                    required
+                    fullWidth
+                    id="guidanceDescription"
+                    label="Brief Guidance Description"
+                    name="guidanceDescription"
+                    value={isGuidance.guidanceDescription}
+                    onChange={handleGuidanceChange}
+                  />
+                )}
                 {/* <br/> */}
 
                 <div
@@ -697,8 +698,7 @@ const CreatePunishmentPanel = () => {
                           !infractionPeriodSelected ||
                           !infractionTypeSelected ||
                           !infractionDescriptionSelected ||
-                          studentNames.length === 0 
-                       
+                          studentNames.length === 0
                         }
                         onClick={() => {
                           setOpenModal({
@@ -720,8 +720,7 @@ const CreatePunishmentPanel = () => {
                           !infractionPeriodSelected ||
                           !infractionTypeSelected ||
                           !infractionDescriptionSelected ||
-                          studentNames.length === 0 
-                          ||
+                          studentNames.length === 0 ||
                           difference < 0
                         }
                         type="submit"
