@@ -796,7 +796,7 @@ table th tr {
   position: absolute;
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  width: 90%;
+  max-width: 75vh;
 }
 
 
@@ -804,7 +804,6 @@ table th tr {
 .modal-header {
   background-color: #25444C;
   padding: 10px;
-  border-radius: 8px 8px 0 0;
   text-align: center;
   color: white;
 }
@@ -819,7 +818,7 @@ table th tr {
 .modal-buttons {
   display: flex;
   justify-content: space-between;
-  margin-top: 20px;
+  margin: 2vh 3vw 2vh 3vw;
 }
 
 .modal-buttons-teacher-profile
