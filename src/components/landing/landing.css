@@ -74,6 +74,7 @@
     content: "" !important;
     /* transition: width 0.2s !important; */
     z-index: 999;
+    min-width: fit-content; /* Ensure width adjusts to content */
     
   }
 
@@ -83,6 +84,7 @@
     font-size: smaller;
     z-index: 999;
     color:white;
+    min-width: fit-content; /* Ensure width adjusts to content */
 
   }
 
@@ -90,6 +92,7 @@
     height: 100%;
     background-color: silver;
     z-index: 999;
+    min-width: fit-content; /* Ensure width adjusts to content */
     
   }
 
