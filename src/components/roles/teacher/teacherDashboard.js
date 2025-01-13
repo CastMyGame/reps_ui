@@ -8,6 +8,7 @@ import TeacherOverviewPanel from "src/components/roles/teacher/teacherOverview.j
 import DetentionWidget from "src/components/globalComponents/detentionWidget.js";
 import ISSWidget from "src/components/globalComponents/issWidget.js";
 import LevelThreePanel from "src/components/globalComponents/referrals/levelThreePanel.js";
+import ClassAnnouncement from "src/components/globalComponents/components/generic-components/classAnnouncement.js";
 import { ContactUsModal } from "../../../security/contactUsModal.js";
 import { get } from "../../../utils/api/api.js";
 import LoadingWheelPanel from "src/components/roles/student/blankPanelForTest.js";
@@ -81,9 +82,9 @@ const TeacherDashboard = () => {
   useEffect(() => {
     if (studentList.length > 0 && emailList.length > 0) {
       // Flatten the classRoster arrays into a single array of emails
-    const allEmails = emailList.flatMap((classItem) =>
-      classItem.classRoster.map((student) => student)
-    );
+      const allEmails = emailList.flatMap((classItem) =>
+        classItem.classRoster.map((student) => student)
+      );
       const filteredStudents = studentList.filter((student) =>
         allEmails.includes(student.studentEmail)
       );
@@ -103,6 +104,13 @@ const TeacherDashboard = () => {
             <ContactUsModal
               setContactUsDisplayModal={setModalType}
               contactUsDisplayModal={modalType}
+            />
+          )}
+          {modalType === "classAnnouncement" && (
+            <ClassAnnouncement
+              setContactUsDisplayModal={setModalType}
+              contactUsDisplayModal={modalType}
+              teacher={teacher}
             />
           )}
           {modalType === "spotter" && (

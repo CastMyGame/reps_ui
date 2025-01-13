@@ -102,9 +102,16 @@ export const NavigationLoggedIn = (props) => {
                 style={{
                   display:
                     props.isDropdownOpen === "student" ? "block" : "none",
+                  width: "auto",
                 }}
                 class="feature-menu-dropdown"
               >
+                <div
+                  onClick={() => props.setModalType("classAnnouncement")}
+                  className="item page-scroll"
+                >
+                  Class Announcement
+                </div>
                 <div
                   onClick={() => dropdownHandler("student")}
                   className="item page-scroll"
