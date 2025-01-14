@@ -64,11 +64,23 @@ const TeacherDashboard = () => {
     const fetchPunishmentData = async () => {
       try {
         const response = await get(`DTO/v1/TeacherOverviewData`);
-        setData(response);
-        setEmailList(response.teacher.classes);
-        setTeacher(response.teacher);
+        if (
+          !response.teacher.classes ||
+          response.teacher.classes.length === 0
+        ) {
+          // No classes, set empty data and emailList
+          setData(null);
+          setEmailList([]);
+          setTeacher(response.teacher);
+        } else {
+          // Normal case, set data
+          setData(response);
+          setEmailList(response.teacher.classes);
+          setTeacher(response.teacher);
+        }
       } catch (err) {
         console.error("Error happens here: ", err);
+        setData(null); // Ensure data is cleared on error
       }
     };
     if (panelName === "overview") {
@@ -138,7 +150,11 @@ const TeacherDashboard = () => {
         </div>
 
         <div className="header">
-          {data.length === 0 ? (
+          {data == null ? (
+            <div className="empty-state">
+              No classes available for this teacher.
+            </div>
+          ) : data.length === 0 ? (
             <LoadingWheelPanel />
           ) : (
             <div className="teacher-panel">
