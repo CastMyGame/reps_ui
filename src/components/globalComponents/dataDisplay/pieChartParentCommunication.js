@@ -11,15 +11,22 @@ export const PieChartParentCommunication = ({
   officeReferrals = [],
   writeUpResponse = [],
 }) => {
-  const numShoutout = extractDataByWeek(currentWeek, shoutOutsResponse);
-  const numOfficeReferral = extractDataByWeek(currentWeek, officeReferrals);
+  const numShoutout = extractDataByWeek(currentWeek, shoutOutsResponse || []);
+  const numOfficeReferral = extractDataByWeek(currentWeek, officeReferrals || []);
   const numBxConcern = findDataByWeekAndByPunishment(
     currentWeek,
     "Behavioral Concern",
-    data
+    data || []
   );
 
-  const teachReferrals = extractDataByWeek(currentWeek, writeUpResponse);
+  const teachReferrals = extractDataByWeek(currentWeek, writeUpResponse || []);
+
+  // Check if there's no data to display
+  const hasData =
+    numShoutout.length ||
+    numOfficeReferral.length ||
+    numBxConcern ||
+    teachReferrals.length;
 
   const option = {
     responsive: true,
@@ -86,7 +93,11 @@ export const PieChartParentCommunication = ({
 
   return (
     <div>
-      <ReactEcharts option={option} />
+      {hasData ? (
+        <ReactEcharts option={option} />
+      ) : (
+        <ReactEcharts option={[]} />
+      )}
     </div>
   );
 };
