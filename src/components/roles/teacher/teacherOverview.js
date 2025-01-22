@@ -105,26 +105,18 @@ const TeacherOverviewPanel = ({ setPanelName, data = {}, students = [] }) => {
 
       <div className="overview-row">
         <div className="card-overview-half">
-          {data ? (
             <IncidentsByStudentTable
-              writeUpResponse={data.writeUpResponse || []}
-              officeReferrals={data.officeReferrals || []}
+              writeUpResponse={data?.writeUpResponse || []}
+              officeReferrals={data?.officeReferrals || []}
               students={students}
             />
-          ) : (
-            <PlaceholderTable title="Incidents By Student" />
-          )}
         </div>
         <div className="card-overview-half">
-          {data ? (
             <RecentIncidents
-              punishmentResponse={data.punishmentResponse || []}
-              officeReferrals={data.officeReferrals || []}
+              punishmentResponse={data?.punishmentResponse || []}
+              officeReferrals={data?.officeReferrals || []}
               students={students}
             />
-          ) : (
-            <PlaceholderTable title="Recent Incidents" />
-          )}
         </div>
       </div>
 
