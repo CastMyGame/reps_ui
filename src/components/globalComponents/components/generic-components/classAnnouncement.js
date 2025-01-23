@@ -13,10 +13,10 @@ const ClassAnnouncementModal = ({
   const [teacherEmailSelected, setTeacherEmailSelected] = useState();
 
   useEffect(() => {
-    setTeacherEmailSelected(sessionStorage.getItem("email"));
+    const email = sessionStorage.getItem("email");
+    setTeacherEmailSelected(email);
   }, []);
 
-  // Function to handle modal submission
   const handleModalSubmit = (event) => {
     event.preventDefault();
 
@@ -99,37 +99,42 @@ const ClassAnnouncementModal = ({
                 padding: "5px",
               }}
             >
-              {teacher.classes.map((cls) => (
-                <label
-                  key={cls.className}
-                  style={{
-                    display: "flex", // Use flexbox for better control of alignment and spacing
-                    alignItems: "center", // Align items vertically in the center
-                    gap: "8px", // Adds space between the checkbox and text
-                    marginBottom: "8px", // Optional: add spacing between rows
-                    marginTop: "12px",
-                    fontSize: "1.5rem",
-                    color: "black",
-                  }}
-                >
-                  <input
-                    type="checkbox"
-                    value={cls.className}
-                    checked={selectedClasses.includes(cls.className)}
-                    style={{ marginLeft: "8px" }}
-                    onChange={(e) => {
-                      const selectedValue = e.target.value;
-                      setSelectedClasses((prev) =>
-                        e.target.checked
-                          ? [...prev, selectedValue]
-                          : prev.filter((item) => item !== selectedValue)
-                      );
+              {teacher?.classes?.length > 0 ? (
+                teacher.classes.map((cls) => (
+                  <label
+                    key={cls.className}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "8px",
+                      marginBottom: "8px",
+                      marginTop: "12px",
+                      fontSize: "1.5rem",
+                      color: "black",
                     }}
-                    style={{ marginRight: "8px" }}
-                  />
-                  {cls.className}
-                </label>
-              ))}
+                  >
+                    <input
+                      type="checkbox"
+                      value={cls.className}
+                      checked={selectedClasses.includes(cls.className)}
+                      onChange={(e) => {
+                        const selectedValue = e.target.value;
+                        setSelectedClasses((prev) =>
+                          e.target.checked
+                            ? [...prev, selectedValue]
+                            : prev.filter((item) => item !== selectedValue)
+                        );
+                      }}
+                      style={{ marginRight: "8px" }}
+                    />
+                    {cls.className}
+                  </label>
+                ))
+              ) : (
+                <p style={{ color: "red", fontSize: "1rem" }}>
+                  No classes available to select.
+                </p>
+              )}
             </div>
           </div>
 

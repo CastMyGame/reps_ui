@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Button,
   FormControl,
@@ -37,6 +37,20 @@ export const ContactUsModal = ({
   const [message, setMessage] = useState("");
   const [warningToast, setWarningToast] = useState(false);
   const [emailValidationMessage, setEmailValidationMessage] = useState("");
+
+  const modalRef = useRef(null);
+
+  // Close modal if click outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (modalRef.current && !modalRef.current.contains(event.target)) {
+        setContactUsDisplayModal(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [setContactUsDisplayModal]);
 
   // Reset fields when modal closes
   useEffect(() => {
@@ -140,6 +154,7 @@ export const ContactUsModal = ({
       </Snackbar>
 
       <div
+        ref={modalRef}
         className="pop-modal"
         style={{
           zIndex: 2,
