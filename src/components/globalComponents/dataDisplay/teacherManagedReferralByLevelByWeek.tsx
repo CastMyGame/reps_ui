@@ -7,9 +7,7 @@ import {
 import { useState } from "react";
 import {
   AdminOverviewDto,
-  StudentPunishment,
   TeacherDto,
-  TeacherReferral,
 } from "src/types/responses";
 
 const TeacherManagedReferralByLevelByWeek: React.FC<AdminOverviewDto> = ({
@@ -46,11 +44,16 @@ const TeacherManagedReferralByLevelByWeek: React.FC<AdminOverviewDto> = ({
     return genData;
   };
 
+  // Validate and sanitize punishmentResponse
+  const safePunishmentResponse = Array.isArray(punishmentResponse)
+    ? punishmentResponse
+    : [];
+
   // Generate series data for each level
-  const level1Data = filterByLevel(punishmentResponse as TeacherDto[], "1");
-  const level2Data = filterByLevel(punishmentResponse as TeacherDto[], "2");
-  const level3Data = filterByLevel(punishmentResponse as TeacherDto[], "3");
-  const level4Data = filterByLevel(punishmentResponse as TeacherDto[], "4");
+  const level1Data = filterByLevel(safePunishmentResponse as TeacherDto[], "1");
+  const level2Data = filterByLevel(safePunishmentResponse as TeacherDto[], "2");
+  const level3Data = filterByLevel(safePunishmentResponse as TeacherDto[], "3");
+  const level4Data = filterByLevel(safePunishmentResponse as TeacherDto[], "4");
 
   const option = {
     responsive: true,

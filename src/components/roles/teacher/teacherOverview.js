@@ -90,9 +90,9 @@ const TeacherOverviewPanel = ({ setPanelName, data = {}, students = [] }) => {
         </div>
 
         <div className="card-overview-half">
-            <TeacherInfractionOverPeriodBarChart
-              data={data?.punishmentResponse || []}
-            />
+          <TeacherInfractionOverPeriodBarChart
+            data={data?.punishmentResponse || []}
+          />
         </div>
       </div>
 
@@ -105,18 +105,18 @@ const TeacherOverviewPanel = ({ setPanelName, data = {}, students = [] }) => {
 
       <div className="overview-row">
         <div className="card-overview-half">
-            <IncidentsByStudentTable
-              writeUpResponse={data?.writeUpResponse || []}
-              officeReferrals={data?.officeReferrals || []}
-              students={students}
-            />
+          <IncidentsByStudentTable
+            writeUpResponse={data?.writeUpResponse || []}
+            officeReferrals={data?.officeReferrals || []}
+            students={students}
+          />
         </div>
         <div className="card-overview-half">
-            <RecentIncidents
-              punishmentResponse={data?.punishmentResponse || []}
-              officeReferrals={data?.officeReferrals || []}
-              students={students}
-            />
+          <RecentIncidents
+            punishmentResponse={data?.punishmentResponse || []}
+            officeReferrals={data?.officeReferrals || []}
+            students={students}
+          />
         </div>
       </div>
 
@@ -129,30 +129,18 @@ const TeacherOverviewPanel = ({ setPanelName, data = {}, students = [] }) => {
 
       <div className="overview-row">
         <div className="card-overview-third">
-          {data ? (
-            <TotalReferralByWeek
-              punishmentResponse={data.punishmentResponse || []}
-              officeReferrals={data.officeReferrals || []}
-            />
-          ) : (
-            <PlaceholderChart title="Referrals By Week" />
-          )}
+          <TotalReferralByWeek
+            punishmentResponse={data?.punishmentResponse || []}
+            officeReferrals={data?.officeReferrals || []}
+          />
         </div>
         <div className="card-overview-third">
-          {data ? (
-            <TeacherManagedReferralByLevelByWeek
-              punishmentResponse={data.writeUpResponse || []}
-            />
-          ) : (
-            <PlaceholderChart title="Referrals By Level" />
-          )}
+          <TeacherManagedReferralByLevelByWeek
+            punishmentResponse={data?.writeUpResponse || []}
+          />
         </div>
         <div className="card-overview-third">
-          {data ? (
-            <ReferralByBehavior data={data.punishmentResponse || []} />
-          ) : (
-            <PlaceholderChart title="Referrals By Behavior" />
-          )}
+          <ReferralByBehavior data={data?.punishmentResponse || []} />
         </div>
       </div>
     </>
