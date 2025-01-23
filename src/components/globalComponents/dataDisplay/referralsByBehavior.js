@@ -13,37 +13,40 @@ export default function ReferralByBehavior({ data = [] }) {
 
   const currentWeek = getCurrentWeekOfYear();
 
-  // Recalculate X-axis (date range) and series data every time `rangeWeeks` changes
+  // Ensure `data` is valid and default to an empty array if not
+  const safeData = Array.isArray(data) ? data : [];
+
+  // Recalculate X-axis (date range) and series data every time `rangeWeeks` or `data` changes
   useEffect(() => {
-    const displayDate = GenerateChartData(currentWeek, rangeWeeks, data);
+    const displayDate = GenerateChartData(currentWeek, rangeWeeks, safeData);
 
     // X-axis: week date ranges
     const xAxisData = displayDate.map((obj) => Object.keys(obj)[0]); // Extract the week date ranges
     setXAxisData(xAxisData);
 
     // Y-axis: Generate data for each series based on the same rangeWeeks
-    const tardyData = GenerateBxByWeek("Tardy", rangeWeeks, data);
-    const horseplayData = GenerateBxByWeek("Horseplay", rangeWeeks, data);
-    const dressCodeData = GenerateBxByWeek("Dress Code", rangeWeeks, data);
+    const tardyData = GenerateBxByWeek("Tardy", rangeWeeks, safeData);
+    const horseplayData = GenerateBxByWeek("Horseplay", rangeWeeks, safeData);
+    const dressCodeData = GenerateBxByWeek("Dress Code", rangeWeeks, safeData);
     const unauthorizedDeviceData = GenerateBxByWeek(
       "Unauthorized Device/Cell Phone",
       rangeWeeks,
-      data
+      safeData
     );
     const disruptiveBehaviorData = GenerateBxByWeek(
       "Disruptive Behavior",
       rangeWeeks,
-      data
+      safeData
     );
     const positiveData = GenerateBxByWeek(
       "Positive Shout Out!",
       rangeWeeks,
-      data
+      safeData
     );
     const behavioralConcernData = GenerateBxByWeek(
       "Behavioral Concern",
       rangeWeeks,
-      data
+      safeData
     );
 
     // Set the series data
@@ -112,7 +115,7 @@ export default function ReferralByBehavior({ data = [] }) {
         },
       },
     ]);
-  }, [rangeWeeks, data, currentWeek]);
+  }, [rangeWeeks, safeData, currentWeek]);
 
   const option = {
     tooltip: {

@@ -10,64 +10,72 @@ export const TotalReferralByWeek = ({
   punishmentResponse = [],
   officeReferrals = [],
 }) => {
-  const [rangeWeeks, setRangeWeek] = useState(10);
+  const [rangeWeeks, setRangeWeeks] = useState(10);
   const [xAxisData, setXAxisData] = useState([]);
   const [seriesData, setSeriesData] = useState([]);
 
   const currentWeek = getCurrentWeekOfYear();
 
   useEffect(() => {
+    // Validate and sanitize input data
+    const safePunishmentResponse = Array.isArray(punishmentResponse)
+      ? punishmentResponse
+      : [];
+    const safeOfficeReferrals = Array.isArray(officeReferrals)
+      ? officeReferrals
+      : [];
+
     const displayDate = GenerateChartData(
       currentWeek,
       rangeWeeks,
-      punishmentResponse
+      safePunishmentResponse
     );
 
-    const tardyData = GenerateBxByWeek("Tardy", rangeWeeks, punishmentResponse);
+    const tardyData = GenerateBxByWeek("Tardy", rangeWeeks, safePunishmentResponse);
     const horseplayData = GenerateBxByWeek(
       "Horseplay",
       rangeWeeks,
-      punishmentResponse
+      safePunishmentResponse
     );
     const dressCodeData = GenerateBxByWeek(
       "Dress Code",
       rangeWeeks,
-      punishmentResponse
+      safePunishmentResponse
     );
     const unauthorizedDeviceData = GenerateBxByWeek(
       "Unauthorized Device/Cell Phone",
       rangeWeeks,
-      punishmentResponse
+      safePunishmentResponse
     );
     const disruptiveBehaviorData = GenerateBxByWeek(
       "Disruptive Behavior",
       rangeWeeks,
-      punishmentResponse
+      safePunishmentResponse
     );
     const positiveData = GenerateBxByWeek(
       "Positive Shout Out!",
       rangeWeeks,
-      punishmentResponse
+      safePunishmentResponse
     );
     const behavioralConcernData = GenerateBxByWeek(
       "Behavioral Concern",
       rangeWeeks,
-      punishmentResponse
+      safePunishmentResponse
     );
     const officeReferralData = GenerateBxByWeek(
       "Office Referral",
       rangeWeeks,
-      officeReferrals
+      safeOfficeReferrals
     );
 
     // Calculate Teacher Managed Referrals as the sum of selected infractions
     const teacherManagedReferrals = tardyData.map((_, index) => {
       return (
-        tardyData[index] +
-        horseplayData[index] +
-        dressCodeData[index] +
-        unauthorizedDeviceData[index] +
-        disruptiveBehaviorData[index]
+        (tardyData[index] || 0) +
+        (horseplayData[index] || 0) +
+        (dressCodeData[index] || 0) +
+        (unauthorizedDeviceData[index] || 0) +
+        (disruptiveBehaviorData[index] || 0)
       );
     });
 
@@ -83,8 +91,8 @@ export const TotalReferralByWeek = ({
         stack: "Total",
         data: positiveData,
         itemStyle: {
-          color: '#008000'
-        }
+          color: "#008000",
+        },
       },
       {
         name: "Behavioral Concern",
@@ -92,8 +100,8 @@ export const TotalReferralByWeek = ({
         stack: "Total",
         data: behavioralConcernData,
         itemStyle: {
-          color: '#FFFF00'
-        }
+          color: "#FFFF00",
+        },
       },
       {
         name: "Teacher Managed",
@@ -101,8 +109,8 @@ export const TotalReferralByWeek = ({
         stack: "Total",
         data: teacherManagedReferrals,
         itemStyle: {
-          color: '#ffA500'
-        }
+          color: "#ffA500",
+        },
       },
       {
         name: "Office Managed",
@@ -110,8 +118,8 @@ export const TotalReferralByWeek = ({
         stack: "Total",
         data: officeReferralData,
         itemStyle: {
-          color: '#ff0000'
-        }
+          color: "#ff0000",
+        },
       },
     ]);
   }, [rangeWeeks, punishmentResponse, officeReferrals, currentWeek]);
@@ -163,7 +171,7 @@ export const TotalReferralByWeek = ({
         }}
       >
         <button
-          onClick={() => setRangeWeek((prev) => Math.max(prev - 1, 1))}
+          onClick={() => setRangeWeeks((prev) => Math.max(prev - 1, 1))}
           style={{
             backgroundColor: "#5D949D",
             color: "white",
@@ -176,7 +184,7 @@ export const TotalReferralByWeek = ({
           Weeks -1
         </button>
         <button
-          onClick={() => setRangeWeek((prev) => prev + 1)}
+          onClick={() => setRangeWeeks((prev) => prev + 1)}
           style={{
             backgroundColor: "#5D949D",
             color: "white",

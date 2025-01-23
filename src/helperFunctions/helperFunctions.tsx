@@ -40,12 +40,28 @@ export const filterPunishementsByLoggedInUser = (data: TeacherReferral[]) => {
 };
 
 //This Method Returns a subset of punishments from a list by the week of year the punishment was created
-export const extractDataByWeek = (week: number, data: TeacherDto[]) => {
-  const thisWeek = data.filter((punish) => {
-    const date = new Date(punish.timeCreated);
-    const weekNumber = getWeekNumber(date);
+export const extractDataByWeek = (week: number, data: TeacherDto[]): TeacherDto[] => {
+  // Ensure data is valid
+  if (!Array.isArray(data)) {
+    console.error("Invalid data provided to extractDataByWeek:", data);
+    return [];
+  }
 
-    return weekNumber === week; // Return true if date matches the week
+  // Filter data for the specified week
+  const thisWeek = data.filter((punish) => {
+    if (!punish?.timeCreated) {
+      console.warn("Skipping entry with missing or invalid timeCreated:", punish);
+      return false;
+    }
+
+    const date = new Date(punish.timeCreated);
+    if (isNaN(date.getTime())) {
+      console.warn("Skipping entry with invalid date:", punish);
+      return false;
+    }
+
+    const weekNumber = getWeekNumber(date); // Ensure getWeekNumber is implemented correctly
+    return weekNumber === week; // Return true if the week matches
   });
 
   return thisWeek; // Return the filtered array
@@ -91,18 +107,23 @@ export const findDataByWeekAndByPunishment = (
   week: number,
   behavioral: string,
   data: TeacherDto[]
-) => {
+): TeacherDto[] => {
+  // Ensure data is valid
+  if (!Array.isArray(data)) {
+    console.error("Invalid data provided to findDataByWeekAndByPunishment:", data);
+    return [];
+  }
+
   // Filter data based on the behavioral infraction name
   const thisWeek = data
     .filter((punish) => punish.infractionName === behavioral)
     .filter((punish) => {
       const date = new Date(punish.timeCreated);
-      const weekNumber = getWeekNumber(date); // Assuming getWeekNumber is defined elsewhere in your code
-
-      return weekNumber === week; // Return true if date matches the week
+      const weekNumber = getWeekNumber(date); // Ensure getWeekNumber is defined correctly
+      return weekNumber === week; // Return true if the date matches the week
     });
 
-  return thisWeek.length; // Return the filtered array
+  return thisWeek; // Return the filtered array instead of its length
 };
 
 export const getIncidentByBehavior = (

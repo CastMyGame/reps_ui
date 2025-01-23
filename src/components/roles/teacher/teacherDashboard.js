@@ -151,8 +151,41 @@ const TeacherDashboard = () => {
 
         <div className="header">
           {data == null ? (
-            <div className="empty-state">
-              No classes available for this teacher.
+            <div className="teacher-panel">
+              {panelName === "overview" && (
+                <TeacherOverviewPanel
+                  setPanelName={setPanelName}
+                  data={null}
+                  students={null}
+                />
+              )}
+              {panelName === "student" && (
+                <TeacherStudentPanel setPanelName={setPanelName} data={null} />
+              )}
+              {panelName === "punishment" && (
+                <GlobalPunishmentPanel
+                  filter={punishmentFilter}
+                  roleType={"teacher"}
+                />
+              )}
+              {panelName === "createPunishment" && (
+                <CreatePunishmentPanel
+                  setPanelName={setPanelName}
+                  data={null}
+                />
+              )}
+              {panelName === "createOfficeReferral" && (
+                <CreateOfficeReferralPanel
+                  setPanelName={setPanelName}
+                  data={null}
+                />
+              )}
+              {panelName === "ftc" && <TeacherFTCPanel />}
+              {panelName === "levelThree" && <LevelThreePanel />}
+              {panelName === "spendPoints" && <SpendPage data={null} />}
+              {panelName === "classUpdate" && (
+                <ClassUpdate setPanelName={setPanelName} teacher={null} />
+              )}
             </div>
           ) : data.length === 0 ? (
             <LoadingWheelPanel />
