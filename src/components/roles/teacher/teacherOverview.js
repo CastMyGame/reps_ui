@@ -147,34 +147,4 @@ const TeacherOverviewPanel = ({ setPanelName, data = {}, students = [] }) => {
   );
 };
 
-// Placeholder components for missing data
-const PlaceholderChart = ({ title }) => (
-  <Card variant="outlined" style={placeholderStyle}>
-    <Typography color="textSecondary">{title}</Typography>
-    <div style={{ height: 200, backgroundColor: "#f0f0f0" }} />
-  </Card>
-);
-
-const PlaceholderTable = ({ title }) => (
-  <Card variant="outlined" style={placeholderStyle}>
-    <Typography color="textSecondary">{title}</Typography>
-    <Typography variant="body2" style={{ padding: 20 }}>
-      No data available.
-    </Typography>
-  </Card>
-);
-
-// Styles
-const titleStyle = {
-  flexGrow: 1,
-  outline: "1px solid white",
-  padding: "5px",
-  fontSize: 36,
-};
-
-const placeholderStyle = {
-  padding: "10px",
-  textAlign: "center",
-};
-
 export default TeacherOverviewPanel;
