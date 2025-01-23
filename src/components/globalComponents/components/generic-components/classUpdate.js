@@ -242,7 +242,9 @@ const ClassUpdate = ({ setPanelName, teacher }) => {
             }}
           >
             <option value="">Select a class</option>
-            {teacher.classes.map((cls) => (
+            {teacher.classes
+            .filter((cls) => cls.className.trim() !== "")
+            .map((cls) => (
               <option key={cls.className} value={cls.className}>
                 {cls.className}
               </option>

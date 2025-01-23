@@ -255,178 +255,198 @@ const TeacherStudentPanel = ({ setPanelName, data = [] }) => {
     { headerName: "Office Managed Referrals", field: "officeManagedReferrals" },
   ];
 
-
   return (
     <>
-      {/* Modal for No Punishment Data */}
-      {studentDisplay && studentData && studentData.length === 0 && (
-        <div
-          className="modal-overlay"
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            position: "fixed",
-            top: 300,
-            left: 0,
-            width: "100%",
-          }}
-        >
-          <div
-            className="modal-content"
-            style={{
-              width: "80%",
-              backgroundColor: "white",
-              padding: "20px",
-              borderRadius: "8px",
-              boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-            }}
-          >
-            <div className="modal-header">
-              <h1>Student has No punishments</h1>
-            </div>
-            <div className="modal-buttons" style={{ padding: "10px" }}>
-              <button onClick={() => setStudentDisplay(false)}>Cancel</button>
-              <button
-                onClick={() => generatePDF(studentData)}
-                style={{ backgroundColor: "#CF9FFF" }}
-              >
-                Print
-              </button>
-            </div>
-          </div>
+      {/* Display a message if no classes are created */}
+      {data.teacher.classes.length === 1 && data.teacher.classes[0].className === "" ? (
+        <div style={{ textAlign: "center", marginTop: "50px" }}>
+          <h2>No classes have been created yet.</h2>
+          <p>Please create a class to view and manage students.</p>
         </div>
-      )}
-
-      {/* Modal for Student Data Display */}
-      {studentDisplay && studentData && studentData.length > 0 && (
-        <div
-          className="modal-overlay"
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: "100%",
-          }}
-        >
-          <div
-            className="modal-content"
-            style={{
-              maxHeight: "80rem",
-              width: "80%",
-              backgroundColor: "#25444C",
-              padding: "20px",
-              borderRadius: "8px",
-              boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-              overflowY: "hidden",
-            }}
-          >
+      ) : (
+        <>
+          {/* Modal for No Punishment Data */}
+          {studentDisplay && studentData && studentData.length === 0 && (
             <div
-              className="modal-header"
-              style={{ display: "flex", flexDirection: "row" }}
+              className="modal-overlay"
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                position: "fixed",
+                top: 300,
+                left: 0,
+                width: "100%",
+              }}
             >
-              <div className="box-left">
-                <AccountBoxIcon style={{ fontSize: "100px" }} />
-                <h4>
-                  {studentData[0].firstName} {studentData[0].lastName}
-                </h4>
-                <div className="details-box">
-                  <p>Email: {studentData[0].studentEmail}</p>
-                  <p>Phone: {studentData[0].studentPhoneNumber}</p>
-                  <p>Grade: {studentData[0].grade}</p>
-                  <p>Address: {studentData[0].address}</p>
+              <div
+                className="modal-content"
+                style={{
+                  width: "80%",
+                  backgroundColor: "white",
+                  padding: "20px",
+                  borderRadius: "8px",
+                  boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                }}
+              >
+                <div className="modal-header">
+                  <h1>Student has No punishments</h1>
+                </div>
+                <div className="modal-buttons" style={{ padding: "10px" }}>
+                  <button onClick={() => setStudentDisplay(false)}>
+                    Cancel
+                  </button>
+                  <button
+                    onClick={() => generatePDF(studentData)}
+                    style={{ backgroundColor: "#CF9FFF" }}
+                  >
+                    Print
+                  </button>
                 </div>
               </div>
+            </div>
+          )}
+
+          {/* Modal for Student Data Display */}
+          {studentDisplay && studentData && studentData.length > 0 && (
+            <div
+              className="modal-overlay"
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                position: "fixed",
+                top: 0,
+                left: 0,
+                width: "100%",
+                height: "100%",
+              }}
+            >
               <div
-                className="box-right"
-                style={{ marginLeft: "auto", color: "white" }}
+                className="modal-content"
+                style={{
+                  maxHeight: "80rem",
+                  width: "80%",
+                  backgroundColor: "#25444C",
+                  padding: "20px",
+                  borderRadius: "8px",
+                  boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                  overflowY: "hidden",
+                }}
               >
-                <IncidentByTypePieChart data={studentData} />
+                <div
+                  className="modal-header"
+                  style={{ display: "flex", flexDirection: "row" }}
+                >
+                  <div className="box-left">
+                    <AccountBoxIcon style={{ fontSize: "100px" }} />
+                    <h4>
+                      {studentData[0].firstName} {studentData[0].lastName}
+                    </h4>
+                    <div className="details-box">
+                      <p>Email: {studentData[0].studentEmail}</p>
+                      <p>Phone: {studentData[0].studentPhoneNumber}</p>
+                      <p>Grade: {studentData[0].grade}</p>
+                      <p>Address: {studentData[0].address}</p>
+                    </div>
+                  </div>
+                  <div
+                    className="box-right"
+                    style={{ marginLeft: "auto", color: "white" }}
+                  >
+                    <IncidentByTypePieChart data={studentData} />
+                  </div>
+                </div>
+                <div className="modal-body-student" style={{ height: "320px" }}>
+                  <TableContainer
+                    style={{ height: "300px", backgroundColor: "white" }}
+                  >
+                    <Table stickyHeader>
+                      <TableHead>
+                        <TableRow>
+                          <TableCell>Status</TableCell>
+                          <TableCell>Description</TableCell>
+                          <TableCell>Date</TableCell>
+                          <TableCell>Infraction</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {studentData.map((student, index) => (
+                          <TableRow
+                            key={index}
+                            style={{
+                              background:
+                                index % 2 === 0 ? "lightgrey" : "white",
+                            }}
+                          >
+                            <TableCell>{student.status}</TableCell>
+                            <TableCell>
+                              {student.infractionDescription}
+                            </TableCell>
+                            <TableCell>{student.timeCreated}</TableCell>
+                            <TableCell>{student.infractionName}</TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                </div>
+                <div className="modal-buttons" style={{ padding: "10px" }}>
+                  <button onClick={() => setStudentDisplay(false)}>
+                    Cancel
+                  </button>
+                  <button onClick={addSpotter}>Spot this Student</button>
+                  <button
+                    onClick={() => generatePDF(studentData)}
+                    style={{ backgroundColor: "#CF9FFF" }}
+                  >
+                    Print
+                  </button>
+                </div>
               </div>
             </div>
-            <div className="modal-body-student" style={{ height: "320px" }}>
-              <TableContainer
-                style={{ height: "300px", backgroundColor: "white" }}
-              >
-                <Table stickyHeader>
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>Status</TableCell>
-                      <TableCell>Description</TableCell>
-                      <TableCell>Date</TableCell>
-                      <TableCell>Infraction</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {studentData.map((student, index) => (
-                      <TableRow
-                        key={index}
-                        style={{
-                          background: index % 2 === 0 ? "lightgrey" : "white",
-                        }}
-                      >
-                        <TableCell>{student.status}</TableCell>
-                        <TableCell>{student.infractionDescription}</TableCell>
-                        <TableCell>{student.timeCreated}</TableCell>
-                        <TableCell>{student.infractionName}</TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </div>
-            <div className="modal-buttons" style={{ padding: "10px" }}>
-              <button onClick={() => setStudentDisplay(false)}>Cancel</button>
-              <button onClick={addSpotter}>Spot this Student</button>
-              <button
-                onClick={() => generatePDF(studentData)}
-                style={{ backgroundColor: "#CF9FFF" }}
-              >
-                Print
-              </button>
-            </div>
+          )}
+
+          <div>
+            <label htmlFor="class-select" style={{ marginRight: "8px" }}>
+              Select Class:
+            </label>
+            <select
+              id="class-select"
+              value={selectedClass}
+              onChange={(e) => setSelectedClass(e.target.value)}
+              style={{
+                padding: "8px",
+                fontSize: "1rem",
+                borderRadius: "4px",
+                border: "1px solid #ccc",
+              }}
+            >
+              <option value="">-- Select a Class --</option>
+              {data.teacher.classes
+                .filter(
+                  (classEntry, index) => classEntry.className.trim() !== ""
+                )
+                .map((classEntry, index) => (
+                  <option key={index} value={classEntry.className}>
+                    {classEntry.className}
+                  </option>
+                ))}
+            </select>
+
+            {selectedClass && (
+              <div style={{ marginTop: "20px" }}>
+                <h3>{selectedClass}</h3>
+                <div className="ag-theme-alpine" style={{ width: "100%" }}>
+                  <AgGridReact
+                    rowData={filteredStudentData}
+                    columnDefs={columnDefs}
+                    domLayout="autoHeight"
+                  />
+                </div>
+              </div>
+            )}
           </div>
-        </div>
+        </>
       )}
-
-      <div>
-        <label htmlFor="class-select" style={{ marginRight: "8px" }}>
-          Select Class:
-        </label>
-        <select
-          id="class-select"
-          value={selectedClass}
-          onChange={(e) => setSelectedClass(e.target.value)}
-          style={{
-            padding: "8px",
-            fontSize: "1rem",
-            borderRadius: "4px",
-            border: "1px solid #ccc",
-          }}
-        >
-          <option value="">-- Select a Class --</option>
-          {data.teacher.classes.map((classEntry, index) => (
-            <option key={index} value={classEntry.className}>
-              {classEntry.className}
-            </option>
-          ))}
-        </select>
-
-        {selectedClass && (
-          <div style={{ marginTop: "20px" }}>
-            <h3>{selectedClass}</h3>
-            <div className="ag-theme-alpine" style={{ width: "100%" }}>
-              <AgGridReact
-                rowData={filteredStudentData}
-                columnDefs={columnDefs}
-                domLayout="autoHeight"
-              />
-            </div>
-          </div>
-        )}
-      </div>
     </>
   );
 };
