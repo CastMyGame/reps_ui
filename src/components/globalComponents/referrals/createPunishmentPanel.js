@@ -1,5 +1,4 @@
-import React from "react";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { baseUrl } from "../../../utils/jsonData";
 import Button from "@mui/material/Button";
@@ -145,24 +144,25 @@ const CreatePunishmentPanel = ({ setPanelName, data = [] }) => {
     axios
       .get(url, { headers }) // Pass the headers option with the JWT token
       .then(function (response) {
-        setListOfStudents(response.data);
+        setListOfStudents(response.data || []);
       })
       .catch(function (error) {
         console.error(error);
+        setListOfStudents([])
       });
   }, []);
 
-  const selectOptions = listOfStudents.map((student) => ({
+  const selectOptions = (listOfStudents || []).map((student) => ({
     value: student.studentEmail, // Use a unique value for each option
     label: `${student.firstName} ${student.lastName} - ${student.studentEmail}`, // Display student's full name as the label
   }));
 
   const getPhoneNumber = (email) => {
     if (email != null) {
-      const result = listOfStudents.filter(
+      const result = (listOfStudents || []).filter(
         (student) => (student.studentEmail = email)
       );
-      return result[0].parentPhoneNumber;
+      return result[0]?.parentPhoneNumber || "";
     } else {
       return "";
     }
@@ -185,12 +185,12 @@ const CreatePunishmentPanel = ({ setPanelName, data = [] }) => {
     const payloadContent = [];
     studentNames.map((student) => {
       const studentPayload = {
-        studentEmail: student.value,
-        teacherEmail: teacherEmailSelected,
-        infractionPeriod: infractionPeriodSelected,
-        infractionName: infractionTypeSelected,
-        infractionDescription: infractionDescriptionSelected,
-        currency: currency,
+        studentEmail: student.value || "",
+        teacherEmail: teacherEmailSelected || "",
+        infractionPeriod: infractionPeriodSelected || "",
+        infractionName: infractionTypeSelected || "",
+        infractionDescription: infractionDescriptionSelected || "",
+        currency: currency || "",
         guidanceDescription: isGuidance.guidanceDescription || "",
         phoneLogDescription: isPhoneLog.phoneLogDescription || "",
       };
@@ -291,9 +291,7 @@ const CreatePunishmentPanel = ({ setPanelName, data = [] }) => {
     setToast({ display: false, message: "" });
   };
 
-  let difference =
-    data.teacher.currency -
-    currency * (studentNames.length ? studentNames.length : 0);
+  const difference = (data?.teacher.currency || 0) - currency * (studentNames.length || 0);
 
   const handleGuidanceChange = (event) => {
     const { name, value } = event.target;

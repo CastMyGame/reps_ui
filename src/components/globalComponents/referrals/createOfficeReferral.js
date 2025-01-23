@@ -5,13 +5,7 @@ import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import {
-  Autocomplete,
-  Box,
-  CircularProgress,
-  FormControlLabel,
-  FormGroup,
-} from "@mui/material";
+import { Autocomplete, Box, CircularProgress } from "@mui/material";
 import Container from "@mui/material/Container";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
@@ -19,9 +13,6 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import Chip from "@mui/material/Chip";
-import KeyboardDoubleArrowUpIcon from "@mui/icons-material/KeyboardDoubleArrowUp";
-import KeyboardDoubleArrowDownIcon from "@mui/icons-material/KeyboardDoubleArrowDown";
-import Checkbox from "@mui/material/Checkbox";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -127,17 +118,29 @@ const CreateOfficeReferralPanel = ({ data = [] }) => {
     axios
       .get(url, { headers }) // Pass the headers option with the JWT token
       .then(function (response) {
-        setListOfStudents(response.data);
+        setListOfStudents(response.data || []);
       })
       .catch(function (error) {
         console.error(error);
+        setListOfStudents([]);
       });
   }, []);
 
-  const selectOptions = listOfStudents.map((student) => ({
+  const selectOptions = (listOfStudents || []).map((student) => ({
     value: student.studentEmail, // Use a unique value for each option
     label: `${student.firstName} ${student.lastName} - ${student.studentEmail}`, // Display student's full name as the label
   }));
+
+  const getPhoneNumber = (email) => {
+    if (email != null) {
+      const result = (listOfStudents || []).filter(
+        (student) => (student.studentEmail = email)
+      );
+      return result[0]?.parentPhoneNumber || "";
+    } else {
+      return "";
+    }
+  };
 
   const resetForm = () => {
     setStudentNames([]);
@@ -154,17 +157,17 @@ const CreateOfficeReferralPanel = ({ data = [] }) => {
     const payloadContent = [];
     studentNames.map((student) => {
       const referralCode = {
-        codeKey: infractionTypeSelected.split("-")[0],
-        codeName: infractionTypeSelected.split("-")[1],
+        codeKey: infractionTypeSelected.split("-")[0] || "",
+        codeName: infractionTypeSelected.split("-")[1] || "",
       };
 
       const studentPayload = {
-        studentEmail: student.value,
-        teacherEmail: teacherEmailSelected,
-        classPeriod: infractionPeriodSelected,
-        referralCode: referralCode,
-        referralDescription: [infractionDescriptionSelected],
-        currency: currency,
+        studentEmail: student.value || "",
+        teacherEmail: teacherEmailSelected || "",
+        classPeriod: infractionPeriodSelected || "",
+        referralCode: referralCode || "",
+        referralDescription: [infractionDescriptionSelected] || [],
+        currency: currency || "",
       };
       payloadContent.push(studentPayload);
       return payloadContent;
@@ -238,7 +241,7 @@ const CreateOfficeReferralPanel = ({ data = [] }) => {
   };
 
   let difference =
-    data.teacher.currency -
+    (data?.teacher.currency || 0) -
     currency * (studentNames.length ? studentNames.length : 0);
 
   return (

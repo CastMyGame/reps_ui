@@ -4,7 +4,7 @@ import "./landing.css";
 export const NavigationLoggedIn = (props) => {
   const dropdownHandler = (panel) => {
     props.setPanelName(panel);
-    props.setDropdown("");
+    props.setDropdown(""); // Close the dropdown
   };
 
   return (
@@ -65,7 +65,7 @@ export const NavigationLoggedIn = (props) => {
                   display:
                     props.isDropdownOpen === "referral" ? "block" : "none",
                 }}
-                class="feature-menu-dropdown"
+                className="feature-menu-dropdown"
               >
                 <div
                   onClick={() => dropdownHandler("createPunishment")}
@@ -104,10 +104,13 @@ export const NavigationLoggedIn = (props) => {
                     props.isDropdownOpen === "student" ? "block" : "none",
                   width: "auto",
                 }}
-                class="feature-menu-dropdown"
+                className="feature-menu-dropdown"
               >
                 <div
-                  onClick={() => props.setModalType("classAnnouncement")}
+                  onClick={() => {
+                    props.setModalType("classAnnouncement");
+                    props.setDropdown(""); // Close dropdown
+                  }}
                   className="item page-scroll"
                 >
                   Class Announcement
@@ -125,7 +128,10 @@ export const NavigationLoggedIn = (props) => {
                   Edit Class Rosters
                 </div>
                 <div
-                  onClick={() => props.setModalType("spotter")}
+                  onClick={() => {
+                    props.setModalType("spotter");
+                    props.setDropdown(""); // Close dropdown
+                  }}
                   className="item page-scroll"
                 >
                   Spot Students
@@ -152,22 +158,12 @@ export const NavigationLoggedIn = (props) => {
                 Detention/ISS List
               </div>
             </li>
-            {/* This will be brought back in when we have a school that wants a store 
-            <li>
-              <div
-                className="page-scroll"
-                onClick={() => {
-                  props.setPanelName("spendPoints");
-                }}
-              >
-                Store Redeem
-              </div>
-            </li> */}
             <li>
               <div
                 className="page-scroll"
                 onClick={() => {
                   props.setModalType("contact");
+                  props.setDropdown(""); // Close dropdown
                 }}
               >
                 Contact Us

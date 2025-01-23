@@ -155,12 +155,12 @@ const TeacherDashboard = () => {
               {panelName === "overview" && (
                 <TeacherOverviewPanel
                   setPanelName={setPanelName}
-                  data={null}
-                  students={null}
+                  data={data}
+                  students={filteredStudentList}
                 />
               )}
               {panelName === "student" && (
-                <TeacherStudentPanel setPanelName={setPanelName} data={null} />
+                <TeacherStudentPanel setPanelName={setPanelName} data={data} />
               )}
               {panelName === "punishment" && (
                 <GlobalPunishmentPanel
@@ -171,20 +171,20 @@ const TeacherDashboard = () => {
               {panelName === "createPunishment" && (
                 <CreatePunishmentPanel
                   setPanelName={setPanelName}
-                  data={null}
+                  data={data}
                 />
               )}
               {panelName === "createOfficeReferral" && (
                 <CreateOfficeReferralPanel
                   setPanelName={setPanelName}
-                  data={null}
+                  data={data}
                 />
               )}
               {panelName === "ftc" && <TeacherFTCPanel />}
               {panelName === "levelThree" && <LevelThreePanel />}
-              {panelName === "spendPoints" && <SpendPage data={null} />}
+              {panelName === "spendPoints" && <SpendPage data={data} />}
               {panelName === "classUpdate" && (
-                <ClassUpdate setPanelName={setPanelName} teacher={null} />
+                <ClassUpdate setPanelName={setPanelName} teacher={teacher} />
               )}
             </div>
           ) : data.length === 0 ? (
