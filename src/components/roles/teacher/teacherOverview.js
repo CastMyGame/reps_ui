@@ -74,7 +74,12 @@ const TeacherOverviewPanel = ({ setPanelName, data = {}, students = [] }) => {
 
       {/* Title Cards */}
       <div className="card-title">
-        <Typography color="white" variant="h6" style={titleStyle}>
+        <Typography color="white" variant="h6" style={{
+            flexGrow: 1,
+            outline: "1px solid  white",
+            padding: "5px",
+            fontSize: 36,
+          }}>
           Week At a Glance
         </Typography>
       </div>
@@ -98,7 +103,12 @@ const TeacherOverviewPanel = ({ setPanelName, data = {}, students = [] }) => {
 
       {/* Students of Concern */}
       <div className="card-title">
-        <Typography color="white" variant="h6" style={titleStyle}>
+        <Typography color="white" variant="h6" style={{
+            flexGrow: 1,
+            outline: "1px solid  white",
+            padding: "5px",
+            fontSize: 36,
+          }}>
           Students of Concern
         </Typography>
       </div>
@@ -122,7 +132,12 @@ const TeacherOverviewPanel = ({ setPanelName, data = {}, students = [] }) => {
 
       {/* Longitudinal Reports */}
       <div className="card-title">
-        <Typography color="white" variant="h6" style={titleStyle}>
+        <Typography color="white" variant="h6" style={{
+            flexGrow: 1,
+            outline: "1px solid  white",
+            padding: "5px",
+            fontSize: 36,
+          }}>
           Longitudinal Reports
         </Typography>
       </div>
