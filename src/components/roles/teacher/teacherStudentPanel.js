@@ -28,34 +28,31 @@ const TeacherStudentPanel = ({ setPanelName, data = [] }) => {
   const [listOfSchool, setListOfSchool] = useState([]);
   const [studentDisplay, setStudentDisplay] = useState(false);
   const [studentData, setStudentData] = useState(null);
+  const [punishmentData, setPunishmentData] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredData, setFilteredData] = useState([]);
   const [selectedGrade, setSelectedGrade] = useState(""); // State for selected grade
   const [spotEmail, setSpotEmail] = useState("");
+  const [selectedClass, setSelectedClass] = useState(""); // Selected class name
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [students, setStudents] = useState([]);
 
-  // Fetch all students data when component mounts
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await get("student/v1/allStudents");
-        setListOfSchool(response);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    fetchData();
-  }, []);
+    if (data.teacher.classes.length > 0 && !selectedClass) {
+      setSelectedClass(data.teacher.classes[0].className);
+    }
+  }, [data.teacher.classes, selectedClass]);
 
   // Fetch specific student data when clicking the student name
   const fetchStudentData = async (studentEmail) => {
-    console.log(studentEmail);
     try {
       const response = await get(
         `punish/v1/student/punishments/${studentEmail}`
       );
       if (response != null) {
-        console.log("Student Data:", response); // Ensure student data is fetched
+        setStudentData(response);
+        setStudentDisplay(true);
         // Handle the display of fetched student data here
       }
     } catch (error) {
@@ -100,8 +97,8 @@ const TeacherStudentPanel = ({ setPanelName, data = [] }) => {
   }, [listOfStudents, searchQuery]);
 
   const handleProfileClick = (x) => {
-    fetchStudentData(x.studentEmail);
-    setSpotEmail(x.studentEmail);
+    fetchStudentData(x.data.studentEmail);
+    setSpotEmail(x.data.studentEmail);
   };
 
   const pdfRef = useRef();
@@ -150,57 +147,76 @@ const TeacherStudentPanel = ({ setPanelName, data = [] }) => {
   // Process and format the list of students and referral data
   useEffect(() => {
     const processData = () => {
-      const studentDataMap = new Map();
+      if (!data || data.length === 0) {
+        setError("No email list provided");
+        setLoading(false);
+        return;
+      }
 
-      const getGradeByEmail = (email) => {
-        const student = listOfSchool.find(
-          (student) => student.studentEmail === email
-        );
-        return student ? student.grade : "";
+      const fetchStudents = async () => {
+        try {
+          setLoading(true);
+
+          // Extract all emails from the classRoster and ensure uniqueness
+          const uniqueEmails = Array.from(
+            new Set(
+              data.teacher.classes.flatMap((classItem) => classItem.classRoster)
+            )
+          );
+
+          const url = `${baseUrl}/student/v1/getByEmailList`;
+          const response = await axios.post(
+            url,
+            uniqueEmails, // Sending the list of emails as the request body
+            {
+              headers: {
+                Authorization:
+                  "Bearer " + sessionStorage.getItem("Authorization"),
+              },
+            }
+          );
+
+          const fetchedStudents = response.data;
+          const studentsArray = [];
+          data.teacher.classes.forEach((classEntry) => {
+            classEntry.classRoster.forEach((student) => {
+              const foundStudent = fetchedStudents.find(
+                (s) => s.studentEmail === student
+              );
+              if (foundStudent) {
+                studentsArray.push({
+                  fullName: `${foundStudent.firstName} ${foundStudent.lastName}`,
+                  studentEmail: student.studentEmail,
+                  grade: foundStudent.grade,
+                  teacherManagedReferrals: data.writeUpResponse.filter(
+                    (w) => w.studentEmail === student.studentEmail
+                  ).length,
+                  officeManagedReferrals: data.officeReferrals.filter(
+                    (o) => o.studentEmail === student.studentEmail
+                  ).length,
+                  className: classEntry.className,
+                });
+              }
+            });
+          });
+          setListOfStudents(studentsArray); // Update state properly
+          setLoading(false);
+        } catch (err) {
+          console.error(err);
+          setError("Failed to fetch students");
+          setLoading(false);
+        }
       };
 
-      // Process teacher-managed referrals
-      data.writeUpResponse.forEach((teacherDTO) => {
-        const email = teacherDTO.studentEmail;
-        if (!studentDataMap.has(email)) {
-          studentDataMap.set(email, {
-            fullName: `${teacherDTO.studentFirstName} ${teacherDTO.studentLastName}`,
-            studentEmail: email, // Ensure the email is stored for the click handler
-            grade: getGradeByEmail(email),
-            teacherManagedReferrals: 0,
-            officeManagedReferrals: 0,
-          });
-        }
-        const studentData = studentDataMap.get(email);
-        studentData.teacherManagedReferrals += 1;
-        studentDataMap.set(email, studentData);
-      });
-
-      // Process office-managed referrals
-      data.officeReferrals.forEach((referral) => {
-        const email = referral.studentEmail;
-        if (!studentDataMap.has(email)) {
-          studentDataMap.set(email, {
-            fullName: `${referral.studentFirstName} ${referral.studentLastName}`,
-            studentEmail: email,
-            grade: getGradeByEmail(email),
-            teacherManagedReferrals: 0,
-            officeManagedReferrals: 0,
-          });
-        }
-        const studentData = studentDataMap.get(email);
-        studentData.officeManagedReferrals += 1;
-        studentDataMap.set(email, studentData);
-      });
-
-      const formattedData = Array.from(studentDataMap.values());
-      setListOfStudents(formattedData);
+      fetchStudents();
     };
 
-    if (data) {
-      processData();
-    }
-  }, [data, listOfSchool]);
+    processData();
+  }, [data, selectedClass]); // Ensure these dependencies trigger updates
+
+  const filteredStudentData = listOfStudents.filter(
+    (student) => student.className === selectedClass
+  );
 
   // Filter data based on search query and selected grade
   useEffect(() => {
@@ -227,24 +243,9 @@ const TeacherStudentPanel = ({ setPanelName, data = [] }) => {
     {
       headerName: "Student Name",
       field: "fullName",
-      cellRendererFramework: (params) => (
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            console.log(" PARAMS: ", params);
-            fetchStudentData(params.label);
-          }} // Pass student email to fetch function
-          style={{
-            background: "none",
-            border: "none",
-            color: "blue",
-            textDecoration: "underline",
-            cursor: "pointer",
-          }}
-        >
-          {params.value}
-        </button>
-      ),
+      onCellClicked: (params) => {
+        handleProfileClick(params);
+      },
     },
     { headerName: "Grade", field: "grade" },
     {
@@ -256,214 +257,196 @@ const TeacherStudentPanel = ({ setPanelName, data = [] }) => {
 
   return (
     <>
-      {studentDisplay && studentData.length === 0 && (
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            position: "fixed",
-            top: 300,
-            left: 0,
-            width: "100%",
-          }}
-          className="modal-overlay"
-        >
-          <div
-            style={{
-              width: "80%",
-              position: "relative",
-              backgroundColor: "white", // Adjust background color as needed
-              padding: "20px", // Adjust padding as needed
-              borderRadius: "8px", // Add border radius as needed
-              boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)", // Add box shadow as needed
-            }}
-            className="modal-content"
-          >
-            <div className="modal-header">
-              <h1>Student has No punishments</h1>
-            </div>
-            <div style={{ padding: "10px" }} className="modal-buttons">
-              <button
-                onClick={() => {
-                  setStudentDisplay(false);
-                }}
-              >
-                Cancel
-              </button>
-              <button
-                onClick={() => {
-                  generatePDF(studentData);
-                }}
-                style={{ backgroundColor: "#CF9FFF" }}
-              >
-                Print
-              </button>
-            </div>
-          </div>
+      {/* Display a message if no classes are created */}
+      {data.teacher.classes.length === 1 && data.teacher.classes[0].className === "" ? (
+        <div style={{ textAlign: "center", marginTop: "50px" }}>
+          <h2>No classes have been created yet.</h2>
+          <p>Please create a class to view and manage students.</p>
         </div>
-      )}
-      {studentDisplay && studentData.length > 0 && (
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: "100%",
-          }}
-          className="modal-overlay"
-        >
-          <div
-            style={{
-              maxHeight: "80rem",
-              width: "80%",
-              position: "relative",
-              backgroundColor: "white", // Adjust background color as needed
-              padding: "20px", // Adjust padding as needed
-              borderRadius: "8px", // Add border radius as needed
-              boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)", // Add box shadow as needed
-              overflowY: "hidden",
-            }}
-            className="modal-content"
-          >
-            <div className="modal-header">
+      ) : (
+        <>
+          {/* Modal for No Punishment Data */}
+          {studentDisplay && studentData && studentData.length === 0 && (
+            <div
+              className="modal-overlay"
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                position: "fixed",
+                top: 300,
+                left: 0,
+                width: "100%",
+              }}
+            >
               <div
+                className="modal-content"
                 style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  maxHeight: "20rem",
+                  width: "80%",
+                  backgroundColor: "white",
+                  padding: "20px",
+                  borderRadius: "8px",
+                  boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
                 }}
               >
-                <div className="box-left">
-                  <div className="student-info-box" style={{}}>
-                    <div
-                      style={{ display: "flex", backgroundColor: "" }}
-                      className="icon"
-                    >
-                      <AccountBoxIcon style={{ fontSize: "100px" }} />
-                    </div>
-                    <h4 style={{ textAlign: "left" }}>
-                      {studentData[0].firstName} {studentData[0].lastName}
-                    </h4>
-                    <div className="details-box">
-                      <div style={{ textAlign: "left" }}>
-                        Email: {studentData[0].studentEmail}
-                      </div>
-                      <div style={{ textAlign: "left" }}>
-                        Phone: {studentData[0].studentPhoneNumber}
-                      </div>
-                      <div style={{ textAlign: "left" }}>
-                        Grade: {studentData[0].grade}
-                      </div>
-                      <div style={{ textAlign: "left" }}>
-                        Address: {studentData[0].address}
-                      </div>
-                    </div>
-                  </div>
+                <div className="modal-header">
+                  <h1>Student has No punishments</h1>
                 </div>
-
-                <div
-                  style={{ color: "white", marginLeft: "auto" }}
-                  className="box-right"
-                >
-                  <IncidentByTypePieChart data={studentData[0].student} />
+                <div className="modal-buttons" style={{ padding: "10px" }}>
+                  <button onClick={() => setStudentDisplay(false)}>
+                    Cancel
+                  </button>
+                  <button
+                    onClick={() => generatePDF(studentData)}
+                    style={{ backgroundColor: "#CF9FFF" }}
+                  >
+                    Print
+                  </button>
                 </div>
               </div>
             </div>
-            <div style={{ height: "320px" }} className="modal-body-student">
-              <TableContainer
-                style={{ height: "300px", backgroundColor: "white" }}
-              >
-                <Table stickyHeader>
-                  <TableHead>
-                    <TableRow>
-                      <TableCell style={{ width: "5%" }}>Status</TableCell>
-                      <TableCell style={{ width: "45%" }}>
-                        Description
-                      </TableCell>
-                      <TableCell style={{ width: "15%" }}>Date</TableCell>
-                      <TableCell style={{ width: "35%" }}>Infraction</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {studentData.map((student, index) => (
-                      <TableRow
-                        style={{
-                          background: index % 2 === 0 ? "lightgrey" : "white",
-                        }}
-                        key={index}
-                      >
-                        <TableCell style={{ width: "25%" }}>
-                          {student.status}
-                        </TableCell>
-                        <TableCell style={{ width: "25%" }}>
-                          {student.infractionDescription}
-                        </TableCell>
-                        <TableCell style={{ width: "25%" }}>
-                          {student.timeCreated}
-                        </TableCell>
-                        <TableCell style={{ width: "25%" }}>
-                          {student.infractionName}
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </div>
+          )}
 
-            <div style={{ padding: "10px" }} className="modal-buttons">
-              <button
-                onClick={() => {
-                  setStudentDisplay(false);
+          {/* Modal for Student Data Display */}
+          {studentDisplay && studentData && studentData.length > 0 && (
+            <div
+              className="modal-overlay"
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                position: "fixed",
+                top: 0,
+                left: 0,
+                width: "100%",
+                height: "100%",
+              }}
+            >
+              <div
+                className="modal-content"
+                style={{
+                  maxHeight: "80rem",
+                  width: "80%",
+                  backgroundColor: "#25444C",
+                  padding: "20px",
+                  borderRadius: "8px",
+                  boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                  overflowY: "hidden",
                 }}
               >
-                Cancel
-              </button>
-              <button
-                onClick={() => {
-                  addSpotter();
-                }}
-              >
-                Spot this Student
-              </button>
-              <button
-                onClick={() => {
-                  generatePDF(studentData);
-                }}
-                style={{ backgroundColor: "#CF9FFF" }}
-              >
-                Print
-              </button>
+                <div
+                  className="modal-header"
+                  style={{ display: "flex", flexDirection: "row" }}
+                >
+                  <div className="box-left">
+                    <AccountBoxIcon style={{ fontSize: "100px" }} />
+                    <h4>
+                      {studentData[0].firstName} {studentData[0].lastName}
+                    </h4>
+                    <div className="details-box">
+                      <p>Email: {studentData[0].studentEmail}</p>
+                      <p>Phone: {studentData[0].studentPhoneNumber}</p>
+                      <p>Grade: {studentData[0].grade}</p>
+                      <p>Address: {studentData[0].address}</p>
+                    </div>
+                  </div>
+                  <div
+                    className="box-right"
+                    style={{ marginLeft: "auto", color: "white" }}
+                  >
+                    <IncidentByTypePieChart data={studentData} />
+                  </div>
+                </div>
+                <div className="modal-body-student" style={{ height: "320px" }}>
+                  <TableContainer
+                    style={{ height: "300px", backgroundColor: "white" }}
+                  >
+                    <Table stickyHeader>
+                      <TableHead>
+                        <TableRow>
+                          <TableCell>Status</TableCell>
+                          <TableCell>Description</TableCell>
+                          <TableCell>Date</TableCell>
+                          <TableCell>Infraction</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {studentData.map((student, index) => (
+                          <TableRow
+                            key={index}
+                            style={{
+                              background:
+                                index % 2 === 0 ? "lightgrey" : "white",
+                            }}
+                          >
+                            <TableCell>{student.status}</TableCell>
+                            <TableCell>
+                              {student.infractionDescription}
+                            </TableCell>
+                            <TableCell>{student.timeCreated}</TableCell>
+                            <TableCell>{student.infractionName}</TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                </div>
+                <div className="modal-buttons" style={{ padding: "10px" }}>
+                  <button onClick={() => setStudentDisplay(false)}>
+                    Cancel
+                  </button>
+                  <button onClick={addSpotter}>Spot this Student</button>
+                  <button
+                    onClick={() => generatePDF(studentData)}
+                    style={{ backgroundColor: "#CF9FFF" }}
+                  >
+                    Print
+                  </button>
+                </div>
+              </div>
             </div>
+          )}
+
+          <div>
+            <label htmlFor="class-select" style={{ marginRight: "8px" }}>
+              Select Class:
+            </label>
+            <select
+              id="class-select"
+              value={selectedClass}
+              onChange={(e) => setSelectedClass(e.target.value)}
+              style={{
+                padding: "8px",
+                fontSize: "1rem",
+                borderRadius: "4px",
+                border: "1px solid #ccc",
+              }}
+            >
+              <option value="">-- Select a Class --</option>
+              {data.teacher.classes
+                .filter(
+                  (classEntry, index) => classEntry.className.trim() !== ""
+                )
+                .map((classEntry, index) => (
+                  <option key={index} value={classEntry.className}>
+                    {classEntry.className}
+                  </option>
+                ))}
+            </select>
+
+            {selectedClass && (
+              <div style={{ marginTop: "20px" }}>
+                <h3>{selectedClass}</h3>
+                <div className="ag-theme-alpine" style={{ width: "100%" }}>
+                  <AgGridReact
+                    rowData={filteredStudentData}
+                    columnDefs={columnDefs}
+                    domLayout="autoHeight"
+                  />
+                </div>
+              </div>
+            )}
           </div>
-        </div>
+        </>
       )}
-
-      <div
-        style={{
-          backgroundColor: "rgb(25, 118, 210)",
-          marginTop: "10px",
-          marginBlock: "5px",
-        }}
-      >
-        {listOfStudents.length > 0 && (
-          <div
-            className="ag-theme-alpine"
-            style={{ height: "60vh", width: "100%" }}
-          >
-            <AgGridReact
-              rowData={listOfStudents} // Pass the processed list of students here
-              columnDefs={columnDefs}
-              domLayout="autoHeight"
-            />
-          </div>
-        )}
-      </div>
     </>
   );
 };

@@ -467,7 +467,7 @@ button:hover {
 }
 
 .teacher-overview{
-  width: 100%;
+  width: 100vw;
   display: flex;
   flex-direction: row;
 justify-content: space-between;
@@ -776,7 +776,7 @@ table th tr {
 /* MODAL CSS */
 
 .modal-overlay {
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
   width: 100%;
@@ -785,28 +785,25 @@ table th tr {
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000;  /* Adjust the value as needed */
-  max-height: fit-content;
+  z-index: 10000;  /* Adjust the value as needed */
+  max-height: 100vh;
 
   
 }
 
 .modal-content {
-  background: #2980b9;
-  padding: 20px;
+  background: #25444C;
   position: absolute;
-  top: 25%;
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  width: 90%;
+  max-width: 75vh;
 }
 
 
 
 .modal-header {
-  background-color: #2980b9;
+  background-color: #25444C;
   padding: 10px;
-  border-radius: 8px 8px 0 0;
   text-align: center;
   color: white;
 }
@@ -821,7 +818,7 @@ table th tr {
 .modal-buttons {
   display: flex;
   justify-content: space-between;
-  margin-top: 20px;
+  margin: 2vh 3vw 2vh 3vw;
 }
 
 .modal-buttons-teacher-profile
@@ -1077,4 +1074,9 @@ margin-bottom: -10px;
 
 .MuiInputBase-root {
   font-size: large;
+}
+
+.pop-modal {
+  border: #000;
+  border-width: 5px;
 }

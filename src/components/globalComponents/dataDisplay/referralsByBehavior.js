@@ -13,70 +13,109 @@ export default function ReferralByBehavior({ data = [] }) {
 
   const currentWeek = getCurrentWeekOfYear();
 
-  // Recalculate X-axis (date range) and series data every time `rangeWeeks` changes
+  // Ensure `data` is valid and default to an empty array if not
+  const safeData = Array.isArray(data) ? data : [];
+
+  // Recalculate X-axis (date range) and series data every time `rangeWeeks` or `data` changes
   useEffect(() => {
-    const displayDate = GenerateChartData(currentWeek, rangeWeeks, data);
+    const displayDate = GenerateChartData(currentWeek, rangeWeeks, safeData);
 
     // X-axis: week date ranges
     const xAxisData = displayDate.map((obj) => Object.keys(obj)[0]); // Extract the week date ranges
     setXAxisData(xAxisData);
 
     // Y-axis: Generate data for each series based on the same rangeWeeks
-    const tardyData = GenerateBxByWeek("Tardy", rangeWeeks, data);
-    const horseplayData = GenerateBxByWeek("Horseplay", rangeWeeks, data);
-    const dressCodeData = GenerateBxByWeek("Dress Code", rangeWeeks, data);
+    const tardyData = GenerateBxByWeek("Tardy", rangeWeeks, safeData);
+    const horseplayData = GenerateBxByWeek("Horseplay", rangeWeeks, safeData);
+    const dressCodeData = GenerateBxByWeek("Dress Code", rangeWeeks, safeData);
     const unauthorizedDeviceData = GenerateBxByWeek(
       "Unauthorized Device/Cell Phone",
       rangeWeeks,
-      data
+      safeData
     );
     const disruptiveBehaviorData = GenerateBxByWeek(
       "Disruptive Behavior",
       rangeWeeks,
-      data
+      safeData
     );
     const positiveData = GenerateBxByWeek(
       "Positive Shout Out!",
       rangeWeeks,
-      data
+      safeData
     );
     const behavioralConcernData = GenerateBxByWeek(
       "Behavioral Concern",
       rangeWeeks,
-      data
+      safeData
     );
 
     // Set the series data
     setSeriesData([
-      { name: "Tardy", type: "line", stack: "Total", data: tardyData },
-      { name: "Horseplay", type: "line", stack: "Total", data: horseplayData },
+      {
+        name: "Tardy",
+        type: "line",
+        stack: "Total",
+        data: tardyData,
+        itemStyle: {
+          color: "#800080",
+        },
+      },
+      {
+        name: "Horseplay",
+        type: "line",
+        stack: "Total",
+        data: horseplayData,
+        itemStyle: {
+          color: "#964B00",
+        },
+      },
       {
         name: "Positive Shout Out!",
         type: "line",
         stack: "Total",
         data: positiveData,
+        itemStyle: {
+          color: "#008000",
+        },
       },
-      { name: "Dress Code", type: "line", stack: "Total", data: dressCodeData },
+      {
+        name: "Dress Code",
+        type: "line",
+        stack: "Total",
+        data: dressCodeData,
+        itemStyle: {
+          color: "#C7EA46",
+        },
+      },
       {
         name: "Behavioral Concern",
         type: "line",
         stack: "Total",
         data: behavioralConcernData,
+        itemStyle: {
+          color: "#0000FF",
+        },
       },
       {
         name: "Disruptive Behavior",
         type: "line",
         stack: "Total",
         data: disruptiveBehaviorData,
+        itemStyle: {
+          color: "#ffA500",
+        },
       },
       {
         name: "Unauthorized Device/Cell Phone",
         type: "line",
         stack: "Total",
         data: unauthorizedDeviceData,
+        itemStyle: {
+          color: "#ff0000",
+        },
       },
     ]);
-  }, [rangeWeeks, data, currentWeek]);
+  }, [rangeWeeks, safeData, currentWeek]);
 
   const option = {
     tooltip: {

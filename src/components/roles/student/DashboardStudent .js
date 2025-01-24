@@ -77,7 +77,6 @@ const StudentDashboard = () => {
             setLogin={handleLogout}
           />
         </div>
-        <div className="header">
           <div className="student-main-content">
             <div style={{ width: "100%" }} className="dashboard-title">
               <div>Student Dashboard</div>
@@ -164,7 +163,6 @@ const StudentDashboard = () => {
               <NotificationBar />
             </Drawer>
           </div>
-        </div>
       </>
     )
   );

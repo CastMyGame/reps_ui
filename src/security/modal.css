@@ -5,13 +5,10 @@
     left:50%;
     top:60%;
     transform: translate(-50%, -50%);
-    width: 500px;
-    height: 65%;
+    width: 50vw;
     background-color: white;
     padding: 5%;
     align-items: center;
     flex-direction: column;
-
-
-
+    border: 25px solid black;
 }

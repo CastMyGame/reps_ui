@@ -1,19 +1,34 @@
-import { Alert, Autocomplete, Button, Chip, FormControl, InputLabel, Snackbar, TextField, Typography } from "@mui/material";
+import {
+  Alert,
+  Autocomplete,
+  Button,
+  Chip,
+  FormControl,
+  InputLabel,
+  Snackbar,
+  TextField,
+  Typography,
+} from "@mui/material";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { baseUrl } from "src/utils/jsonData";
 
-export function ManageSpottersPopup({setContactUsDisplayModal, contactUsDisplayModal}) {
+export function ManageSpottersPopup({
+  setContactUsDisplayModal,
+  contactUsDisplayModal,
+}) {
   const [warningToast, setWarningToast] = useState(false);
   const [selectOption, setSelectOption] = useState([]);
   const [studentNames, setStudentNames] = useState([]);
   const [spottedStudents, setSpottedStudents] = useState([]);
 
+  const modalRef = useRef(null); // Create a ref for the modal div
+
   const headers = {
     Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
   };
 
-  // Happends on load
+  // Fetch data on load
   useEffect(() => {
     axios.get(`${baseUrl}/student/v1/allStudents`, { headers }).then((res) => {
       setSelectOption(res.data);
@@ -21,14 +36,41 @@ export function ManageSpottersPopup({setContactUsDisplayModal, contactUsDisplayM
   }, []);
 
   useEffect(() => {
-    axios.get(`${baseUrl}/student/v1/findBySpotter/${sessionStorage.getItem("email")}`, { headers }).then((res) => {
-      setSpottedStudents(res.data);
-    });
+    axios
+      .get(
+        `${baseUrl}/student/v1/findBySpotter/${sessionStorage.getItem("email")}`,
+        { headers }
+      )
+      .then((res) => {
+        setSpottedStudents(res.data);
+      });
+  }, []);
+
+  // Close modal if `contactUsDisplayModal` changes to anything else
+  useEffect(() => {
+    if (contactUsDisplayModal !== "spotter") {
+      setContactUsDisplayModal("");
+    }
+  }, [contactUsDisplayModal, setContactUsDisplayModal]);
+
+  // Click outside modal to close
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (modalRef.current && !modalRef.current.contains(event.target)) {
+        setContactUsDisplayModal("login");
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
   }, []);
 
   const selectOptions = selectOption.map((student) => ({
-    value: student.studentEmail, // Use a unique value for each option
-    label: `${student.firstName} ${student.lastName} - ${student.studentEmail}`, // Display student's full name as the label
+    value: student.studentEmail,
+    label: `${student.firstName} ${student.lastName} - ${student.studentEmail}`,
   }));
 
   const addSpotter = () => {
@@ -93,6 +135,7 @@ export function ManageSpottersPopup({setContactUsDisplayModal, contactUsDisplayM
     setContactUsDisplayModal("login");
     setWarningToast(false);
   };
+
   return (
     <>
       <Snackbar
@@ -106,6 +149,7 @@ export function ManageSpottersPopup({setContactUsDisplayModal, contactUsDisplayM
       </Snackbar>
 
       <div
+        ref={modalRef} // Attach the modal ref here
         className="pop-modal"
         style={{
           zIndex: 2,
@@ -118,18 +162,16 @@ export function ManageSpottersPopup({setContactUsDisplayModal, contactUsDisplayM
           </Typography>
         </div>
         <div>
-          <Typography variant="h5" style={{ textAlign: "left"}}>
+          <Typography variant="h5" style={{ textAlign: "left" }}>
             Students you are currently spotting:
           </Typography>
         </div>
 
-        {spottedStudents.map((option) => {
-          return (
-            <div>
-              {option.firstName} {option.lastName}
-            </div>
-          );
-        })}
+        {spottedStudents.map((option) => (
+          <div key={option.studentEmail}>
+            {option.firstName} {option.lastName}
+          </div>
+        ))}
 
         <FormControl
           fullWidth
@@ -143,7 +185,7 @@ export function ManageSpottersPopup({setContactUsDisplayModal, contactUsDisplayM
             id="demo-multiple-chip"
             value={studentNames}
             onChange={(event, newValue) => setStudentNames(newValue)}
-            options={selectOptions} // Pass the selectOptions array here
+            options={selectOptions}
             getOptionLabel={(option) => option.label}
             inputLabelProps={{ style: { fontSize: 18 } }}
             renderInput={(params) => (

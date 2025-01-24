@@ -157,22 +157,13 @@ export const NavigationAdmin = (props) => {
               <div
                 className="page-scroll"
                 onClick={() => {
-                  props.setModalType("contact");
-                }}
-              >
-                Contact Us
-              </div>
-            </li>
-            <li>
-              <div
-                className="page-scroll"
-                onClick={() => {
                   props.toggleNotificationDrawer(true);
                 }}
               >
                 Detention/ISS List
               </div>
             </li>
+            {/* This will be brought back in when we have a school that wants a store  
             <li>
               <div
                 className="page-scroll"
@@ -181,6 +172,16 @@ export const NavigationAdmin = (props) => {
                 }}
               >
                 Store Redeem
+              </div>
+            </li> */}
+            <li>
+              <div
+                className="page-scroll"
+                onClick={() => {
+                  props.setModalType("contact");
+                }}
+              >
+                Contact Us
               </div>
             </li>
             <li>

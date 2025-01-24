@@ -11,15 +11,22 @@ export const PieChartParentCommunication = ({
   officeReferrals = [],
   writeUpResponse = [],
 }) => {
-  const numShoutout = extractDataByWeek(currentWeek, shoutOutsResponse);
-  const numOfficeReferral = extractDataByWeek(currentWeek, officeReferrals);
+  const numShoutout = extractDataByWeek(currentWeek, shoutOutsResponse || []);
+  const numOfficeReferral = extractDataByWeek(currentWeek, officeReferrals || []);
   const numBxConcern = findDataByWeekAndByPunishment(
     currentWeek,
     "Behavioral Concern",
-    data
+    data || []
   );
 
-  const teachReferrals = extractDataByWeek(currentWeek, writeUpResponse);
+  const teachReferrals = extractDataByWeek(currentWeek, writeUpResponse || []);
+
+  // Check if there's no data to display
+  const hasData =
+    numShoutout.length ||
+    numOfficeReferral.length ||
+    numBxConcern ||
+    teachReferrals.length;
 
   const option = {
     responsive: true,
@@ -45,20 +52,32 @@ export const PieChartParentCommunication = ({
         radius: "90%",
         data: [
           {
-            value: numBxConcern,
-            name: "Behavioral Concern",
-          },
-          {
             value: numShoutout.length,
             name: "Positive Behavior Shout Out!",
+            itemStyle: {
+              color: '#008000'
+            }
           },
           {
-            value: numOfficeReferral.length,
-            name: "Office Referrals",
+            value: numBxConcern,
+            name: "Behavioral Concern",
+            itemStyle: {
+              color: '#FFFF00'
+            }
           },
           {
             value: teachReferrals.length,
             name: "Teacher Referrals",
+            itemStyle: {
+              color: "#ffA500",
+            },
+          },
+          {
+            value: numOfficeReferral.length,
+            name: "Office Referrals",
+            itemStyle: {
+              color: "#ff0000",
+            },
           },
         ],
         emphasis: {
@@ -74,7 +93,11 @@ export const PieChartParentCommunication = ({
 
   return (
     <div>
-      <ReactEcharts option={option} />
+      {hasData ? (
+        <ReactEcharts option={option} />
+      ) : (
+        <ReactEcharts option={[]} />
+      )}
     </div>
   );
 };

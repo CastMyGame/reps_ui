@@ -3,7 +3,6 @@ import { AgGridReact } from "ag-grid-react";
 import { ColDef } from "ag-grid-community";
 import {
   AdminOverviewDto,
-  IncidentList,
   StudentIncidentList,
   TeacherDto,
 } from "src/types/responses";
@@ -15,45 +14,61 @@ import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 
 const IncidentsByStudentTable: React.FC<AdminOverviewDto> = ({
-  punishmentResponse = [],
+  writeUpResponse = [],
   officeReferrals = [],
+  students = [],
 }) => {
   const [studentIncidentRowData, setStudentIncidentRowData] = useState<
-  StudentIncidentList[]
+    StudentIncidentList[]
   >([]);
 
-  const weekTmData = extractDataByWeek(
-    currentWeek,
-    punishmentResponse as TeacherDto[]
-  );
-
-  const weekOmData = extractDataByWeek(
-    currentWeek,
-    officeReferrals as TeacherDto[]
-  );
+  // Handle null or undefined writeUpResponse and officeReferrals
+  const weekTmData = writeUpResponse
+    ? extractDataByWeek(currentWeek, writeUpResponse as TeacherDto[])
+    : [];
+  const weekOmData = officeReferrals
+    ? extractDataByWeek(currentWeek, officeReferrals as TeacherDto[])
+    : [];
 
   useEffect(() => {
-    // Combine weekTMData and weekOmData into one array
+    // Combine weekTmData and weekOmData into one array
     const combinedWeekData = [...weekTmData, ...weekOmData];
 
     // Create an object to store aggregated incidents for each student
     const studentIncidentMap: Record<string, StudentIncidentList> = {};
+
     // Loop through combinedWeekData to accumulate incident counts per student
     combinedWeekData.forEach((incident: TeacherDto) => {
-      const studentEmail = incident.studentEmail;
-      const studentFirstName = incident.studentFirstName;
-      const studentLastName = incident.studentLastName;
+      const studentEmail = incident.studentEmail || "Unknown";
+      const studentFirstName = incident.studentFirstName || "Unknown";
+      const studentLastName = incident.studentLastName || "";
 
       // If the student doesn't exist in the map, add them
       if (!studentIncidentMap[studentEmail]) {
         studentIncidentMap[studentEmail] = {
-          studentName: `${studentFirstName} ${studentLastName}`,
+          studentName: `${studentFirstName} ${studentLastName}`.trim(),
           totalIncidents: 0,
         };
       }
 
       // Increment the total incidents count
       studentIncidentMap[studentEmail].totalIncidents += 1;
+    });
+
+    // Ensure all students from the `students` prop are included
+    students?.forEach((student) => {
+      const studentEmail = student.studentEmail || "Unknown";
+      const studentName = `${student.firstName || "Unknown"} ${
+        student.lastName || ""
+      }`.trim();
+
+      if (!studentIncidentMap[studentEmail]) {
+        // Add students with zero incidents
+        studentIncidentMap[studentEmail] = {
+          studentName,
+          totalIncidents: 0,
+        };
+      }
     });
 
     // Convert the object to an array and sort by total incidents in descending order
@@ -63,7 +78,7 @@ const IncidentsByStudentTable: React.FC<AdminOverviewDto> = ({
 
     // Set the rowData for the table
     setStudentIncidentRowData(sortedStudentsByIncidents);
-  }, [punishmentResponse, officeReferrals]);
+  }, [writeUpResponse, officeReferrals, students]);
 
   // Column definitions for AgGrid
   const colDefs: ColDef[] = [
@@ -75,7 +90,7 @@ const IncidentsByStudentTable: React.FC<AdminOverviewDto> = ({
     },
     {
       field: "totalIncidents",
-      headerName: "Total Incidents",
+      headerName: "Total Referrals",
       flex: 1, // Allow flexible sizing
       resizable: true,
     },
@@ -91,7 +106,7 @@ const IncidentsByStudentTable: React.FC<AdminOverviewDto> = ({
         style={{ height: "25vh", width: "100%" }}
       >
         <AgGridReact
-          rowData={(studentIncidentRowData as StudentIncidentList[])}
+          rowData={studentIncidentRowData as StudentIncidentList[]}
           columnDefs={colDefs as ColDef<StudentIncidentList>[]}
           domLayout="autoHeight" // Ensures that the height is handled properly
         />

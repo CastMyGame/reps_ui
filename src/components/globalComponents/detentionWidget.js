@@ -3,6 +3,7 @@ import Typography from "@mui/material/Typography";
 import axios from "axios";
 import { baseUrl } from "../../utils/jsonData";
 import jsPDF from "jspdf";
+import DetentionTimer from "./detentionTimer/detentionTimer.tsx";
 
 const DetentionWidget = () => {
   const [data, setData] = useState([]);
@@ -89,6 +90,7 @@ const DetentionWidget = () => {
             <th>First Name</th>
             <th>Last Name</th>
             <th>Infraction Period</th>
+            <th>Detention Timer</th>
           </tr>
         </thead>
         <tbody>
@@ -119,6 +121,9 @@ const DetentionWidget = () => {
                         {x.punishment.classPeriod}
                       </span>
                     </div>
+                  </td>
+                  <td>
+                    <DetentionTimer studentEmail={x.studentEmail} />
                   </td>
                 </tr>
               );

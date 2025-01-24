@@ -4,7 +4,7 @@ import "./landing.css";
 export const NavigationLoggedIn = (props) => {
   const dropdownHandler = (panel) => {
     props.setPanelName(panel);
-    props.setDropdown("");
+    props.setDropdown(""); // Close the dropdown
   };
 
   return (
@@ -65,7 +65,7 @@ export const NavigationLoggedIn = (props) => {
                   display:
                     props.isDropdownOpen === "referral" ? "block" : "none",
                 }}
-                class="feature-menu-dropdown"
+                className="feature-menu-dropdown"
               >
                 <div
                   onClick={() => dropdownHandler("createPunishment")}
@@ -96,23 +96,42 @@ export const NavigationLoggedIn = (props) => {
                   )
                 }
               >
-                Students
+                Classes
               </div>
               <div
                 style={{
                   display:
                     props.isDropdownOpen === "student" ? "block" : "none",
+                  width: "auto",
                 }}
-                class="feature-menu-dropdown"
+                className="feature-menu-dropdown"
               >
+                <div
+                  onClick={() => {
+                    props.setModalType("classAnnouncement");
+                    props.setDropdown(""); // Close dropdown
+                  }}
+                  className="item page-scroll"
+                >
+                  Class Announcement
+                </div>
                 <div
                   onClick={() => dropdownHandler("student")}
                   className="item page-scroll"
                 >
-                  School Roster
+                  Class Rosters
                 </div>
                 <div
-                  onClick={() => props.setModalType("spotter")}
+                  onClick={() => dropdownHandler("classUpdate")}
+                  className="item page-scroll"
+                >
+                  Edit Class Rosters
+                </div>
+                <div
+                  onClick={() => {
+                    props.setModalType("spotter");
+                    props.setDropdown(""); // Close dropdown
+                  }}
                   className="item page-scroll"
                 >
                   Spot Students
@@ -133,16 +152,6 @@ export const NavigationLoggedIn = (props) => {
               <div
                 className="page-scroll"
                 onClick={() => {
-                  props.setModalType("contact");
-                }}
-              >
-                Contact Us
-              </div>
-            </li>
-            <li>
-              <div
-                className="page-scroll"
-                onClick={() => {
                   props.toggleNotificationDrawer(true);
                 }}
               >
@@ -153,13 +162,13 @@ export const NavigationLoggedIn = (props) => {
               <div
                 className="page-scroll"
                 onClick={() => {
-                  props.setPanelName("spendPoints");
+                  props.setModalType("contact");
+                  props.setDropdown(""); // Close dropdown
                 }}
               >
-                Store Redeem
+                Contact Us
               </div>
             </li>
-
             <li>
               <button
                 className="login-btn page-scroll"
