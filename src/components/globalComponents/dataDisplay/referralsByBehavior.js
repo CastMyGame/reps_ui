@@ -25,36 +25,35 @@ export default function ReferralByBehavior({ data = [] }) {
     setXAxisData(xAxisData);
 
     // Y-axis: Generate data for each series based on the same rangeWeeks
-    const tardyData = GenerateBxByWeek("Tardy", rangeWeeks, safeData);
-    const horseplayData = GenerateBxByWeek("Horseplay", rangeWeeks, safeData);
-    const dressCodeData = GenerateBxByWeek("Dress Code", rangeWeeks, safeData);
+    const tardyData = GenerateBxByWeek("Tardy", rangeWeeks, safeData).map((week) => week.length);
+    const horseplayData = GenerateBxByWeek("Horseplay", rangeWeeks, safeData).map((week) => week.length);
+    const dressCodeData = GenerateBxByWeek("Dress Code", rangeWeeks, safeData).map((week) => week.length);
     const unauthorizedDeviceData = GenerateBxByWeek(
       "Unauthorized Device/Cell Phone",
       rangeWeeks,
       safeData
-    );
+    ).map((week) => week.length);
     const disruptiveBehaviorData = GenerateBxByWeek(
       "Disruptive Behavior",
       rangeWeeks,
       safeData
-    );
+    ).map((week) => week.length);
     const positiveData = GenerateBxByWeek(
-      "Positive Shout Out!",
+      "Positive Behavior Shout Out!",
       rangeWeeks,
       safeData
-    );
+    ).map((week) => week.length);
     const behavioralConcernData = GenerateBxByWeek(
       "Behavioral Concern",
       rangeWeeks,
       safeData
-    );
+    ).map((week) => week.length);
 
     // Set the series data
     setSeriesData([
       {
         name: "Tardy",
         type: "line",
-        stack: "Total",
         data: tardyData,
         itemStyle: {
           color: "#800080",
@@ -63,16 +62,14 @@ export default function ReferralByBehavior({ data = [] }) {
       {
         name: "Horseplay",
         type: "line",
-        stack: "Total",
         data: horseplayData,
         itemStyle: {
           color: "#964B00",
         },
       },
       {
-        name: "Positive Shout Out!",
+        name: "Positive Behavior Shout Out!",
         type: "line",
-        stack: "Total",
         data: positiveData,
         itemStyle: {
           color: "#008000",
@@ -81,7 +78,6 @@ export default function ReferralByBehavior({ data = [] }) {
       {
         name: "Dress Code",
         type: "line",
-        stack: "Total",
         data: dressCodeData,
         itemStyle: {
           color: "#C7EA46",
@@ -90,7 +86,6 @@ export default function ReferralByBehavior({ data = [] }) {
       {
         name: "Behavioral Concern",
         type: "line",
-        stack: "Total",
         data: behavioralConcernData,
         itemStyle: {
           color: "#0000FF",
@@ -99,7 +94,6 @@ export default function ReferralByBehavior({ data = [] }) {
       {
         name: "Disruptive Behavior",
         type: "line",
-        stack: "Total",
         data: disruptiveBehaviorData,
         itemStyle: {
           color: "#ffA500",
@@ -108,7 +102,6 @@ export default function ReferralByBehavior({ data = [] }) {
       {
         name: "Unauthorized Device/Cell Phone",
         type: "line",
-        stack: "Total",
         data: unauthorizedDeviceData,
         itemStyle: {
           color: "#ff0000",
@@ -125,7 +118,7 @@ export default function ReferralByBehavior({ data = [] }) {
       data: [
         "Tardy",
         "Horseplay",
-        "Positive Shout Out!",
+        "Positive Behavior Shout Out!",
         "Dress Code",
         "Behavioral Concern",
         "Disruptive Behavior",
