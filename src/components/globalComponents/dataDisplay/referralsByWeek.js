@@ -31,53 +31,56 @@ export const TotalReferralByWeek = ({
       safePunishmentResponse
     );
 
-    const tardyData = GenerateBxByWeek("Tardy", rangeWeeks, safePunishmentResponse);
+    const tardyData = GenerateBxByWeek(
+      "Tardy",
+      rangeWeeks,
+      safePunishmentResponse
+    ).map((week) => week.length);
     const horseplayData = GenerateBxByWeek(
       "Horseplay",
       rangeWeeks,
       safePunishmentResponse
-    );
+    ).map((week) => week.length);
     const dressCodeData = GenerateBxByWeek(
       "Dress Code",
       rangeWeeks,
       safePunishmentResponse
-    );
+    ).map((week) => week.length);
     const unauthorizedDeviceData = GenerateBxByWeek(
       "Unauthorized Device/Cell Phone",
       rangeWeeks,
       safePunishmentResponse
-    );
+    ).map((week) => week.length);
     const disruptiveBehaviorData = GenerateBxByWeek(
       "Disruptive Behavior",
       rangeWeeks,
       safePunishmentResponse
-    );
+    ).map((week) => week.length);
     const positiveData = GenerateBxByWeek(
-      "Positive Shout Out!",
+      "Positive Behavior Shout Out!",
       rangeWeeks,
       safePunishmentResponse
-    );
+    ).map((week) => week.length);
     const behavioralConcernData = GenerateBxByWeek(
       "Behavioral Concern",
       rangeWeeks,
       safePunishmentResponse
-    );
+    ).map((week) => week.length);
     const officeReferralData = GenerateBxByWeek(
       "Office Referral",
       rangeWeeks,
       safeOfficeReferrals
-    );
+    ).map((week) => week.length);
 
     // Calculate Teacher Managed Referrals as the sum of selected infractions
-    const teacherManagedReferrals = tardyData.map((_, index) => {
-      return (
+    const teacherManagedReferrals = tardyData.map(
+      (_, index) =>
         (tardyData[index] || 0) +
         (horseplayData[index] || 0) +
         (dressCodeData[index] || 0) +
         (unauthorizedDeviceData[index] || 0) +
         (disruptiveBehaviorData[index] || 0)
-      );
-    });
+    );
 
     // X-axis: week date ranges
     const xAxisData = displayDate.map((obj) => Object.keys(obj)[0]); // Extract the week date ranges
@@ -88,7 +91,6 @@ export const TotalReferralByWeek = ({
       {
         name: "Positive Shout Out!",
         type: "line",
-        stack: "Total",
         data: positiveData,
         itemStyle: {
           color: "#008000",
@@ -97,7 +99,6 @@ export const TotalReferralByWeek = ({
       {
         name: "Behavioral Concern",
         type: "line",
-        stack: "Total",
         data: behavioralConcernData,
         itemStyle: {
           color: "#FFFF00",
@@ -106,7 +107,6 @@ export const TotalReferralByWeek = ({
       {
         name: "Teacher Managed",
         type: "line",
-        stack: "Total",
         data: teacherManagedReferrals,
         itemStyle: {
           color: "#ffA500",
@@ -115,7 +115,6 @@ export const TotalReferralByWeek = ({
       {
         name: "Office Managed",
         type: "line",
-        stack: "Total",
         data: officeReferralData,
         itemStyle: {
           color: "#ff0000",
