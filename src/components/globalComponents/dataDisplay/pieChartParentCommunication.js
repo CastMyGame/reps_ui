@@ -12,7 +12,10 @@ export const PieChartParentCommunication = ({
   writeUpResponse = [],
 }) => {
   const numShoutout = extractDataByWeek(currentWeek, shoutOutsResponse || []);
-  const numOfficeReferral = extractDataByWeek(currentWeek, officeReferrals || []);
+  const numOfficeReferral = extractDataByWeek(
+    currentWeek,
+    officeReferrals || []
+  );
   const numBxConcern = findDataByWeekAndByPunishment(
     currentWeek,
     "Behavioral Concern",
@@ -55,15 +58,15 @@ export const PieChartParentCommunication = ({
             value: numShoutout.length,
             name: "Positive Behavior Shout Out!",
             itemStyle: {
-              color: '#008000'
-            }
+              color: "#008000",
+            },
           },
           {
-            value: numBxConcern,
+            value: numBxConcern.length,
             name: "Behavioral Concern",
             itemStyle: {
-              color: '#FFFF00'
-            }
+              color: "#FFFF00",
+            },
           },
           {
             value: teachReferrals.length,
