@@ -106,6 +106,7 @@ const CreatePunishmentPanel = ({ setPanelName, data = [] }) => {
     { value: "Disruptive Behavior", label: "Disruptive Behavior" },
     { value: "Horseplay", label: "Horseplay" },
     { value: "Dress Code", label: "Dress Code" },
+    { value: "Inappropriate Language", label: "Inappropriate Language"},
     {
       value: "Positive Behavior Shout Out!",
       label: "Positive Behavior Shout Out!",
