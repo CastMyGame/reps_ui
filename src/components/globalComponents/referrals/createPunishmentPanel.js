@@ -220,7 +220,7 @@ const CreatePunishmentPanel = ({ setPanelName, data = [] }) => {
           }
         )
         .then(function (res) {
-          window.alert(`Guidance Referral has been created`);
+          window.alert(`Counseling Referral has been created`);
         })
         .catch(function (error) {
           console.error(error);
@@ -579,7 +579,7 @@ const CreatePunishmentPanel = ({ setPanelName, data = [] }) => {
                                   name="isGuidanceBoolean"
                                 />
                               }
-                              label="Create Guidance Referral"
+                              label="Create Counseling Referral"
                             />
                             {isGuidance.isGuidanceBoolean &&
                               studentNames.length < 2 && (
@@ -736,7 +736,7 @@ const CreatePunishmentPanel = ({ setPanelName, data = [] }) => {
                     required
                     fullWidth
                     id="guidanceDescription"
-                    label="Brief Guidance Description"
+                    label="Brief Counseling Description"
                     name="guidanceDescription"
                     value={isGuidance.guidanceDescription}
                     onChange={handleGuidanceChange}

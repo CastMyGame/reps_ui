@@ -78,12 +78,12 @@ const RecentContacts: React.FC<Partial<TeacherOverviewDto>> = ({
     });
 
     const sortedAllStudentsData = allStudentsData.sort((a, b) => {
-      if (a.timeCreated === "N/A" && b.timeCreated !== "N/A") return 1;
-      if (b.timeCreated === "N/A" && a.timeCreated !== "N/A") return -1;
-
+      if (a.timeCreated === "N/A" && b.timeCreated !== "N/A") return -1; // "N/A" first
+      if (b.timeCreated === "N/A" && a.timeCreated !== "N/A") return 1;  // "N/A" first
+    
       const dateA = new Date(a.timeCreated || 0);
       const dateB = new Date(b.timeCreated || 0);
-      return dateA.getTime() - dateB.getTime();
+      return dateA.getTime() - dateB.getTime(); // Oldest to newest
     });
 
     setFilteredData(sortedAllStudentsData);
