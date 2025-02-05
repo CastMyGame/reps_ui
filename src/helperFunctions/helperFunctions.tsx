@@ -22,13 +22,9 @@ export const getCurrentWeekOfYear = (): number => {
 export const currentWeek = getCurrentWeekOfYear();
 
 export const getWeekNumber = (date: Date): number => {
-  const oneJan = new Date(date.getFullYear(), 0, 1);
-  const millisecondsInDay = 86400000; // 24 * 60 * 60 * 1000
-  const dayOfYear =
-    Math.floor((date.getTime() - oneJan.getTime()) / millisecondsInDay) + 1;
-  const weekNumber = Math.ceil(dayOfYear / 7);
-
-  return weekNumber;
+  const startOfYear = new Date(date.getFullYear(), 0, 1);
+  const pastDays = (date.getTime() - startOfYear.getTime()) / (1000 * 60 * 60 * 24);
+  return Math.ceil((pastDays + startOfYear.getDay() + 1) / 7);
 };
 
 //The Method filter the list of punihsment by logged in user
