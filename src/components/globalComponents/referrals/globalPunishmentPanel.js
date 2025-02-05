@@ -118,7 +118,7 @@ const GlobalPunishmentPanel = ({ roleType }) => {
       ? archivedData
       : sort === "ALL"
         ? listOfPunishments
-        : listOfPunishments.filter((x) => x.punishment.status === sort);
+        : listOfPunishments.filter((x) => x.status === sort);
 
   const hasScroll = data.length > 10;
 
@@ -393,7 +393,7 @@ const GlobalPunishmentPanel = ({ roleType }) => {
             <TableBody>
               {data.length > 0 ? (
                 data.map((x, key) => {
-                  const days = calculateDaysSince(x.punishment.timeCreated);
+                  const days = calculateDaysSince(x.timeCreated);
 
                   return (
                     <TableRow key={key}>
@@ -419,7 +419,7 @@ const GlobalPunishmentPanel = ({ roleType }) => {
                           fontSize: 14,
                         }}
                       >
-                        {x.punishment.infractionName}
+                        {x.infractionName}
                       </TableCell>
                       <TableCell
                         style={{
@@ -429,7 +429,7 @@ const GlobalPunishmentPanel = ({ roleType }) => {
                           fontSize: 14,
                         }}
                       >
-                        {x.punishment.infractionDescription[0]}
+                        {x.infractionDescription[0]}
                       </TableCell>
                       {roleType === "admin" ? (
                         <TableCell
@@ -438,7 +438,7 @@ const GlobalPunishmentPanel = ({ roleType }) => {
                             textAlign: "auto",
                           }}
                         >
-                          {x.punishment.teacherEmail}
+                          {x.teacherEmail}
                         </TableCell>
                       ) : (
                         <TableCell
@@ -447,7 +447,7 @@ const GlobalPunishmentPanel = ({ roleType }) => {
                             textAlign: "auto",
                           }}
                         >
-                          {x.punishment.infractionLevel}
+                          {x.infractionLevel}
                         </TableCell>
                       )}
 
@@ -459,7 +459,7 @@ const GlobalPunishmentPanel = ({ roleType }) => {
                         <div
                           className={`status-tag ${days >= 4 ? "tag-critical" : days >= 3 ? "tag-danger" : days >= 2 ? "tag-warning" : "tag-good"}`}
                         >
-                          {x.punishment.status}
+                          {x.status}
                         </div>
                       </TableCell>
 
@@ -468,15 +468,15 @@ const GlobalPunishmentPanel = ({ roleType }) => {
                           fontSize: 14,
                         }}
                       >
-                        {dateCreateFormat(x.punishment.timeCreated)}
+                        {dateCreateFormat(x.timeCreated)}
                       </TableCell>
                       <TableCell
                         style={{
                           alignItems: "center",
                         }}
                       >
-                        {x.punishment.archived === false &&
-                          (x.punishment.status === "OPEN" ? (
+                        {x.archived === false &&
+                          (x.status === "OPEN" ? (
                             <>
                               <button
                                 style={{
@@ -503,7 +503,7 @@ const GlobalPunishmentPanel = ({ roleType }) => {
                                   Close Referral
                                 </p>
                                 {loadingPunihsmentId.id ===
-                                  x.punishment.punishmentId &&
+                                  x.punishmentId &&
                                 loadingPunihsmentId.buttonType === "close" ? (
                                   <CircularProgress
                                     style={{ height: "20px", width: "20px" }}
@@ -539,7 +539,7 @@ const GlobalPunishmentPanel = ({ roleType }) => {
                                   Delete Referral
                                 </p>
                                 {loadingPunihsmentId.id ===
-                                  x.punishment.punishmentId &&
+                                  x.punishmentId &&
                                 loadingPunihsmentId.buttonType === "delete" ? (
                                   <CircularProgress
                                     style={{ height: "20px", width: "20px" }}
@@ -578,7 +578,7 @@ const GlobalPunishmentPanel = ({ roleType }) => {
                                   Delete Referral
                                 </p>
                                 {loadingPunihsmentId.id ===
-                                  x.punishment.punishmentId &&
+                                  x.punishmentId &&
                                 loadingPunihsmentId.buttonType === "delete" ? (
                                   <CircularProgress
                                     style={{ height: "20px", width: "20px" }}
