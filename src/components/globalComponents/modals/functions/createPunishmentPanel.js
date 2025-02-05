@@ -524,7 +524,7 @@ const CreatePunishmentPanel = () => {
                               name="isGuidanceBoolean"
                             />
                           }
-                          label="Create Guidance Referral"
+                          label="Create Counseling Referral"
                         />
                         {isGuidance.isGuidanceBoolean &&
                           studentNames.length < 2 && (
@@ -655,7 +655,7 @@ const CreatePunishmentPanel = () => {
                     required
                     fullWidth
                     id="guidanceDescription"
-                    label="Brief Guidance Description"
+                    label="Brief Counseling Description"
                     name="guidanceDescription"
                     value={isGuidance.guidanceDescription}
                     onChange={handleGuidanceChange}
