@@ -100,6 +100,8 @@ const GlobalPunishmentPanel = ({ roleType }) => {
                 (x) => x.teacherEmail === sessionStorage.getItem("email")
               );
               setArchivedData(sortedByRole);
+            } else {
+              setArchivedData(sortedData)
             }
           })
           .catch(function (error) {
@@ -392,7 +394,7 @@ const GlobalPunishmentPanel = ({ roleType }) => {
             <TableBody>
               {data.length > 0 ? (
                 data.map((x, key) => {
-                  const days = calculateDaysSince(x.timeCreated);
+                  const days = calculateDaysSince(x.punishment.timeCreated);
 
                   return (
                     <TableRow key={key}>
@@ -418,7 +420,7 @@ const GlobalPunishmentPanel = ({ roleType }) => {
                           fontSize: 14,
                         }}
                       >
-                        {x.infractionName}
+                        {x.punishment.infractionName}
                       </TableCell>
                       <TableCell
                         style={{
@@ -428,7 +430,7 @@ const GlobalPunishmentPanel = ({ roleType }) => {
                           fontSize: 14,
                         }}
                       >
-                        {x.infractionDescription[0]}
+                        {x.punishment.infractionDescription[0]}
                       </TableCell>
                       {roleType === "admin" ? (
                         <TableCell
@@ -437,7 +439,7 @@ const GlobalPunishmentPanel = ({ roleType }) => {
                             textAlign: "auto",
                           }}
                         >
-                          {x.teacherEmail}
+                          {x.punishment.teacherEmail}
                         </TableCell>
                       ) : (
                         <TableCell
@@ -446,7 +448,7 @@ const GlobalPunishmentPanel = ({ roleType }) => {
                             textAlign: "auto",
                           }}
                         >
-                          {x.infractionLevel}
+                          {x.punishment.infractionLevel}
                         </TableCell>
                       )}
 
@@ -458,7 +460,7 @@ const GlobalPunishmentPanel = ({ roleType }) => {
                         <div
                           className={`status-tag ${days >= 4 ? "tag-critical" : days >= 3 ? "tag-danger" : days >= 2 ? "tag-warning" : "tag-good"}`}
                         >
-                          {x.status}
+                          {x.punishment.status}
                         </div>
                       </TableCell>
 
@@ -467,15 +469,15 @@ const GlobalPunishmentPanel = ({ roleType }) => {
                           fontSize: 14,
                         }}
                       >
-                        {dateCreateFormat(x.timeCreated)}
+                        {dateCreateFormat(x.punishment.timeCreated)}
                       </TableCell>
                       <TableCell
                         style={{
                           alignItems: "center",
                         }}
                       >
-                        {x.archived === false &&
-                          (x.status === "OPEN" ? (
+                        {x.punishment.archived === false &&
+                          (x.punishment.status === "OPEN" ? (
                             <>
                               <button
                                 style={{
