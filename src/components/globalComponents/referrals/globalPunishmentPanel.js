@@ -106,7 +106,7 @@ const GlobalPunishmentPanel = ({ roleType }) => {
             setLoading(false);
             console.error(error);
           });
-          
+          setLoading(false);
       });
   }, [roleType, filter]);
 

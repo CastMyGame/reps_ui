@@ -7,10 +7,15 @@ import { currentWeek, extractDataByWeek } from "src/helperFunctions/helperFuncti
 export const WorseClassTable = ({ punishmentResponse = [], teachers = [] }) => {
   // Initialize structures to track write-ups and the corresponding teacher
   const writeUpsByPeriod = {
-    block1: { count: 0, teacher: "" },
-    block2: { count: 0, teacher: "" },
-    block3: { count: 0, teacher: "" },
-    block4: { count: 0, teacher: "" },
+    period1: { count: 0, teacher: "" },
+    period2: { count: 0, teacher: "" },
+    period3: { count: 0, teacher: "" },
+    period4: { count: 0, teacher: "" },
+    period5: { count: 0, teacher: "" },
+    period6: { count: 0, teacher: "" },
+    period7: { count: 0, teacher: "" },
+    period8: { count: 0, teacher: "" },
+    period9: { count: 0, teacher: "" },
   };
 
   teachers.forEach((teacher) => {
@@ -21,7 +26,7 @@ export const WorseClassTable = ({ punishmentResponse = [], teachers = [] }) => {
         item.teacherEmail === teacher.email
     );
 
-    const periods = ["block1", "block2", "block3", "block4"];
+    const periods = ["period1", "period2", "period3", "period4", "period5", "period6", "period7", "period8","period9"];
     periods.forEach((period) => {
       const count = negWriteUpData.filter(
         (item) => item.classPeriod === period
