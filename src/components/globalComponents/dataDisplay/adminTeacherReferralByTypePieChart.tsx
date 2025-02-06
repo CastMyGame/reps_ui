@@ -39,6 +39,11 @@ export const AdminTeacherReferralByTypePieChart: React.FC<AdminOverviewDto> = ({
     rangeWeeks,
     writeUpResponse as TeacherDto[]
   );
+  const inappropriateLanguage = GenerateBxByWeek(
+    "Inappropriate Language",
+    rangeWeeks,
+    writeUpResponse as TeacherDto[]
+  );
   const behavioralConcernData = GenerateBxByWeek(
     "Behavioral Concern",
     rangeWeeks,
@@ -53,10 +58,6 @@ export const AdminTeacherReferralByTypePieChart: React.FC<AdminOverviewDto> = ({
   const option = {
     responsive: true,
     maintainAspectRatio: false,
-    // title: {
-    //   text: "Teacher Managed Referrals by Type",
-    //   left: "center",
-    // },
     tooltip: {
       trigger: "item",
     },
@@ -77,49 +78,56 @@ export const AdminTeacherReferralByTypePieChart: React.FC<AdminOverviewDto> = ({
         radius: "70%",
         data: [
           {
-            value: unauthorizedDeviceData,
+            value: unauthorizedDeviceData[0].length,
             name: "Unauthorized Device/Cell Phone",
             itemStyle: {
               color: "#ff0000",
             },
           },
           {
-            value: tardyData,
-            name: "Tardy",
+            value: inappropriateLanguage[0].length,
+            name: "Inappropriate Language",
             itemStyle: {
-              color: "#800080",
+              color: "#a5142c",
             },
           },
           {
-            value: horseplayData,
-            name: "Horseplay",
-            itemStyle: {
-              color: "#964B00",
-            },
-          },
-          {
-            value: dressCodeData,
-            name: "Dress Code",
-            itemStyle: {
-              color: "#C7EA46",
-            },
-          },
-          {
-            value: disruptiveBehaviorData,
+            value: disruptiveBehaviorData[0].length,
             name: "Disruptive Behavior",
             itemStyle: {
               color: "#ffA500",
             },
           },
           {
-            value: behavioralConcernData,
+            value: dressCodeData[0].length,
+            name: "Dress Code",
+            itemStyle: {
+              color: "#C7EA46",
+            },
+          },
+          {
+            value: tardyData[0].length,
+            name: "Tardy",
+            itemStyle: {
+              color: "#800080",
+            },
+          },
+          {
+            value: horseplayData[0].length,
+            name: "Horseplay",
+            itemStyle: {
+              color: "#964B00",
+            },
+          },
+          {
+            value: behavioralConcernData[0].length,
             name: "Behavioral Concern",
             itemStyle: {
               color: "#0000FF",
             },
           },
           {
-            value: academicConcernData,
+            value: academicConcernData[0].length,
             name: "Academic Concern",
             itemStyle: {
               color: "#000000",
