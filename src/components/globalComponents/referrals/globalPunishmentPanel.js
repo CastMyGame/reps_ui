@@ -86,28 +86,27 @@ const GlobalPunishmentPanel = ({ roleType }) => {
         console.error(error);
       })
       .finally(() => {
-        setLoading(false); // Set loading to false when both requests are completed;
 
         axios
           .get(urlArchive, { headers }) // Pass the headers option with the JWT token
           .then(function (response) {
             const sortedData = response.data.sort(
               (a, b) =>
-                new Date(b.punishment.timeCreated) -
-                new Date(a.punishment.timeCreated)
+                new Date(b.timeCreated) -
+                new Date(a.timeCreated)
             );
             if (roleType === "teacher") {
               const sortedByRole = sortedData.filter(
                 (x) => x.teacherEmail === sessionStorage.getItem("email")
               );
               setArchivedData(sortedByRole);
-              setListOfPunishments(sortedByRole);
             }
           })
           .catch(function (error) {
             setLoading(false);
             console.error(error);
           });
+          
       });
   }, [roleType, filter]);
 
