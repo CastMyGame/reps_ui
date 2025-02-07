@@ -23,6 +23,7 @@ import "ag-grid-community/styles/ag-theme-alpine.css"; // Using "alpine" for a m
 const AdminTeacherPanel = ({ data = [] }) => {
   const [teacherProfileModal, setTeacherProfileModal] = useState(false);
   const [teacherProfileData, setTeacherProfileData] = useState([]);
+  const [teachersList, setTeachersList] = useState([]);
   const [activeTeacher, setActiveTeacher] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredData, setFilteredData] = useState([]);
@@ -40,6 +41,9 @@ const AdminTeacherPanel = ({ data = [] }) => {
     setSearchQuery(e.target.value);
   };
 
+  useEffect(() => {
+    setTeachersList(data?.teachers);
+  }, [data.teachers]);
   // Ensure that all data properties are safely handled (default to empty arrays)
   const teachers = data.teachers || [];
   const officeReferrals = data.officeReferrals || [];
@@ -128,10 +132,6 @@ const AdminTeacherPanel = ({ data = [] }) => {
     setTeacherProfileModal(true);
   };
 
-  const autoSizeStrategy = {
-    type: "fitCellContents",
-  };
-
   const columnDefs = [
     { headerName: "Teacher Name", field: "fullName" },
     { headerName: "Positive Shout Outs", field: "shoutOuts" },
@@ -184,25 +184,15 @@ const AdminTeacherPanel = ({ data = [] }) => {
   //   pdf.save("teacher_report.pdf");
   // };
 
-  const theRows = {
-    fullName: "Test Teacher",
-    shoutOuts: 2,
-    behaviorConcerns: 1,
-    teacherManagedReferrals: 3,
-    officeManagedReferrals: 4,
-  };
-
   const hasScroll = data.length > 10;
-  console.log("Filtered Data before setting rowData:", filteredData);
-  console.log("Row Data:", rowData);
 
   return (
     <>
       {teacherProfileModal && activeTeacher && (
         <TeacherDetailsModal
-          teacherProfileData={teacherProfileData}
           activeTeacher={activeTeacher}
           setDisplayBoolean={setTeacherProfileModal}
+          data={data}
         />
       )}
       <div
