@@ -38,11 +38,11 @@
     border: 2px solid black
 }
 
-.header-section-center{
+.header-section-table {
     border-radius: 0px 0px 0px 0px;
-    width: 25%;
+    width: 45%;
     height: 250px;
-    overflow-y: scroll;
+    overflow: scroll;
     padding-left: 10px;
     border: 2px solid black
 
@@ -64,6 +64,7 @@
 
 .profile-modal-body{
     height: 50%;
+    margin-top: 7vw;
 }
 
 .modal-buttons-teacher-profile{

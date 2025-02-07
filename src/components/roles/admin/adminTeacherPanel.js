@@ -23,19 +23,32 @@ import "ag-grid-community/styles/ag-theme-alpine.css"; // Using "alpine" for a m
 const AdminTeacherPanel = ({ data = [] }) => {
   const [teacherProfileModal, setTeacherProfileModal] = useState(false);
   const [teacherProfileData, setTeacherProfileData] = useState([]);
+  const [teachersList, setTeachersList] = useState([]);
   const [activeTeacher, setActiveTeacher] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredData, setFilteredData] = useState([]);
+  const [rowData, setRowData] = useState([
+    {
+      fullName: "Loading...",
+      shoutOuts: 0,
+      behaviorConcerns: 0,
+      teacherManagedReferrals: 0,
+      officeManagedReferrals: 0,
+    },
+  ]);
 
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
   };
 
+  useEffect(() => {
+    setTeachersList(data?.teachers);
+  }, [data.teachers]);
   // Ensure that all data properties are safely handled (default to empty arrays)
   const teachers = data.teachers || [];
   const officeReferrals = data.officeReferrals || [];
   const shoutOutsResponse = data.shoutOutsResponse || [];
-  const writeUpsResponse = data.writeUpsResponse || [];
+  const writeUpResponse = data.writeUpResponse || [];
   const punishmentResponse = data.punishmentResponse || [];
 
   // Process the data to map teachers with their referrals, shoutouts, and behavior concerns
@@ -61,7 +74,8 @@ const AdminTeacherPanel = ({ data = [] }) => {
         if (
           teacherDataMap.has(email) &&
           writeUp.infractionName !== "Behavior Concern" &&
-          writeUp.infractionName !== "Positive Behavior Shout Out!"
+          writeUp.infractionName !== "Positive Behavior Shout Out!" &&
+          writeUp.infractionName !== "Academic Concern"
         ) {
           teacherDataMap.get(email).teacherManagedReferrals += 1;
         }
@@ -98,6 +112,7 @@ const AdminTeacherPanel = ({ data = [] }) => {
       });
 
       const formattedData = Array.from(teacherDataMap.values());
+      console.log(" Formatted Data Map ", formattedData);
       setFilteredData(formattedData);
     };
 
@@ -105,6 +120,12 @@ const AdminTeacherPanel = ({ data = [] }) => {
       processTeacherData();
     }
   }, [data]);
+
+  useEffect(() => {
+    if (Array.isArray(filteredData) && filteredData.length > 0) {
+      setRowData([...filteredData]); // Ensure it's an array
+    }
+  }, [filteredData]);
 
   const handleProfileClick = (x) => {
     setActiveTeacher(x);
@@ -164,23 +185,24 @@ const AdminTeacherPanel = ({ data = [] }) => {
   // };
 
   const hasScroll = data.length > 10;
+
   return (
     <>
       {teacherProfileModal && activeTeacher && (
         <TeacherDetailsModal
-          teacherProfileData={teacherProfileData}
           activeTeacher={activeTeacher}
           setDisplayBoolean={setTeacherProfileModal}
+          data={data}
         />
       )}
       <div
         className="ag-theme-alpine"
-        style={{ height: "60vh", width: "100%" }}
+        style={{ height: "400px", width: "100%" }}
       >
         <AgGridReact
-          rowData={filteredData} // The filtered data for the teachers
+          rowData={rowData.length > 0 ? rowData : []} // Ensures rowData is an array
           columnDefs={columnDefs}
-          domLayout="autoHeight"
+          domLayout="autoHeight" // Ensures dynamic row height
           onRowClicked={(row) => handleProfileClick(row.data)}
         />
       </div>

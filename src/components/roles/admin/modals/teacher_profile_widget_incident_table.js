@@ -82,16 +82,16 @@ const TeacherProfileIncidentsByStudentTable = ({ writeUps = [] }) => {
   );
 
   filteredData.sort((a, b) => b.incidents - a.incidents);
+  console.log(" Filtered table data ", filteredData);
 
   return (
     <TableContainer component={Paper}>
-      <h3 style={{textAlign:'center'}}> Write-up % By Student</h3> 
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell style={{ fontSize: "1rem" }}>Name</TableCell>
-            <TableCell style={{ fontSize: "1rem" }}>Write-ups</TableCell>
-            <TableCell style={{ fontSize: "1rem" }}>
+            <TableCell style={{ fontSize: 18 }}>Name</TableCell>
+            <TableCell style={{ fontSize: 18, justifyContent: "left" }}>Write-ups</TableCell>
+            <TableCell style={{ fontSize: 18 }}>
               Percent of Write-ups
             </TableCell>
           </TableRow>
@@ -99,13 +99,13 @@ const TeacherProfileIncidentsByStudentTable = ({ writeUps = [] }) => {
         <TableBody>
           {filteredData.map((record, index) => (
             <TableRow key={index}>
-              <TableCell style={{ fontSize: "1rem" }}>
+              <TableCell style={{ fontSize: 12 }}>
                 {record.firstName || record.studentEmail} {record.lastName}
               </TableCell>
-              <TableCell style={{ fontSize: "1rem" }}>
+              <TableCell style={{ fontSize: 16 }}>
                 {record.incidents}
               </TableCell>
-              <TableCell style={{ fontSize: "1rem" }}>
+              <TableCell style={{ fontSize: 16 }}>
                 {record.percent}%
               </TableCell>
             </TableRow>
