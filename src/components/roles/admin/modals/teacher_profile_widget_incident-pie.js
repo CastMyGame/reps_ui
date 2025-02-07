@@ -75,33 +75,39 @@ export const TeacherProfileIncidentByStudentPieChart = ({ writeUps = [] }) => {
   };
 
   return (
-    <>
-      <div style={{ display: "flex", flexDirection:'column' }}>
-        <h2 style={{textAlign:"center"}}>Pie Chart - Incident</h2>
-        <PieChart
-          series={[
-            {
-              data: modifiedList.map((student, index) => ({
-                id: index,
-                value: parseFloat(student.percent),
-                label: ` ${student.studentEmail}`,
-              })),
-              arcLabel: (item) => `(${parseFloat(item.value)}%)`,
-              arcLabelMinAngle: 45,
-            },
-          ]}
-          width={300}
-          height={300}
-          sx={{
-            [`& .${pieArcLabelClasses.root}`]: {
-              fill: "white",
-              fontWeight: "bold",
-            },
-          }}
-          slotProps={{ legend: { hidden: true } }}
-   
-        />
-        {/* <div className="legend">
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center", // Center horizontally
+        alignItems: "center", // Center vertically
+        height: "100%", // Ensure the container takes up the full height
+        width: "100%", // Ensure the container takes up the full width
+      }}
+    >
+      <PieChart
+        series={[
+          {
+            data: modifiedList.map((student, index) => ({
+              id: index,
+              value: parseFloat(student.percent),
+              label: ` ${student.studentEmail}`,
+            })),
+            arcLabel: (item) => `(${parseFloat(item.value)}%)`,
+            arcLabelMinAngle: 45,
+          },
+        ]}
+        width={300}
+        height={300}
+        sx={{
+          [`& .${pieArcLabelClasses.root}`]: {
+            fill: "white",
+            fontWeight: "bold",
+          },
+          marginLeft: "15vh"
+        }}
+        slotProps={{ legend: { hidden: true } }}
+      />
+      {/* <div className="legend">
           {modifiedList.map((student, index) => (
             <div key={index} className="legend-item">
               <div
@@ -112,7 +118,6 @@ export const TeacherProfileIncidentByStudentPieChart = ({ writeUps = [] }) => {
             </div>
           ))}
         </div> */}
-      </div>
-    </>
+    </div>
   );
 };

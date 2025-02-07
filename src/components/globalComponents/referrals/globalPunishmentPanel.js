@@ -119,7 +119,7 @@ const GlobalPunishmentPanel = ({ roleType }) => {
       ? archivedData
       : sort === "ALL"
         ? listOfPunishments
-        : listOfPunishments.filter((x) => x.status === sort);
+        : listOfPunishments.filter((x) => x.punishment.status === sort);
 
   const hasScroll = data.length > 10;
 
