@@ -26,6 +26,15 @@ const AdminTeacherPanel = ({ data = [] }) => {
   const [activeTeacher, setActiveTeacher] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredData, setFilteredData] = useState([]);
+  const [rowData, setRowData] = useState([
+    {
+      fullName: "Loading...",
+      shoutOuts: 0,
+      behaviorConcerns: 0,
+      teacherManagedReferrals: 0,
+      officeManagedReferrals: 0,
+    },
+  ]);
 
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
@@ -35,7 +44,7 @@ const AdminTeacherPanel = ({ data = [] }) => {
   const teachers = data.teachers || [];
   const officeReferrals = data.officeReferrals || [];
   const shoutOutsResponse = data.shoutOutsResponse || [];
-  const writeUpsResponse = data.writeUpsResponse || [];
+  const writeUpResponse = data.writeUpResponse || [];
   const punishmentResponse = data.punishmentResponse || [];
 
   // Process the data to map teachers with their referrals, shoutouts, and behavior concerns
@@ -61,7 +70,8 @@ const AdminTeacherPanel = ({ data = [] }) => {
         if (
           teacherDataMap.has(email) &&
           writeUp.infractionName !== "Behavior Concern" &&
-          writeUp.infractionName !== "Positive Behavior Shout Out!"
+          writeUp.infractionName !== "Positive Behavior Shout Out!" &&
+          writeUp.infractionName !== "Academic Concern"
         ) {
           teacherDataMap.get(email).teacherManagedReferrals += 1;
         }
@@ -98,6 +108,7 @@ const AdminTeacherPanel = ({ data = [] }) => {
       });
 
       const formattedData = Array.from(teacherDataMap.values());
+      console.log(" Formatted Data Map ", formattedData);
       setFilteredData(formattedData);
     };
 
@@ -106,9 +117,19 @@ const AdminTeacherPanel = ({ data = [] }) => {
     }
   }, [data]);
 
+  useEffect(() => {
+    if (Array.isArray(filteredData) && filteredData.length > 0) {
+      setRowData([...filteredData]); // Ensure it's an array
+    }
+  }, [filteredData]);
+
   const handleProfileClick = (x) => {
     setActiveTeacher(x);
     setTeacherProfileModal(true);
+  };
+
+  const autoSizeStrategy = {
+    type: "fitCellContents",
   };
 
   const columnDefs = [
@@ -163,7 +184,18 @@ const AdminTeacherPanel = ({ data = [] }) => {
   //   pdf.save("teacher_report.pdf");
   // };
 
+  const theRows = {
+    fullName: "Test Teacher",
+    shoutOuts: 2,
+    behaviorConcerns: 1,
+    teacherManagedReferrals: 3,
+    officeManagedReferrals: 4,
+  };
+
   const hasScroll = data.length > 10;
+  console.log("Filtered Data before setting rowData:", filteredData);
+  console.log("Row Data:", rowData);
+
   return (
     <>
       {teacherProfileModal && activeTeacher && (
@@ -175,12 +207,12 @@ const AdminTeacherPanel = ({ data = [] }) => {
       )}
       <div
         className="ag-theme-alpine"
-        style={{ height: "60vh", width: "100%" }}
+        style={{ height: "400px", width: "100%" }}
       >
         <AgGridReact
-          rowData={filteredData} // The filtered data for the teachers
+          rowData={rowData.length > 0 ? rowData : []} // Ensures rowData is an array
           columnDefs={columnDefs}
-          domLayout="autoHeight"
+          domLayout="autoHeight" // Ensures dynamic row height
           onRowClicked={(row) => handleProfileClick(row.data)}
         />
       </div>
