@@ -100,6 +100,8 @@ const GlobalPunishmentPanel = ({ roleType }) => {
                 (x) => x.teacherEmail === sessionStorage.getItem("email")
               );
               setArchivedData(sortedByRole);
+            } else {
+              setArchivedData(sortedData)
             }
           })
           .catch(function (error) {
@@ -117,7 +119,7 @@ const GlobalPunishmentPanel = ({ roleType }) => {
       ? archivedData
       : sort === "ALL"
         ? listOfPunishments
-        : listOfPunishments.filter((x) => x.punishment.status === sort);
+        : listOfPunishments.filter((x) => x.status === sort);
 
   const hasScroll = data.length > 10;
 
@@ -502,7 +504,7 @@ const GlobalPunishmentPanel = ({ roleType }) => {
                                   Close Referral
                                 </p>
                                 {loadingPunihsmentId.id ===
-                                  x.punishment.punishmentId &&
+                                  x.punishmentId &&
                                 loadingPunihsmentId.buttonType === "close" ? (
                                   <CircularProgress
                                     style={{ height: "20px", width: "20px" }}
@@ -538,7 +540,7 @@ const GlobalPunishmentPanel = ({ roleType }) => {
                                   Delete Referral
                                 </p>
                                 {loadingPunihsmentId.id ===
-                                  x.punishment.punishmentId &&
+                                  x.punishmentId &&
                                 loadingPunihsmentId.buttonType === "delete" ? (
                                   <CircularProgress
                                     style={{ height: "20px", width: "20px" }}
@@ -577,7 +579,7 @@ const GlobalPunishmentPanel = ({ roleType }) => {
                                   Delete Referral
                                 </p>
                                 {loadingPunihsmentId.id ===
-                                  x.punishment.punishmentId &&
+                                  x.punishmentId &&
                                 loadingPunihsmentId.buttonType === "delete" ? (
                                   <CircularProgress
                                     style={{ height: "20px", width: "20px" }}
