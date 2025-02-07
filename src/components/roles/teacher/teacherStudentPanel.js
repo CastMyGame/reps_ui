@@ -36,7 +36,7 @@ const TeacherStudentPanel = ({ setPanelName, data = [] }) => {
   const [selectedClass, setSelectedClass] = useState(""); // Selected class name
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [students, setStudents] = useState([]);
+  const [student, setStudent] = useState([]);
 
   useEffect(() => {
     if (data.teacher.classes.length > 0 && !selectedClass) {
@@ -99,6 +99,7 @@ const TeacherStudentPanel = ({ setPanelName, data = [] }) => {
   const handleProfileClick = (x) => {
     fetchStudentData(x.data.studentEmail);
     setSpotEmail(x.data.studentEmail);
+    setStudent(x.data.fullName);
   };
 
   const pdfRef = useRef();
@@ -186,13 +187,13 @@ const TeacherStudentPanel = ({ setPanelName, data = [] }) => {
               if (foundStudent) {
                 studentsArray.push({
                   fullName: `${foundStudent.firstName} ${foundStudent.lastName}`,
-                  studentEmail: student.studentEmail,
+                  studentEmail: foundStudent.studentEmail,
                   grade: foundStudent.grade,
                   teacherManagedReferrals: data.writeUpResponse.filter(
-                    (w) => w.studentEmail === student.studentEmail
+                    (w) => w.studentEmail === foundStudent.studentEmail
                   ).length,
                   officeManagedReferrals: data.officeReferrals.filter(
-                    (o) => o.studentEmail === student.studentEmail
+                    (o) => o.studentEmail === foundStudent.studentEmail
                   ).length,
                   className: classEntry.className,
                 });
@@ -245,6 +246,7 @@ const TeacherStudentPanel = ({ setPanelName, data = [] }) => {
       field: "fullName",
       onCellClicked: (params) => {
         handleProfileClick(params);
+        console.log("Params ", params);
       },
     },
     { headerName: "Grade", field: "grade" },
@@ -325,11 +327,10 @@ const TeacherStudentPanel = ({ setPanelName, data = [] }) => {
                 style={{
                   maxHeight: "80rem",
                   width: "80%",
-                  backgroundColor: "#25444C",
                   padding: "20px",
                   borderRadius: "8px",
                   boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-                  overflowY: "hidden",
+                  overflowY: "scroll",
                 }}
               >
                 <div
@@ -339,13 +340,13 @@ const TeacherStudentPanel = ({ setPanelName, data = [] }) => {
                   <div className="box-left">
                     <AccountBoxIcon style={{ fontSize: "100px" }} />
                     <h4>
-                      {studentData[0].firstName} {studentData[0].lastName}
+                      {student}
                     </h4>
                     <div className="details-box">
                       <p>Email: {studentData[0].studentEmail}</p>
-                      <p>Phone: {studentData[0].studentPhoneNumber}</p>
-                      <p>Grade: {studentData[0].grade}</p>
-                      <p>Address: {studentData[0].address}</p>
+                      <p>Phone: {studentData[0].studentPhoneNumber || "N/A"}</p>
+                      <p>Grade: {studentData[0].grade || "N/A"}</p>
+                      <p>Address: {studentData[0].address || "N/A"}</p>
                     </div>
                   </div>
                   <div
@@ -357,7 +358,7 @@ const TeacherStudentPanel = ({ setPanelName, data = [] }) => {
                 </div>
                 <div className="modal-body-student" style={{ height: "320px" }}>
                   <TableContainer
-                    style={{ height: "300px", backgroundColor: "white" }}
+                    style={{ backgroundColor: "white" }}
                   >
                     <Table stickyHeader>
                       <TableHead>
