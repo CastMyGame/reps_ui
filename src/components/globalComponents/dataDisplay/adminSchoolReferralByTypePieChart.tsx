@@ -5,7 +5,7 @@ import { AdminOverviewDto, TeacherDto } from "src/types/responses";
 import {
   extractDataByWeek,
   getCurrentWeekOfYear,
-  findDataByWeekAndByPunishment,
+  GenerateBxByWeek
 } from "src/helperFunctions/helperFunctions";
 
 export const AdminSchoolReferralByTypePieChart: React.FC<AdminOverviewDto> = ({
@@ -16,10 +16,10 @@ export const AdminSchoolReferralByTypePieChart: React.FC<AdminOverviewDto> = ({
 }) => {
   const currentWeek = getCurrentWeekOfYear();
 
-  const behavioralConcerns = findDataByWeekAndByPunishment(
-    currentWeek,
+  const behavioralConcerns = GenerateBxByWeek(
     "Behavioral Concern",
-    punishmentResponse as TeacherDto[]
+    currentWeek,
+    writeUpResponse as TeacherDto[]
   );
   const shoutOutWeek = extractDataByWeek(
     currentWeek,
@@ -64,7 +64,7 @@ export const AdminSchoolReferralByTypePieChart: React.FC<AdminOverviewDto> = ({
             },
           },
           {
-            value: behavioralConcerns,
+            value: behavioralConcerns[0].length,
             name: "Behavioral Concern",
             itemStyle: {
               color: "#FFFF00",
