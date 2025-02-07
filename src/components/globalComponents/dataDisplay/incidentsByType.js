@@ -30,10 +30,13 @@ export const IncidentByTypePieChart = ({ data = [] }) => {
     (punishment) => punishment.infractionName === "Failure To Complete Work"
   );
   const posList = writeUps.filter(
-    (punishment) => punishment.infractionName === "Positive Shout Out!"
+    (punishment) => punishment.infractionName === "Positive Behavior Shout Out!"
   );
   const behavioralConcernList = writeUps.filter(
     (punishment) => punishment.infractionName === "Behavioral Concern"
+  );
+  const inappropriateLangList = writeUps.filter(
+    (punishment) => punishment.infractionName === "Inappropriate Language"
   );
 
   const refList = [];
@@ -50,7 +53,8 @@ export const IncidentByTypePieChart = ({ data = [] }) => {
     cellList.length +
     horseplayList.length +
     dressCodeList.length +
-    ftcList.length;
+    ftcList.length +
+    inappropriateLangList.length;
 
   const option = {
     tooltip: {
@@ -64,6 +68,9 @@ export const IncidentByTypePieChart = ({ data = [] }) => {
       {
         type: "pie",
         radius: "50%",
+        label: {
+          show: false
+        },
         data: [
           { value: behavioralConcernList.length, name: "Behavioral Concern" },
           { value: posList.length, name: "Positive Shout Out!" },
