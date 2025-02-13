@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { baseUrl } from "src/utils/jsonData";
+import { Autocomplete, TextField } from "@mui/material";
 
 const ClassUpdate = ({ setPanelName, teacher }) => {
   const [listOfStudents, setListOfStudents] = useState([]);
@@ -13,10 +14,11 @@ const ClassUpdate = ({ setPanelName, teacher }) => {
   const [isNewClass, setIsNewClass] = useState(false); // Tracks if creating a new class
   const [isModified, setIsModified] = useState(false);
 
+  const [searchTerm, setSearchTerm] = useState(""); // Holds the user's input
+
   useEffect(() => {
     if (teacher && teacher.classes && teacher.classes.length > 0) {
       const firstClass = teacher.classes[0];
-      console.log("TEACHER FIRST CLASS ", firstClass);
       setClassName(firstClass.className);
       setPeriodSelected(firstClass.classPeriod);
       setStudentEmails(
@@ -204,10 +206,6 @@ const ClassUpdate = ({ setPanelName, teacher }) => {
     { value: "exchange", label: "Class Exchange" },
     { value: "afterSchool", label: "After School" },
     { value: "lunch", label: "Lunch" },
-    { value: "block1", label: "Block 1" },
-    { value: "block2", label: "Block 2" },
-    { value: "block3", label: "Block 3" },
-    { value: "block4", label: "Block 4" },
     { value: "period1", label: "Period 1" },
     { value: "period2", label: "Period 2" },
     { value: "period3", label: "Period 3" },
@@ -243,12 +241,12 @@ const ClassUpdate = ({ setPanelName, teacher }) => {
           >
             <option value="">Select a class</option>
             {teacher.classes
-            .filter((cls) => cls.className.trim() !== "")
-            .map((cls) => (
-              <option key={cls.className} value={cls.className}>
-                {cls.className}
-              </option>
-            ))}
+              .filter((cls) => cls.className.trim() !== "")
+              .map((cls) => (
+                <option key={cls.className} value={cls.className}>
+                  {cls.className}
+                </option>
+              ))}
             <option value="new">Create New Class</option>
           </select>
           <button
@@ -315,47 +313,48 @@ const ClassUpdate = ({ setPanelName, teacher }) => {
         {/* Search Bar */}
         <div style={{ marginBottom: "20px" }}>
           <label>Search for a Student to Add</label>
-          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-            <select
-              value={selectedStudent}
-              onChange={(e) => setSelectedStudent(e.target.value)}
-              style={{
-                flex: 1,
-                padding: "8px",
-                fontSize: "1rem",
-                borderRadius: "4px",
-                border: "1px solid #ccc",
-              }}
-            >
-              <option value="">Select a student</option>
-              {listOfStudents
-                .filter(
-                  (student) => !studentEmails.includes(student.studentEmail)
-                )
-                .map((student) => (
-                  <option
-                    key={student.studentEmail}
-                    value={student.studentEmail}
-                  >
-                    {student.firstName} {student.lastName} -{" "}
-                    {student.studentEmail}
-                  </option>
-                ))}
-            </select>
-            <button
-              type="button"
-              onClick={handleAddStudent}
-              style={{
-                background: "green",
-                color: "white",
-                border: "none",
-                padding: "8px 15px",
-                borderRadius: "4px",
-              }}
-            >
-              Add Student
-            </button>
-          </div>
+
+          {/* Autocomplete Dropdown */}
+          <Autocomplete
+            options={listOfStudents.filter(
+              (student) => !studentEmails.includes(student.studentEmail) // Exclude already added students
+            )}
+            getOptionLabel={(student) =>
+              `${student.firstName || ""} ${student.lastName || ""} ${student.studentEmail || ""}`
+            }
+            value={selectedStudent || ""} // Controlled component
+            onChange={(event, newValue) => {
+              setSelectedStudent(newValue);
+            }}
+            inputValue={searchTerm}
+            onInputChange={(event, newInputValue) => {
+              setSearchTerm(newInputValue);
+            }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Select or Search for a Student"
+                variant="outlined"
+              />
+            )}
+            sx={{ width: "100%", marginTop: "8px" }}
+          />
+
+          {/* Add Student Button */}
+          <button
+            type="button"
+            onClick={handleAddStudent}
+            style={{
+              background: "green",
+              color: "white",
+              border: "none",
+              padding: "8px 15px",
+              borderRadius: "4px",
+              marginTop: "10px",
+            }}
+          >
+            Add Student
+          </button>
         </div>
 
         {/* Mapped Students */}

@@ -44,9 +44,6 @@ const TeacherInfractionOverPeriodBarChart = ({ data = [] }) => {
     weekData || []
   );
 
-  console.log(" the FTC ", ftc);
-  console.log(" the Data ", data);
-
   const option = {
     tooltip: {
       trigger: "item",
