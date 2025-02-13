@@ -246,7 +246,6 @@ const TeacherStudentPanel = ({ setPanelName, data = [] }) => {
       field: "fullName",
       onCellClicked: (params) => {
         handleProfileClick(params);
-        console.log("Params ", params);
       },
     },
     { headerName: "Grade", field: "grade" },

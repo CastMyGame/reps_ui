@@ -34,12 +34,18 @@ const MenuProps = {
   },
 };
 
-function getStyles(name, studentNames, theme) {
+function getStyles(name, studentNames = [], theme) {
+  if (!Array.isArray(studentNames)) {
+    console.error("studentNames is not an array:", studentNames);
+    return { fontWeight: theme.typography.fontWeightRegular };
+  }
+
+  const studentValues = studentNames.map((student) => student.value); // Extract values
   return {
     fontWeight:
-      studentNames.indexOf(name) === -1
-        ? theme.typography.fontWeightRegular
-        : theme.typography.fontWeightMedium,
+      studentValues.includes(name)
+        ? theme.typography.fontWeightMedium
+        : theme.typography.fontWeightRegular,
   };
 }
 
@@ -49,8 +55,9 @@ const CreatePunishmentPanel = ({ setPanelName, data = [] }) => {
   });
 
   const [listOfStudents, setListOfStudents] = useState([]);
-  const [infractionTypeSelected, setInfractionTypeSelected] = useState("");
-  const [infractionPeriodSelected, setInfractionPeriodSelected] = useState("");
+  const [infractionTypeSelected, setInfractionTypeSelected] = useState(null);
+  const [infractionPeriodSelected, setInfractionPeriodSelected] =
+    useState(null);
   const [teacherEmailSelected, setTeacherEmailSelected] = useState();
   const [infractionDescriptionSelected, setInfractionDescriptionSelected] =
     useState("");
@@ -82,10 +89,6 @@ const CreatePunishmentPanel = ({ setPanelName, data = [] }) => {
     { value: "exchange", label: "Class Exchange" },
     { value: "afterSchool", label: "After School" },
     { value: "lunch", label: "Lunch" },
-    { value: "block1", label: "Block 1" },
-    { value: "block2", label: "Block 2" },
-    { value: "block3", label: "Block 3" },
-    { value: "block4", label: "Block 4" },
     { value: "period1", label: "Period 1" },
     { value: "period2", label: "Period 2" },
     { value: "period3", label: "Period 3" },
@@ -106,7 +109,7 @@ const CreatePunishmentPanel = ({ setPanelName, data = [] }) => {
     { value: "Disruptive Behavior", label: "Disruptive Behavior" },
     { value: "Horseplay", label: "Horseplay" },
     { value: "Dress Code", label: "Dress Code" },
-    { value: "Inappropriate Language", label: "Inappropriate Language"},
+    { value: "Inappropriate Language", label: "Inappropriate Language" },
     {
       value: "Positive Behavior Shout Out!",
       label: "Positive Behavior Shout Out!",
@@ -149,7 +152,7 @@ const CreatePunishmentPanel = ({ setPanelName, data = [] }) => {
       })
       .catch(function (error) {
         console.error(error);
-        setListOfStudents([])
+        setListOfStudents([]);
       });
   }, []);
 
@@ -161,9 +164,9 @@ const CreatePunishmentPanel = ({ setPanelName, data = [] }) => {
   const getPhoneNumber = (email) => {
     if (email != null) {
       const result = (listOfStudents || []).filter(
-        (student) => (student.studentEmail = email)
+        (student) => (student.studentEmail === email)
       );
-      return result[0]?.parentPhoneNumber || "";
+      return result[0].parentPhoneNumber || "";
     } else {
       return "";
     }
@@ -292,7 +295,8 @@ const CreatePunishmentPanel = ({ setPanelName, data = [] }) => {
     setToast({ display: false, message: "" });
   };
 
-  const difference = (data?.teacher.currency || 0) - currency * (studentNames.length || 0);
+  const difference =
+    (data?.teacher.currency || 0) - currency * (studentNames.length || 0);
 
   const handleGuidanceChange = (event) => {
     const { name, value } = event.target;
@@ -323,7 +327,8 @@ const CreatePunishmentPanel = ({ setPanelName, data = [] }) => {
     setIsPhoneLog((prevState) => ({
       ...prevState,
       isPhoneLogBoolean: checked,
-    }));
+      
+    } ));
   };
 
   return (
@@ -407,7 +412,7 @@ const CreatePunishmentPanel = ({ setPanelName, data = [] }) => {
                 component="form"
                 onSubmit={handleSubmit}
                 noValidate
-                sx={{ mt: 1 }}
+                sx={{ mt: 1, width: "100%" }}
               >
                 <h4>Submitting Teacher: {teacherEmailSelected}</h4>
                 <hr />
@@ -417,7 +422,15 @@ const CreatePunishmentPanel = ({ setPanelName, data = [] }) => {
                   className="student-dropdown"
                   id="demo-multiple-chip"
                   value={studentNames}
-                  onChange={(event, newValue) => setStudentNames(newValue)}
+                  onChange={(event, newValue) => {
+                    if (!Array.isArray(newValue)) {
+                      console.error("newValue is not an array:", newValue);
+                      setStudentNames([]);
+                      return;
+                    }
+                  
+                    setStudentNames(newValue); // Ensure newValue is an array of selected students
+                  }}
                   options={selectOptions} // Pass the selectOptions array here
                   getOptionLabel={(option) => option.label}
                   inputLabelProps={{ style: { fontSize: 18 } }}
@@ -547,224 +560,246 @@ const CreatePunishmentPanel = ({ setPanelName, data = [] }) => {
                     </Select>
                   </div>
                 </div>
-                <div className="question-container-text-area">
-                  <p style={{ fontSize: 24 }}>
-                    {infractionTypeSelected === "Failure to Complete Work" ||
-                    infractionTypeSelected === "Positive Behavior Shout Out!" ||
-                    infractionTypeSelected === "Behavioral Concern"
-                      ? getDescription(infractionTypeSelected)
-                      : "Description of Behavior/Event. This will be sent directly to the student and guardian so be sure to provide accurate and objective facts as well as do NOT include the names of any other students."}
-                  </p>
-                  <div>
-                    {studentNames.length < 2 &&
-                      infractionTypeSelected !==
-                        "Positive Behavior Shout Out!" && (
-                        <div className="guidance-box">
-                          <FormGroup>
-                            <FormControlLabel
-                              style={{ color: "black" }}
-                              componentsProps={{
-                                typography: { variant: "h4" },
-                              }}
-                              value="end"
-                              labelPlacement="end"
-                              control={
-                                <Checkbox
-                                  color="primary"
-                                  checked={isGuidance.isGuidanceBoolean}
-                                  sx={{
-                                    "& .MuiSvgIcon-root": { fontSize: 28 },
+                {studentNames.length > 0 &&
+                  infractionTypeSelected != null &&
+                  infractionPeriodSelected != null && (
+                    <div>
+                      <div className="question-container-text-area">
+                        <p style={{ fontSize: 24 }}>
+                          {infractionTypeSelected ===
+                            "Failure to Complete Work" ||
+                          infractionTypeSelected ===
+                            "Positive Behavior Shout Out!" ||
+                          infractionTypeSelected === "Behavioral Concern"
+                            ? getDescription(infractionTypeSelected)
+                            : "Description of Behavior/Event. This will be sent directly to the student and guardian so be sure to provide accurate and objective facts as well as do NOT include the names of any other students."}
+                        </p>
+                        <div>
+                          {studentNames.length === 1 &&
+                            infractionTypeSelected !==
+                              "Positive Behavior Shout Out!" && (
+                              <div className="guidance-box">
+                                <FormGroup>
+                                  <FormControlLabel
+                                    style={{ color: "black" }}
+                                    componentsProps={{
+                                      typography: { variant: "h4" },
+                                    }}
+                                    value="end"
+                                    labelPlacement="end"
+                                    control={
+                                      <Checkbox
+                                        color="primary"
+                                        checked={isGuidance.isGuidanceBoolean}
+                                        sx={{
+                                          "& .MuiSvgIcon-root": {
+                                            fontSize: 28,
+                                          },
+                                        }}
+                                        onChange={handleGuidanceCheckboxChange}
+                                        name="isGuidanceBoolean"
+                                      />
+                                    }
+                                    label="Create Counseling Referral"
+                                  />
+                                  {isGuidance.isGuidanceBoolean &&
+                                    studentNames.length < 2 && (
+                                      <h4>Description goes here</h4>
+                                    )}
+                                </FormGroup>
+                              </div>
+                            )}
+                          {studentNames.length === 1 && (
+                            <div className="guidance-box">
+                              <FormGroup>
+                                <FormControlLabel
+                                  style={{ color: "black" }}
+                                  componentsProps={{
+                                    typography: { variant: "h4" },
                                   }}
-                                  onChange={handleGuidanceCheckboxChange}
-                                  name="isGuidanceBoolean"
+                                  value="end"
+                                  labelPlacement="end"
+                                  control={
+                                    <Checkbox
+                                      color="primary"
+                                      checked={isPhoneLog.isPhoneLogBoolean}
+                                      sx={{
+                                        "& .MuiSvgIcon-root": { fontSize: 28 },
+                                      }}
+                                      onChange={handlePhoneLogCheckboxChange}
+                                      name="isPhoneLogBoolean"
+                                    />
+                                  }
+                                  label="Log Phone Call"
                                 />
-                              }
-                              label="Create Counseling Referral"
-                            />
-                            {isGuidance.isGuidanceBoolean &&
-                              studentNames.length < 2 && (
-                                <h4>Description goes here</h4>
-                              )}
-                          </FormGroup>
-                        </div>
-                      )}
-                    {studentNames.length < 2 && (
-                      <div className="guidance-box">
-                        <FormGroup>
-                          <FormControlLabel
-                            style={{ color: "black" }}
-                            componentsProps={{ typography: { variant: "h4" } }}
-                            value="end"
-                            labelPlacement="end"
-                            control={
-                              <Checkbox
-                                color="primary"
-                                checked={isPhoneLog.isPhoneLogBoolean}
-                                sx={{ "& .MuiSvgIcon-root": { fontSize: 28 } }}
-                                onChange={handlePhoneLogCheckboxChange}
-                                name="isPhoneLogBoolean"
-                              />
-                            }
-                            label="Log Phone Call"
-                          />
 
-                          {isPhoneLog.isPhoneLogBoolean && (
-                            <h4>Phone Log goes here</h4>
+                                {isPhoneLog.isPhoneLogBoolean && (
+                                  <h4>Phone Log goes here</h4>
+                                )}
+                              </FormGroup>
+                            </div>
                           )}
-                        </FormGroup>
-                      </div>
-                    )}
-                    {infractionTypeSelected ===
-                      "Positive Behavior Shout Out!" && (
-                      <div className="points-container">
-                        <div className="point-field">
-                          <div className="wallet-after">
-                            <p>
-                              {" "}
-                              Wallet after shout out:{" "}
-                              {difference ? difference : 0}
-                            </p>
-                          </div>
-                          <TextField
-                            type="numeric"
-                            margin="normal"
-                            inputProps={{ style: { fontSize: 15 }, min: 0 }} // font size of input text
-                            className="points-input"
-                            required
-                            onChange={handleCurrencyChange}
-                            id="currency"
-                            placeholder="Enter Amount"
-                            name="currency"
-                            autoFocus
-                            value={currency}
-                          />
+                          {infractionTypeSelected ===
+                            "Positive Behavior Shout Out!" && (
+                            <div className="points-container">
+                              <div className="point-field">
+                                <div className="wallet-after">
+                                  <p>
+                                    {" "}
+                                    Wallet after shout out:{" "}
+                                    {difference ? difference : 0}
+                                  </p>
+                                </div>
+                                <TextField
+                                  type="numeric"
+                                  margin="normal"
+                                  inputProps={{
+                                    style: { fontSize: 15 },
+                                    min: 0,
+                                  }} // font size of input text
+                                  className="points-input"
+                                  required
+                                  onChange={handleCurrencyChange}
+                                  id="currency"
+                                  placeholder="Enter Amount"
+                                  name="currency"
+                                  autoFocus
+                                  value={currency}
+                                />
+                              </div>
+                              <div
+                                style={{
+                                  display: "flex",
+                                  flexDirection: "column",
+                                  marginTop: "1%",
+                                }}
+                                className="points-arrow"
+                              >
+                                <KeyboardDoubleArrowUpIcon
+                                  onClick={() =>
+                                    setCurrency((prev) => prev + 1)
+                                  }
+                                  sx={{ fontSize: 40 }}
+                                />
+                                <KeyboardDoubleArrowDownIcon
+                                  onClick={() =>
+                                    setCurrency((prev) =>
+                                      prev > 0 ? prev - 1 : prev
+                                    )
+                                  }
+                                  sx={{ fontSize: 40 }}
+                                />
+                              </div>
+                              <div className="shout-message">
+                                <p>
+                                  Thank you for celebrating the positive
+                                  behavior of a student. Please include a
+                                  description of the students behavior below.
+                                  Refrain from using any student’s name in this
+                                  description. Remember you can not give away
+                                  more currency than you have in your wallet and
+                                  it does not replenish!
+                                </p>
+                              </div>
+                            </div>
+                          )}
                         </div>
-                        <div
-                          style={{
-                            display: "flex",
-                            flexDirection: "column",
-                            marginTop: "1%",
+                      </div>
+                      <div>
+                        <TextField
+                          margin="normal"
+                          required
+                          fullWidth
+                          multiline
+                          minRows={2} // Optional: Set minimum number of rows
+                          onChange={(event) => {
+                            const enteredValue = event.target.value;
+                            setInfractionDescriptionSelected(enteredValue);
                           }}
-                          className="points-arrow"
-                        >
-                          <KeyboardDoubleArrowUpIcon
-                            onClick={() => setCurrency((prev) => prev + 1)}
-                            sx={{ fontSize: 40 }}
-                          />
-                          <KeyboardDoubleArrowDownIcon
-                            onClick={() =>
-                              setCurrency((prev) =>
-                                prev > 0 ? prev - 1 : prev
-                              )
+                          id="offenseDescription"
+                          label="Brief Infraction Description"
+                          name="offenseDescription"
+                          autoFocus
+                          value={infractionDescriptionSelected}
+                          inputProps={{ style: { fontSize: 15 }, min: 0 }} // font size of input text
+                          InputLabelProps={{
+                            sx: {
+                              "&.Mui-focused": {
+                                color: "white",
+                                marginTop: "-10px",
+                              },
+                            },
+                          }}
+                          sx={{ fontSize: 40 }} // Increase the font size of the input text
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                              e.preventDefault(); // Prevent form submission on Enter key
+
+                              // Get the current cursor position
+                              const { selectionStart, selectionEnd } = e.target;
+
+                              // Get the current value of the input
+                              const value = e.target.value;
+
+                              // Insert a newline character (\n) at the cursor position
+                              const newValue =
+                                value.substring(0, selectionStart) +
+                                "\n" +
+                                value.substring(selectionEnd);
+
+                              // Update the input value and set the cursor position after the newline character
+                              e.target.value = newValue;
+                              e.target.selectionStart = e.target.selectionEnd =
+                                selectionStart + 1;
+
+                              // Trigger the change event manually (React doesn't update the value automatically)
+                              const event = new Event("input", {
+                                bubbles: true,
+                              });
+                              e.target.dispatchEvent(event);
+
+                              // Optionally, you can add your logic here for what should happen after Enter is pressed.
                             }
-                            sx={{ fontSize: 40 }}
-                          />
-                        </div>
-                        <div className="shout-message">
-                          <p>
-                            Thank you for celebrating the positive behavior of a
-                            student. Please include a description of the
-                            students behavior below. Refrain from using any
-                            student’s name in this description. Remember you can
-                            not give away more currency than you have in your
-                            wallet and it does not replenish!
-                          </p>
-                        </div>
+                          }}
+                        />
                       </div>
-                    )}
-                  </div>
-                </div>
-                <div>
-                  <TextField
-                    margin="normal"
-                    required
-                    fullWidth
-                    multiline
-                    minRows={2} // Optional: Set minimum number of rows
-                    onChange={(event) => {
-                      const enteredValue = event.target.value;
-                      setInfractionDescriptionSelected(enteredValue);
-                    }}
-                    id="offenseDescription"
-                    label="Brief Infraction Description"
-                    name="offenseDescription"
-                    autoFocus
-                    value={infractionDescriptionSelected}
-                    inputProps={{ style: { fontSize: 15 }, min: 0 }} // font size of input text
-                    InputLabelProps={{
-                      sx: {
-                        "&.Mui-focused": {
-                          color: "white",
-                          marginTop: "-10px",
-                        },
-                      },
-                    }}
-                    sx={{ fontSize: 40 }} // Increase the font size of the input text
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        e.preventDefault(); // Prevent form submission on Enter key
-
-                        // Get the current cursor position
-                        const { selectionStart, selectionEnd } = e.target;
-
-                        // Get the current value of the input
-                        const value = e.target.value;
-
-                        // Insert a newline character (\n) at the cursor position
-                        const newValue =
-                          value.substring(0, selectionStart) +
-                          "\n" +
-                          value.substring(selectionEnd);
-
-                        // Update the input value and set the cursor position after the newline character
-                        e.target.value = newValue;
-                        e.target.selectionStart = e.target.selectionEnd =
-                          selectionStart + 1;
-
-                        // Trigger the change event manually (React doesn't update the value automatically)
-                        const event = new Event("input", { bubbles: true });
-                        e.target.dispatchEvent(event);
-
-                        // Optionally, you can add your logic here for what should happen after Enter is pressed.
-                      }
-                    }}
-                  />
-                </div>
-                {isGuidance.isGuidanceBoolean && (
-                  <TextField
-                    margin="normal"
-                    required
-                    fullWidth
-                    id="guidanceDescription"
-                    label="Brief Counseling Description"
-                    name="guidanceDescription"
-                    value={isGuidance.guidanceDescription}
-                    onChange={handleGuidanceChange}
-                  />
-                )}
-                {isPhoneLog.isPhoneLogBoolean && studentNames.length < 2 && (
-                  <>
-                    <Box
-                      component="section"
-                      sx={{ p: 2, border: "1px dashed grey" }}
-                    >
-                      Parent phone number:{" "}
-                      {getPhoneNumber(studentNames[0].value)}
-                    </Box>
-                    <TextField
-                      margin="normal"
-                      required
-                      fullWidth
-                      id="phoneLogDescription"
-                      label="Phone Log Description"
-                      name="phoneLogDescription"
-                      value={isPhoneLog.phoneLogDescription}
-                      onChange={handlePhoneLogChange}
-                    />
-                  </>
-                )}
-                {/* <br/> */}
-
+                      {isGuidance.isGuidanceBoolean && (
+                        <TextField
+                          margin="normal"
+                          required
+                          fullWidth
+                          id="guidanceDescription"
+                          label="Brief Counseling Description"
+                          name="guidanceDescription"
+                          value={isGuidance.guidanceDescription}
+                          onChange={handleGuidanceChange}
+                        />
+                      )}
+                      {isPhoneLog.isPhoneLogBoolean &&
+                        studentNames.length < 2 && (
+                          <>
+                            <Box
+                              component="section"
+                              sx={{ p: 2, border: "1px dashed grey" }}
+                            >
+                              Parent phone number:{" "}
+                              {getPhoneNumber(studentNames[0].value)}
+                            </Box>
+                            <TextField
+                              margin="normal"
+                              required
+                              fullWidth
+                              id="phoneLogDescription"
+                              label="Phone Log Description"
+                              name="phoneLogDescription"
+                              value={isPhoneLog.phoneLogDescription}
+                              onChange={handlePhoneLogChange}
+                            />
+                          </>
+                        )}
+                      {/* <br/> */}
+                    </div>
+                  )}
                 <div
                   style={{
                     display: "flex",

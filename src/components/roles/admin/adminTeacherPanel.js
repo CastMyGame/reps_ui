@@ -112,7 +112,6 @@ const AdminTeacherPanel = ({ data = [] }) => {
       });
 
       const formattedData = Array.from(teacherDataMap.values());
-      console.log(" Formatted Data Map ", formattedData);
       setFilteredData(formattedData);
     };
 
