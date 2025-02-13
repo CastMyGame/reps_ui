@@ -13,8 +13,14 @@ const ClassUpdate = ({ setPanelName, teacher }) => {
   const [loading, setLoading] = useState(false);
   const [isNewClass, setIsNewClass] = useState(false); // Tracks if creating a new class
   const [isModified, setIsModified] = useState(false);
+  const [punishmentsThisWeek, setPunishmentsThisWeek] = useState(0);
 
   const [searchTerm, setSearchTerm] = useState(""); // Holds the user's input
+
+  // Create a list of student objects from studentEmails
+const mappedStudents = studentEmails
+.map(email => listOfStudents.find(student => student.studentEmail === email))
+.filter(student => student !== undefined); // Remove any undefined entries
 
   useEffect(() => {
     if (teacher && teacher.classes && teacher.classes.length > 0) {
@@ -24,6 +30,7 @@ const ClassUpdate = ({ setPanelName, teacher }) => {
       setStudentEmails(
         firstClass.classRoster.map((student) => student.studentEmail || student)
       ); // Ensure you get an array of emails
+      setPunishmentsThisWeek(firstClass.punishmentsThisWeek);
     }
   }, [teacher]);
 
@@ -55,6 +62,7 @@ const ClassUpdate = ({ setPanelName, teacher }) => {
       setClassName("");
       setPeriodSelected("");
       setStudentEmails([]);
+      setPunishmentsThisWeek(0);
     } else {
       setIsNewClass(false);
       const selectedClass = teacher.classes.find(
@@ -69,9 +77,9 @@ const ClassUpdate = ({ setPanelName, teacher }) => {
   };
 
   const handleAddStudent = () => {
-    if (selectedStudent && !studentEmails.includes(selectedStudent)) {
-      setStudentEmails([...studentEmails, selectedStudent]);
-      setSelectedStudent("");
+    if (selectedStudent?.studentEmail && !studentEmails.includes(selectedStudent.studentEmail)) {
+      setStudentEmails([...studentEmails, selectedStudent.studentEmail]); // Store emails only
+      setSelectedStudent(""); // Reset selection
       setIsModified(true);
     } else if (!selectedStudent) {
       alert("Please select a student to add.");
@@ -108,6 +116,7 @@ const ClassUpdate = ({ setPanelName, teacher }) => {
           className,
           classPeriod: periodSelected,
           classRoster: deleteClass.classRoster,
+          punishmentsThisWeek: punishmentsThisWeek,
         },
       };
 
@@ -198,9 +207,7 @@ const ClassUpdate = ({ setPanelName, teacher }) => {
       });
   };
 
-  const mappedStudents = listOfStudents.filter((student) =>
-    studentEmails.includes(student.studentEmail)
-  );
+  
 
   const classPeriodSelectOptions = [
     { value: "exchange", label: "Class Exchange" },

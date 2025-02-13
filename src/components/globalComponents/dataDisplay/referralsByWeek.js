@@ -71,6 +71,11 @@ export const TotalReferralByWeek = ({
       rangeWeeks,
       safeOfficeReferrals
     ).map((week) => week.length);
+    const inappropriateLanguageData = GenerateBxByWeek(
+      "Inappropriate Language",
+      rangeWeeks,
+      safePunishmentResponse
+    ).map((week) => week.length);
 
     // Calculate Teacher Managed Referrals as the sum of selected infractions
     const teacherManagedReferrals = tardyData.map(
@@ -79,7 +84,8 @@ export const TotalReferralByWeek = ({
         (horseplayData[index] || 0) +
         (dressCodeData[index] || 0) +
         (unauthorizedDeviceData[index] || 0) +
-        (disruptiveBehaviorData[index] || 0)
+        (disruptiveBehaviorData[index] || 0) +
+        (inappropriateLanguageData[index] || 0)
     );
 
     // X-axis: week date ranges

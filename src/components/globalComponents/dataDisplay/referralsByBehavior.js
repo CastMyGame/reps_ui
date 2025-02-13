@@ -18,71 +18,64 @@ export default function ReferralByBehavior({ data = [] }) {
 
   // Recalculate X-axis (date range) and series data every time `rangeWeeks` or `data` changes
   useEffect(() => {
-    const displayDate = GenerateChartData(currentWeek, rangeWeeks, safeData);
+    const displayDate = GenerateChartData(
+      currentWeek - rangeWeeks + 1,
+      rangeWeeks,
+      safeData
+    );
 
     // X-axis: week date ranges
-    const xAxisData = displayDate.map((obj) => Object.keys(obj)[0]); // Extract the week date ranges
+    const xAxisData = displayDate.map((obj) => Object.keys(obj)[0]).reverse(); // Extract the week date ranges
     setXAxisData(xAxisData);
 
     // Y-axis: Generate data for each series based on the same rangeWeeks
-    const tardyData = GenerateBxByWeek("Tardy", rangeWeeks, safeData).map((week) => week.length);
-    const horseplayData = GenerateBxByWeek("Horseplay", rangeWeeks, safeData).map((week) => week.length);
-    const dressCodeData = GenerateBxByWeek("Dress Code", rangeWeeks, safeData).map((week) => week.length);
+    const tardyData = GenerateBxByWeek("Tardy", rangeWeeks, safeData)
+      .map((week) => week.length)
+      .reverse();
+    const horseplayData = GenerateBxByWeek("Horseplay", rangeWeeks, safeData)
+      .map((week) => week.length)
+      .reverse();
+    const dressCodeData = GenerateBxByWeek("Dress Code", rangeWeeks, safeData)
+      .map((week) => week.length)
+      .reverse();
     const unauthorizedDeviceData = GenerateBxByWeek(
       "Unauthorized Device/Cell Phone",
       rangeWeeks,
       safeData
-    ).map((week) => week.length);
+    )
+      .map((week) => week.length)
+      .reverse();
     const disruptiveBehaviorData = GenerateBxByWeek(
       "Disruptive Behavior",
       rangeWeeks,
       safeData
-    ).map((week) => week.length);
+    )
+      .map((week) => week.length)
+      .reverse();
     const positiveData = GenerateBxByWeek(
       "Positive Behavior Shout Out!",
       rangeWeeks,
       safeData
-    ).map((week) => week.length);
+    )
+      .map((week) => week.length)
+      .reverse();
     const behavioralConcernData = GenerateBxByWeek(
       "Behavioral Concern",
       rangeWeeks,
       safeData
-    ).map((week) => week.length);
+    )
+      .map((week) => week.length)
+      .reverse();
+    const inappropriateLanguageData = GenerateBxByWeek(
+      "Inappropriate Language",
+      rangeWeeks,
+      safeData
+    )
+      .map((week) => week.length)
+      .reverse();
 
     // Set the series data
     setSeriesData([
-      {
-        name: "Tardy",
-        type: "line",
-        data: tardyData,
-        itemStyle: {
-          color: "#800080",
-        },
-      },
-      {
-        name: "Horseplay",
-        type: "line",
-        data: horseplayData,
-        itemStyle: {
-          color: "#964B00",
-        },
-      },
-      {
-        name: "Positive Behavior Shout Out!",
-        type: "line",
-        data: positiveData,
-        itemStyle: {
-          color: "#008000",
-        },
-      },
-      {
-        name: "Dress Code",
-        type: "line",
-        data: dressCodeData,
-        itemStyle: {
-          color: "#C7EA46",
-        },
-      },
       {
         name: "Behavioral Concern",
         type: "line",
@@ -97,6 +90,46 @@ export default function ReferralByBehavior({ data = [] }) {
         data: disruptiveBehaviorData,
         itemStyle: {
           color: "#ffA500",
+        },
+      },
+      {
+        name: "Dress Code",
+        type: "line",
+        data: dressCodeData,
+        itemStyle: {
+          color: "#C7EA46",
+        },
+      },
+      {
+        name: "Horseplay",
+        type: "line",
+        data: horseplayData,
+        itemStyle: {
+          color: "#964B00",
+        },
+      },
+      {
+        name: "Inappropriate Language",
+        type: "line",
+        data: inappropriateLanguageData,
+        itemStyle: {
+          color: "#FFC0CB",
+        },
+      },
+      {
+        name: "Positive Behavior Shout Out!",
+        type: "line",
+        data: positiveData,
+        itemStyle: {
+          color: "#008000",
+        },
+      },
+      {
+        name: "Tardy",
+        type: "line",
+        data: tardyData,
+        itemStyle: {
+          color: "#800080",
         },
       },
       {
@@ -116,12 +149,13 @@ export default function ReferralByBehavior({ data = [] }) {
     },
     legend: {
       data: [
-        "Tardy",
-        "Horseplay",
-        "Positive Behavior Shout Out!",
-        "Dress Code",
         "Behavioral Concern",
         "Disruptive Behavior",
+        "Dress Code",
+        "Horseplay",
+        "Inappropriate Language",
+        "Positive Behavior Shout Out!",
+        "Tardy",
         "Unauthorized Device/Cell Phone",
       ],
     },
@@ -139,7 +173,6 @@ export default function ReferralByBehavior({ data = [] }) {
     xAxis: {
       type: "category",
       boundaryGap: false,
-      inverse: true,
       data: xAxisData, // Use the recalculated date ranges for the x-axis
     },
     yAxis: {
