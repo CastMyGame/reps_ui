@@ -43,6 +43,11 @@ const TeacherInfractionOverPeriodBarChart = ({ data = [] }) => {
     "Failure to Complete Work",
     weekData || []
   );
+  const innappropriateLanguage = findDataByWeekAndByPunishment(
+    currentWeek,
+    "Inappropriate Language",
+    weekData || []
+  );
 
   const option = {
     tooltip: {
@@ -62,19 +67,11 @@ const TeacherInfractionOverPeriodBarChart = ({ data = [] }) => {
     },
     series: [
       {
-        name: "Tardy",
+        name: "Behavioral Concern",
         type: "bar",
-        data: [tardybehavior.length],
+        data: [behavioralConcern.length],
         itemStyle: {
-          color: "#800080",
-        },
-      },
-      {
-        name: "Dress Code",
-        type: "bar",
-        data: [dressCode.length],
-        itemStyle: {
-          color: "#C7EA46",
+          color: "#0000FF",
         },
       },
       {
@@ -86,11 +83,19 @@ const TeacherInfractionOverPeriodBarChart = ({ data = [] }) => {
         },
       },
       {
-        name: "Behavioral Concern",
+        name: "Dress Code",
         type: "bar",
-        data: [behavioralConcern.length],
+        data: [dressCode.length],
         itemStyle: {
-          color: "#0000FF",
+          color: "#C7EA46",
+        },
+      },
+      {
+        name: "Failure to Complete Work",
+        type: "bar",
+        data: [ftc.length],
+        itemStyle: {
+          color: "#000000",
         },
       },
       {
@@ -102,19 +107,27 @@ const TeacherInfractionOverPeriodBarChart = ({ data = [] }) => {
         },
       },
       {
+        name: "Inappropriate Language",
+        type: "bar",
+        data: [innappropriateLanguage.length],
+        itemStyle: {
+          color: "#FFC0CB",
+        },
+      },
+      {
+        name: "Tardy",
+        type: "bar",
+        data: [tardybehavior.length],
+        itemStyle: {
+          color: "#800080",
+        },
+      },
+      {
         name: "Unauthorized Device/Cell Phone",
         type: "bar",
         data: [cellPhone.length],
         itemStyle: {
           color: "#ff0000",
-        },
-      },
-      {
-        name: "Failure to Complete Work",
-        type: "bar",
-        data: [ftc.length],
-        itemStyle: {
-          color: "#000000",
         },
       },
     ],
