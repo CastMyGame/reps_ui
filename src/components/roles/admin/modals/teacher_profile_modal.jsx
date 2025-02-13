@@ -28,15 +28,10 @@ export const TeacherDetailsModal = ({
   const [listOfStudents, setListOfStudents] = useState([]);
   const [displaySpotterAdd, setDisplaySpotterAdd] = useState(false);
 
-  console.log(" Active Teacher", activeTeacher);
-  console.log(" Data Teacher", data);
-
   const selectedTeacher = data?.teachers?.find(
     (teacher) =>
       teacher.firstName + " " + teacher.lastName === activeTeacher.fullName
   );
-
-  console.log("Selected Teacher ", selectedTeacher);
 
   const headers = {
     Authorization: "Bearer " + sessionStorage.getItem("Authorization"),

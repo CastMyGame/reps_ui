@@ -82,7 +82,6 @@ const TeacherProfileIncidentsByStudentTable = ({ writeUps = [] }) => {
   );
 
   filteredData.sort((a, b) => b.incidents - a.incidents);
-  console.log(" Filtered table data ", filteredData);
 
   return (
     <TableContainer component={Paper}>
