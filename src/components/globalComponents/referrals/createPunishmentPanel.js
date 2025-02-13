@@ -42,10 +42,9 @@ function getStyles(name, studentNames = [], theme) {
 
   const studentValues = studentNames.map((student) => student.value); // Extract values
   return {
-    fontWeight:
-      studentValues.includes(name)
-        ? theme.typography.fontWeightMedium
-        : theme.typography.fontWeightRegular,
+    fontWeight: studentValues.includes(name)
+      ? theme.typography.fontWeightMedium
+      : theme.typography.fontWeightRegular,
   };
 }
 
@@ -164,7 +163,7 @@ const CreatePunishmentPanel = ({ setPanelName, data = [] }) => {
   const getPhoneNumber = (email) => {
     if (email != null) {
       const result = (listOfStudents || []).filter(
-        (student) => (student.studentEmail === email)
+        (student) => student.studentEmail === email
       );
       return result[0].parentPhoneNumber || "";
     } else {
@@ -327,8 +326,7 @@ const CreatePunishmentPanel = ({ setPanelName, data = [] }) => {
     setIsPhoneLog((prevState) => ({
       ...prevState,
       isPhoneLogBoolean: checked,
-      
-    } ));
+    }));
   };
 
   return (
@@ -428,7 +426,7 @@ const CreatePunishmentPanel = ({ setPanelName, data = [] }) => {
                       setStudentNames([]);
                       return;
                     }
-                  
+
                     setStudentNames(newValue); // Ensure newValue is an array of selected students
                   }}
                   options={selectOptions} // Pass the selectOptions array here
@@ -711,7 +709,8 @@ const CreatePunishmentPanel = ({ setPanelName, data = [] }) => {
                           required
                           fullWidth
                           multiline
-                          minRows={2} // Optional: Set minimum number of rows
+                          minRows={4} // Optional: Set minimum number of rows
+                          maxRows={4}
                           onChange={(event) => {
                             const enteredValue = event.target.value;
                             setInfractionDescriptionSelected(enteredValue);
@@ -721,7 +720,7 @@ const CreatePunishmentPanel = ({ setPanelName, data = [] }) => {
                           name="offenseDescription"
                           autoFocus
                           value={infractionDescriptionSelected}
-                          inputProps={{ style: { fontSize: 15 }, min: 0 }} // font size of input text
+                          inputProps={{ style: { resize: "none" }, min: 0 }} // font size of input text
                           InputLabelProps={{
                             sx: {
                               "&.Mui-focused": {
@@ -730,7 +729,12 @@ const CreatePunishmentPanel = ({ setPanelName, data = [] }) => {
                               },
                             },
                           }}
-                          sx={{ fontSize: 40 }} // Increase the font size of the input text
+                          sx={{
+                            fontSize: 40,
+                            height: "auto", // Keeps height dynamic but within limits
+                            maxHeight: "150px", // Approximate height of 4 rows
+                            overflowY: "auto", // Adds scrollbar if text overflows
+                          }}
                           onKeyDown={(e) => {
                             if (e.key === "Enter") {
                               e.preventDefault(); // Prevent form submission on Enter key
@@ -789,11 +793,28 @@ const CreatePunishmentPanel = ({ setPanelName, data = [] }) => {
                               margin="normal"
                               required
                               fullWidth
+                              minRows={3}
+                              maxRows={3}
                               id="phoneLogDescription"
                               label="Phone Log Description"
                               name="phoneLogDescription"
                               value={isPhoneLog.phoneLogDescription}
                               onChange={handlePhoneLogChange}
+                              inputProps={{ style: { resize: "none" }, min: 0 }} // font size of input text
+                              InputLabelProps={{
+                                sx: {
+                                  "&.Mui-focused": {
+                                    color: "white",
+                                    marginTop: "-10px",
+                                  },
+                                },
+                              }}
+                              sx={{
+                                fontSize: 40,
+                                height: "auto", // Keeps height dynamic but within limits
+                                maxHeight: "150px", // Approximate height of 4 rows
+                                overflowY: "auto", // Adds scrollbar if text overflows
+                              }}
                             />
                           </>
                         )}
