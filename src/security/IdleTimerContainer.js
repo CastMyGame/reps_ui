@@ -1,53 +1,93 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { useIdleTimer } from 'react-idle-timer';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { baseUrl } from 'src/utils/jsonData';
 
 export default function IdleComponent() {
   const navigate = useNavigate();
-  const idleTimeRef = useRef(null);
   const [showNotification, setShowNotification] = useState(false);
+  const notificationIntervalRef = useRef(null);
 
   const onIdle = () => {
-    // Clear all sessionStorage
     sessionStorage.clear();
-    navigate('/login');
+    navigate("/login");
   };
 
-  // const handleKeepSession = () => {
-  //   if (idleTimeRef.current) {
-  //     idleTimeRef.current.reset(); // Reset the idle timer
-  //   }
-  //   setShowNotification(false);
-  //   startNotificationInterval(); // Restart the notification interval
-  // };
-
-//   const startNotificationInterval = () => {
-//     // Show notification every minute
-//     setInterval(() => {
-//       setShowNotification(true);
-//     }, (5 * 60 - 1) * 1000); // Show notification 1 minute before expiration
-// };
-
-
-  // useEffect(() => {
-  //   startNotificationInterval(); // Initial start
-
-  //   // Clear the interval when the component is unmounted
-  //   return () => {
-  //     clearInterval();
-  //   };
-  // }, []);
-
-  const idleTimer = useIdleTimer({
+  useIdleTimer({
     crossTab: true,
-    ref: idleTimeRef,
-    timeout: 15* 60 * 1000, // Ten minutes
+    timeout: 10 * 60 * 1000, // 10 minutes
     onIdle: onIdle,
   });
 
+  const refreshToken = async () => {
+    try {
+      const token = sessionStorage.getItem("Authorization");
+      if (!token) {
+        throw new Error("No token found.");
+      }
+  
+      const response = await fetch(`${baseUrl}/v1/renew-token`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+  
+      if (!response.ok) {
+        throw new Error("Failed to refresh token.");
+      }
+  
+      const data = await response.json();
+      if (data.newToken) {
+        sessionStorage.setItem("Authorization", data.newToken); // Store new token
+        return data.newToken;
+      } else {
+        throw new Error("New token not received.");
+      }
+    } catch (error) {
+      console.error("Error refreshing token:", error);
+      sessionStorage.clear(); // Clear session if refresh fails
+      window.location.href = "/login"; // Redirect to login
+      throw error;
+    }
+  };
 
+  const checkTokenExpiration = () => {
+    const token = sessionStorage.getItem("Authorization");
+    if (!token) return onIdle(); // No token? Force logout.
+  
+    try {
+      const payload = JSON.parse(atob(token.split(".")[1])); // Decode JWT
+      if (Date.now() >= payload.exp * 1000) {
+        console.warn("Token expired, attempting refresh...");
+        refreshToken().catch(() => onIdle()); // Try to refresh, otherwise log out
+      }
+    } catch (error) {
+      console.error("Error decoding token:", error);
+      onIdle(); // If decoding fails, assume it's invalid and log out
+    }
+  };
 
+  useEffect(() => {
+    const interval = setInterval(checkTokenExpiration, 60000); // Check every 60 sec
+    return () => clearInterval(interval); // Cleanup on unmount
+  }, []);
 
+  const startNotificationInterval = () => {
+    notificationIntervalRef.current = setInterval(() => {
+      setShowNotification(true);
+    }, (5 * 60 - 1) * 1000); // Show notification 1 minute before expiration
+  };
+
+  useEffect(() => {
+    startNotificationInterval();
+
+    return () => {
+      clearInterval(notificationIntervalRef.current);
+    };
+  }, []);
 
   return (
     <div>
