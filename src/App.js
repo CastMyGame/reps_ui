@@ -3,7 +3,6 @@ import MyForm from "./forms/RepsForm";
 import ViolationPage from "./forms/ViolationPage";
 import FailureToComplete from "./forms/FailureToComplete";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Login from "./security/Login";
 import Register from "./security/Register";
 import StudentDashboard from "./components/roles/student/DashboardStudent ";
 import AdminDashboard from "./components/roles/admin/adminDashboard";
@@ -21,11 +20,6 @@ import LandingPage from "./components/globalComponents/updatedLanding/landing";
 
 function App() {
   const [isLoggedOut, setIsLoggedOut] = useState(false);
-
-  // const handleIdle = () => {
-  //   // Perform logout logic or any other action on idle
-  //   setIsLoggedOut(true);
-  // };
 
   return (
     <div className="App">
@@ -75,11 +69,9 @@ function App() {
             <Route
               path="/forms/report"
               element={
-                <>
                   <PDFViewer width="100%" height="800px">
                     <PDFReport />
                   </PDFViewer>
-                </>
               }
             />
 
