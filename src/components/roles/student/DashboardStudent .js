@@ -82,7 +82,7 @@ const StudentDashboard = () => {
               <div>Student Dashboard</div>
             </div>
 
-            {punishments.length === 0 ? (
+            {punishments == null ? (
               <div
                 style={{
                   backgroundColor: "white",
