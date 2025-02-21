@@ -1,7 +1,26 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import "./landing.css";
+import PropTypes from 'prop-types';
 
 export const NavigationLoggedIn = (props) => {
+  const dropdownRef = useRef(null);
+
+  const { setDropdown } = props; // Destructure only what's needed
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setDropdown(""); // Close the dropdown
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [setDropdown]);
+
   const dropdownHandler = (panel) => {
     props.setPanelName(panel);
     props.setDropdown(""); // Close the dropdown
@@ -15,6 +34,7 @@ export const NavigationLoggedIn = (props) => {
           width: "100%",
           display: "inline-block",
         }}
+        ref={dropdownRef}
       >
         <button
           type="button"
@@ -22,10 +42,10 @@ export const NavigationLoggedIn = (props) => {
           data-toggle="collapse"
           data-target="#bs-example-navbar-collapse-1"
         >
-          {" "}
-          <span className="sr-only">Toggle navigation</span>{" "}
-          <span className="icon-bar"></span> <span className="icon-bar"></span>{" "}
-          <span className="icon-bar"></span>{" "}
+          <span className="sr-only">Toggle navigation</span>
+          <span className="icon-bar"></span>
+          <span className="icon-bar"></span>
+          <span className="icon-bar"></span>
         </button>
 
         <a
@@ -40,11 +60,12 @@ export const NavigationLoggedIn = (props) => {
           className="collapse navbar-collapse"
           id="bs-example-navbar-collapse-1"
         >
-          <ul className="nav navbar-nav navbar-right">
+          <ul className="nav navbar-nav navbar-right" ref={dropdownRef}>
             <li>
               <div
                 onClick={() => dropdownHandler("overview")}
                 className="page-scroll"
+                type="button"
               >
                 Overview
               </div>
@@ -57,6 +78,7 @@ export const NavigationLoggedIn = (props) => {
                     prev === "referral" ? "" : "referral"
                   )
                 }
+                type="button"
               >
                 Referrals
               </div>
@@ -70,18 +92,21 @@ export const NavigationLoggedIn = (props) => {
                 <div
                   onClick={() => dropdownHandler("createPunishment")}
                   className="item page-scroll"
+                  type="button"
                 >
                   New Teacher Referral/Shout Out
                 </div>
                 <div
                   onClick={() => dropdownHandler("punishment")}
                   className="item page-scroll"
+                  type="button"
                 >
                   Existing Referrals/Shout Outs
                 </div>
                 <div
                   onClick={() => dropdownHandler("createOfficeReferral")}
                   className="item page-scroll"
+                  type="button"
                 >
                   New Office Managed Referral
                 </div>
@@ -95,6 +120,7 @@ export const NavigationLoggedIn = (props) => {
                     prev === "student" ? "" : "student"
                   )
                 }
+                type="button"
               >
                 Classes
               </div>
@@ -109,30 +135,34 @@ export const NavigationLoggedIn = (props) => {
                 <div
                   onClick={() => {
                     props.setModalType("classAnnouncement");
-                    props.setDropdown(""); // Close dropdown
+                    props.setDropdown("");
                   }}
                   className="item page-scroll"
+                  type="button"
                 >
                   Class Announcement
                 </div>
                 <div
                   onClick={() => dropdownHandler("student")}
                   className="item page-scroll"
+                  type="button"
                 >
                   Class Rosters
                 </div>
                 <div
                   onClick={() => dropdownHandler("classUpdate")}
                   className="item page-scroll"
+                  type="button"
                 >
                   Edit Class Rosters
                 </div>
                 <div
                   onClick={() => {
                     props.setModalType("spotter");
-                    props.setDropdown(""); // Close dropdown
+                    props.setDropdown("");
                   }}
                   className="item page-scroll"
+                  type="button"
                 >
                   Spot Students
                 </div>
@@ -141,9 +171,8 @@ export const NavigationLoggedIn = (props) => {
             <li>
               <div
                 className="page-scroll"
-                onClick={() => {
-                  props.setPanelName("levelThree");
-                }}
+                onClick={() => props.setPanelName("levelThree")}
+                type="button"
               >
                 My Tasks
               </div>
@@ -151,9 +180,8 @@ export const NavigationLoggedIn = (props) => {
             <li>
               <div
                 className="page-scroll"
-                onClick={() => {
-                  props.toggleNotificationDrawer(true);
-                }}
+                onClick={() => props.toggleNotificationDrawer(true)}
+                type="button"
               >
                 Detention/ISS List
               </div>
@@ -163,8 +191,9 @@ export const NavigationLoggedIn = (props) => {
                 className="page-scroll"
                 onClick={() => {
                   props.setModalType("contact");
-                  props.setDropdown(""); // Close dropdown
+                  props.setDropdown("");
                 }}
+                type="button"
               >
                 Contact Us
               </div>
@@ -182,4 +211,13 @@ export const NavigationLoggedIn = (props) => {
       </div>
     </nav>
   );
+};
+
+NavigationLoggedIn.propTypes = {
+  setDropdown: PropTypes.func.isRequired,
+  setPanelName: PropTypes.func.isRequired,
+  isDropdownOpen: PropTypes.string,
+  setModalType: PropTypes.func,
+  toggleNotificationDrawer: PropTypes.func,
+  setLogin: PropTypes.func.isRequired,
 };

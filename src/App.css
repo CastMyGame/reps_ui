@@ -1,42 +1,25 @@
 .App {
-  width: 98%;      
-  margin: 0 auto;  
+  width: 98%;
+  margin: 0 auto;
   height: 95%;
-
 }
 
-
-/* .App-header {
-  background-color: #282c34;
-  min-height: 10vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-} */
-
-.level-three-button-container{
+.level-three-button-container {
   display: flex;
   flex-direction: row;
   justify-content: space-evenly;
   max-height: fit-content;
-
 }
 
-.level-three-buttons{
+.level-three-buttons {
   height: 40px;
   width: 100px;
   background-color: #2980b9;
-
-
 }
 
-.answer-container{
+.answer-container {
   overflow-y: scroll;
   height: 300px;
-
 }
 
 /* MyForm.css */
@@ -47,13 +30,10 @@
   justify-content: center;
   align-items: center;
   height: 50vh;
-  /* background-color: #f4f4f4; */
-
 }
 
 /* Style for the form itself */
 .form-container {
-  /* margin-top: 20vh; */
   background-color: #fff;
   border: 1px solid #ddd;
   padding: 20px;
@@ -61,12 +41,10 @@
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
   width: 100%;
   height: 50vh;
-  overflow-y:auto;  /* Adds vertical scroll if content exceeds the height */
-
+  overflow-y: auto; /* Adds vertical scroll if content exceeds the height */
 }
 
 .form-container-violation {
-  /* margin-top: 20vh; */
   background-color: #fff;
   border: 1px solid #ddd;
   padding: 20px;
@@ -74,27 +52,17 @@
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
   width: 100%;
   height: 80vh;
-  overflow-y:auto;  /* Adds vertical scroll if content exceeds the height */
-
+  overflow-y: auto; /* Adds vertical scroll if content exceeds the height */
 }
 
 .form-referral {
-
   background-color: #fff;
-
 }
-
-
 
 /* Style for the required question message */
 .md0UAd {
   font-size: 12px;
   color: #888;
-  margin-bottom: 20px;
-}
-
-/* Style for question containers */
-.question-container {
   margin-bottom: 20px;
 }
 
@@ -111,14 +79,10 @@ input[type="text"],
 input[type="email"],
 select {
   width: 100%;
-  /* padding: 10px; */
   background-color: white;
   border-radius: 5px;
   font-size: 2rem;
-  /* margin-top: 5px; */
-
   outline: none;
-  
 }
 
 /* Style for the description input field */
@@ -128,8 +92,6 @@ select {
   resize: vertical;
   font-size: 20px;
 }
-
-
 
 /* Style for the submit button */
 button[type="submit"] {
@@ -154,7 +116,8 @@ h5 {
   border-collapse: collapse;
 }
 
-.my-table th, .my-table td {
+.my-table th,
+.my-table td {
   border: 1px solid #ddd;
   padding: 8px;
   text-align: left;
@@ -171,7 +134,6 @@ h5 {
 .my-table tbody tr:hover {
   background-color: #ddd;
 }
-
 
 /* Add more styles as needed */
 /* Login.css */
@@ -258,15 +220,13 @@ h5 {
   background-color: #1e7e34;
 }
 
-input[type="password"], input[type="password"], select {
+input[type="password"],
+select {
   width: 100%;
-  /* padding: 10px; */
   border-radius: 5px;
   border: 1px solid blue;
   background-color: white;
   font-size: 16px;
-  /* margin-top: 5px; */
-  /* margin-bottom: 15px; */
   outline: none;
 }
 
@@ -293,7 +253,6 @@ input[type="password"], input[type="password"], select {
   text-decoration: none;
   border-radius: 5px;
   font-size: 18px;
-  /*transition: background-color 0.3s;*/
 }
 
 .dashboard-button:hover {
@@ -303,6 +262,7 @@ input[type="password"], input[type="password"], select {
 .button-container {
   display: flex;
   flex-direction: column;
+  margin-top: 20px;
 }
 
 /* Add more CSS styles for logos/images if needed */
@@ -316,26 +276,11 @@ input[type="password"], input[type="password"], select {
 body {
   background: white;
   background-size: 600% 600%;
-  /* animation: GradientBackground 8s ease infinite; */
 }
-
-/* @keyframes GradientBackground {
-  0% {
-    background-position: 0% 50%;
-  }
-
-  50% {
-    background-position: 100% 50%;
-  }
-
-  100% {
-    background-position: 0% 50%;
-  }
-}; */
 
 /* Essay Styles */
 .essay-container {
-  font-family: 'Arial, sans-serif';
+  font-family: Arial, sans-serif;
   font-size: 18px;
   line-height: 1.6;
   color: #333;
@@ -369,18 +314,13 @@ body {
 .question-container {
   text-align: left;
   margin-top: 20px;
+  margin-bottom: 20px;
 }
 
 .radio-label {
   display: block;
   margin-bottom: 5px;
-color: black;
-
-}
-
-/* Button Styles */
-.button-container {
-  margin-top: 20px;
+  color: black;
 }
 
 button {
@@ -399,9 +339,7 @@ button:hover {
 
 .radio {
   display: flex;
-  
 }
-
 
 .App-logo {
   height: 40vmin;
@@ -419,35 +357,31 @@ button:hover {
   margin-bottom: 20px;
 }
 
-
-.page{
-
+.page {
   height: 80vh;
   width: 100%;
   justify-content: center;
   display: flex;
 }
 
-.app-bar{
+.app-bar {
   width: 100%;
   background-color: #5333ed;
 }
 
-.side-bar{
+.side-bar {
   background-color: #644be1;
   width: 20%;
   height: 80vh;
   display: flex;
   flex-direction: column;
-  
 }
 
-.side-bar-widget{
+.side-bar-widget {
   background-color: gray;
   width: 100%;
   height: max-content;
   margin-bottom: 10px;
-
 }
 
 .main-content {
@@ -466,91 +400,61 @@ button:hover {
   height: 80vh;
 }
 
-.teacher-overview{
+.teacher-overview {
   width: 100vw;
   display: flex;
   flex-direction: row;
-justify-content: space-between;
-  /* background-color: yellow; */
+  justify-content: space-between;
 }
 
-
-.teacher-overview-first{
+.teacher-overview-first {
   width: 100%;
   margin-right: 10px;
-  
-
 }
 
-.overview-row{
+.overview-row {
   width: 100%;
   display: flex;
   flex-direction: row;
-  /* height: 45vh; */
-justify-content: space-between;
-overflow: hidden;
+  justify-content: space-between;
+  overflow: hidden;
   white-space: nowrap; /* This will prevent content from wrapping to the next line */
-
-
-
 }
 
-.teacher-widget-half{
+.teacher-widget-half {
   height: 300px;
   width: 50%;
   background-color: white;
   margin-right: 5px;
   overflow-y: auto;
-
-
-  
-
 }
-.teacher-widget-third{
-margin-right: 20px;
- overflow-y: auto;
- height:350px;
- border: solid 3px black;
- width: 33%;
- 
-
+.teacher-widget-third {
+  margin-right: 20px;
+  overflow-y: auto;
+  height: 350px;
+  border: solid 3px black;
+  width: 33%;
 }
 
-
-
-.sub-main{
+.sub-main {
   display: flex;
   flex-direction: row;
-  /* width: 100%;
-  background-color: grey; */
-
-
 }
 
-
-.teacher-panel{
-}
-
-.sidebar-content{
+.sidebar-content {
   background-color: orange;
   width: 20%;
 }
 
-
-.right-side-bar{
+.right-side-bar {
   width: 5%;
   background-color: orange;
 }
 
-.left-main{
+.left-main {
   justify-items: center;
   width: 100%;
 }
-
-
-
-
-
 
 /* Student Dash Variaction */
 
@@ -561,66 +465,59 @@ margin-right: 20px;
   height: auto;
 }
 
-.student-panel{
+.student-panel {
   margin-top: auto;
   width: 100%;
 }
 
-.student-drop-btn{
- outline:"2px solid white"; 
- text-align: "center";
- width: 35%;
- background-color: #0056b3; /* Blue background */
- color: white; /* White text color */
- font-size: 16px; /* Font size */
- cursor: pointer; /* Cursor style */
- height: 50px;
- margin-right: 10px;
- 
-
+.student-drop-btn {
+  outline: "2px solid white";
+  text-align: "center";
+  width: 35%;
+  background-color: #0056b3; /* Blue background */
+  color: white; /* White text color */
+  font-size: 16px; /* Font size */
+  cursor: pointer; /* Cursor style */
+  height: 50px;
+  margin-right: 10px;
 }
 
-.student-main-content-menu{
-display:flex;
-justify-self: center;
-justify-content: space-between;
-/* justify-content: center; Horizontal centering */
-align-items: center;     /* Vertical centering */
-width: 98%;
-margin-bottom: 10px;
-background-color: white;
-height: 60px;
-
-
+.student-main-content-menu {
+  display: flex;
+  justify-self: center;
+  justify-content: space-between;
+  /* justify-content: center; Horizontal centering */
+  align-items: center; /* Vertical centering */
+  width: 98%;
+  margin-bottom: 10px;
+  background-color: white;
+  height: 60px;
 }
 
-.teacher-main-content-menu{
+.teacher-main-content-menu {
   display: flex;
   width: 100%;
-  background-color:"rgb(25, 118, 210)" ;
+  background-color: "rgb(25, 118, 210)";
 }
 
-.dashboard-title{
+.dashboard-title {
   height: 60px;
   background-color: whitesmoke;
   padding: 10px 20px; /* Padding around the text */
   text-align: "center";
   font-weight: bold;
   font-size: 20px;
-
 }
 
-.student-overview{
-  display:flex;
+.student-overview {
+  display: flex;
   flex-direction: row;
   width: 100%;
   height: auto;
   margin-bottom: 10px;
   margin-top: 5px;
-
-
 }
-.student-overview-first{
+.student-overview-first {
   width: auto;
   height: 100%;
   margin-right: 10px;
@@ -628,34 +525,25 @@ height: 60px;
   justify-content: stretch;
   overflow: hidden;
 }
-.student-overview-second{
+.student-overview-second {
   width: auto;
   text-align: center;
   height: auto;
-
-
 }
 
-
-.main-content-menu{
+.main-content-menu {
   width: 100%;
   height: 5%;
-
 }
 
-.main-content-panel{
-height: 100%;
-width: 100%;
-
+.main-content-panel {
+  height: 100%;
+  width: 100%;
 }
-
-
 
 table th tr {
   font-size: large;
   height: fit-content;
-  
-
 }
 
 /* Dropdown Content (Hidden by Default) */
@@ -671,11 +559,8 @@ table th tr {
   /* Add other styles as needed */
 }
 
-.dropdown-item{
-  padding: 1px;
-  background-color: blue;
+.dropdown-item {
   margin-bottom: 1px;
-
   background-color: #3498db; /* Blue background */
   color: white; /* White text color */
   padding: 10px 20px; /* Padding around the text */
@@ -687,13 +572,11 @@ table th tr {
   position: relative;
 }
 
-
-
 .dropdown-item:hover {
-  background-color: #6E7076; /* Darker blue on hover */
+  background-color: #6e7076; /* Darker blue on hover */
 }
 
-.teacher-dropdown-item{
+.teacher-dropdown-item {
   background-color: #3498db; /* Blue background */
   color: white; /* White text color */
   padding: 10px 20px; /* Padding around the text */
@@ -705,12 +588,9 @@ table th tr {
   width: 100%;
 }
 
-
-
 .teacher-dropdown-item:hover {
-  background-color: #6E7076; /* Darker blue on hover */
+  background-color: #6e7076; /* Darker blue on hover */
 }
-
 
 /* Show the dropdown content */
 .show {
@@ -719,12 +599,11 @@ table th tr {
 
 /* Styling for the dropdown button */
 .teacher-dash-dropbtn {
-  flex:1;
+  flex: 1;
   background-color: #5ca9fb; /* Blue background */
   color: white; /* White text color */
   padding: 10px 20px;
   font-size: 16px; /* Font size */
-  border: none; /* No border */
   cursor: pointer; /* Cursor style */
   border-radius: 0px; /* Rounded corners */
   outline: none; /* Remove outline on focus */
@@ -733,22 +612,13 @@ table th tr {
   border: 1px solid grey;
   font-family: "Lato", sans-serif;
   text-transform: uppercase;
-  color: #555;
-  font-size: 15px;
   font-weight: 400;
-  padding: 8px 2px;
-  border-radius: 0;
-
-
 }
-
- /* style={{ flex: 1, outline:"1px solid  white", padding: "5px", textAlign: "center"}} */
 
 /* Hover effect for the dropdown button */
 .dropbtn:hover {
   background-color: #2980b9; /* Darker blue on hover */
 }
-
 
 .widget-table {
   width: 95%;
@@ -757,67 +627,57 @@ table th tr {
   padding: 10px;
   align-self: center;
   margin-bottom: 50px;
-
 }
 
-.widget-table-tr{
+.widget-table-tr {
   background-color: turquoise;
-  color:white;
+  color: white;
   font-size: small;
 }
-.widget-print-button{
+.widget-print-button {
   width: 95%;
   align-self: center;
-
 }
-
-
 
 /* MODAL CSS */
 
 .modal-overlay {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
   background: rgba(0, 0, 0, 0.5); /* Semi-transparent black overlay */
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 10000;  /* Adjust the value as needed */
-  max-height: 100vh;
-
-  
+  z-index: 10000; /* Adjust the value as needed */
 }
 
 .modal-content {
-  background: #5D949D;
-  position: absolute;
+  background: #5d949d;
+  position: relative;
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   width: 75vw;
   height: 80vh;
+  display: flex;
+  flex-direction: column;
 }
-
-.modal-body-student {
-  
-}
-
-
 
 .modal-header {
-  background-color: #5D949D;
+  background-color: #5d949d;
   padding: 10px;
   text-align: center;
   color: white;
 }
 
 .modal-body {
-  background-color: #6E7076;
-  height: 60%;
+  background-color: #6e7076;
+  height: 60vh;
   padding: 10px;
   border-radius: 0 0 8px 8px;
+  overflow-y: auto;
 }
 
 .modal-buttons {
@@ -826,24 +686,10 @@ table th tr {
   margin: 2vh 3vw 2vh 3vw;
 }
 
-.modal-buttons-teacher-profile
-{
+.modal-buttons-teacher-profile {
   display: flex;
   justify-content: space-between;
   margin-top: -10px;
-}
-
-
-button {
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  /*transition: background-color 0.3s ease;*/
-}
-
-button:hover {
-  background-color: #e0e0e0; /* Lighter color on hover */
 }
 
 /* //Tags */
@@ -877,18 +723,16 @@ button:hover {
   background-color: #99cc33;
 }
 
-
 /* input css */
 .multi-line-input {
-  resize: vertical;  /* Allows vertical resizing */
-  min-height: 60px;  /* Minimum height */
-  padding: 10px;     /* Padding for spacing */
+  resize: vertical; /* Allows vertical resizing */
+  min-height: 60px; /* Minimum height */
+  padding: 10px; /* Padding for spacing */
   border-radius: 5px; /* Rounded corners */
-  width: 98%;       /* Full width */
-  max-width: 98%;   /* Maximum width */
-  overflow-y:hidden;  /* Adds vertical scroll if content exceeds the height */
+  width: 98%; /* Full width */
+  max-width: 98%; /* Maximum width */
+  overflow-y: hidden; /* Adds vertical scroll if content exceeds the height */
 }
-
 
 /* PieChart.css */
 
@@ -917,44 +761,34 @@ button:hover {
   padding: 8px; /* Add padding for spacing */
 }
 
-.student-incident-table{
+.student-incident-table {
   height: 300px;
-
 }
 
 /* ADMIN CSS */
 
-
-
-.box-left{
+.box-left {
   width: 20%;
   margin-right: 10px;
-
-
 }
 
-.box-center{
+.box-center {
   width: 40%;
   height: 290px;
   overflow-y: auto;
   border-radius: 10px;
   background-color: white;
   margin-right: 10px;
-  box-shadow: inset 0 0 5px white; 
-
-  
-  
+  box-shadow: inset 0 0 5px white;
 }
 
-.box-right{
+.box-right {
   max-width: 40%;
   min-width: 40%;
   height: 290px;
 
   border-radius: 10px;
-  box-shadow: inset 0 0 5px white; 
-
-
+  box-shadow: inset 0 0 5px white;
 }
 
 ::-webkit-scrollbar {
@@ -963,19 +797,14 @@ button:hover {
 
 /* Track */
 ::-webkit-scrollbar-track {
-  box-shadow: inset 0 0 5px grey; 
-  border-radius: 10px;
-}
- 
-/* Handle */
-::-webkit-scrollbar-thumb {
-  background: darkgray; 
+  box-shadow: inset 0 0 5px grey;
   border-radius: 10px;
 }
 
-/* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
-  /* background: blue;  */
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: darkgray;
+  border-radius: 10px;
 }
 
 /* Landing Page */
@@ -998,8 +827,7 @@ button:hover {
   }
 }
 
-.section-title{
-
+.section-title {
   position: relative;
   content: "";
   background: linear-gradient(to right, #5ca9fb 0%, #6372ff 100%);
@@ -1007,20 +835,17 @@ button:hover {
   left: 0%;
   margin-top: 20px;
   margin-bottom: 30px;
-
 }
 
 .section-title > h2 {
-  color:black;
-  background-color:#5ca9fb;
+  color: black;
+  background-color: #5ca9fb;
   font-family: "Lato", sans-serif;
   text-transform: uppercase;
-  color: #555;
   font-size: 15px;
   font-weight: 700;
   padding: 8px 2px;
   border-radius: 0;
-
 }
 
 .table-header {
@@ -1033,39 +858,35 @@ button:hover {
   width: fit-content;
 }
 
-.points-container{
+.points-container {
   display: flex;
   flex-direction: row;
   height: max-content;
   border: grey solid 2px;
-  background-color:#efeff0 ;
-
+  background-color: #efeff0;
 }
 
-
-
-.wallet-after{
-font-size: large;
-font-weight: bold;
-background-color: lightblue;
-padding: 3px;
-margin-bottom: -10px;
+.wallet-after {
+  font-size: large;
+  font-weight: bold;
+  background-color: lightblue;
+  padding: 3px;
+  margin-bottom: -10px;
 }
 
-.points-input{
+.points-input {
   color: white;
-  width:200px;
+  width: 200px;
   background-color: white;
 }
 
-.shout-message{
+.shout-message {
   padding: 0 25px 0 25px;
-  background-color:#efeff0 ;
+  background-color: #efeff0;
   height: 70%;
-
 }
 
-.shout-message >p{
+.shout-message > p {
   font-size: large;
 }
 
