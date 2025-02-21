@@ -1,7 +1,26 @@
-import React from "react";
+import React, {useEffect, useRef} from "react";
 import "./landing.css";
+import PropTypes from 'prop-types';
 
 export const NavigationAdmin = (props) => {
+  const dropdownRef = useRef(null);
+
+  const { setDropdown } = props; // Destructure only what's needed
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setDropdown(""); // Close the dropdown
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [setDropdown]);
+
   const dropdownHandler = (panel) => {
     props.setPanelName(panel);
     props.setDropdown("");
@@ -44,6 +63,7 @@ export const NavigationAdmin = (props) => {
               <div
                 onClick={() => dropdownHandler("overview")}
                 className="page-scroll"
+                type="button"
               >
                 Overview
               </div>
@@ -56,6 +76,7 @@ export const NavigationAdmin = (props) => {
                     prev === "referral" ? "" : "referral"
                   )
                 }
+                type="button"
               >
                 Referrals
               </div>
@@ -69,18 +90,21 @@ export const NavigationAdmin = (props) => {
                 <div
                   onClick={() => dropdownHandler("createPunishment")}
                   className="item page-scroll"
+                  type="button"
                 >
                   New Teacher Referral/Shout Out
                 </div>
                 <div
                   onClick={() => dropdownHandler("punishment")}
                   className="item page-scroll"
+                  type="button"
                 >
                   Existing Referrals/Shout Outs
                 </div>
                 <div
                   onClick={() => dropdownHandler("createOfficeReferral")}
                   className="item page-scroll"
+                  type="button"
                 >
                   New Office Referral
                 </div>
@@ -94,6 +118,7 @@ export const NavigationAdmin = (props) => {
                     prev === "reports" ? "" : "reports"
                   )
                 }
+                type="button"
               >
                 Reports
               </div>
@@ -107,12 +132,14 @@ export const NavigationAdmin = (props) => {
                 <div
                   onClick={() => dropdownHandler("student")}
                   className="item page-scroll"
+                  type="button"
                 >
                   By Students
                 </div>
                 <div
                   onClick={() => dropdownHandler("viewTeacher")}
                   className="item page-scroll"
+                  type="button"
                 >
                   By Teachers
                 </div>
@@ -124,6 +151,7 @@ export const NavigationAdmin = (props) => {
                 onClick={() =>
                   props.setDropdown((prev) => (prev === "tools" ? "" : "tools"))
                 }
+                type="button"
               >
                 Tools
               </div>
@@ -136,18 +164,21 @@ export const NavigationAdmin = (props) => {
                 <div
                   onClick={() => dropdownHandler("createEditAssignments")}
                   className="item page-scroll"
+                  type="button"
                 >
                   Create/Edit Assignments
                 </div>
                 <div
                   onClick={() => dropdownHandler("userManagement")}
                   className="item page-scroll"
+                  type="button"
                 >
                   Create A Student/Teachers
                 </div>
                 <div
                   onClick={() => dropdownHandler("archived")}
                   className="item page-scroll"
+                  type="button"
                 >
                   Archived
                 </div>
@@ -159,6 +190,7 @@ export const NavigationAdmin = (props) => {
                 onClick={() => {
                   props.toggleNotificationDrawer(true);
                 }}
+                type="button"
               >
                 Detention/ISS List
               </div>
@@ -180,6 +212,7 @@ export const NavigationAdmin = (props) => {
                 onClick={() => {
                   props.setModalType("contact");
                 }}
+                type="button"
               >
                 Contact Us
               </div>
@@ -197,4 +230,13 @@ export const NavigationAdmin = (props) => {
       </div>
     </nav>
   );
+};
+
+NavigationAdmin.propTypes = {
+  setDropdown: PropTypes.func.isRequired,
+  setPanelName: PropTypes.func.isRequired,
+  isDropdownOpen: PropTypes.string,
+  setModalType: PropTypes.func,
+  toggleNotificationDrawer: PropTypes.func,
+  setLogin: PropTypes.func.isRequired,
 };
