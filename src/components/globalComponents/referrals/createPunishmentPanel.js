@@ -780,20 +780,20 @@ const CreatePunishmentPanel = ({ setPanelName, data = [] }) => {
                           value={isGuidance.guidanceDescription}
                           onChange={handleGuidanceChange}
                           inputProps={{ style: { resize: "none" }, min: 0 }} // font size of input text
-                              InputLabelProps={{
-                                sx: {
-                                  "&.Mui-focused": {
-                                    color: "white",
-                                    marginTop: "-10px",
-                                  },
-                                },
-                              }}
-                              sx={{
-                                fontSize: 40,
-                                height: "auto", // Keeps height dynamic but within limits
-                                maxHeight: "150px", // Approximate height of 4 rows
-                                overflowY: "auto", // Adds scrollbar if text overflows
-                              }}
+                          InputLabelProps={{
+                            sx: {
+                              "&.Mui-focused": {
+                                color: "white",
+                                marginTop: "-10px",
+                              },
+                            },
+                          }}
+                          sx={{
+                            fontSize: 40,
+                            height: "auto", // Keeps height dynamic but within limits
+                            maxHeight: "150px", // Approximate height of 4 rows
+                            overflowY: "auto", // Adds scrollbar if text overflows
+                          }}
                         />
                       )}
                       {isPhoneLog.isPhoneLogBoolean &&
@@ -801,7 +801,11 @@ const CreatePunishmentPanel = ({ setPanelName, data = [] }) => {
                           <>
                             <Box
                               component="section"
-                              sx={{ p: 2, border: "1px dashed grey", fontSize: 40 }}
+                              sx={{
+                                p: 2,
+                                border: "1px dashed grey",
+                                fontSize: 40,
+                              }}
                             >
                               Parent phone number:{" "}
                               {getPhoneNumber(studentNames[0].value)}
