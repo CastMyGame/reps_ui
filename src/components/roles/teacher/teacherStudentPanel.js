@@ -39,10 +39,14 @@ const TeacherStudentPanel = ({ setPanelName, data = [] }) => {
   const [student, setStudent] = useState([]);
 
   useEffect(() => {
-    if (data.teacher.classes.length > 0 && !selectedClass) {
+    if (
+      data.teacher?.classes &&
+      data.teacher.classes.length > 0 &&
+      !selectedClass
+    ) {
       setSelectedClass(data.teacher.classes[0].className);
     }
-  }, [data.teacher.classes, selectedClass]);
+  }, [data.teacher?.classes, selectedClass]);
 
   // Fetch specific student data when clicking the student name
   const fetchStudentData = async (studentEmail) => {
@@ -161,7 +165,9 @@ const TeacherStudentPanel = ({ setPanelName, data = [] }) => {
           // Extract all emails from the classRoster and ensure uniqueness
           const uniqueEmails = Array.from(
             new Set(
-              data.teacher.classes.flatMap((classItem) => classItem.classRoster)
+              data.teacher?.classes?.flatMap(
+                (classItem) => classItem.classRoster
+              )
             )
           );
 
@@ -179,7 +185,7 @@ const TeacherStudentPanel = ({ setPanelName, data = [] }) => {
 
           const fetchedStudents = response.data;
           const studentsArray = [];
-          data.teacher.classes.forEach((classEntry) => {
+          data.teacher?.classes?.forEach((classEntry) => {
             classEntry.classRoster.forEach((student) => {
               const foundStudent = fetchedStudents.find(
                 (s) => s.studentEmail === student
@@ -259,7 +265,7 @@ const TeacherStudentPanel = ({ setPanelName, data = [] }) => {
   return (
     <>
       {/* Display a message if no classes are created */}
-      {data.teacher.classes.length === 1 && data.teacher.classes[0].className === "" ? (
+      {!data.teacher.classes || data.teacher?.classes?.length === 0 ? (
         <div style={{ textAlign: "center", marginTop: "50px" }}>
           <h2>No classes have been created yet.</h2>
           <p>Please create a class to view and manage students.</p>
@@ -338,9 +344,7 @@ const TeacherStudentPanel = ({ setPanelName, data = [] }) => {
                 >
                   <div className="box-left">
                     <AccountBoxIcon style={{ fontSize: "100px" }} />
-                    <h4>
-                      {student}
-                    </h4>
+                    <h4>{student}</h4>
                     <div className="details-box">
                       <p>Email: {studentData[0].studentEmail}</p>
                       <p>Phone: {studentData[0].studentPhoneNumber || "N/A"}</p>
@@ -356,9 +360,7 @@ const TeacherStudentPanel = ({ setPanelName, data = [] }) => {
                   </div>
                 </div>
                 <div className="modal-body-student" style={{ height: "320px" }}>
-                  <TableContainer
-                    style={{ backgroundColor: "white" }}
-                  >
+                  <TableContainer style={{ backgroundColor: "white" }}>
                     <Table stickyHeader>
                       <TableHead>
                         <TableRow>
@@ -421,8 +423,8 @@ const TeacherStudentPanel = ({ setPanelName, data = [] }) => {
               }}
             >
               <option value="">-- Select a Class --</option>
-              {data.teacher.classes
-                .filter(
+              {data.teacher?.classes
+                ?.filter(
                   (classEntry, index) => classEntry.className.trim() !== ""
                 )
                 .map((classEntry, index) => (

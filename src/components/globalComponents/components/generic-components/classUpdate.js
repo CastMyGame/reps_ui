@@ -23,14 +23,19 @@ const mappedStudents = studentEmails
 .filter(student => student !== undefined); // Remove any undefined entries
 
   useEffect(() => {
-    if (teacher && teacher.classes && teacher.classes.length > 0) {
+    if (teacher?.classes?.length > 0) {
       const firstClass = teacher.classes[0];
       setClassName(firstClass.className);
       setPeriodSelected(firstClass.classPeriod);
       setStudentEmails(
-        firstClass.classRoster.map((student) => student.studentEmail || student)
+        firstClass.classRoster?.map((student) => student.studentEmail || student)
       ); // Ensure you get an array of emails
       setPunishmentsThisWeek(firstClass.punishmentsThisWeek);
+    } else {
+      setClassName("");
+      setPeriodSelected("");
+      setStudentEmails([]); // Default empty array
+      setPunishmentsThisWeek(0);
     }
   }, [teacher]);
 
@@ -65,7 +70,7 @@ const mappedStudents = studentEmails
       setPunishmentsThisWeek(0);
     } else {
       setIsNewClass(false);
-      const selectedClass = teacher.classes.find(
+      const selectedClass = teacher?.classes?.find(
         (cls) => cls.className === classId
       );
       if (selectedClass) {
@@ -247,8 +252,7 @@ const mappedStudents = studentEmails
             }}
           >
             <option value="">Select a class</option>
-            {teacher.classes
-              .filter((cls) => cls.className.trim() !== "")
+            {teacher.classes?.filter((cls) => cls.className.trim() !== "")
               .map((cls) => (
                 <option key={cls.className} value={cls.className}>
                   {cls.className}
