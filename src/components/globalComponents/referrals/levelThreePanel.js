@@ -154,7 +154,7 @@ const LevelThreePanel = ({ roleType }) => {
     });
     const url = `${baseUrl}/punish/v1/rejected/${obj.punishment.punishmentId}`;
     axios
-      .put(url, [textareaValue], { headers }) // Pass the headers option with the JWT token
+      .put(url, { headers }) // Pass the headers option with the JWT token
       .then(function (response) {
         setToast({
           visible: true,
