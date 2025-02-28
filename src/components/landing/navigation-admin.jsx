@@ -173,7 +173,14 @@ export const NavigationAdmin = (props) => {
                   className="item page-scroll"
                   type="button"
                 >
-                  Create A Student/Teachers
+                  Create A Student
+                </div>
+                <div
+                  onClick={() => dropdownHandler("studentManagement")}
+                  className="item page-scroll"
+                  type="button"
+                >
+                  Edit A Student
                 </div>
                 <div
                   onClick={() => dropdownHandler("archived")}
