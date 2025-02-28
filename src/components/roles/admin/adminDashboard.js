@@ -169,7 +169,7 @@ const AdminDashboard = () => {
                   />
                 )}
                 {panelName === "createNewStudent" && <CreateNewStudentPanel />}
-                {panelName === "userManagement" && <AddTeacherForm />}
+                {panelName === "userManagement" && <AddTeacherForm adminDto={adminDto}/>}
                 {panelName === "archived" && (
                   <GlobalArchivedPunishmentPanel
                     filter={"PENDING"}
