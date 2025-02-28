@@ -67,7 +67,7 @@ const OfficeReferrals = ({ data = [] }) => {
     });
     const url = `${baseUrl}/officeReferral/v1/rejected/${obj.officeReferralId}`;
     axios
-      .put(url, [textareaValue], { headers }) // Pass the headers option with the JWT token
+      .put(url, { headers }) // Pass the headers option with the JWT token
       .then(function (response) {
         setToast({
           visible: true,

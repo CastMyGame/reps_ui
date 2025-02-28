@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { baseUrl } from "../../../utils/jsonData";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -10,7 +10,6 @@ import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
-import { Select } from "@mui/material";
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -20,20 +19,22 @@ const Alert = React.forwardRef(function Alert(props, ref) {
 
 const defaultTheme = createTheme();
 
-export default function AddTeacherForm(props) {
+export default function AddTeacherForm({adminDto = []}) {
   const [formErrors, setFormErrors] = useState({
     firstName: false,
     lastName: false,
     email: false,
-    schoolName: false,
     parentPhoneNumber: false,
-    studentPhoneNumber: false,
     studentEmail: false,
     parentEmail: false,
-    grade: false,
-    address: false,
-    guidanceEmail: false,
   });
+
+  const [school, setSchool] = useState("");
+
+  useEffect(() => {
+    console.log(" ADMINDTO ", adminDto);
+    setSchool(adminDto.school.schoolName);
+  }, [adminDto]);
 
   const [registrationSuccessMessage, setRegistrationSuccessMessage] =
     useState(false);
@@ -57,14 +58,9 @@ export default function AddTeacherForm(props) {
       firstName: false,
       lastName: false,
       email: false,
-      schoolName: false,
       parentPhoneNumber: false,
-      studentPhoneNumber: false,
       studentEmail: false,
       parentEmail: false,
-      grade: false,
-      address: false,
-      guidanceEmail: false,
     };
 
     // Check for empty fields and set errors
@@ -80,23 +76,8 @@ export default function AddTeacherForm(props) {
     if (data.get("parentEmail") === "") {
       errors.parentEmail = true;
     }
-    if (data.get("guidanceEmail") === "") {
-      errors.guidanceEmail = true;
-    }
-    if (data.get("schoolName") === "") {
-      errors.schoolName = true;
-    }
     if (data.get("parentPhoneNumber") === "") {
       errors.parentPhoneNumber = true;
-    }
-    if (data.get("studentPhoneNumber") === "") {
-      errors.studentPhoneNumber = true;
-    }
-    if (data.get("address") === "") {
-      errors.address = true;
-    }
-    if (data.get("grade") === "") {
-      errors.grade = true;
     }
 
     // Set formErrors state to trigger error messages
@@ -109,14 +90,9 @@ export default function AddTeacherForm(props) {
           firstName: false,
           lastName: false,
           email: false,
-          schoolName: false,
           parentPhoneNumber: false,
-          studentPhoneNumber: false,
           studentEmail: false,
           parentEmail: false,
-          grade: false,
-          address: false,
-          guidanceEmail: false,
         });
       }, 2000);
       return;
@@ -136,7 +112,7 @@ export default function AddTeacherForm(props) {
         studentPhoneNumber: data.get("studentPhoneNumber"),
         address: data.get("address"),
         guidanceEmail: data.get("guidanceEmail"),
-        school: data.get("schoolName"),
+        school: school,
       };
     }
     if (type === "employee") {
@@ -184,7 +160,7 @@ export default function AddTeacherForm(props) {
       </h1>
       <p style={{ textAlign: "center", color: "white" }}>
         <button onClick={() => handleTypeToggle()}>
-          Click Here to Add {type === "student" ? "Teacher" : "Student"}
+          Click Here to Add {type === "student" ? "Student" : "Teacher"}
         </button>
       </p>
       <Container component="main" width="lg">
@@ -234,7 +210,7 @@ export default function AddTeacherForm(props) {
                   helperText={formErrors.firstName && "First Name is required"} // Add error message
                 />
               </Grid>
-              <Grid item xs={12} sm={6}>
+              {/* <Grid item xs={12} sm={6}>
                 <Select
                   required
                   fullWidth
@@ -251,7 +227,7 @@ export default function AddTeacherForm(props) {
                 >
                   <option value={"Burke"}>Burke</option>
                 </Select>
-              </Grid>
+              </Grid> */}
               <Grid item xs={12} sm={6}>
                 <TextField
                   required
@@ -297,7 +273,6 @@ export default function AddTeacherForm(props) {
                   </Grid>
                   <Grid item xs={12} sm={6}>
                     <TextField
-                      required
                       fullWidth
                       id="guidanceEmail"
                       label="Guidance Email Address"
@@ -311,7 +286,6 @@ export default function AddTeacherForm(props) {
                   </Grid>
                   <Grid item xs={12} sm={6}>
                     <TextField
-                      required
                       fullWidth
                       id="text"
                       label="Address"
@@ -323,7 +297,6 @@ export default function AddTeacherForm(props) {
                   </Grid>
                   <Grid item xs={12} sm={6}>
                     <TextField
-                      required
                       fullWidth
                       id="number"
                       label="Grade"
@@ -349,7 +322,6 @@ export default function AddTeacherForm(props) {
                   </Grid>
                   <Grid item xs={12} sm={6}>
                     <TextField
-                      required
                       fullWidth
                       name="studentPhoneNumber"
                       label="Student Phone Number"

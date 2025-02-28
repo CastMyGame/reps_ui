@@ -7,24 +7,27 @@ import { Student } from "src/types/school";
 
 export const getCurrentWeekOfYear = (): number => {
   const today = new Date();
+  
+  // Set to Thursday of the current week (ensures proper ISO week calculation)
+  today.setDate(today.getDate() + 4 - (today.getDay() || 7));
+
+  // First day of the year
   const startOfYear = new Date(today.getFullYear(), 0, 1);
 
-  // Get the time difference in milliseconds and convert to days
-  const dayOfYear =
-    Math.floor((today.getTime() - startOfYear.getTime()) / 86400000) + 1;
-
-  // Calculate the week number
-  const weekNumber = Math.ceil(dayOfYear / 7);
-
+  // Calculate the difference in days, then divide by 7
+  const weekNumber = Math.ceil((((today.getTime() - startOfYear.getTime()) / 86400000) + 1) / 7);
+  
   return weekNumber;
 };
 
 export const currentWeek = getCurrentWeekOfYear();
 
 export const getWeekNumber = (date: Date): number => {
-  const startOfYear = new Date(date.getFullYear(), 0, 1);
-  const pastDays = (date.getTime() - startOfYear.getTime()) / (1000 * 60 * 60 * 24);
-  return Math.ceil((pastDays + startOfYear.getDay() + 1) / 7);
+  const oneJan = new Date(date.getFullYear(), 0, 1);
+  const days = Math.floor(
+    (date.getTime() - oneJan.getTime()) / (24 * 60 * 60 * 1000)
+  );
+  return Math.ceil((days + oneJan.getDay() + 1) / 7);
 };
 
 //The Method filter the list of punihsment by logged in user
@@ -36,7 +39,10 @@ export const filterPunishementsByLoggedInUser = (data: TeacherReferral[]) => {
 };
 
 //This Method Returns a subset of punishments from a list by the week of year the punishment was created
-export const extractDataByWeek = (week: number, data: TeacherDto[]): TeacherDto[] => {
+export const extractDataByWeek = (
+  week: number,
+  data: TeacherDto[]
+): TeacherDto[] => {
   // Ensure data is valid
   if (!Array.isArray(data)) {
     console.error("Invalid data provided to extractDataByWeek:", data);
@@ -46,7 +52,10 @@ export const extractDataByWeek = (week: number, data: TeacherDto[]): TeacherDto[
   // Filter data for the specified week
   const thisWeek = data.filter((punish) => {
     if (!punish?.timeCreated) {
-      console.warn("Skipping entry with missing or invalid timeCreated:", punish);
+      console.warn(
+        "Skipping entry with missing or invalid timeCreated:",
+        punish
+      );
       return false;
     }
 
@@ -106,7 +115,10 @@ export const findDataByWeekAndByPunishment = (
 ): TeacherDto[] => {
   // Ensure data is valid
   if (!Array.isArray(data)) {
-    console.error("Invalid data provided to findDataByWeekAndByPunishment:", data);
+    console.error(
+      "Invalid data provided to findDataByWeekAndByPunishment:",
+      data
+    );
     return [];
   }
 
