@@ -26,6 +26,7 @@ import {
 } from "src/helperFunctions/helperFunctions";
 import { baseUrl } from "src/utils/jsonData";
 import axios from "axios";
+import EditStudentPanel from "src/components/globalComponents/users/editStudentPanel";
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -170,6 +171,7 @@ const AdminDashboard = () => {
                 )}
                 {panelName === "createNewStudent" && <CreateNewStudentPanel />}
                 {panelName === "userManagement" && <AddTeacherForm adminDto={adminDto}/>}
+                {panelName === "studentManagement" && <EditStudentPanel/>}
                 {panelName === "archived" && (
                   <GlobalArchivedPunishmentPanel
                     filter={"PENDING"}
