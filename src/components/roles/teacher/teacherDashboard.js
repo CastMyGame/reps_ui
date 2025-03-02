@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Drawer from "@mui/material/Drawer";
 import CreatePunishmentPanel from "src/components/globalComponents/referrals/createPunishmentPanel.js";
 import TeacherStudentPanel from "src/components/roles/teacher/teacherStudentPanel.js";
@@ -19,7 +19,7 @@ import SpendPage from "src/components/globalComponents/spendPage/spend-page.js";
 import CreateOfficeReferralPanel from "src/components/globalComponents/referrals/createOfficeReferral.js";
 import { ManageSpottersPopup } from "src/components/globalComponents/components/generic-components/manageSpottersPopup.js";
 import ClassUpdate from "src/components/globalComponents/components/generic-components/classUpdate.js";
-import { baseUrl } from "src/utils/jsonData.js";
+import { baseUrl } from "src/utils/jsonData.tsx";
 import axios from "axios";
 
 const TeacherDashboard = () => {
@@ -43,13 +43,12 @@ const TeacherDashboard = () => {
     }
   }, []);
 
-  const headers = {
-    Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
-  };
-
   const url = `${baseUrl}/student/v1/allStudents`;
 
   useEffect(() => {
+    const headers = {
+      Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
+    };
     axios
       .get(url, { headers }) // Pass the headers option with the JWT token
       .then(function (response) {
@@ -58,7 +57,7 @@ const TeacherDashboard = () => {
       .catch(function (error) {
         console.error(error);
       });
-  }, []);
+  }, [url]);
 
   useEffect(() => {
     const fetchPunishmentData = async () => {
@@ -107,6 +106,10 @@ const TeacherDashboard = () => {
   const toggleNotificationDrawer = (open) => {
     setOpenNotificationDrawer(open);
   };
+
+  if (!loggedIn) {
+    return <LoadingWheelPanel />;
+  }
 
   return (
     loggedIn && (

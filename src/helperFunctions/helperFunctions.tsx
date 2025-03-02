@@ -7,7 +7,7 @@ import { Student } from "src/types/school";
 
 export const getCurrentWeekOfYear = (): number => {
   const today = new Date();
-  
+
   // Set to Thursday of the current week (ensures proper ISO week calculation)
   today.setDate(today.getDate() + 4 - (today.getDay() || 7));
 
@@ -15,27 +15,33 @@ export const getCurrentWeekOfYear = (): number => {
   const startOfYear = new Date(today.getFullYear(), 0, 1);
 
   // Calculate the difference in days, then divide by 7
-  const weekNumber = Math.ceil((((today.getTime() - startOfYear.getTime()) / 86400000) + 1) / 7);
-  
+  const weekNumber = Math.ceil(
+    ((today.getTime() - startOfYear.getTime()) / 86400000 + 1) / 7
+  );
+
   return weekNumber;
 };
 
 export const currentWeek = getCurrentWeekOfYear();
 
 export const getWeekNumber = (date: Date): number => {
-  const oneJan = new Date(date.getFullYear(), 0, 1);
-  const days = Math.floor(
-    (date.getTime() - oneJan.getTime()) / (24 * 60 * 60 * 1000)
+  const tempDate = new Date(date);
+  tempDate.setDate(tempDate.getDate() + 4 - (tempDate.getDay() || 7));
+  const startOfYear = new Date(tempDate.getFullYear(), 0, 1);
+  return Math.ceil(
+    ((tempDate.getTime() - startOfYear.getTime()) / 86400000 + 1) / 7
   );
-  return Math.ceil((days + oneJan.getDay() + 1) / 7);
 };
 
 //The Method filter the list of punihsment by logged in user
-export const filterPunishementsByLoggedInUser = (data: TeacherReferral[]) => {
-  const teachReferrals = data.filter(
-    (x) => x.teacherEmail === sessionStorage.getItem("email")
-  ).length;
-  return teachReferrals;
+export const filterPunishmentsByLoggedInUser = (data: TeacherReferral[]) => {
+  const loggedInEmail = sessionStorage.getItem("email");
+  if (!loggedInEmail) {
+    console.warn("No logged-in email found in sessionStorage.");
+    return 0;
+  }
+
+  return data.filter((x) => x.teacherEmail === loggedInEmail).length;
 };
 
 //This Method Returns a subset of punishments from a list by the week of year the punishment was created
@@ -74,18 +80,14 @@ export const extractDataByWeek = (
 
 export const extractDataByWeekFirstDay = (
   week: number,
-  data: TeacherDto[],
-  format = "MM/DD"
-) => {
-  const firstDayOfWeek = getFirstDayOfWeek(week); // Get the first day of the specified week
-  const thisWeek = data.filter((punish) => {
+  data: TeacherDto[]
+): TeacherDto[] => {
+  const firstDayOfWeek = getFirstDayOfWeek(week);
+
+  return data.filter((punish) => {
     const date = new Date(punish.timeCreated);
-    const weekNumber = getWeekNumber(date);
-
-    return weekNumber === week && isSameDay(date, firstDayOfWeek); // Return true if date matches the week and is the first day of the week
+    return getWeekNumber(date) === week && isSameDay(date, firstDayOfWeek);
   });
-
-  return thisWeek; // Return the filtered array
 };
 
 // Helper function to get the first day of a week
@@ -156,34 +158,31 @@ export const categoryBadgeGenerator = (infractionName: string) => {
       </div>
     );
   }
-
   if (BEHAVIORAL.includes(infractionName)) {
     return <div className="cat-badge">Behavioral</div>;
   }
+  return <div className="cat-badge">Other</div>; // Ensure there's always a return value
 };
 
-export const getStudentList = () => {
-  const headers = {
-    Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
-  };
+export const getStudentList = async (): Promise<
+  { studentName: string; studentEmail: string }[]
+> => {
+  try {
+    const headers = {
+      Authorization: `Bearer ${sessionStorage.getItem("Authorization")}`,
+    };
+    const url = `${baseUrl}/student/v1/allStudents`;
 
-  let studentList: Student[] = [];
+    const response = await axios.get<Student[]>(url, { headers });
 
-  const url = `${baseUrl}/student/v1/allStudents`; // Replace with your actual API endpoint
-
-  axios
-    .get(url, { headers }) // Pass the headers option with the JWT token
-    .then(function (response) {
-      studentList.push(response.data);
-    })
-    .catch(function (error) {
-      console.error(error);
-    });
-
-  return studentList.map((student) => ({
-    studentName: `${student.firstName} ${student.lastName} - ${student.studentEmail}`, // Display student's full name as the label
-    studentEmail: student.studentEmail, // Use a unique value for each option
-  }));
+    return response.data.map((student) => ({
+      studentName: `${student.firstName} ${student.lastName} - ${student.studentEmail}`,
+      studentEmail: student.studentEmail,
+    }));
+  } catch (error) {
+    console.error("Error fetching student list:", error);
+    return [];
+  }
 };
 
 // Adjust the week number if current week extends prior to this year
@@ -211,9 +210,7 @@ export const GenerateChartData = (
   rangeWeeks: number,
   data: TeacherDto[]
 ) => {
-  const genData = [];
-
-  for (let i = 0; i < rangeWeeks; i++) {
+  return Array.from({ length: rangeWeeks }, (_, i) => {
     const weekKey = yearAdj(currentWeek - i);
     const weekData = extractDataByWeek(weekKey, data).length;
 
@@ -221,12 +218,8 @@ export const GenerateChartData = (
     const endDate = new Date(startDate);
     endDate.setDate(startDate.getDate() + 6);
 
-    const label = `${startDate.getMonth() + 1}/${startDate.getDate()} - ${endDate.getMonth() + 1}/${endDate.getDate()}`;
+    const label = `${startDate.toLocaleDateString("en-US", { month: "2-digit", day: "2-digit" })} - ${endDate.toLocaleDateString("en-US", { month: "2-digit", day: "2-digit" })}`;
 
-    genData.push({
-      [label]: weekData,
-    });
-  }
-
-  return genData;
+    return { [label]: weekData };
+  });
 };
