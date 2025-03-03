@@ -1,18 +1,18 @@
 import { Role } from "./responses";
 
 export type UserModel = {
-  id: string,
-  username: string,
-  password: string,
-  firstName: string,
-  lastName: string,
-  schoolName: string,
-  roles: RoleModel[],
+  id: string;
+  username: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+  schoolName: string;
+  roles: RoleModel[];
 };
 
 export type RoleModel = {
-  id: string,
-  role: string,
+  id: string;
+  role: string;
 }
 
 export type Student = {
@@ -41,6 +41,7 @@ export type Employee = {
   archivedOn: Date;
   currency: number;
   stateEmployeeId: number;
+  classes: ClassRoster[];
 };
 
 export type School = {
@@ -58,4 +59,11 @@ export interface DetentionTimerProps {
 export interface TimeBank {
   hours: number;
   minutes: number;
+}
+
+export type ClassRoster = {
+  className: string;
+  classPeriod: string;
+  classRoster: string[];
+  punishmentsThisWeek: number;
 }
