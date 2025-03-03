@@ -19,7 +19,7 @@ const Alert = React.forwardRef(function Alert(props, ref) {
 
 const defaultTheme = createTheme();
 
-export default function AddTeacherForm({adminDto = []}) {
+export default function AddStudentForm({adminDto = []}) {
   const [formErrors, setFormErrors] = useState({
     firstName: false,
     lastName: false,

@@ -16,7 +16,7 @@ import { baseUrl } from "../../../utils/jsonData";
 import MenuItem from "@mui/material/MenuItem";
 import DeleteIcon from "@mui/icons-material/Delete";
 
-import AddTeacherForm from "./addTeacherForm";
+import AddStudentForm from "./addTeacherForm";
 
 const AdminUserRoleManagement = () => {
   const [listOfStudents, setListOfStudents] = useState([]);
@@ -94,7 +94,7 @@ const AdminUserRoleManagement = () => {
       {isAddTeacherModalOpen && (
         <div className="modal-overlay">
           <div className="modal-content">
-            <AddTeacherForm setAddTeacherModalOpen={setAddTeacherModalOpen} />
+            <AddStudentForm setAddTeacherModalOpen={setAddTeacherModalOpen} />
             <button onClick={() => setAddTeacherModalOpen(false)}>Close</button>
           </div>
         </div>

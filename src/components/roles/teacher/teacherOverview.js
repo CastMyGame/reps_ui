@@ -5,7 +5,7 @@ import IncidentsByStudentTable from "src/components/globalComponents/dataDisplay
 import { TotalReferralByWeek } from "src/components/globalComponents/dataDisplay/referralsByWeek";
 import Card from "@mui/material/Card";
 import ReferralByBehavior from "src/components/globalComponents/dataDisplay/referralsByBehavior.js";
-import TeacherInfractionOverPeriodBarChart from "src/components/globalComponents/dataDisplay/teacherInfractionPeriodBarChart.js";
+import TeacherInfractionOverPeriodBarChart from "src/components/globalComponents/dataDisplay/teacherInfractionPeriodBarChart";
 import { PieChartParentCommunication } from "src/components/globalComponents/dataDisplay/pieChartParentCommunication.js";
 import RecentIncidents from "src/components/globalComponents/dataDisplay/studentRecentContacts.tsx";
 import ShoutOuts from "src/components/globalComponents/shoutOuts";

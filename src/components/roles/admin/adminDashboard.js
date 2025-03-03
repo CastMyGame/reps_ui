@@ -20,12 +20,6 @@ import SpendPage from "src/components/globalComponents/spendPage/spend-page";
 import CreateOfficeReferralPanel from "src/components/globalComponents/referrals/createOfficeReferral";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
-import {
-  categoryBadgeGenerator,
-  dateCreateFormat,
-} from "src/helperFunctions/helperFunctions";
-import { baseUrl } from "src/utils/jsonData";
-import axios from "axios";
 import EditStudentPanel from "src/components/globalComponents/users/editStudentPanel";
 
 const Alert = React.forwardRef(function Alert(props, ref) {
@@ -36,22 +30,9 @@ const AdminDashboard = () => {
   const [loggedIn, setLoggedIn] = useState(true);
   const [openNotificationDrawer, setOpenNotificationDrawer] = useState(false);
   const [panelName, setPanelName] = useState("overview");
-  const [punishmentData, setPunishmentData] = useState([]);
   const [modalType, setModalType] = useState("");
   const [adminDto, setAdminDto] = useState([]);
-  const [openModal, setOpenModal] = useState({
-    display: false,
-    message: "",
-    buttonType: "",
-    data: null,
-  });
-  const [textareaValue, setTextareaValue] = useState("");
-  const [referralList, setReferralList] = useState([null]);
   const [toast, setToast] = useState({ visible: false, message: "" });
-  const [loadingPunishmentId, setLoadingPunishmentId] = useState({
-    id: null,
-    buttonType: "",
-  });
 
   const [isDropdownOpen, setIsDropdownOpen] = useState("");
 
@@ -61,10 +42,6 @@ const AdminDashboard = () => {
     }
 
     setToast({ visible: false, message: "" });
-  };
-
-  const headers = {
-    Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
   };
 
   useEffect(() => {
@@ -85,9 +62,7 @@ const AdminDashboard = () => {
     const fetchPunishmentData = async () => {
       try {
         const result = await get("DTO/v1/AdminOverviewData");
-        setPunishmentData(result.punishmentResponse);
         setAdminDto(result);
-        setReferralList(result.officeReferrals);
       } catch (err) {
         console.error("Error Fetching Data: ", err);
       }
@@ -97,6 +72,10 @@ const AdminDashboard = () => {
       fetchPunishmentData();
     }
   }, [panelName]);
+
+  if (!loggedIn) {
+    return <LoadingWheelPanel />;
+  }
 
   return (
     loggedIn && (
@@ -170,8 +149,10 @@ const AdminDashboard = () => {
                   />
                 )}
                 {panelName === "createNewStudent" && <CreateNewStudentPanel />}
-                {panelName === "userManagement" && <AddTeacherForm adminDto={adminDto}/>}
-                {panelName === "studentManagement" && <EditStudentPanel/>}
+                {panelName === "userManagement" && (
+                  <AddTeacherForm adminDto={adminDto} />
+                )}
+                {panelName === "studentManagement" && <EditStudentPanel />}
                 {panelName === "archived" && (
                   <GlobalArchivedPunishmentPanel
                     filter={"PENDING"}
