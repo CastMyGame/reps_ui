@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import {
   Table,
   TableContainer,
@@ -17,19 +17,16 @@ import MenuItem from "@mui/material/MenuItem";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 import AddStudentForm from "./addTeacherForm";
+import { Student, UserModel } from "src/types/school";
 
 const AdminUserRoleManagement = () => {
   const [listOfStudents, setListOfStudents] = useState([]);
   const [studentDisplay, setStudentDisplay] = useState(false);
   const [studentEmail, setStudentEmail] = useState("");
   const [studentName, setStudentName] = useState("");
-  const [isAddTeacherModalOpen, setAddTeacherModalOpen] = useState(false);
 
-  const [approveUpdate, setApproveUpdate] = useState("false");
+  const [approveUpdate, setApproveUpdate] = useState(false);
 
-  const headers = {
-    Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
-  };
   const roleOptions = [
     { value: "TEACHER", label: "TEACHER" },
     { value: "STUDENT", label: "STUDENT" },
@@ -38,6 +35,12 @@ const AdminUserRoleManagement = () => {
   ];
 
   const url = `${baseUrl}/users/v1/users`;
+  const headers = useMemo(
+    () => ({
+      Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
+    }),
+    []
+  );
 
   useEffect(() => {
     axios
@@ -48,9 +51,9 @@ const AdminUserRoleManagement = () => {
       .catch(function (error) {
         console.error(error);
       });
-  }, [approveUpdate]); // Run useEffect whenever approveUpdate changes
+  }, [url, headers, approveUpdate]); // Run useEffect whenever approveUpdate changes
 
-  const updateUserRole = (id, role) => {
+  const updateUserRole = (id: string, role: string) => {
     const url = `${baseUrl}/users/v1/users/${id}/roles`;
     const payload = [
       {
@@ -62,7 +65,7 @@ const AdminUserRoleManagement = () => {
     axios
       .put(url, payload, { headers }) // Pass the headers option with the JWT token
       .then(function (response) {
-        setApproveUpdate((prev) => !prev);
+        setApproveUpdate((prev: boolean) => !prev);
         window.alert("You have updated user");
       })
       .catch(function (error) {
@@ -70,7 +73,7 @@ const AdminUserRoleManagement = () => {
       });
   };
 
-  const deleteUser = (user) => {
+  const deleteUser = (user: UserModel) => {
     const url = `${baseUrl}/users/v1/users/${user.id}`;
 
     axios
@@ -91,14 +94,14 @@ const AdminUserRoleManagement = () => {
   const hasScroll = data.length > 10;
   return (
     <div style={{ height: "inherit" }}>
-      {isAddTeacherModalOpen && (
+      {/* {isAddTeacherModalOpen && (
         <div className="modal-overlay">
           <div className="modal-content">
             <AddStudentForm setAddTeacherModalOpen={setAddTeacherModalOpen} />
             <button onClick={() => setAddTeacherModalOpen(false)}>Close</button>
           </div>
         </div>
-      )}
+      )} */}
       <div
         style={{
           backgroundColor: "rgb(25, 118, 210)",
@@ -115,9 +118,9 @@ const AdminUserRoleManagement = () => {
         </Typography>
       </div>
 
-      <button onClick={() => setAddTeacherModalOpen(true)}>
+      {/* <button onClick={() => setAddTeacherModalOpen(true)}>
         Add Employee/Student
-      </button>
+      </button> */}
       <TableContainer
         component={Paper}
         style={{
@@ -147,12 +150,12 @@ const AdminUserRoleManagement = () => {
           </TableHead>
           <TableBody>
             {data.length > 0 ? (
-              data.map((x, key) => (
+              data.map((x: UserModel, key) => (
                 <TableRow
                   key={key}
                   onClick={() => {
                     setStudentDisplay(true);
-                    setStudentEmail(x.studentEmail);
+                    setStudentEmail(x.username);
                     setStudentName(x.firstName);
                   }}
                 >
@@ -202,7 +205,7 @@ const AdminUserRoleManagement = () => {
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan="5">No open assignments found.</TableCell>
+                <TableCell colSpan={5}>No open assignments found.</TableCell>
               </TableRow>
             )}
           </TableBody>
