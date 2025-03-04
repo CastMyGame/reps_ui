@@ -10,7 +10,7 @@ import {
 import ArrowDropDownCircleIcon from "@mui/icons-material/ArrowDropDownCircle";
 import { dateCreateFormat } from "../../helperFunctions/helperFunctions";
 
-const ShoutOuts = ({ data = [] }) => {
+const ShoutOuts = ({ data = {} }) => {
   const [barOpen, setBarOpen] = useState(true);
 
   const hasScroll = data.shoutOutsResponse?.length > 2;

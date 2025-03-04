@@ -4,7 +4,7 @@ import CreatePunishmentPanel from "src/components/globalComponents/referrals/cre
 import TeacherStudentPanel from "src/components/roles/teacher/teacherStudentPanel.js";
 import TeacherFTCPanel from "src/components/roles/teacher/FTCpanel.js";
 import GlobalPunishmentPanel from "src/components/globalComponents/referrals/globalPunishmentPanel.js";
-import TeacherOverviewPanel from "src/components/roles/teacher/teacherOverview.js";
+import TeacherOverviewPanel from "src/components/roles/teacher/teacherOverview";
 import DetentionWidget from "src/components/globalComponents/detentionWidget.js";
 import ISSWidget from "src/components/globalComponents/issWidget.js";
 import LevelThreePanel from "src/components/globalComponents/referrals/levelThreePanel.js";
@@ -22,10 +22,11 @@ import ClassUpdate from "src/components/globalComponents/components/generic-comp
 import { baseUrl } from "src/utils/jsonData";
 import axios from "axios";
 import { ClassRoster, Student } from "src/types/school.js";
+import { TeacherOverviewDto } from "src/types/responses.js";
 
 const TeacherDashboard = () => {
   const [loggedIn, setLoggedIn] = useState(true);
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<TeacherOverviewDto>({});
   const [teacher, setTeacher] = useState([]);
   const [emailList, setEmailList] = useState([]);
   const [openNotificationDrawer, setOpenNotificationDrawer] = useState(false);
@@ -68,7 +69,7 @@ const TeacherDashboard = () => {
           response.teacher.classes.length === 0
         ) {
           // No classes, set empty data and emailList
-          setData([]);
+          setData({});
           setEmailList([]);
           setTeacher(response.teacher);
         } else {
@@ -79,7 +80,7 @@ const TeacherDashboard = () => {
         }
       } catch (err) {
         console.error("Error happens here: ", err);
-        setData([]); // Ensure data is cleared on error
+        setData({}); // Ensure data is cleared on error
       }
     };
     if (panelName === "overview") {
@@ -162,14 +163,10 @@ const TeacherDashboard = () => {
 
   // Extracted function for readability
   function renderTeacherPanel() {
-    if (data === null) {
-      return <div className="teacher-panel">{renderPanels()}</div>;
-    }
-
-    if (data.length === 0) {
+    if (!data || Object.keys(data).length === 0) {
       return <LoadingWheelPanel />;
     }
-
+  
     return <div className="teacher-panel">{renderPanels()}</div>;
   }
 
@@ -179,7 +176,7 @@ const TeacherDashboard = () => {
         {panelName === "overview" && (
           <TeacherOverviewPanel
             setPanelName={setPanelName}
-            data={data}
+            data={data || {}}
             students={filteredStudentList}
           />
         )}
