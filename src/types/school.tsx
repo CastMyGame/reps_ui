@@ -22,6 +22,8 @@ export type Student = {
   studentEmail: string;
   guidanceEmail: string;
   adminEmail: string;
+  parentPhoneNumber: string;
+  studentPhoneNumber: string;
   grade: string;
   points: number;
   school: string;

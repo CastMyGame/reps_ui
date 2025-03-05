@@ -1,16 +1,11 @@
 import { useState, useEffect, useRef } from "react";
 import {
-  TextField,
   Table,
   TableContainer,
   TableCell,
   TableHead,
   TableBody,
   TableRow,
-  Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
 } from "@mui/material";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import jsPDF from "jspdf";
@@ -22,12 +17,20 @@ import { baseUrl } from "src/utils/jsonData";
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css"; // Using "alpine" for a modern theme
+import { TeacherOverviewDto, TeacherReferral } from "src/types/responses";
+import { Student } from "src/types/school";
+import { CellClickedEvent } from "ag-grid-community";
 
-const TeacherStudentPanel = ({ setPanelName, data = {} }) => {
+interface StudentPanelProps {
+  setPanelName: (panel: string) => void;
+  data?: TeacherOverviewDto;
+}
+
+const TeacherStudentPanel: React.FC<StudentPanelProps> = ({ setPanelName, data = {} }) => {
   const [listOfStudents, setListOfStudents] = useState([]);
   const [listOfSchool, setListOfSchool] = useState([]);
   const [studentDisplay, setStudentDisplay] = useState(false);
-  const [studentData, setStudentData] = useState(null);
+  const [studentData, setStudentData] = useState<TeacherReferral[]>([]);
   const [punishmentData, setPunishmentData] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredData, setFilteredData] = useState([]);
@@ -49,9 +52,9 @@ const TeacherStudentPanel = ({ setPanelName, data = {} }) => {
   }, [data.teacher?.classes, selectedClass]);
 
   // Fetch specific student data when clicking the student name
-  const fetchStudentData = async (studentEmail) => {
+  const fetchStudentData = async (studentEmail: string) => {
     try {
-      const response = await get(
+      const response: TeacherReferral[] = await get(
         `punish/v1/student/punishments/${studentEmail}`
       );
       if (response != null) {
@@ -92,7 +95,7 @@ const TeacherStudentPanel = ({ setPanelName, data = {} }) => {
 
   useEffect(() => {
     // Filter the data based on the search query
-    const filteredRecords = listOfStudents.filter((student) => {
+    const filteredRecords = listOfStudents.filter((student: Student) => {
       const fullName = `${student.firstName} ${student.lastName}`.toLowerCase();
 
       return fullName.includes(searchQuery.toLowerCase());
@@ -100,7 +103,7 @@ const TeacherStudentPanel = ({ setPanelName, data = {} }) => {
     setFilteredData(filteredRecords);
   }, [listOfStudents, searchQuery]);
 
-  const handleProfileClick = (x) => {
+  const handleProfileClick = (x: CellClickedEvent) => {
     fetchStudentData(x.data.studentEmail);
     setSpotEmail(x.data.studentEmail);
     setStudent(x.data.fullName);
@@ -108,7 +111,7 @@ const TeacherStudentPanel = ({ setPanelName, data = {} }) => {
 
   const pdfRef = useRef();
 
-  const generatePDF = (studentData) => {
+  const generatePDF = (studentData: TeacherReferral[]) => {
     const pdf = new jsPDF();
     // Add logo
     const logoWidth = 50; // Adjust the width of the logo as needed
@@ -118,7 +121,7 @@ const TeacherStudentPanel = ({ setPanelName, data = {} }) => {
 
     //https://medium.com/dont-leave-me-out-in-the-code/5-steps-to-create-a-pdf-in-react-using-jspdf-1af182b56cee
     //Resource for adding image and how pdf text works
-    var image = new Image();
+    let image = new Image();
     image.src = "/burke-logo.png";
     pdf.addImage(image, "PNG", logoX, logoY, logoWidth, logoHeight);
 
@@ -129,17 +132,16 @@ const TeacherStudentPanel = ({ setPanelName, data = {} }) => {
     pdf.text(`Email: ${studentData[0].studentEmail}`, 20, 30);
     pdf.text(`Phone: ${studentData[0].studentPhoneNumber}`, 20, 40);
     pdf.text(`Grade: ${studentData[0].grade}`, 20, 50);
-    pdf.text(`Address: ${studentData[0].address}`, 20, 60);
 
     // Add punishment details table
-    pdf.autoTable({
+    (pdf as any).autoTable({
       startY: 70, // Adjust the Y-coordinate as needed
       head: [["Status", "Description", "Date", "Infraction"]],
       body: studentData.map((student) => [
         student.status,
-        student.infraction.infractionDescription,
+        student.infractionDescription,
         student.timeCreated,
-        student.infraction.infractionName,
+        student.infractionName,
       ]),
     });
 
@@ -184,7 +186,7 @@ const TeacherStudentPanel = ({ setPanelName, data = {} }) => {
           );
 
           const fetchedStudents = response.data;
-          const studentsArray = [];
+          const studentsArray = Student[];
           data.teacher?.classes?.forEach((classEntry) => {
             classEntry.classRoster.forEach((student) => {
               const foundStudent = fetchedStudents.find(
