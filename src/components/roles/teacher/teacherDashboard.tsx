@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Drawer from "@mui/material/Drawer";
 import CreatePunishmentPanel from "src/components/globalComponents/referrals/createPunishmentPanel.js";
-import TeacherStudentPanel from "src/components/roles/teacher/teacherStudentPanel.js";
+import TeacherStudentPanel from "src/components/roles/teacher/teacherStudentPanel";
 import TeacherFTCPanel from "src/components/roles/teacher/FTCpanel.js";
 import GlobalPunishmentPanel from "src/components/globalComponents/referrals/globalPunishmentPanel.js";
 import TeacherOverviewPanel from "src/components/roles/teacher/teacherOverview";
@@ -166,7 +166,7 @@ const TeacherDashboard = () => {
     if (!data || Object.keys(data).length === 0) {
       return <LoadingWheelPanel />;
     }
-  
+
     return <div className="teacher-panel">{renderPanels()}</div>;
   }
 
