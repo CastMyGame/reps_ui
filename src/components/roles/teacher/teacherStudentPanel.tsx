@@ -1,19 +1,13 @@
 import { useState, useEffect, useRef } from "react";
 import {
-  TextField,
   Table,
   TableContainer,
   TableCell,
   TableHead,
   TableBody,
   TableRow,
-  Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
 } from "@mui/material";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
-import jsPDF from "jspdf";
 import "jspdf-autotable";
 import { IncidentByTypePieChart } from "src/components/globalComponents/dataDisplay/incidentsByType";
 import { get } from "../../../utils/api/api";
@@ -22,20 +16,41 @@ import { baseUrl } from "src/utils/jsonData";
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css"; // Using "alpine" for a modern theme
+import {
+  TeacherOverviewDto,
+  TeacherReferral,
+} from "src/types/responses";
+import { Student } from "src/types/school";
+import { CellClickedEvent, ColDef } from "ag-grid-community";
 
-const TeacherStudentPanel = ({ setPanelName, data = [] }) => {
-  const [listOfStudents, setListOfStudents] = useState([]);
-  const [listOfSchool, setListOfSchool] = useState([]);
+interface StudentPanelProps {
+  setPanelName: (panel: string) => void;
+  data?: TeacherOverviewDto;
+}
+
+interface StudentDisplay {
+  studentEmail: string;
+  fullName?: string; // ✅ Add fullName to avoid TypeScript errors
+  grade: number;
+  teacherManagedReferrals: number;
+  officeManagedReferrals: number;
+  className: string;
+}
+
+const TeacherStudentPanel: React.FC<StudentPanelProps> = ({
+  setPanelName,
+  data = {},
+}) => {
+  const [listOfStudents, setListOfStudents] = useState<StudentDisplay[]>([]);
   const [studentDisplay, setStudentDisplay] = useState(false);
-  const [studentData, setStudentData] = useState(null);
-  const [punishmentData, setPunishmentData] = useState(null);
+  const [studentData, setStudentData] = useState<TeacherReferral[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [filteredData, setFilteredData] = useState([]);
+  const [filteredData, setFilteredData] = useState<StudentDisplay[]>([]);
   const [selectedGrade, setSelectedGrade] = useState(""); // State for selected grade
   const [spotEmail, setSpotEmail] = useState("");
   const [selectedClass, setSelectedClass] = useState(""); // Selected class name
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState("");
   const [student, setStudent] = useState([]);
 
   useEffect(() => {
@@ -49,9 +64,9 @@ const TeacherStudentPanel = ({ setPanelName, data = [] }) => {
   }, [data.teacher?.classes, selectedClass]);
 
   // Fetch specific student data when clicking the student name
-  const fetchStudentData = async (studentEmail) => {
+  const fetchStudentData = async (studentEmail: string) => {
     try {
-      const response = await get(
+      const response: TeacherReferral[] = await get(
         `punish/v1/student/punishments/${studentEmail}`
       );
       if (response != null) {
@@ -92,15 +107,14 @@ const TeacherStudentPanel = ({ setPanelName, data = [] }) => {
 
   useEffect(() => {
     // Filter the data based on the search query
-    const filteredRecords = listOfStudents.filter((student) => {
-      const fullName = `${student.firstName} ${student.lastName}`.toLowerCase();
-
-      return fullName.includes(searchQuery.toLowerCase());
+    const filteredRecords = listOfStudents.filter((student: StudentDisplay) => {
+      return student.fullName?.toLowerCase().includes(searchQuery.toLowerCase()) || false;
     });
+  
     setFilteredData(filteredRecords);
   }, [listOfStudents, searchQuery]);
 
-  const handleProfileClick = (x) => {
+  const handleProfileClick = (x: CellClickedEvent) => {
     fetchStudentData(x.data.studentEmail);
     setSpotEmail(x.data.studentEmail);
     setStudent(x.data.fullName);
@@ -108,51 +122,50 @@ const TeacherStudentPanel = ({ setPanelName, data = [] }) => {
 
   const pdfRef = useRef();
 
-  const generatePDF = (studentData) => {
-    const pdf = new jsPDF();
-    // Add logo
-    const logoWidth = 50; // Adjust the width of the logo as needed
-    const logoHeight = 50; // Adjust the height of the logo as needed
-    const logoX = 130; // Adjust the X coordinate of the logo as needed
-    const logoY = 15; // Adjust the Y coordinate of the logo as needed
+  // const generatePDF = (studentData: TeacherReferral[]) => {
+  //   const pdf = new jsPDF();
+  //   // Add logo
+  //   const logoWidth = 50; // Adjust the width of the logo as needed
+  //   const logoHeight = 50; // Adjust the height of the logo as needed
+  //   const logoX = 130; // Adjust the X coordinate of the logo as needed
+  //   const logoY = 15; // Adjust the Y coordinate of the logo as needed
 
-    //https://medium.com/dont-leave-me-out-in-the-code/5-steps-to-create-a-pdf-in-react-using-jspdf-1af182b56cee
-    //Resource for adding image and how pdf text works
-    var image = new Image();
-    image.src = "/burke-logo.png";
-    pdf.addImage(image, "PNG", logoX, logoY, logoWidth, logoHeight);
+  //   //https://medium.com/dont-leave-me-out-in-the-code/5-steps-to-create-a-pdf-in-react-using-jspdf-1af182b56cee
+  //   //Resource for adding image and how pdf text works
+  //   let image = new Image();
+  //   image.src = "/burke-logo.png";
+  //   pdf.addImage(image, "PNG", logoX, logoY, logoWidth, logoHeight);
 
-    // Add student details section
-    pdf.setFontSize(12);
-    pdf.rect(15, 15, 180, 50);
-    pdf.text(`${studentData[0].firstName} ${studentData[0].lastName}`, 20, 20);
-    pdf.text(`Email: ${studentData[0].studentEmail}`, 20, 30);
-    pdf.text(`Phone: ${studentData[0].studentPhoneNumber}`, 20, 40);
-    pdf.text(`Grade: ${studentData[0].grade}`, 20, 50);
-    pdf.text(`Address: ${studentData[0].address}`, 20, 60);
+  //   // Add student details section
+  //   pdf.setFontSize(12);
+  //   pdf.rect(15, 15, 180, 50);
+  //   pdf.text(`${studentData[0].firstName} ${studentData[0].lastName}`, 20, 20);
+  //   pdf.text(`Email: ${studentData[0].studentEmail}`, 20, 30);
+  //   pdf.text(`Phone: ${studentData[0].studentPhoneNumber}`, 20, 40);
+  //   pdf.text(`Grade: ${studentData[0].grade}`, 20, 50);
 
-    // Add punishment details table
-    pdf.autoTable({
-      startY: 70, // Adjust the Y-coordinate as needed
-      head: [["Status", "Description", "Date", "Infraction"]],
-      body: studentData.map((student) => [
-        student.status,
-        student.infraction.infractionDescription,
-        student.timeCreated,
-        student.infraction.infractionName,
-      ]),
-    });
+  //   // Add punishment details table
+  //   (pdf as any).autoTable({
+  //     startY: 70, // Adjust the Y-coordinate as needed
+  //     head: [["Status", "Description", "Date", "Infraction"]],
+  //     body: studentData.map((student) => [
+  //       student.status,
+  //       student.infractionDescription,
+  //       student.timeCreated,
+  //       student.infractionName,
+  //     ]),
+  //   });
 
-    // Save or open the PDF
-    pdf.save("student_report.pdf");
-  };
+  //   // Save or open the PDF
+  //   pdf.save("student_report.pdf");
+  // };
 
   const hasScroll = listOfStudents.length > 10;
 
   // Process and format the list of students and referral data
   useEffect(() => {
     const processData = () => {
-      if (!data || data.length === 0) {
+      if (!data) {
         setError("No email list provided");
         setLoading(false);
         return;
@@ -184,21 +197,21 @@ const TeacherStudentPanel = ({ setPanelName, data = [] }) => {
           );
 
           const fetchedStudents = response.data;
-          const studentsArray = [];
+          const studentsArray: StudentDisplay[] = [];
           data.teacher?.classes?.forEach((classEntry) => {
             classEntry.classRoster.forEach((student) => {
               const foundStudent = fetchedStudents.find(
-                (s) => s.studentEmail === student
+                (s: Student) => s.studentEmail === student
               );
               if (foundStudent) {
                 studentsArray.push({
                   fullName: `${foundStudent.firstName} ${foundStudent.lastName}`,
                   studentEmail: foundStudent.studentEmail,
                   grade: foundStudent.grade,
-                  teacherManagedReferrals: data.writeUpResponse.filter(
+                  teacherManagedReferrals: (data.writeUpResponse ?? []).filter(
                     (w) => w.studentEmail === foundStudent.studentEmail
                   ).length,
-                  officeManagedReferrals: data.officeReferrals.filter(
+                  officeManagedReferrals: (data.officeReferrals ?? []).filter(
                     (o) => o.studentEmail === foundStudent.studentEmail
                   ).length,
                   className: classEntry.className,
@@ -231,26 +244,26 @@ const TeacherStudentPanel = ({ setPanelName, data = [] }) => {
       const fullName = `${student.fullName}`.toLowerCase();
       const matchesQuery = fullName.includes(searchQuery.toLowerCase());
       const matchesGrade =
-        selectedGrade === "" || student.grade === selectedGrade;
+        selectedGrade === "" || String(student.grade) === selectedGrade;
       return matchesQuery && matchesGrade;
     });
     setFilteredData(filteredRecords);
   }, [listOfStudents, searchQuery, selectedGrade]);
 
-  const handleSearchChange = (e) => {
-    setSearchQuery(e.target.value);
-  };
+  // const handleSearchChange = (e) => {
+  //   setSearchQuery(e.target.value);
+  // };
 
-  const handleGradeChange = (e) => {
-    setSelectedGrade(e.target.value);
-  };
+  // const handleGradeChange = (e) => {
+  //   setSelectedGrade(e.target.value);
+  // };
 
   // Define column definitions, with clickable student name
   const columnDefs = [
     {
       headerName: "Student Name",
       field: "fullName",
-      onCellClicked: (params) => {
+      onCellClicked: (params: CellClickedEvent) => {
         handleProfileClick(params);
       },
     },
@@ -265,7 +278,7 @@ const TeacherStudentPanel = ({ setPanelName, data = [] }) => {
   return (
     <>
       {/* Display a message if no classes are created */}
-      {!data.teacher.classes || data.teacher?.classes?.length === 0 ? (
+      {!data?.teacher?.classes || data.teacher?.classes?.length === 0 ? (
         <div style={{ textAlign: "center", marginTop: "50px" }}>
           <h2>No classes have been created yet.</h2>
           <p>Please create a class to view and manage students.</p>
@@ -302,12 +315,12 @@ const TeacherStudentPanel = ({ setPanelName, data = [] }) => {
                   <button onClick={() => setStudentDisplay(false)}>
                     Cancel
                   </button>
-                  <button
+                  {/* <button
                     onClick={() => generatePDF(studentData)}
                     style={{ backgroundColor: "#CF9FFF" }}
                   >
                     Print
-                  </button>
+                  </button> */}
                 </div>
               </div>
             </div>
@@ -346,10 +359,9 @@ const TeacherStudentPanel = ({ setPanelName, data = [] }) => {
                     <AccountBoxIcon style={{ fontSize: "100px" }} />
                     <h4>{student}</h4>
                     <div className="details-box">
-                      <p>Email: {studentData[0].studentEmail}</p>
-                      <p>Phone: {studentData[0].studentPhoneNumber || "N/A"}</p>
-                      <p>Grade: {studentData[0].grade || "N/A"}</p>
-                      <p>Address: {studentData[0].address || "N/A"}</p>
+                      <p>Email: {filteredData[0].studentEmail}</p>
+                      <p>Grade: {filteredData[0].grade || "N/A"}</p>
+                      <p>Class: {filteredData[0].className || "N/A"}</p>
                     </div>
                   </div>
                   <div
@@ -383,7 +395,7 @@ const TeacherStudentPanel = ({ setPanelName, data = [] }) => {
                             <TableCell>
                               {student.infractionDescription}
                             </TableCell>
-                            <TableCell>{student.timeCreated}</TableCell>
+                            {/* <TableCell>{student.timeCreated}</TableCell> */}
                             <TableCell>{student.infractionName}</TableCell>
                           </TableRow>
                         ))}
@@ -396,12 +408,12 @@ const TeacherStudentPanel = ({ setPanelName, data = [] }) => {
                     Cancel
                   </button>
                   <button onClick={addSpotter}>Spot this Student</button>
-                  <button
+                  {/* <button
                     onClick={() => generatePDF(studentData)}
                     style={{ backgroundColor: "#CF9FFF" }}
                   >
                     Print
-                  </button>
+                  </button> */}
                 </div>
               </div>
             </div>
@@ -440,7 +452,7 @@ const TeacherStudentPanel = ({ setPanelName, data = [] }) => {
                 <div className="ag-theme-alpine" style={{ width: "100%" }}>
                   <AgGridReact
                     rowData={filteredStudentData}
-                    columnDefs={columnDefs}
+                    columnDefs={columnDefs as ColDef[]}
                     domLayout="autoHeight"
                   />
                 </div>

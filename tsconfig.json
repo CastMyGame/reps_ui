@@ -19,5 +19,5 @@
     "noEmit": true,
     "jsx": "react-jsx"
   },
-  "include": ["src", "src/components/globalComponents/dataDisplay/teacherInfractionPeriodBarChart.js"]
+  "include": ["src", "src/components/globalComponents/dataDisplay/teacherInfractionPeriodBarChart.tsx"]
 }

@@ -4,7 +4,7 @@ import "./spend-page.css";
 import { Button, MenuItem, Select, TextField } from "@mui/material";
 import axios from "axios";
 
-const SpendPage = ({ data = [] }) => {
+const SpendPage = ({ data = {} }) => {
   const [shoppingList, setShoppingList] = useState([]);
   const [description, setDescription] = useState();
   const [amount, setAmount] = useState();

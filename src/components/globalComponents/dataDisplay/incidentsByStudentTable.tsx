@@ -3,6 +3,7 @@ import { AgGridReact } from "ag-grid-react";
 import { ColDef } from "ag-grid-community";
 import {
   AdminOverviewDto,
+  OfficeReferral,
   StudentIncidentList,
   TeacherDto,
 } from "src/types/responses";
@@ -12,8 +13,15 @@ import {
 } from "src/helperFunctions/helperFunctions";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
+import { Student } from "src/types/school";
 
-const IncidentsByStudentTable: React.FC<AdminOverviewDto> = ({
+interface IncidentsByStudentTableProps {
+  writeUpResponse: TeacherDto[];
+  officeReferrals: TeacherDto[];
+  students: Student[];
+}
+
+const IncidentsByStudentTable: React.FC<IncidentsByStudentTableProps> = ({
   writeUpResponse = [],
   officeReferrals = [],
   students = [],

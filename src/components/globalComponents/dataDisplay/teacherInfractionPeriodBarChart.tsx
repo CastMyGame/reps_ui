@@ -5,8 +5,13 @@ import {
   findDataByWeekAndByPunishment,
 } from "src/helperFunctions/helperFunctions";
 import ReactEcharts from "echarts-for-react";
+import { TeacherDto } from "src/types/responses";
 
-const TeacherInfractionOverPeriodBarChart = ({ data = [] }) => {
+interface TeacherInfractionOverPeriodBarChartProps {
+  data: TeacherDto[];
+}
+
+const TeacherInfractionOverPeriodBarChart: React.FC<TeacherInfractionOverPeriodBarChartProps> = ({ data = [] }) => {
   const weekData = extractDataByWeek(currentWeek, data || []);
   const tardybehavior = findDataByWeekAndByPunishment(
     currentWeek,

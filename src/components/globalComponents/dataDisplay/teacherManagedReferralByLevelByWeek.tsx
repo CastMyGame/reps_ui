@@ -10,7 +10,11 @@ import {
   TeacherDto,
 } from "src/types/responses";
 
-const TeacherManagedReferralByLevelByWeek: React.FC<AdminOverviewDto> = ({
+interface TeacherReferralByWeekProps {
+  punishmentResponse: TeacherDto[];
+}
+
+const TeacherManagedReferralByLevelByWeek: React.FC<TeacherReferralByWeekProps> = ({
   punishmentResponse = [],
 }) => {
   const [rangeWeeks, setRangeWeek] = useState(10);

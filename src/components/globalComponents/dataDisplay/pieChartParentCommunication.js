@@ -6,7 +6,7 @@ import {
 } from "../../../helperFunctions/helperFunctions";
 
 export const PieChartParentCommunication = ({
-  data = [],
+  data = {},
   shoutOutsResponse = [],
   officeReferrals = [],
   writeUpResponse = [],

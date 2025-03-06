@@ -1,10 +1,10 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Drawer from "@mui/material/Drawer";
 import CreatePunishmentPanel from "src/components/globalComponents/referrals/createPunishmentPanel.js";
-import TeacherStudentPanel from "src/components/roles/teacher/teacherStudentPanel.js";
+import TeacherStudentPanel from "src/components/roles/teacher/teacherStudentPanel";
 import TeacherFTCPanel from "src/components/roles/teacher/FTCpanel.js";
 import GlobalPunishmentPanel from "src/components/globalComponents/referrals/globalPunishmentPanel.js";
-import TeacherOverviewPanel from "src/components/roles/teacher/teacherOverview.js";
+import TeacherOverviewPanel from "src/components/roles/teacher/teacherOverview";
 import DetentionWidget from "src/components/globalComponents/detentionWidget.js";
 import ISSWidget from "src/components/globalComponents/issWidget.js";
 import LevelThreePanel from "src/components/globalComponents/referrals/levelThreePanel.js";
@@ -19,12 +19,14 @@ import SpendPage from "src/components/globalComponents/spendPage/spend-page.js";
 import CreateOfficeReferralPanel from "src/components/globalComponents/referrals/createOfficeReferral.js";
 import { ManageSpottersPopup } from "src/components/globalComponents/components/generic-components/manageSpottersPopup.js";
 import ClassUpdate from "src/components/globalComponents/components/generic-components/classUpdate.js";
-import { baseUrl } from "src/utils/jsonData.js";
+import { baseUrl } from "src/utils/jsonData";
 import axios from "axios";
+import { ClassRoster, Student } from "src/types/school.js";
+import { TeacherOverviewDto } from "src/types/responses.js";
 
 const TeacherDashboard = () => {
   const [loggedIn, setLoggedIn] = useState(true);
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<TeacherOverviewDto>({});
   const [teacher, setTeacher] = useState([]);
   const [emailList, setEmailList] = useState([]);
   const [openNotificationDrawer, setOpenNotificationDrawer] = useState(false);
@@ -32,7 +34,6 @@ const TeacherDashboard = () => {
   const [modalType, setModalType] = useState("");
   const [isDropdownOpen, setIsDropdownOpen] = useState("");
   const [studentList, setStudentList] = useState([]);
-  const [punishmentFilter, setPunishmentFilter] = useState("OPEN");
   const [filteredStudentList, setFilteredStudentList] = useState([]); // Filtered list of students
 
   useEffect(() => {
@@ -43,13 +44,12 @@ const TeacherDashboard = () => {
     }
   }, []);
 
-  const headers = {
-    Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
-  };
-
   const url = `${baseUrl}/student/v1/allStudents`;
 
   useEffect(() => {
+    const headers = {
+      Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
+    };
     axios
       .get(url, { headers }) // Pass the headers option with the JWT token
       .then(function (response) {
@@ -58,7 +58,7 @@ const TeacherDashboard = () => {
       .catch(function (error) {
         console.error(error);
       });
-  }, []);
+  }, [url]);
 
   useEffect(() => {
     const fetchPunishmentData = async () => {
@@ -69,7 +69,7 @@ const TeacherDashboard = () => {
           response.teacher.classes.length === 0
         ) {
           // No classes, set empty data and emailList
-          setData(null);
+          setData({});
           setEmailList([]);
           setTeacher(response.teacher);
         } else {
@@ -80,7 +80,7 @@ const TeacherDashboard = () => {
         }
       } catch (err) {
         console.error("Error happens here: ", err);
-        setData(null); // Ensure data is cleared on error
+        setData({}); // Ensure data is cleared on error
       }
     };
     if (panelName === "overview") {
@@ -94,19 +94,23 @@ const TeacherDashboard = () => {
   useEffect(() => {
     if (studentList.length > 0 && emailList.length > 0) {
       // Flatten the classRoster arrays into a single array of emails
-      const allEmails = emailList.flatMap((classItem) =>
-        classItem.classRoster.map((student) => student)
+      const allEmails = emailList.flatMap((classItem: ClassRoster) =>
+        classItem.classRoster.map((student: string) => student)
       );
-      const filteredStudents = studentList.filter((student) =>
+      const filteredStudents = studentList.filter((student: Student) =>
         allEmails.includes(student.studentEmail)
       );
       setFilteredStudentList(filteredStudents);
     }
   }, [studentList, emailList]);
 
-  const toggleNotificationDrawer = (open) => {
+  const toggleNotificationDrawer = (open: boolean) => {
     setOpenNotificationDrawer(open);
   };
+
+  if (!loggedIn) {
+    return <LoadingWheelPanel />;
+  }
 
   return (
     loggedIn && (
@@ -131,13 +135,6 @@ const TeacherDashboard = () => {
               contactUsDisplayModal={modalType}
             />
           )}
-          {/* {modalType === "classUpdate" && (
-            <ClassUpdate
-              setContactUsDisplayModal={setModalType}
-              contactUsDisplayModal={modalType}
-              teacher={data.teacher}
-            />
-          )} */}
 
           <NavigationLoggedIn
             toggleNotificationDrawer={toggleNotificationDrawer}
@@ -149,85 +146,7 @@ const TeacherDashboard = () => {
           />
         </div>
 
-        <div className="header">
-          {data == null ? (
-            <div className="teacher-panel">
-              {panelName === "overview" && (
-                <TeacherOverviewPanel
-                  setPanelName={setPanelName}
-                  data={data}
-                  students={filteredStudentList}
-                />
-              )}
-              {panelName === "student" && (
-                <TeacherStudentPanel setPanelName={setPanelName} data={data} />
-              )}
-              {panelName === "punishment" && (
-                <GlobalPunishmentPanel
-                  filter={punishmentFilter}
-                  roleType={"teacher"}
-                />
-              )}
-              {panelName === "createPunishment" && (
-                <CreatePunishmentPanel
-                  setPanelName={setPanelName}
-                  data={data}
-                />
-              )}
-              {panelName === "createOfficeReferral" && (
-                <CreateOfficeReferralPanel
-                  setPanelName={setPanelName}
-                  data={data}
-                />
-              )}
-              {panelName === "ftc" && <TeacherFTCPanel />}
-              {panelName === "levelThree" && <LevelThreePanel />}
-              {panelName === "spendPoints" && <SpendPage data={data} />}
-              {panelName === "classUpdate" && (
-                <ClassUpdate setPanelName={setPanelName} teacher={teacher} />
-              )}
-            </div>
-          ) : data.length === 0 ? (
-            <LoadingWheelPanel />
-          ) : (
-            <div className="teacher-panel">
-              {panelName === "overview" && (
-                <TeacherOverviewPanel
-                  setPanelName={setPanelName}
-                  data={data}
-                  students={filteredStudentList}
-                />
-              )}
-              {panelName === "student" && (
-                <TeacherStudentPanel setPanelName={setPanelName} data={data} />
-              )}
-              {panelName === "punishment" && (
-                <GlobalPunishmentPanel
-                  filter={punishmentFilter}
-                  roleType={"teacher"}
-                />
-              )}
-              {panelName === "createPunishment" && (
-                <CreatePunishmentPanel
-                  setPanelName={setPanelName}
-                  data={data}
-                />
-              )}
-              {panelName === "createOfficeReferral" && (
-                <CreateOfficeReferralPanel
-                  setPanelName={setPanelName}
-                  data={data}
-                />
-              )}
-              {panelName === "ftc" && <TeacherFTCPanel />}
-              {panelName === "levelThree" && <LevelThreePanel />}
-              {panelName === "spendPoints" && <SpendPage data={data} />}
-              {panelName === "classUpdate" && (
-                <ClassUpdate setPanelName={setPanelName} teacher={teacher} />
-              )}
-            </div>
-          )}
-        </div>
+        <div className="header">{renderTeacherPanel()}</div>
 
         <Drawer
           anchor="right"
@@ -241,6 +160,47 @@ const TeacherDashboard = () => {
       </div>
     )
   );
+
+  // Extracted function for readability
+  function renderTeacherPanel() {
+    if (!data || Object.keys(data).length === 0) {
+      return <LoadingWheelPanel />;
+    }
+
+    return <div className="teacher-panel">{renderPanels()}</div>;
+  }
+
+  function renderPanels() {
+    return (
+      <>
+        {panelName === "overview" && (
+          <TeacherOverviewPanel
+            setPanelName={setPanelName}
+            data={data || {}}
+            students={filteredStudentList}
+          />
+        )}
+        {panelName === "student" && (
+          <TeacherStudentPanel setPanelName={setPanelName} data={data} />
+        )}
+        {panelName === "punishment" && (
+          <GlobalPunishmentPanel roleType={"teacher"} />
+        )}
+        {panelName === "createPunishment" && (
+          <CreatePunishmentPanel setPanelName={setPanelName} data={data} />
+        )}
+        {panelName === "createOfficeReferral" && (
+          <CreateOfficeReferralPanel data={data} />
+        )}
+        {panelName === "ftc" && <TeacherFTCPanel />}
+        {panelName === "levelThree" && <LevelThreePanel roleType={"TEACHER"} />}
+        {panelName === "spendPoints" && <SpendPage data={data} />}
+        {panelName === "classUpdate" && (
+          <ClassUpdate setPanelName={setPanelName} teacher={teacher} />
+        )}
+      </>
+    );
+  }
 };
 
 export default TeacherDashboard;

@@ -8,29 +8,25 @@ const holidayList = [
 ]; // Example holiday on February 5, 2024
 
 //This method uses the global holidaylist above
-export function calculateSchoolDays(startDate, endDate) {
+export function calculateSchoolDays(startDate: Date, endDate: Date): number {
   const start = new Date(startDate);
   const end = new Date(endDate);
 
   // add 1, to include current day
-  let totalDays = Math.floor((end - start) / (24 * 60 * 60 * 1000)) + 1;
+  let totalDays = Math.floor((Number(end) - Number(start)) / (24 * 60 * 60 * 1000)) + 1;
   let schoolDays = totalDays;
 
   //going to iterate through date, add 1 for eache instance
   for (
-    let current = start;
+    let current = new Date(start);
     current <= end;
     current.setDate(current.getDate() + 1)
   ) {
     const dayOfWeek = current.getDay();
-    if (dayOfWeek === 0 || dayOfWeek === 6) {
-      //this will removed days that are sunday or staturday
-      schoolDays--;
-    } else if (
-      holidayList.some(
-        (holiday) => current.toISOString().split("T")[0] === holiday
-      )
-    ) {
+    const formattedDate = current.toISOString().split("T")[0];
+
+    // Exclude weekends and holidays
+    if (dayOfWeek === 0 || dayOfWeek === 6 || holidayList.includes(formattedDate)) {
       schoolDays--;
     }
   }

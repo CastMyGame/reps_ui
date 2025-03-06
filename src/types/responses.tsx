@@ -104,23 +104,23 @@ export interface TeacherDto {
 }
 
 export interface TeacherOverviewDto {
-  punishmentResponse: TeacherDto;
-  writeUpResponse: TeacherDto;
-  shoutOutsResponse: TeacherDto;
-  officeReferrals: TeacherDto;
-  teacher: Employee;
-  school: School;
-  students: Student[]
+  punishmentResponse?: TeacherDto[];
+  writeUpResponse?: TeacherDto[];
+  shoutOutsResponse?: TeacherDto[];
+  officeReferrals?: TeacherDto[];
+  teacher?: Employee;
+  school?: School;
+  students?: Student[];
 }
 
 export interface AdminOverviewDto {
-  punishmentResponse: TeacherDto;
-  writeUpResponse: TeacherDto;
-  shoutOutsResponse: TeacherDto;
+  punishmentResponse: TeacherDto[];
+  writeUpResponse: TeacherDto[];
+  shoutOutsResponse: TeacherDto[];
   teacher: Employee;
   school: School;
-  teachers: Employee;
-  officeReferrals: OfficeReferral;
+  teachers: Employee[];
+  officeReferrals: TeacherDto[];
   students: Student[];
 }
 
