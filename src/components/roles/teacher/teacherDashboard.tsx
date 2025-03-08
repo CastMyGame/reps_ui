@@ -21,13 +21,13 @@ import { ManageSpottersPopup } from "src/components/globalComponents/components/
 import ClassUpdate from "src/components/globalComponents/components/generic-components/classUpdate.js";
 import { baseUrl } from "src/utils/jsonData";
 import axios from "axios";
-import { ClassRoster, Student } from "src/types/school.js";
+import { ClassRoster, Employee, Student } from "src/types/school.js";
 import { TeacherOverviewDto } from "src/types/responses.js";
 
 const TeacherDashboard = () => {
   const [loggedIn, setLoggedIn] = useState(true);
   const [data, setData] = useState<TeacherOverviewDto>({});
-  const [teacher, setTeacher] = useState([]);
+  const [teacher, setTeacher] = useState<Employee>();
   const [emailList, setEmailList] = useState([]);
   const [openNotificationDrawer, setOpenNotificationDrawer] = useState(false);
   const [panelName, setPanelName] = useState("overview");
@@ -125,7 +125,6 @@ const TeacherDashboard = () => {
           {modalType === "classAnnouncement" && (
             <ClassAnnouncement
               setContactUsDisplayModal={setModalType}
-              contactUsDisplayModal={modalType}
               teacher={teacher}
             />
           )}

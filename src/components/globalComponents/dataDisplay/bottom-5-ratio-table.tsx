@@ -9,7 +9,10 @@ import {
 } from "src/types/responses";
 import { Employee } from "src/types/school";
 import { ColDef } from "ag-grid-community";
-import { currentWeek, extractDataByWeek } from "src/helperFunctions/helperFunctions";
+import {
+  currentWeek,
+  extractDataByWeek,
+} from "src/helperFunctions/helperFunctions";
 
 export const Bottom4PositiveTeacherTable: React.FC<AdminOverviewDto> = ({
   punishmentResponse = [],
@@ -21,14 +24,17 @@ export const Bottom4PositiveTeacherTable: React.FC<AdminOverviewDto> = ({
 
   useEffect(() => {
     // Create a list of teachers with incidents
-    const teachersWithIncidentsList = (teachers as Employee[])
+    const teachersWithIncidentsList = teachers
       .map((teacher: Employee) => {
-        const teacherIncidents = (punishmentResponse as TeacherDto[]).filter(
+        const teacherIncidents = punishmentResponse.filter(
           (item: TeacherDto) => item.teacherEmail === teacher.email
         );
 
         if (teacherIncidents.length > 0) {
-          const incidentsForWeek = extractDataByWeek(currentWeek, (teacherIncidents as TeacherDto[]));
+          const incidentsForWeek = extractDataByWeek(
+            currentWeek,
+            teacherIncidents
+          );
           const totalIncidents = incidentsForWeek.length;
           const posIncidents = incidentsForWeek.filter(
             (item) => item.infractionName === "Positive Behavior Shout Out!"
