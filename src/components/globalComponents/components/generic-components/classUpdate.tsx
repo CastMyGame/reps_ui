@@ -2,14 +2,22 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { baseUrl } from "src/utils/jsonData";
 import { Autocomplete, TextField } from "@mui/material";
+import { Employee, Student } from "src/types/school";
 
-const ClassUpdate = ({ setPanelName, teacher }) => {
-  const [listOfStudents, setListOfStudents] = useState([]);
-  const [teacherEmailSelected, setTeacherEmailSelected] = useState();
-  const [studentEmails, setStudentEmails] = useState([]);
+interface ClassUpdateProps {
+  setPanelName: (value: string) => void;
+  teacher?: Employee;
+}
+
+const ClassUpdate: React.FC<ClassUpdateProps> = ({ setPanelName, teacher }) => {
+  const [listOfStudents, setListOfStudents] = useState<Student[]>([]);
+  const [teacherEmailSelected, setTeacherEmailSelected] = useState<
+    string | null
+  >();
+  const [studentEmails, setStudentEmails] = useState<string[]>([]);
   const [className, setClassName] = useState("");
   const [periodSelected, setPeriodSelected] = useState("");
-  const [selectedStudent, setSelectedStudent] = useState(""); // Selected student for adding
+  const [selectedStudent, setSelectedStudent] = useState<Student | null>(null); // Selected student for adding
   const [loading, setLoading] = useState(false);
   const [isNewClass, setIsNewClass] = useState(false); // Tracks if creating a new class
   const [isModified, setIsModified] = useState(false);
@@ -18,18 +26,18 @@ const ClassUpdate = ({ setPanelName, teacher }) => {
   const [searchTerm, setSearchTerm] = useState(""); // Holds the user's input
 
   // Create a list of student objects from studentEmails
-const mappedStudents = studentEmails
-.map(email => listOfStudents.find(student => student.studentEmail === email))
-.filter(student => student !== undefined); // Remove any undefined entries
+  const mappedStudents = studentEmails
+    .map((email) =>
+      listOfStudents.find((student) => student.studentEmail === email)
+    )
+    .filter((student) => student !== undefined); // Remove any undefined entries
 
   useEffect(() => {
-    if (teacher?.classes?.length > 0) {
+    if (teacher?.classes && teacher?.classes?.length > 0) {
       const firstClass = teacher.classes[0];
       setClassName(firstClass.className);
       setPeriodSelected(firstClass.classPeriod);
-      setStudentEmails(
-        firstClass.classRoster?.map((student) => student.studentEmail || student)
-      ); // Ensure you get an array of emails
+      setStudentEmails(firstClass.classRoster); // Ensure you get an array of emails
       setPunishmentsThisWeek(firstClass.punishmentsThisWeek);
     } else {
       setClassName("");
@@ -40,8 +48,8 @@ const mappedStudents = studentEmails
   }, [teacher]);
 
   useEffect(() => {
-    setTeacherEmailSelected(sessionStorage.getItem("email"));
-  }, []);
+    setTeacherEmailSelected(teacher?.email);
+  }, [teacher?.email]);
 
   useEffect(() => {
     setLoading(true);
@@ -61,7 +69,7 @@ const mappedStudents = studentEmails
       });
   }, []);
 
-  const handleClassChange = (classId) => {
+  const handleClassChange = (classId: string) => {
     if (classId === "new") {
       setIsNewClass(true);
       setClassName("");
@@ -82,9 +90,12 @@ const mappedStudents = studentEmails
   };
 
   const handleAddStudent = () => {
-    if (selectedStudent?.studentEmail && !studentEmails.includes(selectedStudent.studentEmail)) {
+    if (
+      selectedStudent?.studentEmail &&
+      !studentEmails.includes(selectedStudent.studentEmail)
+    ) {
       setStudentEmails([...studentEmails, selectedStudent.studentEmail]); // Store emails only
-      setSelectedStudent(""); // Reset selection
+      setSelectedStudent(null); // Reset selection
       setIsModified(true);
     } else if (!selectedStudent) {
       alert("Please select a student to add.");
@@ -93,14 +104,14 @@ const mappedStudents = studentEmails
     }
   };
 
-  const handleRemoveStudent = (email) => {
+  const handleRemoveStudent = (email: string) => {
     setStudentEmails(
       studentEmails.filter((studentEmail) => studentEmail !== email)
     );
     setIsModified(true);
   };
 
-  const handleDeleteClass = (event) => {
+  const handleDeleteClass = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     if (
       window.confirm(
@@ -108,11 +119,11 @@ const mappedStudents = studentEmails
       )
     ) {
       setLoading(true);
-      const deleteClass = teacher.classes.filter(
+      const deleteClass = teacher?.classes.find(
         (cls) => cls.className === className
       );
 
-      const leftoverClasses = teacher.classes.filter(
+      const leftoverClasses = teacher?.classes.filter(
         (cls) => cls.className !== className
       );
 
@@ -120,7 +131,7 @@ const mappedStudents = studentEmails
         classToUpdate: {
           className,
           classPeriod: periodSelected,
-          classRoster: deleteClass.classRoster,
+          classRoster: deleteClass?.classRoster ?? [],
           punishmentsThisWeek: punishmentsThisWeek,
         },
       };
@@ -139,7 +150,9 @@ const mappedStudents = studentEmails
           setLoading(false);
           alert("Class deleted successfully.");
           setClassName(""); // Reset class selection
-          teacher.classes = leftoverClasses;
+          if (teacher) {
+            teacher.classes = leftoverClasses ?? [];
+          }
           setPeriodSelected("");
           setStudentEmails([]);
         })
@@ -151,7 +164,7 @@ const mappedStudents = studentEmails
     }
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (studentEmails.length === 0) {
       alert("Class roster cannot be empty.");
@@ -161,7 +174,7 @@ const mappedStudents = studentEmails
 
     if (isNewClass) {
       // Validate unique class name
-      const classExists = teacher.classes.some(
+      const classExists = teacher?.classes.some(
         (cls) => cls.className.toLowerCase() === className.toLowerCase()
       );
       if (classExists) {
@@ -197,10 +210,11 @@ const mappedStudents = studentEmails
         );
         if (isNewClass) {
           // Add the new class to teacher's classes
-          teacher.classes.push({
-            className,
+          teacher?.classes.push({
+            className: className,
             classPeriod: periodSelected,
             classRoster: studentEmails,
+            punishmentsThisWeek: 0,
           });
         }
         setPanelName("classUpdate"); // Redirect or reset as needed
@@ -211,8 +225,6 @@ const mappedStudents = studentEmails
         alert("Error updating class roster. Please try again.");
       });
   };
-
-  
 
   const classPeriodSelectOptions = [
     { value: "exchange", label: "Class Exchange" },
@@ -252,7 +264,8 @@ const mappedStudents = studentEmails
             }}
           >
             <option value="">Select a class</option>
-            {teacher.classes?.filter((cls) => cls.className.trim() !== "")
+            {teacher?.classes
+              ?.filter((cls) => cls.className.trim() !== "")
               .map((cls) => (
                 <option key={cls.className} value={cls.className}>
                   {cls.className}
@@ -278,9 +291,11 @@ const mappedStudents = studentEmails
         {/* Class Name Input */}
         {isNewClass && (
           <div style={{ marginBottom: "15px" }}>
-            <label>Class Name</label>
+            <label htmlFor="className">Class Name</label>
             <input
               type="text"
+              id="className"
+              name="className"
               value={className}
               onChange={(e) => setClassName(e.target.value)}
               placeholder="Enter new class name"
@@ -301,7 +316,7 @@ const mappedStudents = studentEmails
           <div style={{ marginBottom: "15px" }}>
             <select
               value={periodSelected}
-              onChange={(e) => setPeriodSelected(e.target.label)}
+              onChange={(e) => setPeriodSelected(e.target.value)}
               required
               style={{
                 padding: "8px",
@@ -313,7 +328,7 @@ const mappedStudents = studentEmails
             >
               <option value="">Select a period</option>
               {classPeriodSelectOptions.map((period) => (
-                <option key={period} value={period}>
+                <option key={period.value} value={period.value}>
                   {period.label}
                 </option>
               ))}
@@ -323,17 +338,18 @@ const mappedStudents = studentEmails
 
         {/* Search Bar */}
         <div style={{ marginBottom: "20px" }}>
-          <label>Search for a Student to Add</label>
+          <label htmlFor="studentSearch">Search for a Student to Add</label>
 
           {/* Autocomplete Dropdown */}
           <Autocomplete
+            id="studentSearch"
             options={listOfStudents.filter(
               (student) => !studentEmails.includes(student.studentEmail) // Exclude already added students
             )}
             getOptionLabel={(student) =>
               `${student.firstName || ""} ${student.lastName || ""} ${student.studentEmail || ""}`
             }
-            value={selectedStudent || ""} // Controlled component
+            value={selectedStudent}
             onChange={(event, newValue) => {
               setSelectedStudent(newValue);
             }}
@@ -385,12 +401,12 @@ const mappedStudents = studentEmails
           </thead>
           <tbody>
             {mappedStudents.map((student) => (
-              <tr key={student.studentEmail}>
+              <tr key={student?.studentEmail}>
                 <td style={{ border: "1px solid #ddd", padding: "10px" }}>
-                  {student.firstName} {student.lastName}
+                  {student?.firstName} {student?.lastName}
                 </td>
                 <td style={{ border: "1px solid #ddd", padding: "10px" }}>
-                  {student.studentEmail}
+                  {student?.studentEmail}
                 </td>
                 <td
                   style={{
@@ -401,7 +417,9 @@ const mappedStudents = studentEmails
                 >
                   <button
                     type="button"
-                    onClick={() => handleRemoveStudent(student.studentEmail)}
+                    onClick={() =>
+                      handleRemoveStudent(student?.studentEmail ?? "")
+                    }
                     style={{
                       background: "red",
                       color: "white",
