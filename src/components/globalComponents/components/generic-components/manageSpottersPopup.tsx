@@ -8,34 +8,47 @@ import {
   Snackbar,
   TextField,
   Typography,
+  SnackbarCloseReason,
 } from "@mui/material";
 import axios from "axios";
 import { useEffect, useState, useRef } from "react";
+import { Student } from "src/types/school";
 import { baseUrl } from "src/utils/jsonData";
 
-export function ManageSpottersPopup({
+interface ManageSpottersProps {
+  setContactUsDisplayModal: (modal: string) => void;
+  contactUsDisplayModal: string;
+}
+
+export const ManageSpottersPopup: React.FC<ManageSpottersProps> = ({
   setContactUsDisplayModal,
   contactUsDisplayModal,
-}) {
+}) => {
   const [warningToast, setWarningToast] = useState(false);
-  const [selectOption, setSelectOption] = useState([]);
-  const [studentNames, setStudentNames] = useState([]);
-  const [spottedStudents, setSpottedStudents] = useState([]);
+  const [selectOption, setSelectOption] = useState<Student[]>([]);
+  const [studentNames, setStudentNames] = useState<
+    { value: string; label: string }[]
+  >([]);
+  const [spottedStudents, setSpottedStudents] = useState<Student[]>([]);
 
-  const modalRef = useRef(null); // Create a ref for the modal div
-
-  const headers = {
-    Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
-  };
+  const modalRef = useRef<HTMLDivElement | null>(null); // Create a ref for the modal div
 
   // Fetch data on load
   useEffect(() => {
+    const headers = {
+      Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
+    };
+
     axios.get(`${baseUrl}/student/v1/allStudents`, { headers }).then((res) => {
       setSelectOption(res.data);
     });
   }, []);
 
   useEffect(() => {
+    const headers = {
+      Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
+    };
+
     axios
       .get(
         `${baseUrl}/student/v1/findBySpotter/${sessionStorage.getItem("email")}`,
@@ -55,8 +68,11 @@ export function ManageSpottersPopup({
 
   // Click outside modal to close
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (modalRef.current && !modalRef.current.contains(event.target)) {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        modalRef.current &&
+        !modalRef.current.contains(event.target as Node)
+      ) {
         setContactUsDisplayModal("login");
       }
     };
@@ -74,10 +90,9 @@ export function ManageSpottersPopup({
   }));
 
   const addSpotter = () => {
-    const student_emails = [];
-    studentNames.map((x) => {
+    const student_emails: string[] = [];
+    studentNames.forEach((x) => {
       student_emails.push(x.value);
-      return student_emails;
     });
 
     const payload = {
@@ -86,6 +101,10 @@ export function ManageSpottersPopup({
     };
 
     const url = `${baseUrl}/student/v1/addAsSpotter`;
+    const headers = {
+      Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
+    };
+
     axios
       .put(url, payload, { headers })
       .then(() => {
@@ -102,10 +121,9 @@ export function ManageSpottersPopup({
   };
 
   const removeSpotter = () => {
-    const student_emails = [];
-    studentNames.map((x) => {
+    const student_emails: string[] = [];
+    studentNames.forEach((x) => {
       student_emails.push(x.value);
-      return student_emails;
     });
 
     const payload = {
@@ -113,6 +131,10 @@ export function ManageSpottersPopup({
       studentEmail: student_emails,
     };
     const url = `${baseUrl}/student/v1/removeAsSpotter`;
+    const headers = {
+      Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
+    };
+
     axios
       .put(url, payload, { headers })
       .then(() => {
@@ -128,11 +150,18 @@ export function ManageSpottersPopup({
       });
   };
 
-  const handleClose = (reason) => {
+  const handleSnackbarClose = (
+    event: React.SyntheticEvent | Event,
+    reason: SnackbarCloseReason
+  ) => {
     if (reason === "clickaway") {
       return;
     }
     setContactUsDisplayModal("login");
+    setWarningToast(false);
+  };
+
+  const handleAlertClose = (event: React.SyntheticEvent<Element, Event>) => {
     setWarningToast(false);
   };
 
@@ -141,9 +170,13 @@ export function ManageSpottersPopup({
       <Snackbar
         open={warningToast}
         autoHideDuration={6000}
-        onClose={handleClose}
+        onClose={handleSnackbarClose}
       >
-        <Alert onClose={handleClose} severity="success" sx={{ width: "100%" }}>
+        <Alert
+          onClose={handleAlertClose}
+          severity="success"
+          sx={{ width: "100%" }}
+        >
           Your request has been successfully submitted
         </Alert>
       </Snackbar>
@@ -184,15 +217,16 @@ export function ManageSpottersPopup({
             className="student-dropdown"
             id="demo-multiple-chip"
             value={studentNames}
-            onChange={(event, newValue) => setStudentNames(newValue)}
+            onChange={(event: React.ChangeEvent<{}>, newValue: any[]) =>
+              setStudentNames(newValue)
+            }
             options={selectOptions}
             getOptionLabel={(option) => option.label}
-            inputLabelProps={{ style: { fontSize: 18 } }}
             renderInput={(params) => (
               <TextField
                 {...params}
                 className="student-dropdown"
-                inputLabelProps={{ style: { fontSize: 18 } }}
+                InputLabelProps={{ style: { fontSize: 18 } }}
                 label="Select Students"
                 sx={{ width: "100%" }}
               />
@@ -200,7 +234,6 @@ export function ManageSpottersPopup({
             renderTags={(value, getTagProps) =>
               value.map((option, index) => (
                 <Chip
-                  key={option.value}
                   label={option.label}
                   sx={{ fontSize: 18 }}
                   {...getTagProps({ index })}
@@ -239,4 +272,4 @@ export function ManageSpottersPopup({
       </div>
     </>
   );
-}
+};
