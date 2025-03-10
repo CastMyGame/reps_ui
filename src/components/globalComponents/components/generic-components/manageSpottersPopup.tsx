@@ -25,38 +25,41 @@ export const ManageSpottersPopup: React.FC<ManageSpottersProps> = ({
   contactUsDisplayModal,
 }) => {
   const [warningToast, setWarningToast] = useState(false);
-  const [selectOption, setSelectOption] = useState<Student[]>([]);
+  const [errorToast, setErrorToast] = useState(false);
+  const [studentOptions, setStudentOptions] = useState<Student[]>([]);
   const [studentNames, setStudentNames] = useState<
     { value: string; label: string }[]
   >([]);
   const [spottedStudents, setSpottedStudents] = useState<Student[]>([]);
 
   const modalRef = useRef<HTMLDivElement | null>(null); // Create a ref for the modal div
-
-  // Fetch data on load
-  useEffect(() => {
-    const headers = {
-      Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
-    };
-
-    axios.get(`${baseUrl}/student/v1/allStudents`, { headers }).then((res) => {
-      setSelectOption(res.data);
-    });
-  }, []);
+  const autoCompleteRef = useRef<any>(null); // Create a ref for the Autocomplete dropdown
 
   useEffect(() => {
     const headers = {
-      Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
+      Authorization: `Bearer ${sessionStorage.getItem("Authorization")}`,
     };
 
-    axios
-      .get(
-        `${baseUrl}/student/v1/findBySpotter/${sessionStorage.getItem("email")}`,
-        { headers }
-      )
-      .then((res) => {
-        setSpottedStudents(res.data);
-      });
+    // Fetch both students and spotted students together
+    const fetchStudents = async () => {
+      try {
+        const [allStudentsRes, spottedRes] = await Promise.all([
+          axios.get(`${baseUrl}/student/v1/allStudents`, { headers }),
+          axios.get(
+            `${baseUrl}/student/v1/findBySpotter/${sessionStorage.getItem("email")}`,
+            { headers }
+          ),
+        ]);
+
+        setStudentOptions(allStudentsRes.data);
+        setSpottedStudents(spottedRes.data);
+      } catch (error) {
+        console.error(error);
+        setErrorToast(true);
+      }
+    };
+
+    fetchStudents();
   }, []);
 
   // Close modal if `contactUsDisplayModal` changes to anything else
@@ -69,11 +72,16 @@ export const ManageSpottersPopup: React.FC<ManageSpottersProps> = ({
   // Click outside modal to close
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
+      // Check if the click target is inside the modal or Autocomplete dropdown
       if (
         modalRef.current &&
-        !modalRef.current.contains(event.target as Node)
+        !modalRef.current.contains(event.target as Node) &&
+        !(
+          autoCompleteRef.current &&
+          autoCompleteRef.current.contains(event.target as Node)
+        )
       ) {
-        setContactUsDisplayModal("login");
+        setContactUsDisplayModal("spotter");
       }
     };
 
@@ -84,70 +92,42 @@ export const ManageSpottersPopup: React.FC<ManageSpottersProps> = ({
     };
   }, []);
 
-  const selectOptions = selectOption.map((student) => ({
+  const studentDropdownOptions = studentOptions.map((student) => ({
     value: student.studentEmail,
     label: `${student.firstName} ${student.lastName} - ${student.studentEmail}`,
   }));
 
-  const addSpotter = () => {
-    const student_emails: string[] = [];
-    studentNames.forEach((x) => {
-      student_emails.push(x.value);
-    });
-
+  const handleSpotterAction = async (action: "add" | "remove") => {
+    const studentEmails = studentNames.map((x) => x.value);
     const payload = {
       spotters: [sessionStorage.getItem("email")],
-      studentEmail: student_emails,
+      studentEmail: studentEmails,
     };
 
-    const url = `${baseUrl}/student/v1/addAsSpotter`;
+    const url =
+      action === "add"
+        ? `${baseUrl}/student/v1/addAsSpotter`
+        : `${baseUrl}/student/v1/removeAsSpotter`;
     const headers = {
-      Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
+      Authorization: `Bearer ${sessionStorage.getItem("Authorization")}`,
     };
 
-    axios
-      .put(url, payload, { headers })
-      .then(() => {
-        window.alert(
-          `You have been successfully added as a spotter for the students entered. You will receive all REPS emails for these students when they are sent. `
-        );
-        setTimeout(() => {
-          setContactUsDisplayModal("login");
-        }, 1000);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  };
+    try {
+      await axios.put(url, payload, { headers });
 
-  const removeSpotter = () => {
-    const student_emails: string[] = [];
-    studentNames.forEach((x) => {
-      student_emails.push(x.value);
-    });
+      window.alert(
+        `You have been successfully ${
+          action === "add" ? "added as a spotter" : "removed as a spotter"
+        } for the selected students.`
+      );
 
-    const payload = {
-      spotters: [sessionStorage.getItem("email")],
-      studentEmail: student_emails,
-    };
-    const url = `${baseUrl}/student/v1/removeAsSpotter`;
-    const headers = {
-      Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
-    };
-
-    axios
-      .put(url, payload, { headers })
-      .then(() => {
-        window.alert(
-          `You have been successfully removed as a spotter for the students entered. You will no longer receive REPS emails for these students. `
-        );
-        setTimeout(() => {
-          setContactUsDisplayModal("login");
-        }, 1000);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+      setTimeout(() => {
+        setContactUsDisplayModal("");
+      }, 1000);
+    } catch (error) {
+      console.error(error);
+      setErrorToast(true);
+    }
   };
 
   const handleSnackbarClose = (
@@ -170,40 +150,38 @@ export const ManageSpottersPopup: React.FC<ManageSpottersProps> = ({
       <Snackbar
         open={warningToast}
         autoHideDuration={6000}
-        onClose={handleSnackbarClose}
+        onClose={() => setWarningToast(false)}
       >
-        <Alert
-          onClose={handleAlertClose}
-          severity="success"
-          sx={{ width: "100%" }}
-        >
+        <Alert severity="success">
           Your request has been successfully submitted
         </Alert>
       </Snackbar>
 
-      <div
-        ref={modalRef} // Attach the modal ref here
-        className="pop-modal"
-        style={{
-          zIndex: 2,
-        }}
+      <Snackbar
+        open={errorToast}
+        autoHideDuration={6000}
+        onClose={() => setErrorToast(false)}
       >
-        <div className="header" style={{ marginBottom: "20px" }}>
-          <Typography variant="h5">
-            Choose which students you want to spot or stop spotting students you
-            are currently spotting
-          </Typography>
-        </div>
-        <div>
-          <Typography variant="h5" style={{ textAlign: "left" }}>
-            Students you are currently spotting:
-          </Typography>
-        </div>
+        <Alert severity="error">
+          An error occurred while processing your request.
+        </Alert>
+      </Snackbar>
 
-        {spottedStudents.map((option) => (
-          <div key={option.studentEmail}>
-            {option.firstName} {option.lastName}
-          </div>
+      <div ref={modalRef} className="pop-modal" style={{ zIndex: 2 }}>
+        <Typography
+          variant="h3"
+          style={{ marginBottom: "20px", textAlign: "center" }}
+        >
+          Choose which students you want to spot or stop spotting
+        </Typography>
+
+        <Typography variant="h4" style={{ textAlign: "left" }}>
+          Students you are currently spotting:
+        </Typography>
+        {spottedStudents.map((student) => (
+          <Typography key={student.studentEmail} variant="h5" style={{ textAlign: "left" }}>
+            {student.firstName} {student.lastName}
+          </Typography>
         ))}
 
         <FormControl
@@ -213,31 +191,24 @@ export const ManageSpottersPopup: React.FC<ManageSpottersProps> = ({
         >
           <InputLabel id="topic-label">Choose Student</InputLabel>
           <Autocomplete
+            ref={autoCompleteRef}
             multiple
             className="student-dropdown"
-            id="demo-multiple-chip"
             value={studentNames}
             onChange={(event: React.ChangeEvent<{}>, newValue: any[]) =>
               setStudentNames(newValue)
             }
-            options={selectOptions}
+            options={studentDropdownOptions}
             getOptionLabel={(option) => option.label}
             renderInput={(params) => (
               <TextField
                 {...params}
-                className="student-dropdown"
-                InputLabelProps={{ style: { fontSize: 18 } }}
-                label="Select Students"
                 sx={{ width: "100%" }}
               />
             )}
             renderTags={(value, getTagProps) =>
               value.map((option, index) => (
-                <Chip
-                  label={option.label}
-                  sx={{ fontSize: 18 }}
-                  {...getTagProps({ index })}
-                />
+                <Chip label={option.label} {...getTagProps({ index })} />
               ))
             }
           />
@@ -245,26 +216,26 @@ export const ManageSpottersPopup: React.FC<ManageSpottersProps> = ({
 
         <div style={{ display: "flex", justifyContent: "space-between" }}>
           <Button
-            disabled={!studentNames}
+            disabled={studentNames.length === 0}
             variant="contained"
             color="primary"
-            onClick={addSpotter}
+            style={{fontSize: "18"}}
+            onClick={() => handleSpotterAction("add")}
           >
             Spot Students
           </Button>
           <Button
-            disabled={!studentNames}
+            disabled={studentNames.length === 0}
             variant="contained"
-            color="primary"
-            onClick={removeSpotter}
+            color="secondary"
+            onClick={() => handleSpotterAction("remove")}
           >
             Remove Students
           </Button>
-
           <Button
             variant="contained"
             color="success"
-            onClick={() => setContactUsDisplayModal("login")}
+            onClick={() => setContactUsDisplayModal("")}
           >
             Close
           </Button>
