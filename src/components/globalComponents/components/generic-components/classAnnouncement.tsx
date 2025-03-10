@@ -1,23 +1,30 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { baseUrl } from "src/utils/jsonData";
+import { Employee } from "src/types/school";
 
-const ClassAnnouncementModal = ({
+interface ClassAnnouncementModalProps {
+  setContactUsDisplayModal: (value: string) => void;
+  teacher?: Employee;
+}
+
+const ClassAnnouncementModal: React.FC<ClassAnnouncementModalProps> = ({
   setContactUsDisplayModal,
-  contactUsDisplayModal,
   teacher,
 }) => {
-  const [selectedClasses, setSelectedClasses] = useState([]);
+  const [selectedClasses, setSelectedClasses] = useState<string[]>([]);
   const [modalSubject, setModalSubject] = useState("");
   const [modalMessage, setModalMessage] = useState("");
-  const [teacherEmailSelected, setTeacherEmailSelected] = useState();
+  const [teacherEmailSelected, setTeacherEmailSelected] = useState<
+    string | null
+  >();
 
   useEffect(() => {
     const email = sessionStorage.getItem("email");
     setTeacherEmailSelected(email);
   }, []);
 
-  const handleModalSubmit = (event) => {
+  const handleModalSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     if (selectedClasses.length === 0 || !modalSubject || !modalMessage) {
@@ -52,6 +59,8 @@ const ClassAnnouncementModal = ({
     <>
       {/* Overlay */}
       <div
+        role="button"
+        tabIndex={0}
         style={{
           position: "fixed",
           top: 0,
@@ -62,6 +71,11 @@ const ClassAnnouncementModal = ({
           zIndex: 1000,
         }}
         onClick={() => setContactUsDisplayModal("")} // Close modal when clicking outside
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            setContactUsDisplayModal(""); // Allow closing modal with Enter or Space key
+          }
+        }}
       />
       {/* Modal */}
       <div
@@ -99,8 +113,8 @@ const ClassAnnouncementModal = ({
                 padding: "5px",
               }}
             >
-              {teacher?.classes?.length > 0 ? (
-                teacher.classes.map((cls) => (
+              {teacher?.classes && teacher.classes.length > 0 ? (
+                teacher?.classes.map((cls) => (
                   <label
                     key={cls.className}
                     style={{
@@ -151,7 +165,7 @@ const ClassAnnouncementModal = ({
               style={{
                 width: "100%",
                 padding: "12px 8px",
-                fontSize: "1rem",
+                fontSize: "18px",
                 borderRadius: "4px",
                 border: "1px solid #ccc",
               }}
@@ -171,11 +185,11 @@ const ClassAnnouncementModal = ({
               style={{
                 width: "100%",
                 padding: "8px",
-                fontSize: "1rem",
+                fontSize: "14px",
                 borderRadius: "4px",
                 border: "1px solid #ccc",
               }}
-              rows="5"
+              rows={5}
               required
             />
           </div>

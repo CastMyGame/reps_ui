@@ -8,7 +8,7 @@ import TeacherOverviewPanel from "src/components/roles/teacher/teacherOverview";
 import DetentionWidget from "src/components/globalComponents/detentionWidget.js";
 import ISSWidget from "src/components/globalComponents/issWidget.js";
 import LevelThreePanel from "src/components/globalComponents/referrals/levelThreePanel.js";
-import ClassAnnouncement from "src/components/globalComponents/components/generic-components/classAnnouncement.js";
+import ClassAnnouncement from "src/components/globalComponents/components/generic-components/classAnnouncement";
 import { ContactUsModal } from "../../../security/contactUsModal.js";
 import { get } from "../../../utils/api/api.js";
 import LoadingWheelPanel from "src/components/roles/student/blankPanelForTest.js";
@@ -17,17 +17,17 @@ import { NavigationLoggedIn } from "src/components/landing/navigation-loggedIn.j
 import { handleLogout } from "src/utils/helperFunctions.js";
 import SpendPage from "src/components/globalComponents/spendPage/spend-page.js";
 import CreateOfficeReferralPanel from "src/components/globalComponents/referrals/createOfficeReferral.js";
-import { ManageSpottersPopup } from "src/components/globalComponents/components/generic-components/manageSpottersPopup.js";
-import ClassUpdate from "src/components/globalComponents/components/generic-components/classUpdate.js";
+import { ManageSpottersPopup } from "src/components/globalComponents/components/generic-components/manageSpottersPopup";
+import ClassUpdate from "src/components/globalComponents/components/generic-components/classUpdate";
 import { baseUrl } from "src/utils/jsonData";
 import axios from "axios";
-import { ClassRoster, Student } from "src/types/school.js";
+import { ClassRoster, Employee, Student } from "src/types/school.js";
 import { TeacherOverviewDto } from "src/types/responses.js";
 
 const TeacherDashboard = () => {
   const [loggedIn, setLoggedIn] = useState(true);
   const [data, setData] = useState<TeacherOverviewDto>({});
-  const [teacher, setTeacher] = useState([]);
+  const [teacher, setTeacher] = useState<Employee>();
   const [emailList, setEmailList] = useState([]);
   const [openNotificationDrawer, setOpenNotificationDrawer] = useState(false);
   const [panelName, setPanelName] = useState("overview");
@@ -125,7 +125,6 @@ const TeacherDashboard = () => {
           {modalType === "classAnnouncement" && (
             <ClassAnnouncement
               setContactUsDisplayModal={setModalType}
-              contactUsDisplayModal={modalType}
               teacher={teacher}
             />
           )}
