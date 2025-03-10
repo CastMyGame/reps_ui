@@ -165,7 +165,7 @@ const ClassAnnouncementModal: React.FC<ClassAnnouncementModalProps> = ({
               style={{
                 width: "100%",
                 padding: "12px 8px",
-                fontSize: "1rem",
+                fontSize: "18px",
                 borderRadius: "4px",
                 border: "1px solid #ccc",
               }}
@@ -185,7 +185,7 @@ const ClassAnnouncementModal: React.FC<ClassAnnouncementModalProps> = ({
               style={{
                 width: "100%",
                 padding: "8px",
-                fontSize: "1rem",
+                fontSize: "14px",
                 borderRadius: "4px",
                 border: "1px solid #ccc",
               }}
