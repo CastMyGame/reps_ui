@@ -179,7 +179,11 @@ export const ManageSpottersPopup: React.FC<ManageSpottersProps> = ({
           Students you are currently spotting:
         </Typography>
         {spottedStudents.map((student) => (
-          <Typography key={student.studentEmail} variant="h5" style={{ textAlign: "left" }}>
+          <Typography
+            key={student.studentEmail}
+            variant="h5"
+            style={{ textAlign: "left" }}
+          >
             {student.firstName} {student.lastName}
           </Typography>
         ))}
@@ -201,10 +205,7 @@ export const ManageSpottersPopup: React.FC<ManageSpottersProps> = ({
             options={studentDropdownOptions}
             getOptionLabel={(option) => option.label}
             renderInput={(params) => (
-              <TextField
-                {...params}
-                sx={{ width: "100%" }}
-              />
+              <TextField {...params} sx={{ width: "100%" }} />
             )}
             renderTags={(value, getTagProps) =>
               value.map((option, index) => (
@@ -214,13 +215,20 @@ export const ManageSpottersPopup: React.FC<ManageSpottersProps> = ({
           />
         </FormControl>
 
-        <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            marginTop: "20px",
+            padding: "10px",
+          }}
+        >
           <Button
             disabled={studentNames.length === 0}
             variant="contained"
             color="primary"
-            style={{fontSize: "18"}}
             onClick={() => handleSpotterAction("add")}
+            sx={{ fontSize: "18px", minWidth: "180px" }}
           >
             Spot Students
           </Button>
@@ -229,6 +237,7 @@ export const ManageSpottersPopup: React.FC<ManageSpottersProps> = ({
             variant="contained"
             color="secondary"
             onClick={() => handleSpotterAction("remove")}
+            sx={{ fontSize: "18px", minWidth: "180px", margin: "20px" }}
           >
             Remove Students
           </Button>
@@ -236,6 +245,7 @@ export const ManageSpottersPopup: React.FC<ManageSpottersProps> = ({
             variant="contained"
             color="success"
             onClick={() => setContactUsDisplayModal("")}
+            sx={{ fontSize: "18px", minWidth: "180px" }}
           >
             Close
           </Button>
