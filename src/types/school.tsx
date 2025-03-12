@@ -13,7 +13,7 @@ export type UserModel = {
 export type RoleModel = {
   id: string;
   role: string;
-}
+};
 
 export type Student = {
   firstName: string;
@@ -47,11 +47,11 @@ export type Employee = {
 };
 
 export type School = {
-    schoolIdNumber: string;
-    schoolName: string;
-    maxPunishLevel: number;
-    currency: string;
-}
+  schoolIdNumber: string;
+  schoolName: string;
+  maxPunishLevel: number;
+  currency: string;
+};
 
 // Define the props type
 export interface DetentionTimerProps {
@@ -68,4 +68,26 @@ export type ClassRoster = {
   classPeriod: string;
   classRoster: string[];
   punishmentsThisWeek: number;
-}
+};
+
+export type Assignment = {
+  assignmentId: string;
+  infractionName: string;
+  level: number;
+  questions: AssignmentQuestion[];
+};
+
+export type AssignmentQuestion = {
+  question: string;
+  type: string;
+  title: string;
+  body: string;
+  radioAnswers: { [key: string]: RadioAnswer };
+  textToCompare: string;
+  references: string[];
+};
+
+export type RadioAnswer = {
+  value: boolean;
+  label: string;
+};
