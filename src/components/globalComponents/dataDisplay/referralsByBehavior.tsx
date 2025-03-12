@@ -5,19 +5,33 @@ import {
   getCurrentWeekOfYear,
 } from "../../../helperFunctions/helperFunctions";
 import { useEffect, useState } from "react";
+import { TeacherDto } from "src/types/responses";
 
-export default function ReferralByBehavior({ data = [] }) {
-  const [rangeWeeks, setRangeWeek] = useState(10);
-  const [xAxisData, setXAxisData] = useState([]);
-  const [seriesData, setSeriesData] = useState([]);
+interface ReferralByBehaviorProps {
+  data: TeacherDto[];
+}
+
+interface SeriesData {
+  name: string;
+  type: string;
+  data: number[];
+  itemStyle: { color: string };
+}
+
+export const ReferralByBehavior: React.FC<ReferralByBehaviorProps> = ({
+  data = [],
+}) => {
+  const [rangeWeeks, setRangeWeeks] = useState(10);
+  const [xAxisData, setXAxisData] = useState<string[]>([]);
+  const [seriesData, setSeriesData] = useState<SeriesData[]>([]);
 
   const currentWeek = getCurrentWeekOfYear();
 
-  // Ensure `data` is valid and default to an empty array if not
-  const safeData = Array.isArray(data) ? data : [];
-
   // Recalculate X-axis (date range) and series data every time `rangeWeeks` or `data` changes
   useEffect(() => {
+    // Ensure `data` is valid and default to an empty array if not
+    const safeData = Array.isArray(data) ? data : [];
+
     const displayDate = GenerateChartData(
       currentWeek - rangeWeeks + 1,
       rangeWeeks,
@@ -141,7 +155,7 @@ export default function ReferralByBehavior({ data = [] }) {
         },
       },
     ]);
-  }, [rangeWeeks, safeData, currentWeek]);
+  }, [rangeWeeks, data, currentWeek]);
 
   const option = {
     tooltip: {
@@ -191,7 +205,7 @@ export default function ReferralByBehavior({ data = [] }) {
         }}
       >
         <button
-          onClick={() => setRangeWeek((prev) => (prev > 1 ? prev - 1 : prev))}
+          onClick={() => setRangeWeeks((prev) => (prev > 1 ? prev - 1 : prev))}
           style={{
             backgroundColor: "#5D949D",
             color: "white",
@@ -204,7 +218,7 @@ export default function ReferralByBehavior({ data = [] }) {
           Weeks -1
         </button>
         <button
-          onClick={() => setRangeWeek((prev) => prev + 1)}
+          onClick={() => setRangeWeeks((prev) => prev + 1)}
           style={{
             backgroundColor: "#5D949D",
             color: "white",
@@ -220,4 +234,4 @@ export default function ReferralByBehavior({ data = [] }) {
       <ReactEcharts option={option} />
     </div>
   );
-}
+};

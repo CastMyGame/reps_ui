@@ -5,14 +5,27 @@ import {
   GenerateBxByWeek,
 } from "../../../helperFunctions/helperFunctions";
 import { useEffect, useState } from "react";
+import { TeacherDto } from "src/types/responses";
 
-export const TotalReferralByWeek = ({
+interface SeriesData {
+  name: string;
+  type: string;
+  data: number[];
+  itemStyle: { color: string };
+}
+
+interface TotalReferralProps {
+  punishmentResponse: TeacherDto[];
+  officeReferrals: TeacherDto[];
+}
+
+export const TotalReferralByWeek: React.FC<TotalReferralProps> = ({
   punishmentResponse = [],
   officeReferrals = [],
 }) => {
   const [rangeWeeks, setRangeWeeks] = useState(10);
-  const [xAxisData, setXAxisData] = useState([]);
-  const [seriesData, setSeriesData] = useState([]);
+  const [xAxisData, setXAxisData] = useState<string[]>([]);
+  const [seriesData, setSeriesData] = useState<SeriesData[]>([]);
 
   const currentWeek = getCurrentWeekOfYear();
 
