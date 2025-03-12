@@ -14,7 +14,7 @@ import AddTeacherForm from "src/components/globalComponents/users/addTeacherForm
 import { get } from "../../../utils/api/api";
 import LoadingWheelPanel from "src/components/roles/student/blankPanelForTest";
 import { ContactUsModal } from "src/security/contactUsModal";
-import { NavigationAdmin } from "src/components/landing/navigation-admin";
+import { NavigationAdmin } from "src/components/globalComponents/updatedLanding/navigation-admin";
 import { handleLogout } from "src/utils/helperFunctions";
 import SpendPage from "src/components/globalComponents/spendPage/spend-page";
 import CreateOfficeReferralPanel from "src/components/globalComponents/referrals/createOfficeReferral";

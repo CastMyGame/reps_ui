@@ -10,7 +10,7 @@ import ViolationPage from "src/forms/ViolationPage";
 import { get } from "../../../utils/api/api";
 import LoadingWheelPanel from "src/components/roles/student/blankPanelForTest";
 import { ContactUsModal } from "src/security/contactUsModal";
-import { NavigationStudent } from "src/components/landing/navigation-student";
+import { NavigationStudent } from "src/components/globalComponents/updatedLanding/navigation-student";
 import { handleLogout } from "src/utils/helperFunctions";
 import StudentReferralsByWeek from "../../globalComponents/dataDisplay/studentReferralsByBehavior";
 import StudentReferralsPieChart from "src/components/globalComponents/dataDisplay/studentReferralsPieChart";
