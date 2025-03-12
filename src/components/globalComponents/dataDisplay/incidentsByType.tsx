@@ -3,7 +3,11 @@ import React, { useEffect, useState } from "react";
 import { TeacherReferral } from "src/types/responses";
 import "../dataDisplay/CustomPieChart.css";
 
-export const IncidentByTypePieChart = ({ data = [] }) => {
+interface IncidentByTypeProps {
+  data: TeacherReferral[];
+}
+
+export const IncidentByTypePieChart: React.FC<IncidentByTypeProps> = ({ data = [] }) => {
   const [writeUps, setWriteUps] = useState<TeacherReferral[]>([]);
 
   useEffect(() => {
@@ -61,7 +65,7 @@ export const IncidentByTypePieChart = ({ data = [] }) => {
         type: "pie",
         radius: "50%",
         label: {
-          show: false
+          show: false,
         },
         data: [
           { value: behavioralConcernList.length, name: "Behavioral Concern" },

@@ -1,7 +1,7 @@
 import Typography from "@mui/material/Typography";
 import Card from "@mui/material/Card";
 import { TotalReferralByWeek } from "src/components/globalComponents/dataDisplay/referralsByWeek";
-import ReferralByBehavior from "src/components/globalComponents/dataDisplay/referralsByBehavior";
+import { ReferralByBehavior } from "src/components/globalComponents/dataDisplay/referralsByBehavior";
 import TeacherInfractionOverPeriodBarChart from "src/components/globalComponents/dataDisplay/teacherInfractionPeriodBarChart";
 import { IncidentByTeacherPieChart } from "src/components/globalComponents/dataDisplay/incident-by-teacher-pie-chart";
 import { Top5TeacherRatioTable } from "src/components/globalComponents/dataDisplay/top-5-ratio-table";
