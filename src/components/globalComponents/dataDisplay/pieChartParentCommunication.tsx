@@ -1,11 +1,19 @@
 import ReactEcharts from "echarts-for-react";
+import { TeacherDto, TeacherOverviewDto } from "src/types/responses";
 import {
   extractDataByWeek,
   findDataByWeekAndByPunishment,
   currentWeek,
 } from "../../../helperFunctions/helperFunctions";
 
-export const PieChartParentCommunication = ({
+interface PieChartParentCommunicationProps {
+  data: TeacherOverviewDto;
+  shoutOutsResponse: TeacherDto[];
+  officeReferrals: TeacherDto[];
+  writeUpResponse: TeacherDto[];
+}
+
+export const PieChartParentCommunication: React.FC<PieChartParentCommunicationProps> = ({
   data = {},
   shoutOutsResponse = [],
   officeReferrals = [],
@@ -19,7 +27,7 @@ export const PieChartParentCommunication = ({
   const numBxConcern = findDataByWeekAndByPunishment(
     currentWeek,
     "Behavioral Concern",
-    data || []
+    data?.punishmentResponse || []
   );
 
   const teachReferrals = extractDataByWeek(currentWeek, writeUpResponse || []);
