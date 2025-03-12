@@ -3,10 +3,11 @@ import Typography from "@mui/material/Typography";
 import axios from "axios";
 import { baseUrl } from "../../utils/jsonData";
 import jsPDF from "jspdf";
-import DetentionTimer from "./detentionTimer/detentionTimer.tsx";
+import DetentionTimer from "./detentionTimer/detentionTimer";
+import { PunishmentDto } from "src/types/responses";
 
 const ISSWidget = () => {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<PunishmentDto[]>([]);
 
   useEffect(() => {
     const headers = {
@@ -27,33 +28,33 @@ const ISSWidget = () => {
 
   // const pdfRef = useRef();
 
-  const generatePDF = (studentData) => {
-    const pdf = new jsPDF();
-    // Add logo
-    // const logoWidth = 50; // Adjust the width of the logo as needed
-    // const logoHeight = 50; // Adjust the height of the logo as needed
-    // const logoX = 130; // Adjust the X coordinate of the logo as needed
-    // const logoY = 15; // Adjust the Y coordinate of the logo as needed
+  // const generatePDF = (studentData) => {
+  //   const pdf = new jsPDF();
+  //   // Add logo
+  //   // const logoWidth = 50; // Adjust the width of the logo as needed
+  //   // const logoHeight = 50; // Adjust the height of the logo as needed
+  //   // const logoX = 130; // Adjust the X coordinate of the logo as needed
+  //   // const logoY = 15; // Adjust the Y coordinate of the logo as needed
 
-    //https://medium.com/dont-leave-me-out-in-the-code/5-steps-to-create-a-pdf-in-react-using-jspdf-1af182b56cee
+  //   //https://medium.com/dont-leave-me-out-in-the-code/5-steps-to-create-a-pdf-in-react-using-jspdf-1af182b56cee
 
-    pdf.setFontSize(16);
-    pdf.text("ISS List", 105, 40, { align: "center" }); // Adjust coordinates and styling as needed
+  //   pdf.setFontSize(16);
+  //   pdf.text("ISS List", 105, 40, { align: "center" }); // Adjust coordinates and styling as needed
 
-    // Add punishment details table
-    pdf.autoTable({
-      startY: 70, // Adjust the Y-coordinate as needed
-      head: [["Student Id", "Last Name", "First Name"]],
-      body: studentData.map((student) => [
-        student.studentEmail,
-        student.studentLastName,
-        student.studentFirstName,
-      ]),
-    });
+  //   // Add punishment details table
+  //   pdf.autoTable({
+  //     startY: 70, // Adjust the Y-coordinate as needed
+  //     head: [["Student Id", "Last Name", "First Name"]],
+  //     body: studentData.map((student) => [
+  //       student.studentEmail,
+  //       student.studentLastName,
+  //       student.studentFirstName,
+  //     ]),
+  //   });
 
-    // Save or open the PDF
-    pdf.save(`iss_report.pdf`);
-  };
+  //   // Save or open the PDF
+  //   pdf.save(`iss_report.pdf`);
+  // };
 
   return (
     <>
@@ -126,14 +127,14 @@ const ISSWidget = () => {
             })
           ) : (
             <tr>
-              <td colSpan="4" style={{ textAlign: "center" }}>
+              <td colSpan={4} style={{ textAlign: "center" }}>
                 No student is assigned ISS.
               </td>
             </tr>
           )}
         </tbody>
       </table>
-      <button
+      {/* <button
         className="widget-print-button"
         onClick={() => {
           generatePDF(data);
@@ -141,7 +142,7 @@ const ISSWidget = () => {
         style={{ backgroundColor: "#CF9FFF" }}
       >
         Print
-      </button>
+      </button> */}
     </>
   );
 };
