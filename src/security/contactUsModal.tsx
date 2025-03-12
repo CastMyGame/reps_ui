@@ -9,17 +9,27 @@ import {
   TextField,
   TextareaAutosize,
   Typography,
+  SnackbarCloseReason,
+  SelectChangeEvent,
 } from "@mui/material";
 import MuiAlert from "@mui/material/Alert";
 import axios from "axios";
 import { baseUrl } from "../utils/jsonData";
 import "./modal.css";
 
-const Alert = React.forwardRef(function Alert(props, ref) {
+const Alert = React.forwardRef<
+  HTMLDivElement,
+  React.ComponentProps<typeof MuiAlert>
+>(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
-export const ContactUsModal = ({
+interface ContactUsProps {
+  setContactUsDisplayModal: (modal: string) => void;
+  contactUsDisplayModal: string;
+}
+
+export const ContactUsModal: React.FC<ContactUsProps> = ({
   setContactUsDisplayModal,
   contactUsDisplayModal,
 }) => {
@@ -38,13 +48,17 @@ export const ContactUsModal = ({
   const [warningToast, setWarningToast] = useState(false);
   const [emailValidationMessage, setEmailValidationMessage] = useState("");
 
-  const modalRef = useRef(null);
+  const modalRef = useRef<HTMLDivElement | null>(null);
+  const autoCompleteRef = useRef<HTMLDivElement | null>(null); // Create a ref for the Autocomplete dropdown
 
   // Close modal if click outside
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (modalRef.current && !modalRef.current.contains(event.target)) {
-        setContactUsDisplayModal(false);
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        modalRef.current?.contains(event.target as Node) === false && // Optional chaining here
+        autoCompleteRef.current?.contains(event.target as Node) === false // Optional chaining here
+      ) {
+        setContactUsDisplayModal("");
       }
     };
 
@@ -63,15 +77,17 @@ export const ContactUsModal = ({
     }
   }, [contactUsDisplayModal]);
 
-  const handleTopicChange = (event) => {
+  const handleTopicChange = (event: SelectChangeEvent<string>) => {
     setSelectedTopic(event.target.value);
   };
 
-  const handleEmailChange = (event) => {
+  const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setEmailAddress(event.target.value);
   };
 
-  const handleMessageChange = (event) => {
+  const handleMessageChange = (
+    event: React.ChangeEvent<HTMLTextAreaElement>
+  ) => {
     setMessage(event.target.value);
   };
 
@@ -110,7 +126,7 @@ export const ContactUsModal = ({
           setWarningToast(true);
           setTimeout(() => {
             setWarningToast(false);
-            setContactUsDisplayModal(false);
+            setContactUsDisplayModal("");
           }, 2000);
         })
         .catch((error) => console.error(error));
@@ -126,18 +142,26 @@ export const ContactUsModal = ({
           setWarningToast(true);
           setTimeout(() => {
             setWarningToast(false);
-            setContactUsDisplayModal(false);
+            setContactUsDisplayModal("");
           }, 2000);
         })
         .catch((error) => console.error(error));
     }
   };
 
-  const handleClose = (event, reason) => {
+  const handleCloseSnackbar = (
+    event: React.SyntheticEvent<any, Event> | Event, // For Snackbar
+    reason: SnackbarCloseReason
+  ) => {
     if (reason === "clickaway") {
       return;
     }
 
+    setWarningToast(false);
+  };
+
+  // This wrapper function is for the Alert component to match the expected type
+  const handleAlertClose = (event: React.SyntheticEvent<Element, Event>) => {
     setWarningToast(false);
   };
 
@@ -146,9 +170,13 @@ export const ContactUsModal = ({
       <Snackbar
         open={warningToast}
         autoHideDuration={6000}
-        onClose={handleClose}
+        onClose={handleCloseSnackbar}
       >
-        <Alert onClose={handleClose} severity="success" sx={{ width: "100%" }}>
+        <Alert
+          onClose={handleAlertClose}
+          severity="success"
+          sx={{ width: "100%" }}
+        >
           The Support Team has been Notified
         </Alert>
       </Snackbar>
@@ -224,7 +252,7 @@ export const ContactUsModal = ({
           <Button
             variant="contained"
             color="success"
-            onClick={() => setContactUsDisplayModal(false)}
+            onClick={() => setContactUsDisplayModal("")}
           >
             Close
           </Button>
