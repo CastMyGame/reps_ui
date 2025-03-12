@@ -1,6 +1,4 @@
-import { useEffect, useState } from "react";
-import * as React from "react";
-
+import React, { useEffect, useState } from "react";
 import {
   Table,
   TableContainer,
@@ -9,7 +7,6 @@ import {
   TableRow,
   TableCell,
   Paper,
-  createTheme,
 } from "@mui/material";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import axios from "axios";
@@ -18,35 +15,46 @@ import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 import CircularProgress from "@mui/material/CircularProgress";
 import LoadingWheelPanel from "../../roles/student/blankPanelForTest";
+import { PunishmentDto } from "src/types/responses";
 
-const LevelThreePanel = ({ roleType }) => {
-  const Alert = React.forwardRef(function Alert(props, ref) {
-    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
-  });
+interface LevelThreeProps {
+  roleType: string;
+}
 
-  const [listOfPunishments, setListOfPunishments] = useState([]);
+const Alert = React.forwardRef<
+  HTMLDivElement,
+  React.ComponentProps<typeof MuiAlert>
+>(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
+
+const LevelThreePanel: React.FC<LevelThreeProps> = ({ roleType }) => {
+  const [listOfPunishments, setListOfPunishments] = useState<PunishmentDto[]>(
+    []
+  );
   const [sort, setSort] = useState("");
   const [loadingPunishmentId, setLoadingPunishmentId] = useState({
-    id: null,
+    id: "",
     buttonType: "",
   });
   const [toast, setToast] = useState({ visible: false, message: "" });
-  const [openModal, setOpenModal] = useState({
+  const [openModal, setOpenModal] = useState<{
+    display: boolean;
+    message: string;
+    buttonType: string;
+    data: PunishmentDto | null; // This specifies that data should either be a PunishmentDto or null
+  }>({
     display: false,
     message: "",
     buttonType: "",
     data: null,
   });
-  const [deletePayload, setDeletePayload] = useState(null);
+  const [deletePayload, setDeletePayload] = useState<PunishmentDto | null>(
+    null
+  );
   const [textareaValue, setTextareaValue] = useState("");
   const [loading, setLoading] = useState(false);
-  const [filter, setFilter] = useState("Open");
-
-  const defaultTheme = createTheme();
-
-  const headers = {
-    Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
-  };
+  const [filter, setFilter] = useState("OPEN");
 
   const url = `${baseUrl}/DTO/v1/punishmentsDTO`;
 
@@ -55,20 +63,25 @@ const LevelThreePanel = ({ roleType }) => {
   }, [filter]);
 
   useEffect(() => {
+    const headers = {
+      Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
+    };
+
     setLoading(true);
     axios
       .get(url, { headers }) // Pass the headers option with the JWT token
       .then(function (response) {
         const sortedData = response.data.sort(
-          (a, b) =>
-            new Date(a.punishment.timeCreated) -
-            new Date(b.punishment.timeCreated)
+          (a: PunishmentDto, b: PunishmentDto) =>
+            new Date(a.punishment.timeCreated).getTime() -
+            new Date(b.punishment.timeCreated).getTime()
         );
         if (roleType === "teacher") {
           setLoading(false);
 
           const sortedByRole = sortedData.filter(
-            (x) => x.punishment.teacherEmail === sessionStorage.getItem("email")
+            (x: PunishmentDto) =>
+              x.punishment.teacherEmail === sessionStorage.getItem("email")
           );
           setListOfPunishments(sortedByRole);
         } else {
@@ -83,23 +96,28 @@ const LevelThreePanel = ({ roleType }) => {
 
         console.error(error);
       });
-  }, [toast.visible]);
+  }, [roleType, toast.visible, url]);
 
-  let data =
-    sort === "ALL"
-      ? listOfPunishments
-      : sort === "Open"
-        ? listOfPunishments.filter(
-            (x) =>
-              x.punishment.status === "PENDING" ||
-              (x.punishment.infractionName === "Failure to Complete Work" &&
-                x.punishment.status === "PENDING")
-          )
-        : listOfPunishments.filter((x) => x.punishment.status === sort);
+  let data: PunishmentDto[];
+
+  if (sort === "ALL") {
+    data = listOfPunishments;
+  } else if (sort === "OPEN") {
+    data = listOfPunishments.filter(
+      (x: PunishmentDto) =>
+        x.punishment.status === "PENDING" ||
+        (x.punishment.infractionName === "Failure to Complete Work" &&
+          x.punishment.status === "PENDING")
+    );
+  } else {
+    data = listOfPunishments.filter(
+      (x: PunishmentDto) => x.punishment.status === sort
+    );
+  }
 
   const hasScroll = data.length > 10;
 
-  const calculateDaysSince = (dateCreated) => {
+  const calculateDaysSince = (dateCreated: Date) => {
     const currentDate = new Date();
     const createdDate = new Date(dateCreated);
 
@@ -107,16 +125,21 @@ const LevelThreePanel = ({ roleType }) => {
     currentDate.setUTCHours(0, 0, 0, 0);
     createdDate.setUTCHours(0, 0, 0, 0);
 
-    const timeDifference = currentDate - createdDate;
+    const timeDifference = currentDate.getTime() - createdDate.getTime();
     const daysDifference = Math.floor(timeDifference / (1000 * 60 * 60 * 24)); // Convert milliseconds to days
     return daysDifference;
   };
 
-  const handleTextareaChange = (event) => {
+  const handleTextareaChange = (
+    event: React.ChangeEvent<HTMLTextAreaElement>
+  ) => {
     setTextareaValue(event.target.value);
   };
 
-  const handleClose = (event, reason) => {
+  const handleClose = (
+    _event: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
     if (reason === "clickaway") {
       return;
     }
@@ -124,12 +147,16 @@ const LevelThreePanel = ({ roleType }) => {
     setToast({ visible: false, message: "" });
   };
 
-  const handleClosePunishment = (obj) => {
+  const handleClosePunishment = (obj: PunishmentDto | null) => {
+    const headers = {
+      Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
+    };
+
     setLoadingPunishmentId({
-      id: obj.punishment.punishmentId,
+      id: obj?.punishment.punishmentId ?? "",
       buttonType: "close",
     });
-    const url = `${baseUrl}/punish/v1/close/${obj.punishment.punishmentId}`;
+    const url = `${baseUrl}/punish/v1/close/${obj?.punishment.punishmentId}`;
     axios
       .post(url, [textareaValue], { headers }) // Pass the headers option with the JWT token
       .then(function (response) {
@@ -139,15 +166,25 @@ const LevelThreePanel = ({ roleType }) => {
         console.error(error);
       })
       .finally(() => {
-        setOpenModal({ display: false, message: "" });
+        setOpenModal({
+          display: false,
+          message: "",
+          buttonType: "",
+          data: null,
+        });
         setTimeout(() => {
           setToast({ visible: false, message: "" });
-          setLoadingPunishmentId({ id: null, buttonType: "" });
+          setLoadingPunishmentId({ id: "", buttonType: "" });
         }, 1000);
       });
   };
 
-  const handleRejectPunishment = (obj) => {
+  const handleRejectPunishment = (obj: PunishmentDto | null) => {
+    if (obj === null) return; // Prevent execution if obj is null
+
+    const headers = {
+      Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
+    };
     setLoadingPunishmentId({
       id: obj.punishment.punishmentId,
       buttonType: "close",
@@ -166,10 +203,15 @@ const LevelThreePanel = ({ roleType }) => {
         console.error(error);
       })
       .finally(() => {
-        setOpenModal({ display: false, message: "" });
+        setOpenModal({
+          display: false,
+          message: "",
+          buttonType: "",
+          data: null,
+        });
         setTimeout(() => {
           setToast({ visible: false, message: "" });
-          setLoadingPunishmentId({ id: null, buttonType: "" });
+          setLoadingPunishmentId({ id: "", buttonType: "" });
         }, 1000);
       });
   };
@@ -182,8 +224,8 @@ const LevelThreePanel = ({ roleType }) => {
             <div className="modal-header">
               <h3>{openModal.message}</h3>
               <div className="answer-container">
-                {openModal.data.punishment.infractionDescription.map(
-                  (item, index) => {
+                {openModal?.data?.punishment?.infractionDescription?.map(
+                  (item, index: number) => {
                     if (index > 1) {
                       const match = item.match(
                         /question=([\s\S]+?),\s*answer=([\s\S]+?)(?=\))/
@@ -242,7 +284,12 @@ const LevelThreePanel = ({ roleType }) => {
             <div className="modal-buttons">
               <button
                 onClick={() => {
-                  setOpenModal({ display: false, message: "" });
+                  setOpenModal({
+                    display: false,
+                    message: "",
+                    buttonType: "",
+                    data: null,
+                  });
                   setTextareaValue("");
                 }}
               >
@@ -279,7 +326,7 @@ const LevelThreePanel = ({ roleType }) => {
         autoHideDuration={6000}
         onClose={handleClose}
       >
-        <Alert Close={handleClose} severity="success" sx={{ width: "100%" }}>
+        <Alert onClose={handleClose} severity="success" sx={{ width: "100%" }}>
           {toast.message}
         </Alert>
       </Snackbar>
@@ -358,7 +405,7 @@ const LevelThreePanel = ({ roleType }) => {
                               fontSize: 18,
                             }}
                           >
-                            {x.firstName} {x.lastName}
+                            {x.studentFirstName} {x.studentLastName}
                           </span>
                         </div>
                       </TableCell>
@@ -437,7 +484,7 @@ const LevelThreePanel = ({ roleType }) => {
               ) : (
                 <TableRow>
                   <TableCell
-                    colSpan="5"
+                    colSpan={5}
                     style={{
                       fontSize: 18,
                       fontWeight: "lighter",

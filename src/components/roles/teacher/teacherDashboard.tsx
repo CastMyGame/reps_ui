@@ -7,7 +7,7 @@ import GlobalPunishmentPanel from "src/components/globalComponents/referrals/glo
 import TeacherOverviewPanel from "src/components/roles/teacher/teacherOverview";
 import DetentionWidget from "src/components/globalComponents/detentionWidget";
 import ISSWidget from "src/components/globalComponents/issWidget";
-import LevelThreePanel from "src/components/globalComponents/referrals/levelThreePanel.js";
+import LevelThreePanel from "src/components/globalComponents/referrals/levelThreePanel";
 import ClassAnnouncement from "src/components/globalComponents/components/generic-components/classAnnouncement";
 import { ContactUsModal } from "../../../security/contactUsModal.js";
 import { get } from "../../../utils/api/api";
