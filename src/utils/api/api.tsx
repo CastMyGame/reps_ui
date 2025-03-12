@@ -46,7 +46,7 @@ const refreshToken = async () => {
 };
 
 // Function GET with retry logic
-export const get = async (endpoint) => {
+export const get = async (endpoint: string) => {
   let currentRetry = 0;
 
   while (currentRetry < maxRetries) {

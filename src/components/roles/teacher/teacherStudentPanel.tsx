@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import {
   Table,
   TableContainer,
@@ -45,7 +45,6 @@ const TeacherStudentPanel: React.FC<StudentPanelProps> = ({
   const [studentDisplay, setStudentDisplay] = useState(false);
   const [studentData, setStudentData] = useState<TeacherReferral[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [filteredData, setFilteredData] = useState<StudentDisplay[]>([]);
   const [selectedGrade, setSelectedGrade] = useState(""); // State for selected grade
   const [spotEmail, setSpotEmail] = useState("");
   const [selectedClass, setSelectedClass] = useState(""); // Selected class name
@@ -105,14 +104,13 @@ const TeacherStudentPanel: React.FC<StudentPanelProps> = ({
     }
   };
 
-  useEffect(() => {
-    // Filter the data based on the search query
-    const filteredRecords = listOfStudents.filter((student: StudentDisplay) => {
-      return student.fullName?.toLowerCase().includes(searchQuery.toLowerCase()) || false;
+  const filteredData = useMemo(() => {
+    return listOfStudents.filter((student) => {
+      const matchesQuery = student.fullName?.toLowerCase().includes(searchQuery.toLowerCase()) || false;
+      const matchesGrade = selectedGrade === "" || String(student.grade) === selectedGrade;
+      return matchesQuery && matchesGrade;
     });
-  
-    setFilteredData(filteredRecords);
-  }, [listOfStudents, searchQuery]);
+  }, [listOfStudents, searchQuery, selectedGrade]);
 
   const handleProfileClick = (x: CellClickedEvent) => {
     fetchStudentData(x.data.studentEmail);
@@ -237,18 +235,6 @@ const TeacherStudentPanel: React.FC<StudentPanelProps> = ({
   const filteredStudentData = listOfStudents.filter(
     (student) => student.className === selectedClass
   );
-
-  // Filter data based on search query and selected grade
-  useEffect(() => {
-    const filteredRecords = listOfStudents.filter((student) => {
-      const fullName = `${student.fullName}`.toLowerCase();
-      const matchesQuery = fullName.includes(searchQuery.toLowerCase());
-      const matchesGrade =
-        selectedGrade === "" || String(student.grade) === selectedGrade;
-      return matchesQuery && matchesGrade;
-    });
-    setFilteredData(filteredRecords);
-  }, [listOfStudents, searchQuery, selectedGrade]);
 
   // const handleSearchChange = (e) => {
   //   setSearchQuery(e.target.value);

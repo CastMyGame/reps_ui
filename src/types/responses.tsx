@@ -124,6 +124,13 @@ export interface AdminOverviewDto {
   students: Student[];
 }
 
+export interface PunishmentDto {
+  studentFirstName: string;
+  studentLastName: string;
+  studentEmail: string;
+  punishment: TeacherReferral;
+}
+
 export interface OfficeReferral {
   officeReferralId: string;
   referralCode: OfficeReferralCode;

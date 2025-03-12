@@ -7,9 +7,16 @@ import {
   TableCell,
   Paper,
 } from "@mui/material";
+import { TeacherReferral } from "src/types/responses";
 import { dateCreateFormat } from "../../helperFunctions/helperFunctions";
 
-const ShoutOutWidget = ({ listOfPunishments }) => {
+interface ShoutOutWidgetProps {
+  listOfPunishments: TeacherReferral[];
+}
+
+const ShoutOutWidget: React.FC<ShoutOutWidgetProps> = ({
+  listOfPunishments,
+}) => {
   const loggedInUser = sessionStorage.getItem("email");
   const data = listOfPunishments
     .filter(
@@ -59,7 +66,7 @@ const ShoutOutWidget = ({ listOfPunishments }) => {
           <TableBody>
             {data.length > 0 ? (
               data.map((x, key) => (
-                <TableRow key={key}>
+                <TableRow key={key.valueOf()}>
                   <TableCell style={{ fontSize: "1.5rem" }}>
                     {dateCreateFormat(x.timeCreated)}
                   </TableCell>
@@ -74,7 +81,7 @@ const ShoutOutWidget = ({ listOfPunishments }) => {
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan="5" style={{ fontSize: "1.5rem" }}>
+                <TableCell colSpan={5} style={{ fontSize: "1.5rem" }}>
                   No Shout Out Yet, but im sure its coming!.
                 </TableCell>
               </TableRow>

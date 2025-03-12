@@ -4,9 +4,9 @@ import Typography from "@mui/material/Typography";
 import IncidentsByStudentTable from "src/components/globalComponents/dataDisplay/incidentsByStudentTable";
 import { TotalReferralByWeek } from "src/components/globalComponents/dataDisplay/referralsByWeek";
 import Card from "@mui/material/Card";
-import ReferralByBehavior from "src/components/globalComponents/dataDisplay/referralsByBehavior.js";
+import { ReferralByBehavior } from "src/components/globalComponents/dataDisplay/referralsByBehavior";
 import TeacherInfractionOverPeriodBarChart from "src/components/globalComponents/dataDisplay/teacherInfractionPeriodBarChart";
-import { PieChartParentCommunication } from "src/components/globalComponents/dataDisplay/pieChartParentCommunication.js";
+import { PieChartParentCommunication } from "src/components/globalComponents/dataDisplay/pieChartParentCommunication";
 import RecentIncidents from "src/components/globalComponents/dataDisplay/studentRecentContacts";
 import ShoutOuts from "src/components/globalComponents/shoutOuts";
 import TeacherManagedReferralByLevelByWeek from "src/components/globalComponents/dataDisplay/teacherManagedReferralByLevelByWeek";
@@ -75,7 +75,7 @@ const TeacherOverviewPanel: React.FC<TeacherOverviewProps> = ({
 
       <div className="teacher-overview-first">
         <Card variant="outlined">
-          <ShoutOuts data={data || []} />
+          <ShoutOuts data={data || {}} />
         </Card>
       </div>
 
@@ -98,7 +98,7 @@ const TeacherOverviewPanel: React.FC<TeacherOverviewProps> = ({
       <div className="overview-row">
         <div className="card-overview-half">
           <PieChartParentCommunication
-            data={data || []}
+            data={data || {}}
             shoutOutsResponse={data?.shoutOutsResponse || []}
             officeReferrals={data?.officeReferrals || []}
             writeUpResponse={data?.writeUpResponse || []}

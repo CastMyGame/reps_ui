@@ -1,10 +1,14 @@
 import ReactEcharts from "echarts-for-react";
 import React, { useEffect, useState } from "react";
+import { TeacherReferral } from "src/types/responses";
 import "../dataDisplay/CustomPieChart.css";
-import { get } from "../../../utils/api/api";
 
-export const IncidentByTypePieChart = ({ data = [] }) => {
-  const [writeUps, setWriteUps] = useState([]);
+interface IncidentByTypeProps {
+  data: TeacherReferral[];
+}
+
+export const IncidentByTypePieChart: React.FC<IncidentByTypeProps> = ({ data = [] }) => {
+  const [writeUps, setWriteUps] = useState<TeacherReferral[]>([]);
 
   useEffect(() => {
     setWriteUps(data);
@@ -39,14 +43,6 @@ export const IncidentByTypePieChart = ({ data = [] }) => {
     (punishment) => punishment.infractionName === "Inappropriate Language"
   );
 
-  const refList = [];
-  refList.push(tardyList);
-  refList.push(disruptiveList);
-  refList.push(cellList);
-  refList.push(horseplayList);
-  refList.push(dressCodeList);
-  refList.push(ftcList);
-
   const total =
     tardyList.length +
     disruptiveList.length +
@@ -69,7 +65,7 @@ export const IncidentByTypePieChart = ({ data = [] }) => {
         type: "pie",
         radius: "50%",
         label: {
-          show: false
+          show: false,
         },
         data: [
           { value: behavioralConcernList.length, name: "Behavioral Concern" },
