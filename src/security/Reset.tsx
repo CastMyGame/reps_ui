@@ -16,22 +16,32 @@ import { baseUrl } from "../utils/jsonData";
 import { useNavigate, useParams } from "react-router-dom";
 import CircularProgress from "@mui/material/CircularProgress";
 
-const Alert = React.forwardRef(function Alert(props, ref) {
+const Alert = React.forwardRef<
+  HTMLDivElement,
+  React.ComponentProps<typeof MuiAlert>
+>(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
+enum AlertSeverity {
+  Success = "success",
+  Error = "error",
+  Info = "info",
+  Warning = "warning",
+}
+
 const ResetPassword = () => {
-  const [warningToast, setWarningToast] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [toast, setToast] = useState(false);
   const [alertOpen, setAlertOpen] = useState(false);
-  const [alertSeverity, setAlertSeverity] = useState("success");
+  const [alertSeverity, setAlertSeverity] = useState<AlertSeverity>(
+    AlertSeverity.Success
+  );
   const [alertMessage, setAlertMessage] = useState("");
 
-  const { token } = useParams();
+  const { token } = useParams<{ token: string }>();
   const navigate = useNavigate();
 
-  const showToast = (severity, message) => {
+  const showToast = (severity: AlertSeverity, message: string) => {
     setAlertSeverity(severity);
     setAlertMessage(message);
     setAlertOpen(true);
@@ -46,13 +56,15 @@ const ResetPassword = () => {
   });
 
   useEffect(() => {
-    const tokenFromUrl = decodeURIComponent(token);
-    setFormData((prev) => ({
-      ...prev,
-      token: tokenFromUrl,
-    }));
+    if (token) {
+      const tokenFromUrl = decodeURIComponent(token);
+      setFormData((prev) => ({
+        ...prev,
+        token: tokenFromUrl,
+      }));
+    }
   }, [token]);
-  const handleSubmit = async (event) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setLoading(true);
 
@@ -62,13 +74,19 @@ const ResetPassword = () => {
         newPassword: formData.newPassword,
       });
 
-      showToast("success", "Password has been successfully changed");
+      showToast(
+        AlertSeverity.Success,
+        "Password has been successfully changed"
+      );
       setTimeout(() => {
         navigate("/login");
       }, 2000);
     } catch (error) {
       console.error("Error:", error);
-      showToast("error", "Invalid Token, submit another request for renewal");
+      showToast(
+        AlertSeverity.Error,
+        "Invalid Token, submit another request for renewal"
+      );
       setFormData((prev) => ({
         ...prev,
         newPassword: "",
