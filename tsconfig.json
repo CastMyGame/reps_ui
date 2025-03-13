@@ -4,7 +4,7 @@
     "paths": {
       "@mui/*": ["node_modules/@mui/*"]
     },
-    "target": "es5",
+    "target": "ESNext",
     "lib": ["dom", "ESNext"],
     "allowJs": true,
     "skipLibCheck": true,
@@ -19,5 +19,8 @@
     "noEmit": true,
     "jsx": "react-jsx"
   },
-  "include": ["src", "src/components/globalComponents/dataDisplay/teacherInfractionPeriodBarChart.tsx"]
+  "include": [
+    "src",
+    "src/components/globalComponents/dataDisplay/teacherInfractionPeriodBarChart.tsx"
+  ]
 }

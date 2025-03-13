@@ -133,6 +133,7 @@ export interface OfficeReferral {
   infractionLevel: string;
   studentEmail: string;
   adminEmail: string;
+  teacherEmail: string;
   schoolName: string;
   status: string;
   closedExplanation: string;

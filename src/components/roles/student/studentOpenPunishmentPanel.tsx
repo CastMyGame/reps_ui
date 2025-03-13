@@ -14,36 +14,47 @@ import Tooltip from "@mui/material/Tooltip";
 import WarningIcon from "@mui/icons-material/Warning";
 import AssignmentIcon from "@mui/icons-material/Assignment";
 import { dateCreateFormat } from "src/helperFunctions/helperFunctions";
+import { OfficeReferral, TeacherReferral } from "src/types/responses";
 
-const StudentOpenPunishmentPanel = ({
+interface StudentOpenProps {
+  listOfReferrals: OfficeReferral[];
+  listOfPunishments: TeacherReferral[];
+  handleStartAssignment: (referral: OfficeReferral | TeacherReferral) => void;
+}
+
+const StudentOpenPunishmentPanel: React.FC<StudentOpenProps> = ({
   listOfReferrals,
   listOfPunishments,
   handleStartAssignment,
 }) => {
-  const loggedInUser = sessionStorage.getItem("email");
+  const loggedInUser = sessionStorage.getItem("email") ?? "";
 
-  const sortedPunishments = listOfPunishments.sort((a, b) => {
-    const dateA = new Date(a.timeCreated);
-    const dateB = new Date(b.timeCreated);
-    return dateA - dateB; //descending order
-  });
+  const sortedPunishments = listOfPunishments.toSorted(
+    (a: TeacherReferral, b: TeacherReferral) => {
+      const dateA = new Date(a.timeCreated);
+      const dateB = new Date(b.timeCreated);
+      return dateA.getTime() - dateB.getTime(); //descending order
+    }
+  );
 
-  const sortedReferrals = listOfReferrals.sort((a, b) => {
-    const dateA = new Date(a.timeCreated);
-    const dateB = new Date(b.timeCreated);
-    return dateA - dateB; //descending order
-  });
+  const sortedReferrals = listOfReferrals.toSorted(
+    (a: OfficeReferral, b: OfficeReferral) => {
+      const dateA = new Date(a.timeCreated);
+      const dateB = new Date(b.timeCreated);
+      return dateA.getTime() - dateB.getTime(); //descending order
+    }
+  );
 
-  const handleAssignmentClick = (x) => {
+  const handleAssignmentClick = (x: OfficeReferral | TeacherReferral) => {
     handleStartAssignment(x);
   };
 
-  const calculateImportance = (x) => {
+  const calculateImportance = (x: TeacherReferral | OfficeReferral) => {
     const currentDate = new Date();
     const creationDate = new Date(x.timeCreated);
 
     // Calculate the difference in milliseconds
-    const timeDifference = currentDate - creationDate;
+    const timeDifference = currentDate.getTime() - creationDate.getTime();
 
     // Calculate the difference in days
     const daysDifference = timeDifference / (1000 * 60 * 60 * 24);
@@ -86,6 +97,44 @@ const StudentOpenPunishmentPanel = ({
     );
 
   const hasScroll = punishmentData.length + referralData.length > 10;
+
+  const renderAssignmentAction = (x: OfficeReferral) => {
+    if (x.referralCode === null) {
+      return <AssignmentIcon />;
+    }
+    if (x.status === "PENDING") {
+      return <Typography color="orange">Pending</Typography>;
+    }
+    return (
+      <Button
+        size="small"
+        color="success"
+        variant="contained"
+        onClick={() => handleAssignmentClick(x)}
+      >
+        Start Assignment
+      </Button>
+    );
+  };
+
+  const renderInfractionAction = (x: TeacherReferral) => {
+    if (x.infractionName === "Failure to Complete Work") {
+      return <AssignmentIcon />;
+    }
+    if (x.status === "PENDING") {
+      return <Typography color="orange">Pending</Typography>;
+    }
+    return (
+      <Button
+        size="small"
+        color="success"
+        variant="contained"
+        onClick={() => handleAssignmentClick(x)}
+      >
+        Start Assignment
+      </Button>
+    );
+  };
 
   return (
     <>
@@ -164,7 +213,7 @@ const StudentOpenPunishmentPanel = ({
           <TableBody>
             {referralData.length > 0 ? (
               referralData.map((x, key) => (
-                <TableRow key={key}>
+                <TableRow key={key.valueOf()}>
                   <TableCell style={{ textAlign: "center" }}>
                     <Tooltip
                       title={
@@ -173,20 +222,7 @@ const StudentOpenPunishmentPanel = ({
                           : "Click to view assignment"
                       }
                     >
-                      {x.referralCode === null ? (
-                        <AssignmentIcon />
-                      ) : x.status === "PENDING" ? (
-                        <Typography color="orange">Pending</Typography>
-                      ) : (
-                        <Button
-                          size="small"
-                          color="success"
-                          variant="contained"
-                          onClick={() => handleAssignmentClick(x)}
-                        >
-                          Start Assignment
-                        </Button>
-                      )}
+                      {renderAssignmentAction(x)}
                     </Tooltip>
                   </TableCell>
                   <TableCell style={{ fontSize: "1.5rem" }}>
@@ -221,7 +257,7 @@ const StudentOpenPunishmentPanel = ({
             )}
             {punishmentData.length > 0 ? (
               punishmentData.map((x, key) => (
-                <TableRow key={key}>
+                <TableRow key={key.valueOf()}>
                   <TableCell style={{ textAlign: "center" }}>
                     <Tooltip
                       title={
@@ -230,20 +266,7 @@ const StudentOpenPunishmentPanel = ({
                           : "Click to view assignment"
                       }
                     >
-                      {x.infractionName === "Failure to Complete Work" ? (
-                        <AssignmentIcon />
-                      ) : x.status === "PENDING" ? (
-                        <Typography color="orange">Pending</Typography>
-                      ) : (
-                        <Button
-                          size="small"
-                          color="success"
-                          variant="contained"
-                          onClick={() => handleAssignmentClick(x)}
-                        >
-                          Start Assignment
-                        </Button>
-                      )}
+                      {renderInfractionAction(x)}
                     </Tooltip>
                   </TableCell>
                   <TableCell style={{ fontSize: "1.5rem" }}>
@@ -275,7 +298,7 @@ const StudentOpenPunishmentPanel = ({
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan="5">
+                <TableCell colSpan={5}>
                   Great Job, No Assignments are due.
                 </TableCell>
               </TableRow>
