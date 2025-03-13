@@ -1,12 +1,19 @@
 import React from "react";
+import { AssignmentQuestion } from "src/types/school";
 
-  function MutipleChoiceFormat({data, saveAnswerAndProgress,sectionName}) {
+interface MultipleChoiceProps {
+  data: AssignmentQuestion;
+  saveAnswerAndProgress: (payload: {
+    question: string;
+    answer: string;
+  }) => void;
+}
+
+  const MultipleChoiceFormat: React.FC<MultipleChoiceProps> = ({data, saveAnswerAndProgress}) => {
  
-    const handleRadioChange = (value) =>{
-      var payload = {question:data.question, answer:value}
+    const handleRadioChange = (value: string) =>{
+      const payload = {question:data.question, answer:value}
       saveAnswerAndProgress(payload)
-  
-     
     }
   
     return (
@@ -27,32 +34,32 @@ import React from "react";
          <div className="radio">
           <input
             type="radio"
-            id={1}
+            id={"1"}
             name="radioAnswer"
             value="agree"
             onChange={() => handleRadioChange("agree")}
           />
-          <label style={{marginLeft:"10px",color:"black"}}htmlFor={1}>Agree</label>
+          <label style={{marginLeft:"10px",color:"black"}}htmlFor={"1"}>Agree</label>
           </div>
           <div className="radio">
           <input
             type="radio"
-            id={2}
+            id={"2"}
             name="radioAnswer"
             value="disagree"
             onChange={() => handleRadioChange("disagree")}
           />
-          <label style={{marginLeft:"10px",color:"black"}} htmlFor={2}>Disagree</label>
+          <label style={{marginLeft:"10px",color:"black"}} htmlFor={"2"}>Disagree</label>
     </div>
     <div className="radio">
           <input
             type="radio"
-            id={3}
+            id={"3"}
             name="radioAnswer"
             value="neutral"
             onChange={() => handleRadioChange("neutral")}
           />
-          <label style={{marginLeft:"10px",color:"black"}} htmlFor={3}>Neutral</label>
+          <label style={{marginLeft:"10px",color:"black"}} htmlFor={"3"}>Neutral</label>
           </div>
         </div>
       </>
@@ -61,4 +68,4 @@ import React from "react";
   }
   
   
-  export default MutipleChoiceFormat;
+  export default MultipleChoiceFormat;

@@ -1,10 +1,8 @@
-import * as React from "react";
-import { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
-import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
-import Snackbar from "@mui/material/Snackbar";
+import Snackbar, { SnackbarCloseReason } from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
@@ -16,37 +14,32 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import axios from "axios";
 import { baseUrl } from "../utils/jsonData";
 import { useNavigate } from "react-router-dom";
-import CircularProgress from "@mui/material/CircularProgress";
 import { ContactUsModal } from "./contactUsModal";
 import ChatIcon from "@mui/icons-material/Chat";
-import JsonData from "../utils/data.json";
-import { Navigation } from "../components/landing/navigation";
-import { Header } from "../components/landing/header";
-import { Features } from "../components/landing/features";
-import { About } from "../components/landing/about";
-import { Testimonials } from "../components/landing/testimonials";
 import "./modal.css";
 import ForgotPassword from "./forgotPassword";
-import CloseIcon from "@mui/icons-material/Close";
+import { CircularProgress } from "@mui/material";
 
-const Alert = React.forwardRef(function Alert(props, ref) {
+type CopyrightProps = {
+  readonly sx?: object; // Accept the sx prop
+};
+
+const Alert = React.forwardRef<
+  HTMLDivElement,
+  React.ComponentProps<typeof MuiAlert>
+>(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
-function Copyright(props) {
+function Copyright({ sx }: CopyrightProps) {
   return (
-    <Typography
-      variant="body2"
-      color="text.secondary"
-      align="center"
-      {...props}
-    >
+    <Typography variant="body2" color="text.secondary" align="center" sx={sx}>
       {"Copyright © "}
       <Link color="inherit" href="/">
         REPS
       </Link>{" "}
       {new Date().getFullYear()}
-      {'.'}
+      {"."}
       version 1.23.25-1
     </Typography>
   );
@@ -56,13 +49,13 @@ function Copyright(props) {
 
 const defaultTheme = createTheme();
 
-export default function SignIn() {
+export default function SinglePageSignIn() {
   const [warningToast, setWarningToast] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
-  const routeChange = (role) => {
+  const routeChange = (role: string) => {
     if (role === "TEACHER") {
       let path = "/dashboard/teacher";
       navigate(path);
@@ -76,19 +69,19 @@ export default function SignIn() {
       navigate(path);
     }
     if (role === "GUIDANCE") {
-      let path = "/dashboard/guidance";
+      let path = "/dashboard/teacher";
       navigate(path);
     }
   };
 
   const [modalType, setModalType] = useState("login");
-  const [formData, setFormData] = useState({
-    username: "",
-    password: "",
-  });
-  const [login, setLogin] = useState(false);
 
-  const handleClose = (event, reason) => {
+  const [login, setLogin] = useState(true);
+
+  const handleCloseSnackbar = (
+    event: React.SyntheticEvent<any, Event> | Event, // For Snackbar
+    reason: SnackbarCloseReason
+  ) => {
     if (reason === "clickaway") {
       return;
     }
@@ -96,12 +89,12 @@ export default function SignIn() {
     setWarningToast(false);
   };
 
-  const [landingPageData, setLandingPageData] = useState({});
-  useEffect(() => {
-    setLandingPageData(JsonData);
-  }, []);
+  // This wrapper function is for the Alert component to match the expected type
+  const handleAlertClose = (event: React.SyntheticEvent<Element, Event>) => {
+    setWarningToast(false);
+  };
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const payload = {
@@ -112,7 +105,7 @@ export default function SignIn() {
 
     try {
       const res = await axios.post(`${baseUrl}/auth`, payload);
-      if (res.data && res.data.userModel) {
+      if (res.data?.userModel) {
         const token = res.data.response;
         const userName = res.data.userModel.firstName;
         const schoolName = res.data.userModel.schoolName;
@@ -151,45 +144,65 @@ export default function SignIn() {
     }
   };
 
-  // const setContactUsDisplayModal= () =>{
-  //   setModalType("contact")
-
-  // }
+  const queryString = window.location.search;
+  const urlParams = new URLSearchParams(queryString);
+  const studentUser = urlParams.get("username");
+  const studentName = urlParams.get("firstName");
 
   return (
     <ThemeProvider theme={defaultTheme}>
-      <div>
-        <Navigation setLogin={setLogin} />
-        <Header data={landingPageData.Header} />
-        <Features data={landingPageData.Features} />
-        <About data={landingPageData.About} />
-        <Testimonials data={landingPageData.Testimonials} />
-      </div>
-      <Container component="main" maxWidth="xs">
-        <CssBaseline />
-        <Box className={login ? `pop-modal` : `none`}>
-          <CloseIcon
-            size="large" // Set size to large
-            sx={{ position: "absolute", top: 10, right: 10, width: "15px" }}
-            onClick={() => {
-              setLogin(false);
-              setModalType("login");
+      <div
+        style={{
+          height: "100vh",
+          background: " url(../img/classroom-image.jpg) center 50% ",
+        }}
+      >
+        <Container
+          style={{ position: "relative" }}
+          component="main"
+          maxWidth="md"
+        >
+          <h1
+            style={{
+              position: "absolute",
+              padding: "50px, 50px",
+              width: "70%",
+              marginTop: "10%",
+              marginLeft: "20%",
+              textAlign: "center",
+              fontSize: "40px",
+              backgroundColor: "rgba(192, 192, 192, 0.5)", // semi-transparent silver background
             }}
-          ></CloseIcon>
-          {modalType === "login" && (
-            <div className="box-content">
-              <Avatar sx={{ m: 1, bgcolor: "grey" }}>
-                <LockOutlinedIcon />
-              </Avatar>
-              <Typography component="h1" variant="h5">
-                Sign in
-              </Typography>
-              {loading ? (
-                <CircularProgress
-                  style={{ marginTop: "10px" }}
-                  color="secondary"
-                />
-              ) : (
+          >
+            {studentName ? `Welcome ${studentName}` : "Welcome"}
+          </h1>
+
+          <Box
+            style={{
+              position: "absolute",
+              height: "700px",
+              width: "70%",
+              backgroundColor: "whitesmoke",
+              padding: "50px 50px",
+              marginTop: "18%",
+              marginLeft: "20%",
+            }}
+          >
+            {loading ? (
+              <CircularProgress
+                style={{ marginLeft: "40%", marginTop: "50%" }}
+                color="inherit"
+                size={70}
+              />
+            ) : (
+              <div className="box-content">
+                <Avatar sx={{ m: 1, bgcolor: "grey" }}>
+                  <LockOutlinedIcon />
+                </Avatar>
+                <Typography component="h1" variant="h5">
+                  Sign in
+                </Typography>
+
                 <Box
                   component="form"
                   onSubmit={handleSubmit}
@@ -200,6 +213,7 @@ export default function SignIn() {
                     margin="normal"
                     required
                     fullWidth
+                    defaultValue={studentUser ?? ""}
                     id="username"
                     label="Email Address"
                     name="username"
@@ -207,7 +221,11 @@ export default function SignIn() {
                     autoFocus
                     InputLabelProps={{
                       sx: {
-                        "&.Mui-focused": { color: "white", marginTop: "-10px" },
+                        "&.Mui-focused": {
+                          color: "white",
+                          marginTop: "-10px",
+                          fontSize: "18px",
+                        },
                       },
                     }}
                   />
@@ -222,7 +240,11 @@ export default function SignIn() {
                     autoComplete="current-password"
                     InputLabelProps={{
                       sx: {
-                        "&.Mui-focused": { color: "white", marginTop: "-10px" },
+                        "&.Mui-focused": {
+                          color: "white",
+                          marginTop: "-10px",
+                          fontSize: "18px",
+                        },
                       },
                     }}
                   />
@@ -234,10 +256,10 @@ export default function SignIn() {
                   <Snackbar
                     open={warningToast}
                     autoHideDuration={6000}
-                    onClose={handleClose}
+                    onClose={handleCloseSnackbar}
                   >
                     <Alert
-                      onClose={handleClose}
+                      onClose={handleAlertClose}
                       severity="error"
                       sx={{ width: "100%" }}
                     >
@@ -254,43 +276,37 @@ export default function SignIn() {
                   </Button>
                   <Grid container>
                     <Grid item xs>
-                      <p
+                      <button
                         onClick={() => setModalType("reset")}
-                        style={{ color: "grey" }}
+                        style={{ color: "white" }}
                       >
                         Forgot password?
-                      </p>
-                    </Grid>
-                    <Grid item>
-                      <Link
-                        href="/register"
-                        variant="body2"
-                        style={{ color: "grey" }}
-                      >
-                        {"Don't have an account? Sign Up"}
-                      </Link>
+                      </button>
                     </Grid>
                   </Grid>
                 </Box>
-              )}
-              <div>
-                <ChatIcon
-                  onClick={() => setModalType("contact")}
-                  sx={{ color: "black", marginTop: "50px", fontSize: "50px" }}
-                />
+
+                <div>
+                  <ChatIcon
+                    onClick={() => setModalType("contact")}
+                    sx={{ color: "black", marginTop: "50px", fontSize: "50px" }}
+                  />
+                </div>
+                <div style={{ color: "white" }}>Contact Us</div>
               </div>
-              <div style={{ color: "white" }}>Contact Us</div>
-            </div>
-          )}
-          {modalType === "contact" && (
-            <ContactUsModal setContactUsDisplayModal={setModalType} />
-          )}
-          {modalType === "reset" && (
-            <ForgotPassword setResetModalDisplay={setModalType} />
-          )}
-        </Box>
-        <Copyright sx={{ mt: 8, mb: 4 }} />
-      </Container>
+            )}
+            {modalType === "contact" && (
+              <ContactUsModal
+                setContactUsDisplayModal={setModalType}
+                contactUsDisplayModal={modalType}
+              />
+            )}
+            {modalType === "reset" && <ForgotPassword />}
+          </Box>
+
+          <Copyright sx={{ mt: 8, mb: 4 }} />
+        </Container>
+      </div>
     </ThemeProvider>
   );
 }

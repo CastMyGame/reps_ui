@@ -34,7 +34,9 @@ export const getWeekNumber = (date: Date): number => {
 };
 
 //The Method filter the list of punihsment by logged in user
-export const filterPunishmentsByLoggedInUser = (data: TeacherReferral[]) => {
+export const filterPunishmentsByLoggedInUser = (
+  data: (TeacherDto | TeacherReferral)[]
+) => {
   const loggedInEmail = sessionStorage.getItem("email");
   if (!loggedInEmail) {
     console.warn("No logged-in email found in sessionStorage.");
@@ -47,8 +49,8 @@ export const filterPunishmentsByLoggedInUser = (data: TeacherReferral[]) => {
 //This Method Returns a subset of punishments from a list by the week of year the punishment was created
 export const extractDataByWeek = (
   week: number,
-  data: TeacherDto[]
-): TeacherDto[] => {
+  data: (TeacherDto | TeacherReferral)[]
+): (TeacherDto | TeacherReferral)[] => {
   // Ensure data is valid
   if (!Array.isArray(data)) {
     console.error("Invalid data provided to extractDataByWeek:", data);
@@ -80,8 +82,8 @@ export const extractDataByWeek = (
 
 export const extractDataByWeekFirstDay = (
   week: number,
-  data: TeacherDto[]
-): TeacherDto[] => {
+  data: (TeacherDto | TeacherReferral)[]
+): (TeacherDto | TeacherReferral)[] => {
   const firstDayOfWeek = getFirstDayOfWeek(week);
 
   return data.filter((punish) => {
@@ -113,8 +115,8 @@ const isSameDay = (date1: Date, date2: Date) => {
 export const findDataByWeekAndByPunishment = (
   week: number,
   behavioral: string,
-  data: TeacherDto[]
-): TeacherDto[] => {
+  data: (TeacherDto | TeacherReferral)[]
+): (TeacherDto | TeacherReferral)[] => {
   // Ensure data is valid
   if (!Array.isArray(data)) {
     console.error(
@@ -138,7 +140,7 @@ export const findDataByWeekAndByPunishment = (
 
 export const getIncidentByBehavior = (
   bx: string,
-  fetchedData: TeacherDto[]
+  fetchedData: (TeacherDto | TeacherReferral)[]
 ) => {
   const data = fetchedData.filter((item) => item.infractionName === bx);
   return data.length;
@@ -193,7 +195,7 @@ export const yearAdj = (cw: number) => {
 export const GenerateBxByWeek = (
   bx: string,
   numOfWeeks: number,
-  data: TeacherDto[]
+  data: (TeacherDto | TeacherReferral)[]
 ) => {
   const currentWeek = getCurrentWeekOfYear();
   const bxData = [];
@@ -208,7 +210,7 @@ export const GenerateBxByWeek = (
 export const GenerateChartData = (
   currentWeek: number,
   rangeWeeks: number,
-  data: TeacherDto[]
+  data: (TeacherDto | TeacherReferral)[]
 ) => {
   return Array.from({ length: rangeWeeks }, (_, i) => {
     const weekKey = yearAdj(currentWeek - i);

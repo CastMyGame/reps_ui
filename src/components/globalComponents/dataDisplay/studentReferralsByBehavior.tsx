@@ -5,9 +5,15 @@ import {
   GenerateChartData,
 } from "../../../helperFunctions/helperFunctions";
 import { useEffect, useState } from "react";
-import { StudentPunishment, TeacherDto } from "src/types/responses";
+import { TeacherDto, TeacherReferral } from "src/types/responses";
 
-const StudentReferralsByWeek: React.FC<StudentPunishment> = ({ data = [] }) => {
+interface StudentReferralsProps {
+  data: TeacherReferral[];
+}
+
+const StudentReferralsByWeek: React.FC<StudentReferralsProps> = ({
+  data,
+}) => {
   const [rangeWeeks, setRangeWeek] = useState(10);
   const [xAxisData, setXAxisData] = useState<string[]>([]);
   const [seriesData, setSeriesData] = useState<any[]>([]);
@@ -19,7 +25,7 @@ const StudentReferralsByWeek: React.FC<StudentPunishment> = ({ data = [] }) => {
     const displayDate = GenerateChartData(
       currentWeek,
       rangeWeeks,
-      data as TeacherDto[]
+      data
     );
 
     // X-axis: week date ranges
@@ -30,37 +36,37 @@ const StudentReferralsByWeek: React.FC<StudentPunishment> = ({ data = [] }) => {
     const tardyData = GenerateBxByWeek(
       "Tardy",
       rangeWeeks,
-      data as TeacherDto[]
+      data
     );
     const horseplayData = GenerateBxByWeek(
       "Horseplay",
       rangeWeeks,
-      data as TeacherDto[]
+      data
     );
     const dressCodeData = GenerateBxByWeek(
       "Dress Code",
       rangeWeeks,
-      data as TeacherDto[]
+      data
     );
     const unauthorizedDeviceData = GenerateBxByWeek(
       "Unauthorized Device/Cell Phone",
       rangeWeeks,
-      data as TeacherDto[]
+      data
     );
     const disruptiveBehaviorData = GenerateBxByWeek(
       "Disruptive Behavior",
       rangeWeeks,
-      data as TeacherDto[]
+      data
     );
     const positiveData = GenerateBxByWeek(
       "Positive Shout Out!",
       rangeWeeks,
-      data as TeacherDto[]
+      data
     );
     const behavioralConcernData = GenerateBxByWeek(
       "Behavioral Concern",
       rangeWeeks,
-      data as TeacherDto[]
+      data
     );
 
     // Set the series data

@@ -104,7 +104,7 @@ const ShoutOuts: React.FC<ShoutOutsProps> = ({ data = {} }) => {
           <TableBody>
             {(data.shoutOutsResponse || []).length > 0 ? (
               data.shoutOutsResponse?.map((x, key) => (
-                <TableRow key={key}>
+                <TableRow key={key.valueOf()}>
                   <TableCell style={{ width: "20%", fontSize: 14 }}>
                     {dateCreateFormat(x.timeCreated)}
                   </TableCell>

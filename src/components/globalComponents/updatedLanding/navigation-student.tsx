@@ -1,15 +1,20 @@
 import React from "react";
 import "./landing.css";
-import { GiHamburgerMenu } from "react-icons/gi";
 
-export const NavigationStudent = (props) => {
-  const Hamburger = (
-    <GiHamburgerMenu className="HamburgerMenu" size="30px" color="black" />
-  );
+interface NavigationStudentProps {
+  setPanelName: (panel: string) => void; // Adjusted the type to a function expecting a string
+  setDropdown: (state: string) => void; // Adjusted type for setDropdown function
+  setLogin: () => void; // Adjusted type for setLogin function
+}
 
-  const dropdownHandler = (panel) => {
-    props.setPanelName(panel);
-    props.setDropdown("");
+const NavigationStudent: React.FC<NavigationStudentProps> = ({
+  setPanelName,
+  setDropdown,
+  setLogin,
+}) => {
+  const dropdownHandler = (panel: string) => {
+    setPanelName(panel);
+    setDropdown("");
   };
 
   return (
@@ -32,12 +37,16 @@ export const NavigationStudent = (props) => {
           <span className="icon-bar"></span> <span className="icon-bar"></span>{" "}
           <span className="icon-bar"></span>{" "}
         </button>
-          <a className="navbar-brand page-scroll" href="#page-top" style={{ fontSize: 16 }}>
-            Welcome {sessionStorage.getItem("userName")}!
-          </a>
-          {/* 
+        <a
+          className="navbar-brand page-scroll"
+          href="#page-top"
+          style={{ fontSize: 16 }}
+        >
+          Welcome {sessionStorage.getItem("userName")}!
+        </a>
+        {/* 
           <div onClick={()=>props.setModalType("contact")}><ChatIcon style={{marginRight:"15px"}}/></div> */}
-          {/* Keeping this until we add notifications system but can move and use this in the future
+        {/* Keeping this until we add notifications system but can move and use this in the future
            <NotificationsIcon style={{marginRight:"15px"}} onClick={()=> props.toggleNotificationDrawer(true) }/> */}
 
         <div
@@ -64,7 +73,7 @@ export const NavigationStudent = (props) => {
             <li>
               <button
                 className="login-btn page-scroll"
-                onClick={() => props.setLogin()}
+                onClick={() => setLogin()}
               >
                 Logout
               </button>
@@ -75,3 +84,5 @@ export const NavigationStudent = (props) => {
     </nav>
   );
 };
+
+export default NavigationStudent;

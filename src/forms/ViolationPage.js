@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import EssayFactory from "./ViolationContents/EssayFormat";
+import EssayFactory from "./ViolationContents/EssayFactory";
 import RetryQuestionFormat from "./ViolationContents/RetryQuestionFormat";
 import { baseUrl } from "../utils/jsonData";
 import OpenEndedFormat from "./ViolationContents/OpenEndedFormat";
@@ -30,7 +30,7 @@ export default function ViolationPage(props) {
         const essay = response.data.filter(
           (essay) =>
             essay.infractionName === theName &&
-            essay.level == parseInt(props.data.infractionLevel)
+            essay.level === parseInt(props.data.infractionLevel)
         );
         setEssay(essay[0]);
       })
@@ -40,7 +40,7 @@ export default function ViolationPage(props) {
   }, []);
 
   useEffect(() => {
-    if (mapIndex == 0) {
+    if (mapIndex === 0) {
     } else {
       const headers = {
         Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
@@ -54,8 +54,7 @@ export default function ViolationPage(props) {
 
       axios
         .put(url, {}, { headers }) // Include headers directly in the request config
-        .then((response) => {
-        })
+        .then((response) => {})
         .catch((error) => {
           console.error(error);
         });
@@ -155,88 +154,74 @@ export default function ViolationPage(props) {
   };
 
   return (
-    essay && (
-      <>
-        <div className="">
-          <div className="">
-            <div className="form-container-violation" style={{ width: "100%" }}>
-              <form onSubmit={handleSubmit}>
-                <h1 className="instructions">
-                  {essay && essay.infractionName} Violation Level:{" "}
-                  {essay && essay.level}
-                </h1>{" "}
-                <hr></hr>
-                <div>
-                  {essay &&
-                    essay.questions &&
-                    essay.questions.map((data, index) => {
-                      return (
-                        <>
-                          {data.type === "reading" && mapIndex === index && (
-                            <EssayFactory
-                              essay={data}
-                              saveAnswerAndProgress={saveAnswerAndProgress}
-                              handleRadioChange={handleRadioChange}
-                            />
-                          )}
-
-                          {data.type === "retryQuestion" &&
-                            mapIndex === index && (
-                              <RetryQuestionFormat
-                                essay={data}
-                                saveAnswerAndProgress={textCorrectlyCopied}
-                                handleRadioChange={handleRadioChange}
-                              />
-                            )}
-
-                          {data.type === "exploratory-open-ended" &&
-                            mapIndex === index && (
-                              <OpenEndedFormat
-                                question={data}
-                                saveAnswerAndProgress={
-                                  openEndedQuestionAnswered
-                                }
-                              />
-                            )}
-
-                          {data.type === "exploratory-radio" &&
-                            mapIndex === index && (
-                              <>
-                                <MultipleChoiceFormat
-                                  data={data}
-                                  saveAnswerAndProgress={
-                                    openEndedQuestionAnswered
-                                  }
-                                  sectionName={"tbd"}
-                                />
-                              </>
-                            )}
-                        </>
-                      );
-                    })}
-
-                  {essay &&
-                    essay.questions &&
-                    mapIndex === essay.questions.length && (
-                      <div>
-                        <h1>
-                          Congratulations! You have Completed the Assignment{" "}
-                        </h1>
-                        <br />
-                        <h3>
-                          Hit Submit to Record Your Response for {loggedInUser}{" "}
-                        </h3>
-                        <button onClick={() => handleSubmit()} type="button">
-                          Submit
-                        </button>
-                      </div>
+    <div className="">
+      <div className="">
+        <div className="form-container-violation" style={{ width: "100%" }}>
+          <form onSubmit={handleSubmit}>
+            <h1 className="instructions">
+              {essay && essay.infractionName} Violation Level:{" "}
+              {essay && essay.level}
+            </h1>{" "}
+            <hr></hr>
+            <div>
+              {essay?.questions?.map((data, index) => {
+                return (
+                  <>
+                    {data.type === "reading" && mapIndex === index && (
+                      <EssayFactory
+                        essay={data}
+                        saveAnswerAndProgress={saveAnswerAndProgress}
+                        handleRadioChange={handleRadioChange}
+                      />
                     )}
-                </div>
-              </form>
+
+                    {data.type === "retryQuestion" && mapIndex === index && (
+                      <RetryQuestionFormat
+                        essay={data}
+                        saveAnswerAndProgress={textCorrectlyCopied}
+                        handleRadioChange={handleRadioChange}
+                      />
+                    )}
+
+                    {data.type === "exploratory-open-ended" &&
+                      mapIndex === index && (
+                        <OpenEndedFormat
+                          question={data}
+                          saveAnswerAndProgress={openEndedQuestionAnswered}
+                        />
+                      )}
+
+                    {data.type === "exploratory-radio" &&
+                      mapIndex === index && (
+                        <>
+                          <MultipleChoiceFormat
+                            data={data}
+                            saveAnswerAndProgress={openEndedQuestionAnswered}
+                          />
+                        </>
+                      )}
+                  </>
+                );
+              })}
+
+              {essay &&
+                essay.questions &&
+                mapIndex === essay.questions.length && (
+                  <div>
+                    <h1>Congratulations! You have Completed the Assignment </h1>
+                    <br />
+                    <h3>
+                      Hit Submit to Record Your Response for {loggedInUser}{" "}
+                    </h3>
+                    <button onClick={() => handleSubmit()} type="button">
+                      Submit
+                    </button>
+                  </div>
+                )}
             </div>
-          </div>
+          </form>
         </div>
-      </>
-    )
+      </div>
+    </div>
   );
 }

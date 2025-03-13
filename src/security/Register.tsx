@@ -1,36 +1,42 @@
-import axios from 'axios';
-import React, { useState } from 'react';
-import { baseUrl } from '../utils/jsonData';
-import { useNavigate } from 'react-router-dom';
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import CssBaseline from '@mui/material/CssBaseline';
-import TextField from '@mui/material/TextField';
-import Link from '@mui/material/Link';
-import Grid from '@mui/material/Grid';
-import Box from '@mui/material/Box';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import Typography from '@mui/material/Typography';
-import Container from '@mui/material/Container';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import Snackbar from '@mui/material/Snackbar';
-import MuiAlert from '@mui/material/Alert';
+import axios from "axios";
+import React, { useState } from "react";
+import { baseUrl } from "../utils/jsonData";
+import { useNavigate } from "react-router-dom";
+import Avatar from "@mui/material/Avatar";
+import Button from "@mui/material/Button";
+import CssBaseline from "@mui/material/CssBaseline";
+import TextField from "@mui/material/TextField";
+import Link from "@mui/material/Link";
+import Grid from "@mui/material/Grid";
+import Box from "@mui/material/Box";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import Typography from "@mui/material/Typography";
+import Container from "@mui/material/Container";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import Snackbar, { SnackbarCloseReason } from "@mui/material/Snackbar";
+import MuiAlert from "@mui/material/Alert";
 
+type CopyrightProps = {
+  readonly sx?: object; // Accept the sx prop
+};
 
-function Copyright(props) {
+function Copyright({ sx }: CopyrightProps) {
   return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
-      {'Copyright © '}
-      <Link color="inherit" href="https://mui.com/">
-       REPS
-      </Link>{' '}
+    <Typography variant="body2" color="text.secondary" align="center" sx={sx}>
+      {"Copyright © "}
+      <Link color="inherit" href="https://repsdiscipline.vercel.app/">
+        REPS
+      </Link>{" "}
       {new Date().getFullYear()}
-      {'.'}
+      {"."}
     </Typography>
   );
 }
 
-const Alert = React.forwardRef(function Alert(props, ref) {
+const Alert = React.forwardRef<
+  HTMLDivElement,
+  React.ComponentProps<typeof MuiAlert>
+>(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
@@ -38,28 +44,33 @@ const Alert = React.forwardRef(function Alert(props, ref) {
 
 const defaultTheme = createTheme();
 
+type FormErrors = {
+  firstName: boolean;
+  lastName: boolean;
+  email: boolean;
+  schoolName: boolean;
+  password: boolean;
+  confirmPassword: boolean;
+  passwordMismatch?: boolean; // Optional property
+};
+
 export default function Register() {
-  const [formErrors, setFormErrors] = useState({
+  const [formErrors, setFormErrors] = useState<FormErrors>({
     firstName: false,
     lastName: false,
     email: false,
     schoolName: false,
     password: false,
     confirmPassword: false,
+    passwordMismatch: false,
   });
   const navigate = useNavigate();
-  // const [formData, setFormData] = useState({
-  //   firstName: '',
-  //   lastName: ' ',
-  //   schoolName: ' ',
-  //   username: '',
-  //   password: '',
-  // });
 
-  const [passwordMatches , setPasswordMatches] = useState(false)
-  const [registrationSuccessMessage, setRegistrationSuccessMessage] = useState(false)
+  const [passwordMatches, setPasswordMatches] = useState(false);
+  const [registrationSuccessMessage, setRegistrationSuccessMessage] =
+    useState(false);
 
-  const handleSubmit = (event) => {
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     let errors = {
@@ -69,63 +80,78 @@ export default function Register() {
       schoolName: false,
       password: false,
       confirmPassword: false,
+      passwordMismatch: false,
     };
-  
+
     // Check for empty fields and set errors
-    if (data.get('firstName') === '') {
+    if (data.get("firstName") === "") {
       errors.firstName = true;
     }
-    if (data.get('lastName') === '') {
+    if (data.get("lastName") === "") {
       errors.lastName = true;
     }
-    if (data.get('email') === '') {
+    if (data.get("email") === "") {
       errors.email = true;
     }
-    if (data.get('schoolName') === '') {
+    if (data.get("schoolName") === "") {
       errors.schoolName = true;
     }
-    if (data.get('password') === '') {
+    if (data.get("password") === "") {
       errors.password = true;
     }
-    if (data.get('confirmPassword') === '') {
+    if (data.get("confirmPassword") === "") {
       errors.confirmPassword = true;
     }
-  
+
     // Check if passwords match
-    if (data.get('password') !== data.get('confirmPassword')) {
+    if (data.get("password") !== data.get("confirmPassword")) {
       errors.passwordMismatch = true; // Set password mismatch error
     }
-  
+
     // Set formErrors state to trigger error messages
     setFormErrors(errors);
-  
+
     // If there are errors, do not submit the form
     if (Object.values(errors).some((error) => error)) {
       return;
     }
 
-    const payload = {username: data.get('email'),password: data.get('password'),firstName:data.get('firstName'), lastName:data.get('lastName'), schoolName:data.get('schoolName')}
+    const payload = {
+      username: data.get("email"),
+      password: data.get("password"),
+      firstName: data.get("firstName"),
+      lastName: data.get("lastName"),
+      schoolName: data.get("schoolName"),
+    };
 
     // Submit the form data if there are no errors
 
-    axios.post(`${baseUrl}/register`,payload)
-    .then(function (res){
-      setRegistrationSuccessMessage(true)
-      setTimeout(()=>{
-        navigate("/login")
-      },3000)
-    })
-    .catch(function (error){
-      console.error(error);
-
- });
+    axios
+      .post(`${baseUrl}/register`, payload)
+      .then(function (res) {
+        setRegistrationSuccessMessage(true);
+        setTimeout(() => {
+          navigate("/login");
+        }, 3000);
+      })
+      .catch(function (error) {
+        console.error(error);
+      });
   };
 
-  const handleClose = (event, reason) => {
-    if (reason === 'clickaway') {
+  const handleCloseSnackbar = (
+    event: React.SyntheticEvent<any, Event> | Event, // For Snackbar
+    reason: SnackbarCloseReason
+  ) => {
+    if (reason === "clickaway") {
       return;
     }
 
+    setPasswordMatches(false);
+  };
+
+  // This wrapper function is for the Alert component to match the expected type
+  const handleAlertClose = (event: React.SyntheticEvent<Element, Event>) => {
     setPasswordMatches(false);
   };
 
@@ -136,25 +162,37 @@ export default function Register() {
         <Box
           sx={{
             marginTop: 8,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+          <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
             <LockOutlinedIcon />
           </Avatar>
-              <Snackbar 
-                className="" // Add a custom class
-              open={registrationSuccessMessage} autoHideDuration={2000} onClose={handleClose}>
-  <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
- You have been Registered! ...Redirecting to login
-  </Alert>
-</Snackbar>
+          <Snackbar
+            className="" // Add a custom class
+            open={registrationSuccessMessage}
+            autoHideDuration={2000}
+            onClose={handleCloseSnackbar}
+          >
+            <Alert
+              onClose={handleAlertClose}
+              severity="success"
+              sx={{ width: "100%" }}
+            >
+              You have been Registered! ...Redirecting to login
+            </Alert>
+          </Snackbar>
           <Typography component="h1" variant="h5">
             Sign up
           </Typography>
-          <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+          <Box
+            component="form"
+            noValidate
+            onSubmit={handleSubmit}
+            sx={{ mt: 3 }}
+          >
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
                 <TextField
@@ -166,8 +204,7 @@ export default function Register() {
                   label="First Name"
                   autoFocus
                   error={formErrors.firstName} // Add error prop
-                  helperText={formErrors.firstName && 'First Name is required'} // Add error message
-                
+                  helperText={formErrors.firstName && "First Name is required"} // Add error message
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -179,8 +216,7 @@ export default function Register() {
                   name="lastName"
                   autoComplete="family-name"
                   error={formErrors.lastName} // Add error prop
-                  helperText={formErrors.lastName && 'Last Name is required'} // Add error message
-
+                  helperText={formErrors.lastName && "Last Name is required"} // Add error message
                 />
               </Grid>
               <Grid item xs={12}>
@@ -192,8 +228,7 @@ export default function Register() {
                   name="email"
                   autoComplete="email"
                   error={formErrors.email} // Add error prop
-                  helperText={formErrors.email && 'Email is required'} // Add error message
-
+                  helperText={formErrors.email && "Email is required"} // Add error message
                 />
               </Grid>
               <Grid item xs={12}>
@@ -205,8 +240,9 @@ export default function Register() {
                   name="schoolName"
                   autoComplete="schoolName"
                   error={formErrors.schoolName} // Add error prop
-                  helperText={formErrors.schoolName && 'School Name is required'} // Add error message
-
+                  helperText={
+                    formErrors.schoolName && "School Name is required"
+                  } // Add error message
                 />
               </Grid>
               <Grid item xs={12}>
@@ -220,10 +256,9 @@ export default function Register() {
                   autoComplete="new-password"
                   error={formErrors.password || formErrors.passwordMismatch} // Add error prop
                   helperText={
-                    (formErrors.password && 'Password is required') ||
-                    (formErrors.passwordMismatch && 'Passwords do not match') // Add error messages
+                    (formErrors.password && "Password is required") ||
+                    (formErrors.passwordMismatch && "Passwords do not match") // Add error messages
                   }
-                
                 />
               </Grid>
               <Grid item xs={12}>
@@ -235,10 +270,13 @@ export default function Register() {
                   type="password"
                   id="confirmPassword"
                   autoComplete="new-password"
-                  error={formErrors.confirmPassword || formErrors.passwordMismatch} // Add error prop
+                  error={
+                    formErrors.confirmPassword || formErrors.passwordMismatch
+                  } // Add error prop
                   helperText={
-                    (formErrors.confirmPassword && 'Confirm Password is required') ||
-                    (formErrors.passwordMismatch && 'Passwords do not match') // Add error messages
+                    (formErrors.confirmPassword &&
+                      "Confirm Password is required") ||
+                    (formErrors.passwordMismatch && "Passwords do not match") // Add error messages
                   }
                 />
               </Grid>
@@ -265,4 +303,3 @@ export default function Register() {
     </ThemeProvider>
   );
 }
-

@@ -7,13 +7,13 @@ import GlobalPunishmentPanel from "src/components/globalComponents/referrals/glo
 import TeacherOverviewPanel from "src/components/roles/teacher/teacherOverview";
 import DetentionWidget from "src/components/globalComponents/detentionWidget";
 import ISSWidget from "src/components/globalComponents/issWidget";
-import LevelThreePanel from "src/components/globalComponents/referrals/levelThreePanel.js";
+import LevelThreePanel from "src/components/globalComponents/referrals/levelThreePanel";
 import ClassAnnouncement from "src/components/globalComponents/components/generic-components/classAnnouncement";
-import { ContactUsModal } from "../../../security/contactUsModal.js";
+import { ContactUsModal } from "../../../security/contactUsModal";
 import { get } from "../../../utils/api/api";
 import LoadingWheelPanel from "src/components/roles/student/blankPanelForTest.js";
 import "../admin/admin.css";
-import { NavigationLoggedIn } from "src/components/landing/navigation-loggedIn.jsx";
+import { NavigationLoggedIn } from "src/components/globalComponents/updatedLanding/navigation-loggedIn.jsx";
 import { handleLogout } from "src/utils/helperFunctions";
 import SpendPage from "src/components/globalComponents/spendPage/spend-page.js";
 import CreateOfficeReferralPanel from "src/components/globalComponents/referrals/createOfficeReferral.js";

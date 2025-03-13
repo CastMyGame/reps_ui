@@ -1,12 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { AgGridReact } from "ag-grid-react";
 import { ColDef } from "ag-grid-community";
-import {
-  AdminOverviewDto,
-  OfficeReferral,
-  StudentIncidentList,
-  TeacherDto,
-} from "src/types/responses";
+import { StudentIncidentList, TeacherDto, TeacherReferral } from "src/types/responses";
 import {
   currentWeek,
   extractDataByWeek,
@@ -30,15 +25,15 @@ const IncidentsByStudentTable: React.FC<IncidentsByStudentTableProps> = ({
     StudentIncidentList[]
   >([]);
 
-  // Handle null or undefined writeUpResponse and officeReferrals
-  const weekTmData = writeUpResponse
-    ? extractDataByWeek(currentWeek, writeUpResponse as TeacherDto[])
-    : [];
-  const weekOmData = officeReferrals
-    ? extractDataByWeek(currentWeek, officeReferrals as TeacherDto[])
-    : [];
-
   useEffect(() => {
+    // Handle null or undefined writeUpResponse and officeReferrals
+  const weekTmData = writeUpResponse
+  ? extractDataByWeek(currentWeek, writeUpResponse)
+  : [];
+const weekOmData = officeReferrals
+  ? extractDataByWeek(currentWeek, officeReferrals)
+  : [];
+
     // Combine weekTmData and weekOmData into one array
     const combinedWeekData = [...weekTmData, ...weekOmData];
 
@@ -46,10 +41,12 @@ const IncidentsByStudentTable: React.FC<IncidentsByStudentTableProps> = ({
     const studentIncidentMap: Record<string, StudentIncidentList> = {};
 
     // Loop through combinedWeekData to accumulate incident counts per student
-    combinedWeekData.forEach((incident: TeacherDto) => {
-      const studentEmail = incident.studentEmail || "Unknown";
-      const studentFirstName = incident.studentFirstName || "Unknown";
-      const studentLastName = incident.studentLastName || "";
+    combinedWeekData.forEach((incident: TeacherDto | TeacherReferral) => {
+      const teacherDtoIncident = incident as TeacherDto; // Type assertion here
+
+      const studentEmail = teacherDtoIncident.studentEmail || "Unknown";
+      const studentFirstName = teacherDtoIncident.studentFirstName || "Unknown";
+      const studentLastName = teacherDtoIncident.studentLastName || "";
 
       // If the student doesn't exist in the map, add them
       if (!studentIncidentMap[studentEmail]) {
@@ -114,7 +111,7 @@ const IncidentsByStudentTable: React.FC<IncidentsByStudentTableProps> = ({
         style={{ height: "25vh", width: "100%" }}
       >
         <AgGridReact
-          rowData={studentIncidentRowData as StudentIncidentList[]}
+          rowData={studentIncidentRowData}
           columnDefs={colDefs as ColDef<StudentIncidentList>[]}
           domLayout="autoHeight" // Ensures that the height is handled properly
         />

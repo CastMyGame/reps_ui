@@ -1,13 +1,14 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { useIdleTimer } from 'react-idle-timer';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import { baseUrl } from 'src/utils/jsonData';
 
 export default function IdleComponent() {
   const navigate = useNavigate();
   const [showNotification, setShowNotification] = useState(false);
-  const notificationIntervalRef = useRef(null);
+
+  // Correct type for notificationIntervalRef
+  const notificationIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const onIdle = () => {
     sessionStorage.clear();
@@ -85,7 +86,9 @@ export default function IdleComponent() {
     startNotificationInterval();
 
     return () => {
-      clearInterval(notificationIntervalRef.current);
+      if (notificationIntervalRef.current) {
+        clearInterval(notificationIntervalRef.current);
+      }
     };
   }, []);
 
