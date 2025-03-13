@@ -1,21 +1,21 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import Select from "react-select";
+import Select, { ActionMeta, SingleValue } from "react-select";
 import { baseUrl } from "src/utils/jsonData";
 import { TextField, Button, Container, Typography, Box } from "@mui/material";
+import { Student } from "src/types/school";
 
 const EditStudentPanel = () => {
-  const [listOfStudents, setListOfStudents] = useState([]);
-  const [selectedStudent, setSelectedStudent] = useState(null);
-  const [studentForm, setStudentForm] = useState({});
-  const [successMessage, setSuccessMessage] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
-
-  const headers = {
-    Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
-  };
+  const [listOfStudents, setListOfStudents] = useState<Student[]>([]);
+  const [selectedStudent, setSelectedStudent] = useState<Student>();
+  const [studentForm, setStudentForm] = useState<Student>();
+  const [successMessage, setSuccessMessage] = useState<string>("");
+  const [errorMessage, setErrorMessage] = useState<string>("");
 
   useEffect(() => {
+    const headers = {
+      Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
+    };
     axios
       .get(`${baseUrl}/student/v1/allStudents`, { headers })
       .then((response) => {
@@ -32,21 +32,34 @@ const EditStudentPanel = () => {
     label: `${student.firstName} ${student.lastName} - ${student.studentEmail}`,
   }));
 
-  const handleSelectChange = (selectedOption) => {
-    const student = listOfStudents.find(
-      (s) => s.studentEmail === selectedOption.value
-    );
-    setSelectedStudent(student);
-    setStudentForm(student);
+  const handleSelectChange = (
+    newValue: SingleValue<{ value: string; label: string }>,
+    actionMeta: ActionMeta<{ value: string; label: string }>
+  ) => {
+    if (newValue) {
+      const student = listOfStudents.find(
+        (s) => s.studentEmail === newValue.value
+      );
+      setSelectedStudent(student);
+      setStudentForm(student);
+    } else {
+      setSelectedStudent(undefined); // Handle case where no student is selected
+      setStudentForm(undefined); // Optionally reset the form
+    }
   };
 
-  const handleInputChange = (event) => {
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
-    setStudentForm((prev) => ({ ...prev, [name]: value }));
+    setStudentForm((prev) =>
+      prev ? { ...prev, [name]: value } : ({} as Student)
+    );
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    const headers = {
+      Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
+    };
     axios
       .put(`${baseUrl}/student/v1/updateStudents`, [studentForm], { headers })
       .then((response) => {
@@ -86,7 +99,7 @@ const EditStudentPanel = () => {
             fullWidth
             label="First Name"
             name="firstName"
-            value={studentForm.firstName || ""}
+            value={studentForm?.firstName ?? ""}
             onChange={handleInputChange}
             margin="normal"
           />
@@ -94,7 +107,7 @@ const EditStudentPanel = () => {
             fullWidth
             label="Last Name"
             name="lastName"
-            value={studentForm.lastName || ""}
+            value={studentForm?.lastName ?? ""}
             onChange={handleInputChange}
             margin="normal"
           />
@@ -102,7 +115,7 @@ const EditStudentPanel = () => {
             fullWidth
             label="Parent Email"
             name="parentEmail"
-            value={studentForm.parentEmail || ""}
+            value={studentForm?.parentEmail ?? ""}
             onChange={handleInputChange}
             margin="normal"
           />
@@ -110,7 +123,7 @@ const EditStudentPanel = () => {
             fullWidth
             label="Student Email"
             name="studentEmail"
-            value={studentForm.studentEmail || ""}
+            value={studentForm?.studentEmail ?? ""}
             disabled
             margin="normal"
           />
@@ -118,7 +131,7 @@ const EditStudentPanel = () => {
             fullWidth
             label="Guidance Email"
             name="guidanceEmail"
-            value={studentForm.guidanceEmail || ""}
+            value={studentForm?.guidanceEmail ?? ""}
             onChange={handleInputChange}
             margin="normal"
           />
@@ -126,7 +139,7 @@ const EditStudentPanel = () => {
             fullWidth
             label="Admin Email"
             name="adminEmail"
-            value={studentForm.adminEmail || ""}
+            value={studentForm?.adminEmail ?? ""}
             onChange={handleInputChange}
             margin="normal"
           />
@@ -134,7 +147,7 @@ const EditStudentPanel = () => {
             fullWidth
             label="Address"
             name="address"
-            value={studentForm.address || ""}
+            value={studentForm?.address ?? ""}
             onChange={handleInputChange}
             margin="normal"
           />
@@ -142,7 +155,7 @@ const EditStudentPanel = () => {
             fullWidth
             label="Parent Phone"
             name="parentPhoneNumber"
-            value={studentForm.parentPhoneNumber || ""}
+            value={studentForm?.parentPhoneNumber ?? ""}
             onChange={handleInputChange}
             margin="normal"
           />
@@ -150,7 +163,7 @@ const EditStudentPanel = () => {
             fullWidth
             label="Student Phone"
             name="studentPhoneNumber"
-            value={studentForm.studentPhoneNumber || ""}
+            value={studentForm?.studentPhoneNumber ?? ""}
             onChange={handleInputChange}
             margin="normal"
           />

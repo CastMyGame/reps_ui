@@ -18,6 +18,7 @@ export type RoleModel = {
 export type Student = {
   firstName: string;
   lastName: string;
+  address:string;
   parentEmail: string;
   studentEmail: string;
   guidanceEmail: string;
