@@ -1,5 +1,4 @@
-import react, { useState, useEffect } from "react";
-import * as React from "react";
+import React, { useState, useEffect } from "react";
 import {
   Table,
   TableContainer,
@@ -24,12 +23,7 @@ const TeacherFTCPanel = () => {
 
   const [listOfStudents, setListOfStudents] = useState([]);
   const [toast, setToast] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [loadingStudentId, setLoadingStudentId] = useState(null);
-
-  const headers = {
-    Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
-  };
 
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -44,6 +38,10 @@ const TeacherFTCPanel = () => {
   const url = `${baseUrl}/punish/v1/punishments`;
 
   useEffect(() => {
+    const headers = {
+      Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
+    };
+
     axios
       .get(url, { headers }) // Pass the headers option with the JWT token
       .then(function (response) {
@@ -60,13 +58,17 @@ const TeacherFTCPanel = () => {
       .catch(function (error) {
         console.error(error);
       });
-  }, [toast]);
+  }, [toast, url]);
 
   const data = listOfStudents;
   const hasScroll = data.length > 10;
 
   const handleFTCClose = (obj) => {
     setLoadingStudentId(obj.punishmentId);
+    const headers = {
+      Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
+    };
+
     const url = `${baseUrl}/punish/v1/close/${obj.punishmentId}`;
     axios
       .post(url, [], { headers }) // Pass the headers option with the JWT token

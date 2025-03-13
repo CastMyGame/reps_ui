@@ -12,7 +12,7 @@ import AssignmentManager from "src/utils/EssayForm";
 import TeacherStudentPanel from "src/components/roles/teacher/teacherStudentPanel";
 import AddTeacherForm from "src/components/globalComponents/users/addTeacherForm";
 import { get } from "../../../utils/api/api";
-import LoadingWheelPanel from "src/components/roles/student/blankPanelForTest";
+import LoadingWheelPanel from "src/components/roles/student/LoadingWheelPanel";
 import { ContactUsModal } from "src/security/contactUsModal";
 import { NavigationAdmin } from "src/components/globalComponents/updatedLanding/navigation-admin";
 import { handleLogout } from "src/utils/helperFunctions";

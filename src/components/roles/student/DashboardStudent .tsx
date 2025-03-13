@@ -8,7 +8,7 @@ import TotalPositivePoints from "src/components/globalComponents/users/positiveP
 import Card from "@mui/material/Card";
 import ViolationPage from "src/forms/ViolationPage";
 import { get } from "../../../utils/api/api";
-import LoadingWheelPanel from "src/components/roles/student/blankPanelForTest";
+import LoadingWheelPanel from "src/components/roles/student/LoadingWheelPanel";
 import { ContactUsModal } from "src/security/contactUsModal";
 import NavigationStudent from "src/components/globalComponents/updatedLanding/navigation-student";
 import { handleLogout } from "src/utils/helperFunctions";
