@@ -11,7 +11,7 @@ interface TeacherInfractionOverPeriodBarChartProps {
   data: TeacherDto[];
 }
 
-const TeacherInfractionOverPeriodBarChart: React.FC<TeacherInfractionOverPeriodBarChartProps> = ({ data = [] }) => {
+const TeacherInfractionOverPeriodBarChart: React.FC<TeacherInfractionOverPeriodBarChartProps> = ({ data }) => {
   const weekData = extractDataByWeek(currentWeek, data || []);
   const tardybehavior = findDataByWeekAndByPunishment(
     currentWeek,

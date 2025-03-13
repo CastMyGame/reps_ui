@@ -67,7 +67,7 @@ const EssayFactory: React.FC<EssayFactoryProps> = ({
         </p>{" "}
         <h2 className="references">References</h2>
         {essay?.references.map((ref) => {
-          return <p>{ref}</p>;
+          return <p key={ref.valueOf()}>{ref}</p>;
         })}
       </div>
       <div className="required-question" aria-hidden="true" dir="auto">

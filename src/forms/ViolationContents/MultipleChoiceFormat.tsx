@@ -1,5 +1,5 @@
 import React from "react";
-import { Assignment, AssignmentQuestion } from "src/types/school";
+import { AssignmentQuestion } from "src/types/school";
 
 interface MultipleChoiceProps {
   data: AssignmentQuestion;

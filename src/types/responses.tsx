@@ -86,10 +86,6 @@ export interface TeacherReferral {
   infractionDescription: string[];
 }
 
-export interface StudentPunishment {
-  data: TeacherReferral;
-}
-
 export interface TeacherDto {
   studentEmail: string;
   studentFirstName: string;
