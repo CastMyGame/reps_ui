@@ -3,14 +3,22 @@ import { baseUrl } from "../../../utils/jsonData";
 import "./spend-page.css";
 import { Button, MenuItem, Select, TextField } from "@mui/material";
 import axios from "axios";
+import { Student } from "src/types/school";
+import { AdminOverviewDto, TeacherOverviewDto } from "src/types/responses";
 
-const SpendPage = ({ data = {} }) => {
-  const [shoppingList, setShoppingList] = useState([]);
-  const [description, setDescription] = useState();
-  const [amount, setAmount] = useState();
-  const [listOfStudents, setListOfStudents] = useState([]);
-  const [studentSelect, setStudentSelect] = useState(null);
-  const [studentPoints, setStudentPoints] = useState(null);
+interface SpendProps {
+  data: AdminOverviewDto | TeacherOverviewDto;
+}
+
+const SpendPage: React.FC<SpendProps> = ({ data }) => {
+  const [shoppingList, setShoppingList] = useState<
+    { amount: number; description: string }[]
+  >([]);
+  const [description, setDescription] = useState<string>("");
+  const [amount, setAmount] = useState<number | "">("");
+  const [listOfStudents, setListOfStudents] = useState<Student[]>([]);
+  const [studentSelect, setStudentSelect] = useState<string | null>(null);
+  const [studentPoints, setStudentPoints] = useState<number | null>(null);
 
   //Gets Students
 
@@ -29,7 +37,7 @@ const SpendPage = ({ data = {} }) => {
       .catch(function (error) {
         console.error(error);
       });
-  }, []);
+  }, [url]);
 
   const selectOptions = listOfStudents.map((student) => ({
     value: student.studentEmail, // Use a unique value for each option
@@ -79,18 +87,18 @@ const SpendPage = ({ data = {} }) => {
       .then(function (res) {
         window.alert("Redemption Successful");
         setShoppingList([]);
-        studentSelect(null);
+        setStudentSelect("");
       })
       .catch(function (error) {
         window.alert("Error Redeeming");
       });
   };
 
-  const addToCart = (amount, description) => {
+  const addToCart = (amount: number, description: string) => {
     if (amount && description) {
       setShoppingList((prev) => [
         ...prev,
-        { amount: Number(amount), description: description },
+        { amount: amount, description: description },
       ]);
       setDescription("");
       setAmount("");
@@ -120,11 +128,11 @@ const SpendPage = ({ data = {} }) => {
         </Select>
         {studentSelect && (
           <>
-            <h3 className="center">Available ${data.school.currency}</h3>
+            <h3 className="center">Available ${data?.school?.currency}</h3>
             <div
               className={`spend-points-container ${studentPoints ? "spin" : ""}`}
             >
-              {studentPoints ? studentPoints : 0}
+              {studentPoints ?? 0}
             </div>{" "}
           </>
         )}
@@ -142,7 +150,7 @@ const SpendPage = ({ data = {} }) => {
                 value={amount}
                 onChange={(event) => {
                   const enteredValue = event.target.value;
-                  setAmount(enteredValue);
+                  setAmount(enteredValue === "" ? "" : Number(enteredValue));
                 }}
                 inputProps={{
                   style: {
@@ -184,10 +192,13 @@ const SpendPage = ({ data = {} }) => {
               />
             </div>
             <Button
-              onClick={() => addToCart(amount, description)}
-              width="50%"
+              onClick={() => {if (amount !== "") {
+                addToCart(Number(amount), description);
+              } else {
+                alert("Please enter a valid amount.");
+              }}}
               variant="contained"
-              sx={{ height: "100%", marginTop: "10px" }} // Set explicit height
+              sx={{ height: "100%", marginTop: "10px", width: "50%" }} // Set explicit height
             >
               Add
             </Button>
@@ -201,7 +212,7 @@ const SpendPage = ({ data = {} }) => {
               </thead>
               <tbody>
                 {shoppingList.map((item, index) => (
-                  <tr key={index}>
+                  <tr key={index.valueOf()}>
                     <td>{item.description}</td>
                     <td>${item.amount}</td>
                   </tr>
@@ -222,8 +233,7 @@ const SpendPage = ({ data = {} }) => {
               type="submit"
               onClick={() => handleSubmit()}
               // color="success"
-              width="100%"
-              variant=""
+              variant="contained"
               sx={{ height: "100%", width: "100%", marginTop: "10px" }} // Set explicit height
             >
               Submit

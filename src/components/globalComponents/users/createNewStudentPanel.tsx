@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Typography from "@mui/material/Typography";
 import axios from "axios";
 import Select, { SingleValue } from "react-select";
@@ -23,7 +23,6 @@ const CreateNewStudentPanel = () => {
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [successDisplay, setSuccessDisplay] = useState<boolean>(false);
   const [successMessage, setSuccessMessage] = useState<string>("");
-  const [listOfStudents, setListOfStudents] = useState<Student[]>([]);
 
   const [studentForm, setStudentForm] = useState<Student>({
     firstName: "",
@@ -52,28 +51,6 @@ const CreateNewStudentPanel = () => {
     { value: "12", label: "Grade 12" },
   ];
 
-  const headers = {
-    Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
-  };
-
-  const url = `${baseUrl}/student/v1/allStudents`; // Replace with your actual API endpoint
-
-  useEffect(() => {
-    axios
-      .get(url, { headers }) // Pass the headers option with the JWT token
-      .then(function (response) {
-        setListOfStudents(response.data);
-      })
-      .catch(function (error) {
-        console.error(error);
-      });
-  }, []);
-
-  const selectOptions = listOfStudents.map((student) => ({
-    value: student.studentEmail, // Use a unique value for each option
-    label: `${student.firstName} ${student.lastName} - ${student.studentEmail}`, // Display student's full name as the label
-  }));
-
   const resetForm = () => {
     setStudentForm({
       firstName: "",
@@ -94,6 +71,9 @@ const CreateNewStudentPanel = () => {
   };
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    const headers = {
+      Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
+    };
     event.preventDefault();
 
     axios
@@ -360,7 +340,7 @@ const CreateNewStudentPanel = () => {
                       value={studentGradeLevelOptions.find(
                         (option) => option.value === studentForm.grade
                       )}
-                      onChange={(value: SingleValue<SelectOption>) => { 
+                      onChange={(value: SingleValue<SelectOption>) => {
                         if (value) {
                           setStudentForm((prev) => ({
                             ...prev,
