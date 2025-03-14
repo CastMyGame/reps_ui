@@ -11,11 +11,11 @@ import LevelThreePanel from "src/components/globalComponents/referrals/levelThre
 import ClassAnnouncement from "src/components/globalComponents/components/generic-components/classAnnouncement";
 import { ContactUsModal } from "../../../security/contactUsModal";
 import { get } from "../../../utils/api/api";
-import LoadingWheelPanel from "src/components/roles/student/LoadingWheelPanel.js";
+import LoadingWheelPanel from "src/components/roles/student/LoadingWheelPanel";
 import "../admin/admin.css";
 import { NavigationLoggedIn } from "src/components/globalComponents/updatedLanding/navigation-loggedIn.jsx";
 import { handleLogout } from "src/utils/helperFunctions";
-import SpendPage from "src/components/globalComponents/spendPage/spend-page.js";
+import SpendPage from "src/components/globalComponents/spendPage/spend-page";
 import CreateOfficeReferralPanel from "src/components/globalComponents/referrals/createOfficeReferral.js";
 import { ManageSpottersPopup } from "src/components/globalComponents/components/generic-components/manageSpottersPopup";
 import ClassUpdate from "src/components/globalComponents/components/generic-components/classUpdate";

@@ -14,7 +14,7 @@ import NavigationStudent from "src/components/globalComponents/updatedLanding/na
 import { handleLogout } from "src/utils/helperFunctions";
 import StudentReferralsByWeek from "../../globalComponents/dataDisplay/studentReferralsByBehavior";
 import StudentReferralsPieChart from "src/components/globalComponents/dataDisplay/studentReferralsPieChart";
-import { TeacherReferral } from "src/types/responses";
+import { OfficeReferral, TeacherReferral } from "src/types/responses";
 import { School, Student } from "src/types/school";
 
 const StudentDashboard = () => {
@@ -26,7 +26,7 @@ const StudentDashboard = () => {
   const [openNotificationDrawer, setOpenNotificationDrawer] = useState(false);
   const [panelName, setPanelName] = useState("openAssignments");
   const [selectAssignmentToStart, setSelectAssignmentToStart] =
-    useState<TeacherReferral>();
+    useState<(TeacherReferral | OfficeReferral)>();
   const [studentDetails, setStudentDetails] = useState<Student | undefined>();
   const [school, setSchool] = useState<School | undefined>();
 
@@ -58,7 +58,7 @@ const StudentDashboard = () => {
     setOpenNotificationDrawer(open);
   };
 
-  const handleStartAssignment = (data: TeacherReferral) => {
+  const handleStartAssignment = (data: (TeacherReferral | OfficeReferral)) => {
     setSelectAssignmentToStart(data);
     setPanelName("startAssignment");
   };
