@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Drawer from "@mui/material/Drawer";
 import CreatePunishmentPanel from "src/components/globalComponents/referrals/createPunishmentPanel.js";
 import TeacherStudentPanel from "src/components/roles/teacher/teacherStudentPanel";
-import TeacherFTCPanel from "src/components/roles/teacher/FTCpanel.js";
+import TeacherFTCPanel from "src/components/roles/teacher/FTCpanel";
 import GlobalPunishmentPanel from "src/components/globalComponents/referrals/globalPunishmentPanel.js";
 import TeacherOverviewPanel from "src/components/roles/teacher/teacherOverview";
 import DetentionWidget from "src/components/globalComponents/detentionWidget";
