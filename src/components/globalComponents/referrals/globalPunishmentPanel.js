@@ -24,7 +24,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import { dateCreateFormat } from "../../../helperFunctions/helperFunctions";
-import LoadingWheelPanel from "../../roles/student/blankPanelForTest";
+import LoadingWheelPanel from "../../roles/student/LoadingWheelPanel";
 
 const GlobalPunishmentPanel = ({ roleType }) => {
   const Alert = React.forwardRef(function Alert(props, ref) {
@@ -86,14 +86,11 @@ const GlobalPunishmentPanel = ({ roleType }) => {
         console.error(error);
       })
       .finally(() => {
-
         axios
           .get(urlArchive, { headers }) // Pass the headers option with the JWT token
           .then(function (response) {
             const sortedData = response.data.sort(
-              (a, b) =>
-                new Date(b.timeCreated) -
-                new Date(a.timeCreated)
+              (a, b) => new Date(b.timeCreated) - new Date(a.timeCreated)
             );
             if (roleType === "teacher") {
               const sortedByRole = sortedData.filter(
@@ -101,14 +98,14 @@ const GlobalPunishmentPanel = ({ roleType }) => {
               );
               setArchivedData(sortedByRole);
             } else {
-              setArchivedData(sortedData)
+              setArchivedData(sortedData);
             }
           })
           .catch(function (error) {
             setLoading(false);
             console.error(error);
           });
-          setLoading(false);
+        setLoading(false);
       });
   }, [roleType, filter]);
 
@@ -503,8 +500,7 @@ const GlobalPunishmentPanel = ({ roleType }) => {
                                 >
                                   Close Referral
                                 </p>
-                                {loadingPunihsmentId.id ===
-                                  x.punishmentId &&
+                                {loadingPunihsmentId.id === x.punishmentId &&
                                 loadingPunihsmentId.buttonType === "close" ? (
                                   <CircularProgress
                                     style={{ height: "20px", width: "20px" }}
@@ -539,8 +535,7 @@ const GlobalPunishmentPanel = ({ roleType }) => {
                                 >
                                   Delete Referral
                                 </p>
-                                {loadingPunihsmentId.id ===
-                                  x.punishmentId &&
+                                {loadingPunihsmentId.id === x.punishmentId &&
                                 loadingPunihsmentId.buttonType === "delete" ? (
                                   <CircularProgress
                                     style={{ height: "20px", width: "20px" }}
@@ -578,8 +573,7 @@ const GlobalPunishmentPanel = ({ roleType }) => {
                                 >
                                   Delete Referral
                                 </p>
-                                {loadingPunihsmentId.id ===
-                                  x.punishmentId &&
+                                {loadingPunihsmentId.id === x.punishmentId &&
                                 loadingPunihsmentId.buttonType === "delete" ? (
                                   <CircularProgress
                                     style={{ height: "20px", width: "20px" }}

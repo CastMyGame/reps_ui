@@ -8,13 +8,13 @@ import TotalPositivePoints from "src/components/globalComponents/users/positiveP
 import Card from "@mui/material/Card";
 import ViolationPage from "src/forms/ViolationPage";
 import { get } from "../../../utils/api/api";
-import LoadingWheelPanel from "src/components/roles/student/blankPanelForTest";
+import LoadingWheelPanel from "src/components/roles/student/LoadingWheelPanel";
 import { ContactUsModal } from "src/security/contactUsModal";
 import NavigationStudent from "src/components/globalComponents/updatedLanding/navigation-student";
 import { handleLogout } from "src/utils/helperFunctions";
 import StudentReferralsByWeek from "../../globalComponents/dataDisplay/studentReferralsByBehavior";
 import StudentReferralsPieChart from "src/components/globalComponents/dataDisplay/studentReferralsPieChart";
-import { TeacherReferral } from "src/types/responses";
+import { OfficeReferral, TeacherReferral } from "src/types/responses";
 import { School, Student } from "src/types/school";
 
 const StudentDashboard = () => {
@@ -26,7 +26,7 @@ const StudentDashboard = () => {
   const [openNotificationDrawer, setOpenNotificationDrawer] = useState(false);
   const [panelName, setPanelName] = useState("openAssignments");
   const [selectAssignmentToStart, setSelectAssignmentToStart] =
-    useState<TeacherReferral>();
+    useState<(TeacherReferral | OfficeReferral)>();
   const [studentDetails, setStudentDetails] = useState<Student | undefined>();
   const [school, setSchool] = useState<School | undefined>();
 
@@ -58,7 +58,7 @@ const StudentDashboard = () => {
     setOpenNotificationDrawer(open);
   };
 
-  const handleStartAssignment = (data: TeacherReferral) => {
+  const handleStartAssignment = (data: (TeacherReferral | OfficeReferral)) => {
     setSelectAssignmentToStart(data);
     setPanelName("startAssignment");
   };

@@ -10,18 +10,28 @@ export interface OfficeReferralCode {
   codeName: string;
 }
 
-export interface GuidanceResponse {
+export interface ThreadEvent {
+  date: Date | null;
+  createdBy: string;
+  event: string;
+  content: string;
+}
+
+export interface GuidanceReferral {
   guidanceId: string;
   studentEmail: string;
   schoolName: string;
   timeCreated: Date | null;
+  timeClosed: Date | null;
+  classPeriod: string;
   teacherEmail: string;
   guidanceEmail: string;
   referralDescription: [string];
   status: string;
-  notesArray: [string];
+  notesArray: [ThreadEvent];
   linkToPunishment: string;
   followUpDate: Date | null;
+  infractionName: string;
 }
 
 export interface StudentResponse {
@@ -133,6 +143,7 @@ export interface OfficeReferral {
   infractionLevel: string;
   studentEmail: string;
   adminEmail: string;
+  teacherEmail: string;
   schoolName: string;
   status: string;
   closedExplanation: string;

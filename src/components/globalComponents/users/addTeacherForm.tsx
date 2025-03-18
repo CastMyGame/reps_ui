@@ -8,18 +8,26 @@ import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import Snackbar from "@mui/material/Snackbar";
+import Snackbar, { SnackbarCloseReason } from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
+import { AdminOverviewDto } from "src/types/responses";
 
-const Alert = React.forwardRef(function Alert(props, ref) {
+const Alert = React.forwardRef<
+  HTMLDivElement,
+  React.ComponentProps<typeof MuiAlert>
+>(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
+
+interface AddTeacherProps {
+  adminDto: AdminOverviewDto;
+}
 
 // TODO remove, this demo shouldn't need to reset the theme.
 
 const defaultTheme = createTheme();
 
-export default function AddStudentForm({adminDto = []}) {
+const AddTeacherForm: React.FC<AddTeacherProps> = ({ adminDto }) => {
   const [formErrors, setFormErrors] = useState({
     firstName: false,
     lastName: false,
@@ -27,6 +35,10 @@ export default function AddStudentForm({adminDto = []}) {
     parentPhoneNumber: false,
     studentEmail: false,
     parentEmail: false,
+    guidanceEmail: false,
+    address: false,
+    grade: false,
+    studentPhoneNumber: false,
   });
 
   const [school, setSchool] = useState("");
@@ -49,7 +61,7 @@ export default function AddStudentForm({adminDto = []}) {
     }
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
 
@@ -61,6 +73,10 @@ export default function AddStudentForm({adminDto = []}) {
       parentPhoneNumber: false,
       studentEmail: false,
       parentEmail: false,
+      guidanceEmail: false,
+      address: false,
+      grade: false,
+      studentPhoneNumber: false,
     };
 
     // Check for empty fields and set errors
@@ -79,6 +95,18 @@ export default function AddStudentForm({adminDto = []}) {
     if (data.get("parentPhoneNumber") === "") {
       errors.parentPhoneNumber = true;
     }
+    if (data.get("guidanceEmail") === "") {
+      errors.guidanceEmail = true;
+    }
+    if (data.get("address") === "") {
+      errors.address = true;
+    }
+    if (data.get("grade") === "") {
+      errors.grade = true;
+    }
+    if (data.get("studentPhoneNumber") === "") {
+      errors.studentPhoneNumber = true;
+    }
 
     // Set formErrors state to trigger error messages
     setFormErrors(errors);
@@ -93,6 +121,10 @@ export default function AddStudentForm({adminDto = []}) {
           parentPhoneNumber: false,
           studentEmail: false,
           parentEmail: false,
+          guidanceEmail: false,
+          address: false,
+          grade: false,
+          studentPhoneNumber: false,
         });
       }, 2000);
       return;
@@ -146,11 +178,18 @@ export default function AddStudentForm({adminDto = []}) {
       });
   };
 
-  const handleClose = (event, reason) => {
+  const handleCloseSnackbar = (
+    event: React.SyntheticEvent<any, Event> | Event, // For Snackbar
+    reason: SnackbarCloseReason
+  ) => {
     if (reason === "clickaway") {
-      // props.setAddTeacherModalOpen(false)
       return;
     }
+  };
+
+  // This wrapper function is for the Alert component to match the expected type
+  const handleAlertClose = (event: React.SyntheticEvent<Element, Event>) => {
+    return;
   };
 
   return (
@@ -163,7 +202,7 @@ export default function AddStudentForm({adminDto = []}) {
           Click Here to Add {type === "student" ? "Student" : "Teacher"}
         </button>
       </p>
-      <Container component="main" width="lg">
+      <Container component="main" sx={{ width: "100%" }}>
         <CssBaseline />
         <Box
           sx={{
@@ -178,10 +217,10 @@ export default function AddStudentForm({adminDto = []}) {
             className="" // Add a custom class
             open={registrationSuccessMessage}
             autoHideDuration={2000}
-            onClose={handleClose}
+            onClose={handleCloseSnackbar}
           >
             <Alert
-              onClose={handleClose}
+              onClose={handleAlertClose}
               severity="success"
               sx={{ width: "100%" }}
             >
@@ -189,12 +228,10 @@ export default function AddStudentForm({adminDto = []}) {
             </Alert>
           </Snackbar>
           <Box
-            height="65vh"
-            overflowY="scroll"
             component="form"
             noValidate
             onSubmit={handleSubmit}
-            sx={{ mt: 3 }}
+            sx={{ mt: 3, height: "65vh", overflowY: "scroll" }}
           >
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
@@ -210,24 +247,6 @@ export default function AddStudentForm({adminDto = []}) {
                   helperText={formErrors.firstName && "First Name is required"} // Add error message
                 />
               </Grid>
-              {/* <Grid item xs={12} sm={6}>
-                <Select
-                  required
-                  fullWidth
-                  variant="outlined"
-                  name="schoolName"
-                  label="School Name"
-                  type="text"
-                  id="schoolName"
-                  defaultValue={"Burke"}
-                  error={formErrors.schoolName} // Add error prop
-                  helperText={
-                    formErrors.schoolName && "School Name  is required"
-                  }
-                >
-                  <option value={"Burke"}>Burke</option>
-                </Select>
-              </Grid> */}
               <Grid item xs={12} sm={6}>
                 <TextField
                   required
@@ -350,4 +369,6 @@ export default function AddStudentForm({adminDto = []}) {
       </Container>
     </ThemeProvider>
   );
-}
+};
+
+export default AddTeacherForm;

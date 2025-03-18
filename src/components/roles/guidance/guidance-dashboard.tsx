@@ -28,29 +28,52 @@ import CreatePunishmentPanel from "src/components/globalComponents/modals/functi
 import { TeacherDetailsModal } from "src/components/globalComponents/components/modals/teacherDetailsModal ";
 import { guidanceButtonData } from "src/types/navbars";
 import { BEHAVIORAL, CLERICAL } from "src/types/constants";
+import { GuidanceReferral, TeacherReferral } from "src/types/responses";
+import { Student } from "src/types/school";
 
 const GuidanceDashboard = () => {
+  const email = sessionStorage.getItem("email");
+
   const [displayPicker, setDisplayPicker] = useState(false);
   const [displayNotes, setDisplayNotes] = useState(false);
   const [displayResources, setDisplayResources] = useState(false);
-  const [categoryFilter, setCategoryFilter] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState<string | null>(null);
 
   const [updatePage, setUpdatePage] = useState(false);
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<GuidanceReferral[]>([]);
   const [panelName, setPanelName] = useState("overview");
 
   //Indicators - UI display of processing e.g. loading wheel
   const [closeIndicator, setCloseIndicator] = useState(false);
 
-  const [openTask, setOpenTask] = useState([]);
-  const [activeIndex, setActiveIndex] = useState(null);
-  const [activeTask, setActiveTask] = useState(null);
+  const [activeIndex, setActiveIndex] = useState<number | null>(null);
+  const [activeTask, setActiveTask] = useState<string | null>(null);
   const [guidanceFilter, setGuidanceFilter] = useState(false);
   const [displayStudentModal, setDisplayStudentModal] = useState(false);
   const [displayTeacherModal, setDisplayTeacherModal] = useState(false);
+  const [listOfStudents, setListOfStudents] = useState<Student[]>([]);
 
   //Toggles
-  const [taskType, setTaskType] = useState("OPEN");
+  const [taskType, setTaskType] = useState<string>("OPEN");
+
+  const studentUrl = `${baseUrl}/student/v1/allStudents`;
+
+  useEffect(() => {
+    const headers = {
+      Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
+    };
+
+    axios
+      .get(studentUrl, { headers }) // Pass the headers option with the JWT token
+      .then(function (response) {
+        //Figure out how we are going to return only students associated with teacher.
+        // Maybe only pulling up students with active and closed punishments
+        setListOfStudents(response.data);
+      })
+      .catch(function (error) {
+        console.error(error);
+      });
+  }, [studentUrl]);
 
   const handleUpdatePage = () => {
     setTimeout(() => {
@@ -58,25 +81,31 @@ const GuidanceDashboard = () => {
     }, 500);
   };
 
-  const handleTaskTypeChange = (event, newTaskType) => {
+  const handleTaskTypeChange = (
+    event: React.MouseEvent<HTMLElement>,
+    newTaskType: string | null
+  ) => {
     if (newTaskType !== null) {
       setTaskType(newTaskType);
     }
   };
 
-  const handleCategoryChange = (event, category) => {
+  const handleCategoryChange = (
+    event: React.MouseEvent<HTMLElement>,
+    category: string | null
+  ) => {
     if (category !== null) {
       setCategoryFilter(category);
     }
   };
 
-  const handleStatusChange = (status, id) => {
+  const handleStatusChange = (status: string, id: string) => {
     const payload = { status: status };
     const headers = {
       Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
     };
 
-    const url = `${baseUrl}/punish/v1/guidance/status/${id}`;
+    const url = `${baseUrl}/guidance/v1/guidance/status/${id}`;
     axios
       .put(url, payload, { headers })
       .then((response) => {
@@ -87,20 +116,23 @@ const GuidanceDashboard = () => {
       });
   };
 
-  const handleReferralFilterChange = (filterBoolean) => {
+  const handleReferralFilterChange = (filterBoolean: boolean) => {
     if (filterBoolean !== null) {
       setGuidanceFilter(filterBoolean);
       setUpdatePage((prev) => !prev);
     }
   };
 
-  const handleChange = (event) => {
-    handleReferralFilterChange(event.target.checked);
+  const handleChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    checked: boolean
+  ) => {
+    handleReferralFilterChange(checked);
   };
 
   //Status Change Actions for Closing and Scheduling Task
 
-  const handlePunishmentClose = (id) => {
+  const handlePunishmentClose = (id: string) => {
     setCloseIndicator(true);
 
     const headers = {
@@ -120,7 +152,8 @@ const GuidanceDashboard = () => {
       });
   };
 
-  const [punishmentRecord, setPunishmentRecord] = useState();
+  const [punishmentRecord, setPunishmentRecord] =
+    useState<TeacherReferral | null>();
   //
   const getPunishmentRecord = useCallback(async () => {
     if (activeIndex !== null) {
@@ -137,25 +170,23 @@ const GuidanceDashboard = () => {
     } else {
       setPunishmentRecord(null);
     }
-  }, [activeIndex]);
+  }, [activeIndex, data]);
 
-  const fetchPunishmentData = useCallback(async () => {
+  const fetchGuidanceReferralData = useCallback(async () => {
     try {
       let result;
       if (taskType === "ALL") {
-        result = await get("punish/v1/punishments/");
+        result = await get("guidance/v1/referrals/");
       } else {
-        result = await get(`punish/v1/punishStatus/${taskType}`);
+        result = await get(`guidance/v1/guidanceStatus/${taskType}`);
       }
       setData(
-        result.filter((item) => {
-          return !item.guidance;
-        })
+        result.filter((item: GuidanceReferral) => item.guidanceEmail === email)
       );
     } catch (err) {
       console.error("Error Fetching Data: ", err);
     }
-  }, [taskType, updatePage]);
+  }, [taskType, email]);
 
   const fetchStudentData = useCallback(async () => {
     try {
@@ -164,7 +195,7 @@ const GuidanceDashboard = () => {
     } catch (err) {
       console.error("Error Fetching Data: ", err);
     }
-  }, [taskType, updatePage]);
+  }, []);
 
   const fetchTeacherData = useCallback(async () => {
     try {
@@ -173,7 +204,7 @@ const GuidanceDashboard = () => {
     } catch (err) {
       console.error("Error Fetching Data: ", err);
     }
-  }, [taskType, updatePage]);
+  }, []);
 
   const fetchActiveReferrals = useCallback(async () => {
     try {
@@ -200,14 +231,14 @@ const GuidanceDashboard = () => {
     } catch (error) {
       console.error(error);
     }
-  }, [taskType, guidanceFilter, categoryFilter, updatePage]);
+  }, [taskType, guidanceFilter, categoryFilter]);
 
   //Handle Functions
-  const deleteRecord = (punishment) => {
+  const deleteRecord = (punishment: GuidanceReferral) => {
     const headers = {
       Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
     };
-    const url = `${baseUrl}/punish/v1/delete`;
+    const url = `${baseUrl}/guidance/v1/delete`;
 
     axios
       .delete(url, { data: punishment, headers }) // Pass the headers option with the JWT token
@@ -224,7 +255,7 @@ const GuidanceDashboard = () => {
 
   useEffect(() => {
     if (panelName === "existing-parent-contact") {
-      fetchPunishmentData();
+      fetchGuidanceReferralData();
     } else if (panelName === "overview") {
       getPunishmentRecord();
       fetchActiveReferrals();
@@ -240,10 +271,11 @@ const GuidanceDashboard = () => {
     guidanceFilter,
     updatePage,
     activeIndex,
-    fetchPunishmentData,
+    fetchGuidanceReferralData,
     fetchActiveReferrals,
     fetchStudentData,
     fetchTeacherData,
+    getPunishmentRecord,
   ]);
 
   useEffect(() => {
@@ -257,28 +289,9 @@ const GuidanceDashboard = () => {
     }
   }, []);
 
-  const formatDate = (dateString) => {
-    if (!dateString) {
-      return "";
-    }
-
-    try {
-      // Parse the ISO 8601 date string and format it to MM-dd-yyyy
-      const date = DateTime.fromISO(dateString);
-      if (date.isValid) {
-        return date.toFormat("MM-dd-yyyy");
-      } else {
-        return dateString;
-      }
-    } catch (error) {
-      console.error("Error parsing date:", error);
-      return dateString;
-    }
-  };
-
   //Badge Generatores
 
-  const statusBadgeGenerator = (status) => {
+  const statusBadgeGenerator = (status: string) => {
     if (status === "OPEN") {
       return (
         <div style={{ backgroundColor: "green" }} className="cat-badge">
@@ -342,14 +355,14 @@ const GuidanceDashboard = () => {
           />
         )}
 
-        {displayStudentModal && (
+        {displayStudentModal && activeTask && (
           <StudentDetailsModal
             studentEmail={activeTask}
             setDisplayModal={setDisplayStudentModal}
           />
         )}
 
-        {displayTeacherModal && (
+        {displayTeacherModal && activeTask && (
           <TeacherDetailsModal
             teacherEmail={activeTask}
             setDisplayModal={setDisplayTeacherModal}
@@ -469,7 +482,16 @@ const GuidanceDashboard = () => {
                     <div
                       className="task-card"
                       onClick={() => setActiveIndex(index)}
-                      key={index}
+                      key={index.valueOf()}
+                      tabIndex={0}
+                      role="button"
+                      aria-label="Select Task"
+                      aria-pressed="false"
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          setActiveIndex(index); // Trigger the click action on Enter or Space key press
+                        }
+                      }}
                     >
                       <div className="tag">
                         <div className="color-stripe"></div>
@@ -488,7 +510,7 @@ const GuidanceDashboard = () => {
                           {item.infractionName}
                         </div>
                         <div className="card-body-description">
-                          {item.infractionDescription}
+                          {item.referralDescription}
                         </div>
                       </div>
                       <div className="card-body">
@@ -501,13 +523,11 @@ const GuidanceDashboard = () => {
                       <div className="action-container">
                         <div className="card-actions">
                           <div className="card-action-title">
-                            {item.guidanceStatus === "CLOSED"
-                              ? "Restore"
-                              : " Complete"}
+                            {item.status === "CLOSED" ? "Restore" : " Complete"}
                           </div>
                           <div
                             onClick={() =>
-                              handlePunishmentClose(item.punishmentId)
+                              handlePunishmentClose(item.guidanceId)
                             }
                             className={
                               closeIndicator && activeIndex === index
@@ -522,7 +542,7 @@ const GuidanceDashboard = () => {
                             className="clock-icon"
                             onClick={() => {
                               setDisplayNotes((prevState) => !prevState); // Toggle the state
-                              setActiveTask(item.punishmentId);
+                              setActiveTask(item.guidanceId);
                             }}
                           >
                             <NoteAddIcon
@@ -558,15 +578,19 @@ const GuidanceDashboard = () => {
                   <h1 className="main-panel-title">Teacher Records</h1>
                 </div>
                 {data?.map((item, index) => {
+                  // Find the student in the listOfStudents based on studentEmail
+                  const student = listOfStudents.find(
+                    (s) => s.studentEmail === item.studentEmail
+                  );
                   return (
                     <div
                       className="task-card"
                       onClick={() => {
-                        setActiveTask(item.email);
+                        setActiveTask(item.guidanceEmail);
                         setDisplayTeacherModal((prevState) => !prevState);
                         setActiveIndex(index);
                       }}
-                      key={index}
+                      key={index.valueOf()}
                     >
                       <div className="tag">
                         <div className="color-stripe"></div>
@@ -578,14 +602,16 @@ const GuidanceDashboard = () => {
 
                       <div style={{ display: "flex" }} className="card-body">
                         <div className="card-body-name">
-                          {item.firstName} {item.lastName}
+                          {student?.firstName} {student?.lastName}
                         </div>
                         <div className="card-body-email">
-                          {item.roles && item.roles.length > 0
+                          {/* {student?.roles && student?.roles.length > 0
                             ? item.roles[0].role
-                            : "Role Not Assigned"}
+                            : "Role Not Assigned"} */}
                         </div>
-                        <div className="card-body-email">{item.email}</div>
+                        <div className="card-body-email">
+                          {student?.studentEmail}
+                        </div>
                       </div>
                     </div>
                   );
@@ -713,6 +739,10 @@ const GuidanceDashboard = () => {
                   <h1 className="main-panel-title">Student Records</h1>
                 </div>
                 {data?.map((item, index) => {
+                  // Find the student in the listOfStudents based on studentEmail
+                  const student = listOfStudents.find(
+                    (s) => s.studentEmail === item.studentEmail
+                  );
                   return (
                     <div
                       className="task-card"
@@ -726,17 +756,17 @@ const GuidanceDashboard = () => {
                       <div className="tag">
                         <div className="color-stripe"></div>
                         <div className="tag-content">
-                          <div className="index"> Grade {item.grade}</div>
+                          <div className="index"> Grade {student?.grade}</div>
                           <div className="grade"> </div>
                         </div>
                       </div>
 
                       <div className="card-body">
                         <div className="card-body-name">
-                          {item.firstName} {item.lastName}
+                          {student?.firstName} {student?.lastName}
                         </div>
                         <div className="card-body-email">
-                          {item.studentEmail}
+                          {student?.studentEmail}
                         </div>
                       </div>
 
@@ -746,7 +776,7 @@ const GuidanceDashboard = () => {
                           className="clock-icon"
                           onClick={() => {
                             setDisplayNotes((prevState) => !prevState); // Toggle the state
-                            setActiveTask(item.studentIdNumber);
+                            setActiveTask(item.guidanceId);
                           }}
                         >
                           <NoteAddIcon
@@ -782,7 +812,7 @@ const GuidanceDashboard = () => {
             <h1 className="main-panel-title">Threads</h1>
             {activeIndex != null && activeIndex >= 0 && (
               <div className="details-container">
-                <p>{data[activeIndex]?.guidanceTitle}</p>
+                <p>{data[activeIndex]?.infractionName}</p>
                 {punishmentRecord && (
                   <div className="referal-summary">
                     <p>ID:{data[activeIndex].linkToPunishment}</p>
@@ -798,7 +828,7 @@ const GuidanceDashboard = () => {
                   </div>
                 )}
 
-                <p>{data[activeIndex]?.studentId}</p>
+                <p>{data[activeIndex]?.guidanceId}</p>
                 <p>{data[activeIndex]?.studentEmail}</p>
                 <p>{data[activeIndex]?.teacherEmail}</p>
               </div>

@@ -146,8 +146,8 @@ export const getIncidentByBehavior = (
   return data.length;
 };
 
-export const dateCreateFormat = (inputDate: Date) => {
-  const date = new Date(inputDate);
+export const dateCreateFormat = (inputDate: Date | null) => {
+  const date = new Date(inputDate ?? new Date());
   const options = { year: "numeric", month: "2-digit", day: "2-digit" };
   return date.toLocaleDateString("en-US", options as DateTimeFormatOptions);
 };
