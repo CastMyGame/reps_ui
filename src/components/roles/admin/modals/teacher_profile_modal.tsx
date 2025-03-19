@@ -17,29 +17,42 @@ import TeacherProfileIncidentsByStudentTable from "./teacher_profile_widget_inci
 import { TeacherProfileIncidentByStudentPieChart } from "./teacher_profile_widget_incident-pie";
 import { TeacherProfileSpotter } from "./teacher_profile_widget_spotter";
 import { dateCreateFormat } from "src/helperFunctions/helperFunctions";
+import { AdminOverviewDto, TeacherReferral } from "src/types/responses";
+import { TeacherData } from "src/types/menus";
+import { Employee, Student } from "src/types/school";
 
-export const TeacherDetailsModal = ({
+interface TeacherDetailsProps {
+  activeTeacher: TeacherData;
+  setDisplayBoolean: (value: boolean) => void;
+  adminDto: AdminOverviewDto;
+}
+
+export const TeacherDetailsModal: React.FC<TeacherDetailsProps> = ({
   activeTeacher,
   setDisplayBoolean,
-  data = [],
+  adminDto,
 }) => {
-  const [teacherProfileData, setTeacherProfileData] = useState([]);
-  const [studentNames, setStudentNames] = useState([]);
-  const [listOfStudents, setListOfStudents] = useState([]);
+  const [teacherProfileData, setTeacherProfileData] = useState<
+    TeacherReferral[]
+  >([]);
+  const [studentNames, setStudentNames] = useState<
+    { value: string; label: string }[]
+  >([]);
+  const [listOfStudents, setListOfStudents] = useState<Student[]>([]);
   const [displaySpotterAdd, setDisplaySpotterAdd] = useState(false);
 
-  const selectedTeacher = data?.teachers?.find(
-    (teacher) =>
+  const selectedTeacher = adminDto?.teachers?.find(
+    (teacher: Employee) =>
       teacher.firstName + " " + teacher.lastName === activeTeacher.fullName
   );
-
-  const headers = {
-    Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
-  };
 
   const url = `${baseUrl}/student/v1/allStudents`;
 
   useEffect(() => {
+    const headers = {
+      Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
+    };
+
     axios
       .get(url, { headers }) // Pass the headers option with the JWT token
       .then(function (response) {
@@ -48,7 +61,7 @@ export const TeacherDetailsModal = ({
       .catch(function (error) {
         console.error(error);
       });
-  }, []);
+  }, [url]);
 
   const selectOptions = listOfStudents.map((student) => ({
     value: student.studentEmail, // Use a unique value for each option
@@ -65,7 +78,7 @@ export const TeacherDetailsModal = ({
       .get(url, { headers })
       .then((res) => {
         const results = res.data.filter(
-          (rec) => rec.teacherEmail === selectedTeacher.email
+          (rec: TeacherReferral) => rec.teacherEmail === selectedTeacher?.email
         );
         setTeacherProfileData(results);
       })
@@ -75,14 +88,17 @@ export const TeacherDetailsModal = ({
   }, [selectedTeacher]);
 
   const addSpotter = () => {
-    const student_emails = [];
-    studentNames.map((x) => {
+    const headers = {
+      Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
+    };
+
+    const student_emails: string[] = [];
+    studentNames.forEach((x) => {
       student_emails.push(x.value);
-      return student_emails;
     });
 
     const payload = {
-      spotters: [selectedTeacher.email],
+      spotters: [selectedTeacher?.email],
       studentEmail: student_emails,
     };
 
@@ -111,26 +127,28 @@ export const TeacherDetailsModal = ({
             <div className="header-section-left">
               <div>
                 <h2 style={{ textAlign: "left" }}>
-                  {selectedTeacher.firstName} {selectedTeacher.lastName}
+                  {selectedTeacher?.firstName} {selectedTeacher?.lastName}
                 </h2>
               </div>
               <div style={{ textAlign: "left" }}>
-                Email: {selectedTeacher.email}
+                Email: {selectedTeacher?.email}
               </div>
             </div>
             <div className="header-section-table">
               <TeacherProfileIncidentsByStudentTable
                 writeUps={teacherProfileData}
+                listOfStudents={listOfStudents}
               />
             </div>
             <div className="header-section-table">
               <TeacherProfileIncidentByStudentPieChart
                 writeUps={teacherProfileData}
+                listOfStudents={listOfStudents}
               />
             </div>
             <div className="header-section-right">
               <TeacherProfileSpotter
-                teacher={selectedTeacher.email}
+                teacher={selectedTeacher?.email}
                 setDisplaySpotterAdd={setDisplaySpotterAdd}
                 displaySpotterAdd={displaySpotterAdd}
               />
@@ -147,12 +165,11 @@ export const TeacherDetailsModal = ({
                 onChange={(event, newValue) => setStudentNames(newValue)}
                 options={selectOptions} // Pass the selectOptions array here
                 getOptionLabel={(option) => option.label}
-                inputLabelProps={{ style: { fontSize: 18 } }}
                 renderInput={(params) => (
                   <TextField
                     {...params}
                     className="student-dropdown"
-                    inputLabelProps={{ style: { fontSize: 18 } }}
+                    InputLabelProps={{ style: { fontSize: 18 } }}
                     label="Select Students"
                     sx={{ width: "100%", backgroundColor: "white" }}
                   />
@@ -160,7 +177,6 @@ export const TeacherDetailsModal = ({
                 renderTags={(value, getTagProps) =>
                   value.map((option, index) => (
                     <Chip
-                      key={option.value}
                       label={option.label}
                       sx={{ fontSize: 18 }}
                       {...getTagProps({ index })}
@@ -184,7 +200,7 @@ export const TeacherDetailsModal = ({
           )}
         </div>
 
-        {data ? (
+        {adminDto ? (
           <div className="profile-modal-body">
             <TableContainer
               style={{ height: "250px", backgroundColor: "white" }}
@@ -192,10 +208,18 @@ export const TeacherDetailsModal = ({
               <Table stickyHeader>
                 <TableHead>
                   <TableRow>
-                    <TableCell style={{ width: "25%", fontSize: 18 }}>Status</TableCell>
-                    <TableCell style={{ width: "25%", fontSize: 18 }}>Description</TableCell>
-                    <TableCell style={{ width: "25%", fontSize: 18 }}>Date</TableCell>
-                    <TableCell style={{ width: "25%", fontSize: 18 }}>Infraction</TableCell>
+                    <TableCell style={{ width: "25%", fontSize: 18 }}>
+                      Status
+                    </TableCell>
+                    <TableCell style={{ width: "25%", fontSize: 18 }}>
+                      Description
+                    </TableCell>
+                    <TableCell style={{ width: "25%", fontSize: 18 }}>
+                      Date
+                    </TableCell>
+                    <TableCell style={{ width: "25%", fontSize: 18 }}>
+                      Infraction
+                    </TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -204,7 +228,7 @@ export const TeacherDetailsModal = ({
                       style={{
                         background: index % 2 === 0 ? "lightgrey" : "white",
                       }}
-                      key={index}
+                      key={index.valueOf()}
                     >
                       <TableCell style={{ width: "25%", fontSize: 16 }}>
                         {teacher.status}
@@ -231,19 +255,21 @@ export const TeacherDetailsModal = ({
         <div className="modal-buttons-teacher-profile">
           <button
             onClick={() => {
-              setDisplayBoolean(false);
+              if (typeof setDisplayBoolean === "function") {
+                setDisplayBoolean(false);
+              }
             }}
           >
             Close
           </button>
-          <button
+          {/* <button
             onClick={() => {
               // generatePDF(activeTeacher, teacherProfileData);
             }}
             style={{ backgroundColor: "#CF9FFF" }}
           >
             Print
-          </button>
+          </button> */}
         </div>
       </div>
     </div>

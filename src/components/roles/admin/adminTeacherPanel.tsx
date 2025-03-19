@@ -1,32 +1,22 @@
 import { useState, useEffect } from "react";
-import {
-  Table,
-  TableContainer,
-  TableHead,
-  TableBody,
-  TableRow,
-  TableCell,
-  Paper,
-  TextField,
-} from "@mui/material";
-import Typography from "@mui/material/Typography";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import jsPDF from "jspdf";
 import "jspdf-autotable";
-
-import { get } from "../../../utils/api/api";
 import { TeacherDetailsModal } from "./modals/teacher_profile_modal";
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css"; // Using "alpine" for a modern theme
+import { AdminOverviewDto } from "src/types/responses";
+import { Employee } from "src/types/school";
+import { TeacherData } from "src/types/menus";
 
-const AdminTeacherPanel = ({ data = [] }) => {
+interface AdminTeacherProps {
+  adminDto: AdminOverviewDto;
+}
+
+const AdminTeacherPanel: React.FC<AdminTeacherProps> = ({ adminDto }) => {
   const [teacherProfileModal, setTeacherProfileModal] = useState(false);
-  const [teacherProfileData, setTeacherProfileData] = useState([]);
-  const [teachersList, setTeachersList] = useState([]);
-  const [activeTeacher, setActiveTeacher] = useState(null);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [filteredData, setFilteredData] = useState([]);
+  const [teachersList, setTeachersList] = useState<Employee[]>([]);
+  const [activeTeacher, setActiveTeacher] = useState<TeacherData>();
+  const [filteredData, setFilteredData] = useState<TeacherData[]>([]);
   const [rowData, setRowData] = useState([
     {
       fullName: "Loading...",
@@ -37,22 +27,20 @@ const AdminTeacherPanel = ({ data = [] }) => {
     },
   ]);
 
-  const handleSearchChange = (e) => {
-    setSearchQuery(e.target.value);
-  };
+  // const [searchQuery, setSearchQuery] = useState("");
+  // const handleSearchChange = (e) => {
+  //   setSearchQuery(e.target.value);
+  // };
 
   useEffect(() => {
-    setTeachersList(data?.teachers);
-  }, [data.teachers]);
-  // Ensure that all data properties are safely handled (default to empty arrays)
-  const teachers = data.teachers || [];
-  const officeReferrals = data.officeReferrals || [];
-  const shoutOutsResponse = data.shoutOutsResponse || [];
-  const writeUpResponse = data.writeUpResponse || [];
-  const punishmentResponse = data.punishmentResponse || [];
+    setTeachersList(adminDto?.teachers);
+  }, [adminDto.teachers]);
 
   // Process the data to map teachers with their referrals, shoutouts, and behavior concerns
   useEffect(() => {
+    const teachers = adminDto.teachers || [];
+    const officeReferrals = adminDto.officeReferrals || [];
+    const punishmentResponse = adminDto.punishmentResponse || [];
     const processTeacherData = () => {
       const teacherDataMap = new Map();
 
@@ -115,10 +103,10 @@ const AdminTeacherPanel = ({ data = [] }) => {
       setFilteredData(formattedData);
     };
 
-    if (data.teachers.length > 0) {
+    if (adminDto.teachers.length > 0) {
       processTeacherData();
     }
-  }, [data]);
+  }, [adminDto]);
 
   useEffect(() => {
     if (Array.isArray(filteredData) && filteredData.length > 0) {
@@ -142,56 +130,13 @@ const AdminTeacherPanel = ({ data = [] }) => {
     { headerName: "Office Managed Referrals", field: "officeManagedReferrals" },
   ];
 
-  // const pdfRef = useRef();
-
-  // const generatePDF = (activeTeacher, studentData) => {
-  //   const pdf = new jsPDF();
-  //   // Add logo
-  //   const logoWidth = 50; // Adjust the width of the logo as needed
-  //   const logoHeight = 50; // Adjust the height of the logo as needed
-  //   const logoX = 130; // Adjust the X coordinate of the logo as needed
-  //   const logoY = 15; // Adjust the Y coordinate of the logo as needed
-
-  //   //https://medium.com/dont-leave-me-out-in-the-code/5-steps-to-create-a-pdf-in-react-using-jspdf-1af182b56cee
-  //   //Resource for adding image and how pdf text works
-  //   var image = new Image();
-  //   image.src = "/burke-logo.png";
-  //   pdf.addImage(image, "PNG", logoX, logoY, logoWidth, logoHeight);
-
-  //   // Add student details section
-  //   pdf.setFontSize(12);
-  //   pdf.rect(15, 15, 180, 50);
-  //   pdf.text(`${activeTeacher.firstName} ${activeTeacher.lastName}`, 20, 20);
-  //   pdf.text(`Email: ${activeTeacher.email}`, 20, 30);
-  //   // pdf.text(`Phone: ${studentData[0].student.studentPhoneNumber}`, 20, 40);
-  //   // pdf.text(`Grade: ${studentData[0].student.grade}`, 20, 50);
-  //   // pdf.text(`Address: ${studentData[0].student.address}`, 20, 60);
-
-  //   // Add punishment details table
-  //   pdf.autoTable({
-  //     startY: 70, // Adjust the Y-coordinate as needed
-  //     head: [["Status", "Description", "Date", "Infraction"]],
-  //     body: studentData.map((student) => [
-  //       student.status,
-  //       student.infraction.infractionDescription,
-  //       student.timeCreated,
-  //       student.infraction.infractionName,
-  //     ]),
-  //   });
-
-  //   // Save or open the PDF
-  //   pdf.save("teacher_report.pdf");
-  // };
-
-  const hasScroll = data.length > 10;
-
   return (
     <>
       {teacherProfileModal && activeTeacher && (
         <TeacherDetailsModal
           activeTeacher={activeTeacher}
           setDisplayBoolean={setTeacherProfileModal}
-          data={data}
+          adminDto={adminDto}
         />
       )}
       <div

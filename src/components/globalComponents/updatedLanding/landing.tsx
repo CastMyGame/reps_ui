@@ -370,10 +370,10 @@ const LandingPage = () => {
       </div>
 
       <div className="testimonials-container" id="testimonials">
-        <div className="testimonial-title">Testimonial</div>
+        <div className="testimonial-title">Testimonials</div>
         <div className="testimonial-carrousel">
           {testimonialData.map((item) => {
-            return <div className="testimonial">{item.text}</div>;
+            return <div className="testimonial" key={item.text}>{item.text}</div>;
           })}
         </div>
       </div>
