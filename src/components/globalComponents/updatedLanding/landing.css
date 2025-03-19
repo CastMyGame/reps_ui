@@ -1,101 +1,95 @@
-.login-btn{
-    display: inline-block;
-    line-height: 15px;
-    padding: 9px;
-    text-align: center;
-    margin: 14px 0 13px 19px;
-    background: #555;
-    color: #fff;
-    width: 75px;
-    border-radius: 20px;
-    font-family: Lato, sans-serif;
-    font-size: 15px;
-    font-weight: 500;
-    max-width: 264px;
+.login-btn {
+  display: inline-block;
+  line-height: 15px;
+  padding: 9px;
+  text-align: center;
+  margin: 14px 0 13px 19px;
+  background: #555;
+  color: #fff;
+  width: 75px;
+  border-radius: 20px;
+  font-family: Lato, sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  max-width: 264px;
 }
 
-.none{
-    display:none;
+.none {
+  display: none;
 }
 
+#menu.navbar-default .navbar-nav > li > div {
+  font-family: "Lato", sans-serif;
+  text-transform: uppercase;
+  color: #555;
+  font-size: 15px;
+  font-weight: 400;
+  padding: 8px 2px;
+  border-radius: 0;
+  margin: 9px 20px 0;
+}
+#menu.navbar-default .navbar-nav > li > div:after {
+  display: block;
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(to right, #6372ff 0%, #5ca9fb 100%);
+  content: "";
+  transition: width 0.2s;
+}
+#menu.navbar-default .navbar-nav > li > div:hover:after {
+  width: 100%;
+}
+.navbar-default .navbar-nav > .active > div,
+.navbar-default .navbar-nav > .active > div:hover,
+.navbar-default .navbar-nav > .active > div:focus {
+  background-color: transparent;
+}
+.navbar-default .navbar-nav > .active > div:after,
+.navbar-default .navbar-nav > .active > div:hover:after,
+.navbar-default .navbar-nav > .active > div:focus:after {
+  display: block !important;
+  position: absolute !important;
+  left: 0 !important;
+  bottom: -1px !important;
+  width: 100% !important;
+  height: 2px !important;
+  background: linear-gradient(to right, #6372ff 0%, #5ca9fb 100%) !important;
+  content: "" !important;
+  transition: width 0.2s !important;
+}
 
-  #menu.navbar-default .navbar-nav > li > div {
-    font-family: "Lato", sans-serif;
-    text-transform: uppercase;
-    color: #555;
-    font-size: 15px;
-    font-weight: 400;
-    padding: 8px 2px;
-    border-radius: 0;
-    margin: 9px 20px 0;
-  }
-  #menu.navbar-default .navbar-nav > li > div:after {
-    display: block;
-    position: absolute;
-    left: 0;
-    bottom: -1px;
-    width: 0;
-    height: 2px;
-    background: linear-gradient(to right, #6372ff 0%, #5ca9fb 100%);
-    content: "";
-    transition: width 0.2s;
-  }
-  #menu.navbar-default .navbar-nav > li > div:hover:after {
-    width: 100%;
-  }
-  .navbar-default .navbar-nav > .active > div,
-  .navbar-default .navbar-nav > .active > div:hover,
-  .navbar-default .navbar-nav > .active > div:focus {
-    background-color: transparent;
-  }
-  .navbar-default .navbar-nav > .active > div:after,
-  .navbar-default .navbar-nav > .active > div:hover:after,
-  .navbar-default .navbar-nav > .active > div:focus:after {
-    display: block !important;
-    position: absolute !important;
-    left: 0 !important;
-    bottom: -1px !important;
-    width: 100% !important;
-    height: 2px !important;
-    background: linear-gradient(to right, #6372ff 0%, #5ca9fb 100%) !important;
-    content: "" !important;
-    transition: width 0.2s !important;
-  }
+.feature-menu-dropdown {
+  position: absolute !important;
+  color: white;
+  left: 0 !important;
+  /* bottom: -1px !important; */
+  width: 100% !important;
+  /* height: 2px !important; */
+  background: linear-gradient(to right, #6372ff 0%, #5ca9fb 100%) !important;
+  content: "" !important;
+  /* transition: width 0.2s !important; */
+  z-index: 999;
+  min-width: fit-content; /* Ensure width adjusts to content */
+}
 
+.feature-menu-dropdown .item {
+  height: 100%;
+  padding: 5px;
+  font-size: smaller;
+  z-index: 999;
+  color: white;
+  min-width: fit-content; /* Ensure width adjusts to content */
+}
 
-  .feature-menu-dropdown{
-    position: absolute !important;
-    color: white;
-    left: 0 !important;
-    /* bottom: -1px !important; */
-    width: 100% !important;
-    /* height: 2px !important; */
-    background: linear-gradient(to right, #6372ff 0%, #5ca9fb 100%) !important;
-    content: "" !important;
-    /* transition: width 0.2s !important; */
-    z-index: 999;
-    min-width: fit-content; /* Ensure width adjusts to content */
-    
-  }
-
-  .feature-menu-dropdown .item {
-    height: 100%;
-    padding: 5px;
-    font-size: smaller;
-    z-index: 999;
-    color:white;
-    min-width: fit-content; /* Ensure width adjusts to content */
-
-  }
-
-  .feature-menu-dropdown .item:hover {
-    height: 100%;
-    background-color: silver;
-    z-index: 999;
-    min-width: fit-content; /* Ensure width adjusts to content */
-    
-  }
-
+.feature-menu-dropdown .item:hover {
+  height: 100%;
+  background-color: silver;
+  z-index: 999;
+  min-width: fit-content; /* Ensure width adjusts to content */
+}
 
 /* General styles for the hamburger container */
 .hamburger-container {
@@ -127,5 +121,48 @@
   .navbar-header .navbar-brand,
   .navbar-header .container {
     display: inline-block;
+  }
+
+  @media (max-width: 768px) {
+    .landing-header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 10px;
+    }
+
+    .landing-header-menu {
+      display: block;
+      width: 100%;
+      text-align: center;
+      padding: 8px;
+    }
+
+    .logo-text h1 {
+      font-size: 1.5rem; /* Reduce size */
+    }
+  }
+
+  @media (max-width: 768px) {
+    .intro-panel-cards {
+      display: flex;
+      flex-direction: column; /* Stack cards in a column */
+      align-items: center; /* Center-align the cards */
+    }
+
+    .ip-card {
+      width: 90%; /* Make each card take most of the width */
+      margin-bottom: 20px; /* Add spacing between stacked cards */
+      text-align: center;
+    }
+
+    .ip-card-img {
+      max-width: 80%; /* Make images responsive */
+      height: auto; /* Maintain aspect ratio */
+    }
+
+    .ip-card-content {
+      font-size: 16px; /* Adjust text size for mobile */
+    }
   }
 }
