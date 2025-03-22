@@ -26,12 +26,10 @@ const Alert = React.forwardRef<
 
 interface ContactUsProps {
   setContactUsDisplayModal: (modal: string) => void;
-  contactUsDisplayModal: string;
 }
 
 export const ContactUsModal: React.FC<ContactUsProps> = ({
   setContactUsDisplayModal,
-  contactUsDisplayModal,
 }) => {
   const topics = [
     "Guidance Request",
@@ -68,14 +66,14 @@ export const ContactUsModal: React.FC<ContactUsProps> = ({
 
   // Reset fields when modal closes
   useEffect(() => {
-    if (!contactUsDisplayModal) {
+    if (!setContactUsDisplayModal) {
       setSelectedTopic("");
       setEmailAddress("");
       setMessage("");
       setWarningToast(false);
       setEmailValidationMessage("");
     }
-  }, [contactUsDisplayModal]);
+  }, [setContactUsDisplayModal]);
 
   const handleTopicChange = (event: SelectChangeEvent<string>) => {
     setSelectedTopic(event.target.value);
@@ -165,6 +163,15 @@ export const ContactUsModal: React.FC<ContactUsProps> = ({
     setWarningToast(false);
   };
 
+  const handleCloseModal = () => {
+    setSelectedTopic("");
+    setEmailAddress("");
+    setMessage("");
+    setWarningToast(false);
+    setEmailValidationMessage("");
+    setContactUsDisplayModal("");
+  };
+
   return (
     <>
       <Snackbar
@@ -252,7 +259,7 @@ export const ContactUsModal: React.FC<ContactUsProps> = ({
           <Button
             variant="contained"
             color="success"
-            onClick={() => setContactUsDisplayModal("")}
+            onClick={handleCloseModal}
           >
             Close
           </Button>
