@@ -21,8 +21,12 @@ import CreateOfficeReferralPanel from "src/components/globalComponents/referrals
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 import EditStudentPanel from "src/components/globalComponents/users/editStudentPanel";
+import { AdminOverviewDto } from "src/types/responses";
 
-const Alert = React.forwardRef(function Alert(props, ref) {
+const Alert = React.forwardRef<
+  HTMLDivElement,
+  React.ComponentProps<typeof MuiAlert>
+>(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
@@ -31,12 +35,13 @@ const AdminDashboard = () => {
   const [openNotificationDrawer, setOpenNotificationDrawer] = useState(false);
   const [panelName, setPanelName] = useState("overview");
   const [modalType, setModalType] = useState("");
-  const [adminDto, setAdminDto] = useState([]);
+  const [adminDto, setAdminDto] = useState<AdminOverviewDto | null>(null);
   const [toast, setToast] = useState({ visible: false, message: "" });
 
   const [isDropdownOpen, setIsDropdownOpen] = useState("");
 
-  const handleClose = (event, reason) => {
+  const handleClose = (event: React.SyntheticEvent | Event,
+      reason?: string) => {
     if (reason === "clickaway") {
       return;
     }
@@ -52,7 +57,7 @@ const AdminDashboard = () => {
     }
   }, []);
 
-  const toggleNotificationDrawer = (open) => {
+  const toggleNotificationDrawer = (open: boolean) => {
     setOpenNotificationDrawer(open);
   };
 
@@ -84,7 +89,6 @@ const AdminDashboard = () => {
           {modalType === "contact" && (
             <ContactUsModal
               setContactUsDisplayModal={setModalType}
-              contactUsDisplayModal={undefined}
             />
           )}
 
@@ -95,7 +99,7 @@ const AdminDashboard = () => {
             onClose={handleClose}
           >
             <Alert
-              Close={handleClose}
+              onClose={handleClose}
               severity="success"
               sx={{ width: "100%" }}
             >
@@ -117,17 +121,17 @@ const AdminDashboard = () => {
           <div className="">
             <div className="left-main">
               <div className="main-content-panel">
-                {adminDto.length === 0 ? (
+                {!adminDto ? (
                   <LoadingWheelPanel />
                 ) : (
                   panelName === "overview" && (
-                    <AdminOverviewPanel data={adminDto} />
+                    <AdminOverviewPanel adminDto={adminDto} />
                   )
                 )}
-                {panelName === "viewTeacher" && (
-                  <AdminTeacherPanel data={adminDto} />
+                {panelName === "viewTeacher" && adminDto && (
+                  <AdminTeacherPanel adminDto={adminDto} />
                 )}
-                {panelName === "student" && (
+                {panelName === "student" && adminDto && (
                   <TeacherStudentPanel
                     setPanelName={setPanelName}
                     data={adminDto}
@@ -136,20 +140,19 @@ const AdminDashboard = () => {
                 {panelName === "punishment" && (
                   <GlobalPunishmentPanel roleType={"admin"} />
                 )}
-                {panelName === "createPunishment" && (
+                {panelName === "createPunishment" && adminDto && (
                   <CreatePunishmentPanel
                     setPanelName={setPanelName}
                     data={adminDto}
                   />
                 )}
-                {panelName === "createOfficeReferral" && (
+                {panelName === "createOfficeReferral" && adminDto && (
                   <CreateOfficeReferralPanel
-                    setPanelName={setPanelName}
                     data={adminDto}
                   />
                 )}
                 {panelName === "createNewStudent" && <CreateNewStudentPanel />}
-                {panelName === "userManagement" && (
+                {panelName === "userManagement" && adminDto && (
                   <AddTeacherForm adminDto={adminDto} />
                 )}
                 {panelName === "studentManagement" && <EditStudentPanel />}
@@ -160,7 +163,7 @@ const AdminDashboard = () => {
                   />
                 )}
                 {panelName === "createEditAssignments" && <AssignmentManager />}
-                {panelName === "spendPoints" && <SpendPage data={adminDto} />}
+                {panelName === "spendPoints" && adminDto && <SpendPage data={adminDto} />}
               </div>
             </div>
           </div>

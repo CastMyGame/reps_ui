@@ -13,11 +13,16 @@ import { AdminSchoolReferralByTypePieChart } from "src/components/globalComponen
 import { AdminTeacherReferralByTypePieChart } from "src/components/globalComponents/dataDisplay/adminTeacherReferralByTypePieChart";
 import { Bottom4PositiveTeacherTable } from "src/components/globalComponents/dataDisplay/bottom-5-ratio-table";
 import TeacherManagedReferralByLevelByWeek from "src/components/globalComponents/dataDisplay/teacherManagedReferralByLevelByWeek";
+import { AdminOverviewDto } from "src/types/responses";
 
-const AdminOverviewPanel = ({ data = [] }) => {
+interface AdminOverviewProps {
+  adminDto: AdminOverviewDto;
+}
+
+const AdminOverviewPanel:React.FC<AdminOverviewProps> = ({ adminDto }) => {
   //Fetch Data to Prop Drill to Components
 
-  const punishments = data.punishmentResponse;
+  const punishments = adminDto.punishmentResponse;
 
   const weeklyDataIncSOBxConcern = punishments?.filter((x) => {
     const currentDate = new Date();
@@ -28,19 +33,19 @@ const AdminOverviewPanel = ({ data = [] }) => {
     return itemDate > sevenDaysAgo;
   });
 
-  const notClosed = data.officeReferrals.filter((x) => x.status !== "CLOSED");
+  const notClosed = adminDto.officeReferrals.filter((x) => x.status !== "CLOSED");
 
   return (
     <>
       <div className="teacher-overview-first">
         <Card variant="outlined">
-          <ShoutOuts data={data} />
+          <ShoutOuts data={adminDto} />
         </Card>
       </div>
       {notClosed.length > 0 && (
         <div className="teacher-overview-first">
           <Card variant="outlined">
-            <OfficeReferrals data={data.officeReferrals} />
+            <OfficeReferrals data={adminDto.officeReferrals} />
           </Card>
         </div>
       )}
@@ -58,16 +63,16 @@ const AdminOverviewPanel = ({ data = [] }) => {
       <div className="overview-row">
         <div className="card-overview-third">
           <AdminSchoolReferralByTypePieChart
-            writeUpResponse={data.writeUpResponse}
-            shoutOutsResponse={data.shoutOutsResponse}
-            punishmentResponse={data.punishmentResponse}
-            officeReferrals={data.officeReferrals}
+            writeUpResponse={adminDto.writeUpResponse}
+            shoutOutsResponse={adminDto.shoutOutsResponse}
+            punishmentResponse={adminDto.punishmentResponse}
+            officeReferrals={adminDto.officeReferrals}
           />
         </div>
 
         <div className="card-overview-third">
           <AdminTeacherReferralByTypePieChart
-            writeUpResponse={data.writeUpResponse}
+            writeUpResponse={adminDto.writeUpResponse}
           />
         </div>
 
@@ -91,22 +96,22 @@ const AdminOverviewPanel = ({ data = [] }) => {
       <div className="overview-row">
         <div className="card-overview-third">
           <IncidentByTeacherPieChart
-            writeUpResponse={data.writeUpResponse}
-            teachers={data.teachers}
+            writeUpResponse={adminDto.writeUpResponse}
+            teachers={adminDto.teachers}
           />
         </div>
 
         <div className="card-overview-third">
-          {data.teachers && (
+          {adminDto.teachers && (
             <>
               <Top5TeacherRatioTable
-                punishmentResponse={data.punishmentResponse}
-                teachers={data.teachers}
+                punishmentResponse={adminDto.punishmentResponse}
+                teachers={adminDto.teachers}
               />
               <br></br>
               <Bottom4PositiveTeacherTable
-                punishmentResponse={data.punishmentResponse}
-                teachers={data.teachers}
+                punishmentResponse={adminDto.punishmentResponse}
+                teachers={adminDto.teachers}
               />
             </>
           )}
@@ -114,8 +119,8 @@ const AdminOverviewPanel = ({ data = [] }) => {
 
         <div className="card-overview-third">
           <WorseClassTable
-            punishmentResponse={data.punishmentResponse}
-            teachers={data.teachers}
+            punishmentResponse={adminDto.punishmentResponse}
+            teachers={adminDto.teachers}
           />
         </div>
       </div>
@@ -133,17 +138,17 @@ const AdminOverviewPanel = ({ data = [] }) => {
       <div className="overview-row">
         <div className="card-overview-third">
           <TotalReferralByWeek
-            punishmentResponse={data.punishmentResponse}
-            officeReferrals={data.officeReferrals}
+            punishmentResponse={adminDto.punishmentResponse}
+            officeReferrals={adminDto.officeReferrals}
           />
         </div>
 
         <div className="card-overview-third">
-          <TeacherManagedReferralByLevelByWeek punishmentResponse={data.punishmentResponse} />
+          <TeacherManagedReferralByLevelByWeek punishmentResponse={adminDto.punishmentResponse} />
         </div>
 
         <div className="card-overview-third">
-          <ReferralByBehavior data={data.punishmentResponse} />
+          <ReferralByBehavior data={adminDto.punishmentResponse} />
         </div>
       </div>
     </>

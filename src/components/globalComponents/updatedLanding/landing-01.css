@@ -16,7 +16,6 @@
 }
 
 .logo-text h1 {
-  /* height: 20em; */
   font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
     "Lucida Sans", Arial, sans-serif;
   color: #de8455;
@@ -60,8 +59,8 @@
 
 .intro-panel {
   background-image: url("/public/backgroundPanel.png");
-  height: 1250px; /* Default height for large screens */
-  width: 97vw;
+  height: 120vh; /* Default height for large screens */
+  width: 100%;
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center; /* Ensures the image is centered */
@@ -70,13 +69,15 @@
 /* Media query for smaller screens */
 @media (max-width: 768px) {
   .intro-panel {
-    height: 800px; /* Adjust the height for smaller screens */
+    height: 120vh; /* Default height for large screens */
+    width: 100%;
   }
 }
 
 @media (max-width: 480px) {
   .intro-panel {
-    height: 600px; /* Further reduce height for very small screens */
+    height: 120vh; /* Default height for large screens */
+    width: 100%;
     background-image: url("/public/backgroundPanel.png");
     background-size: cover;
     background-position: center;
@@ -217,14 +218,6 @@
   justify-content: center;
 }
 
-.testimonial p {
-  margin: 0;
-  padding: 1em; /* Add some padding inside */
-  font-size: 1.1em;
-  line-height: 1.6em;
-  text-align: justify;
-}
-
 @media (max-width: 1024px) {
   .testimonial {
     width: 45%; /* Take up more space on tablets */
@@ -241,32 +234,29 @@
 
 .testimonial::before {
   content: "“"; /* Opening quotation mark */
-  font-size: 5em; /* Larger size for dramatic effect */
+  font-size: 4em; /* Larger size for dramatic effect */
   color: #febd73;
   position: absolute;
-  top: 1em;
-  left: 10px;
-  line-height: 0; /* Removes extra space around the quotation mark */
+  top: 0;
+  left: 0;
 }
 
 .testimonial::after {
   content: "”"; /* Closing quotation mark */
-  font-size: 5em;
+  font-size: 4em;
   color: #febd73;
   position: absolute;
-  bottom: 1em;
-  right: 10px;
-  line-height: 0; /* Removes extra space around the quotation mark */
+  bottom: 0;
+  right: 0;
 }
 
 .testimonial p {
   margin-top: 1em;
-  margin: 0;
-  padding: 0;
   font-size: 1em;
   line-height: 1.5em;
   text-align: justify;
   position: relative; /* Ensure text is in front of the pseudo-elements */
+  padding: 1em; /* Add some padding inside */
 }
 
 .book-your-demo-container {
@@ -302,24 +292,12 @@
   word-wrap: break-word;
 }
 
-/* ul.bullet {
-  margin-top: 1em;
-  color: white;
-  list-style-type: disc;
-  list-style-position: outside;
-} */
-
 .book-your-demo-form {
   padding: 2em;
   height: 100%;
   width: 48%;
   color: white;
   text-align: center;
-}
-.form-header {
-}
-
-.form {
 }
 
 .form-logo-text {
@@ -386,7 +364,6 @@ input[type="submit"] {
   color: white;
   min-height: fit-content;
   padding: 1em;
-  font-size: medium;
   border-radius: 16px;
   text-align: center;
 }
@@ -466,11 +443,8 @@ input[type="submit"] {
   position: absolute !important;
   color: white;
   left: 0 !important;
-  /* bottom: -1px !important; */
   width: 100% !important;
-  /* height: 2px !important; */
   background: linear-gradient(to right, #6372ff 0%, #5ca9fb 100%) !important;
-  /* transition: width 0.2s !important; */
   z-index: 999;
   min-width: fit-content; /* Ensure width adjusts to content */
 }

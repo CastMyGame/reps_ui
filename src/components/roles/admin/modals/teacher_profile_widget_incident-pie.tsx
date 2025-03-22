@@ -1,10 +1,19 @@
-import { Typography } from "@mui/material";
 import React from "react";
 import { PieChart, pieArcLabelClasses } from "@mui/x-charts/PieChart";
+import { Student } from "src/types/school";
+import { TeacherReferral } from "src/types/responses";
+import { StudentIncident } from "src/types/menus";
 
-export const TeacherProfileIncidentByStudentPieChart = ({ writeUps = [] }) => {
+interface TeacherProfilePieProps {
+  writeUps: TeacherReferral[];
+  listOfStudents: Student[];
+}
+
+export const TeacherProfileIncidentByStudentPieChart: React.FC<
+  TeacherProfilePieProps
+> = ({ writeUps, listOfStudents }) => {
   // const filterData = data.filter()
-  const uniqueStudents = {};
+  const uniqueStudents: Record<string, number> = {};
   const totalIncidents = writeUps.length;
 
   // Get Unique Students Info
@@ -15,14 +24,15 @@ export const TeacherProfileIncidentByStudentPieChart = ({ writeUps = [] }) => {
 
   const studentsWithIncidentsList = Object.entries(uniqueStudents).map(
     ([studentEmail, incidents]) => {
-      const { studentFirstName, studentLastName } = writeUps.find(
-        (item) => item.studentEmail === studentEmail
+      const studentMap = new Map(
+        listOfStudents.map((student) => [student.studentEmail, student])
       );
+      const studentRecord = studentMap.get(studentEmail);
 
       return {
         studentEmail,
-        studentFirstName,
-        studentLastName,
+        firstName: studentRecord?.firstName ?? "Unknown",
+        lastName: studentRecord?.lastName ?? "Unknown",
         incidents,
         percent: ((incidents / totalIncidents) * 100).toFixed(2),
       };
@@ -36,22 +46,21 @@ export const TeacherProfileIncidentByStudentPieChart = ({ writeUps = [] }) => {
     .filter((ind) => parseFloat(ind.percent) <= 5.0)
     .sort((a, b) => b.incidents - a.incidents);
 
-  const modifiedList = [
+  const modifiedList: StudentIncident[] = [
     ...meetsTres,
     {
-      studentId: "001",
-      studentFirstName: "Other",
-      studentLastName: "Students",
-      incidents: otherNotMeetingTreshold
-        .reduce((acc, student) => {
-          return acc + student.incidents;
-        }, 0)
-        .toFixed(2),
+      studentEmail: "other_students", // Provide a string identifier
+      firstName: "Other",
+      lastName: "Students",
+      incidents: Number(
+        otherNotMeetingTreshold.reduce(
+          (acc, student) => acc + student.incidents,
+          0
+        )
+      ), // Ensure incidents is a number
       percent: otherNotMeetingTreshold
-        .reduce((acc, student) => {
-          return acc + parseFloat(student.percent);
-        }, 0)
-        .toFixed(2), // Closing parenthesis was added here
+        .reduce((acc, student) => acc + parseFloat(student.percent), 0)
+        .toFixed(2),
     },
   ];
 
@@ -62,7 +71,7 @@ export const TeacherProfileIncidentByStudentPieChart = ({ writeUps = [] }) => {
     paddingRight: "10px", // Adjust as needed to make room for the scrollbar
   };
 
-  const generateLegendColor = (index) => {
+  const generateLegendColor = (index: number): string => {
     const colors = [
       "#02B2AF",
       "#2E96FF",
@@ -92,7 +101,7 @@ export const TeacherProfileIncidentByStudentPieChart = ({ writeUps = [] }) => {
               value: parseFloat(student.percent),
               label: ` ${student.studentEmail}`,
             })),
-            arcLabel: (item) => `(${parseFloat(item.value)}%)`,
+            arcLabel: (item) => `(${item.value}%)`,
             arcLabelMinAngle: 45,
           },
         ]}
@@ -103,7 +112,7 @@ export const TeacherProfileIncidentByStudentPieChart = ({ writeUps = [] }) => {
             fill: "white",
             fontWeight: "bold",
           },
-          marginLeft: "15vh"
+          marginLeft: "15vh",
         }}
         slotProps={{ legend: { hidden: true } }}
       />
