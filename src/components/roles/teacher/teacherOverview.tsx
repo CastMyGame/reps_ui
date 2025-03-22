@@ -15,7 +15,7 @@ import { Student } from "src/types/school";
 
 interface TeacherOverviewProps {
   setPanelName: (panel: string) => void;
-  data?: TeacherOverviewDto;
+  data: TeacherOverviewDto;
   students?: Student[];
 }
 
@@ -75,7 +75,7 @@ const TeacherOverviewPanel: React.FC<TeacherOverviewProps> = ({
 
       <div className="teacher-overview-first">
         <Card variant="outlined">
-          <ShoutOuts data={data || {}} />
+          <ShoutOuts data={data} />
         </Card>
       </div>
 

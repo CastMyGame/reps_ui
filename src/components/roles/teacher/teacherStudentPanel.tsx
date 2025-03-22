@@ -357,15 +357,17 @@ const TeacherStudentPanel: React.FC<StudentPanelProps> = ({
                     <IncidentByTypePieChart data={studentData} />
                   </div>
                 </div>
-                <div className="modal-body-student" style={{ height: "320px" }}>
-                  <TableContainer style={{ backgroundColor: "white" }}>
+                <div className="modal-body-student" style={{ flexGrow: 1,
+        overflowY: "auto",
+        maxHeight: "50vh", }}>
+                  <TableContainer style={{ backgroundColor: "white", fontSize: "18" }}>
                     <Table stickyHeader>
                       <TableHead>
                         <TableRow>
-                          <TableCell>Status</TableCell>
-                          <TableCell>Description</TableCell>
-                          <TableCell>Date</TableCell>
-                          <TableCell>Infraction</TableCell>
+                          <TableCell sx={{fontSize: "1.5rem", textAlign: "center"}}>Status</TableCell>
+                          <TableCell sx={{fontSize: "1.5rem", textAlign: "center"}}>Description</TableCell>
+                          {/* <TableCell>Date</TableCell> */}
+                          <TableCell sx={{fontSize: "1.5rem", textAlign: "center"}}>Infraction</TableCell>
                         </TableRow>
                       </TableHead>
                       <TableBody>
@@ -377,12 +379,12 @@ const TeacherStudentPanel: React.FC<StudentPanelProps> = ({
                                 index % 2 === 0 ? "lightgrey" : "white",
                             }}
                           >
-                            <TableCell>{student.status}</TableCell>
-                            <TableCell>
+                            <TableCell sx={{fontSize: "1.5rem", textAlign: "center"}}>{student.status}</TableCell>
+                            <TableCell sx={{fontSize: "1.5rem", textAlign: "center"}}>
                               {student.infractionDescription}
                             </TableCell>
-                            {/* <TableCell>{student.timeCreated}</TableCell> */}
-                            <TableCell>{student.infractionName}</TableCell>
+                            {/* <TableCell> {student.timeCreated}</TableCell> */}
+                            <TableCell sx={{fontSize: "1.5rem", textAlign: "center"}}>{student.infractionName}</TableCell>
                           </TableRow>
                         ))}
                       </TableBody>

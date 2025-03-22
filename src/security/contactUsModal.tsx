@@ -213,7 +213,11 @@ export const ContactUsModal: React.FC<ContactUsProps> = ({
             label="Choose Topic"
           >
             {topics.map((topic) => (
-              <MenuItem key={topic} value={topic}>
+              <MenuItem
+                key={topic}
+                value={topic}
+                sx={{ fontSize: "1.5rem", textAlign: "center" }}
+              >
                 {topic}
               </MenuItem>
             ))}
@@ -229,7 +233,11 @@ export const ContactUsModal: React.FC<ContactUsProps> = ({
           onChange={handleEmailChange}
           error={Boolean(emailValidationMessage)}
           helperText={emailValidationMessage}
-          style={{ marginBottom: "20px" }}
+          style={{
+            marginBottom: "20px",
+            fontSize: "1.5rem",
+            textAlign: "center",
+          }}
         />
 
         <TextareaAutosize
@@ -243,6 +251,7 @@ export const ContactUsModal: React.FC<ContactUsProps> = ({
             padding: "10px",
             borderRadius: "5px",
             resize: "vertical",
+            fontSize: "1.5rem",
           }}
         />
 
@@ -252,6 +261,7 @@ export const ContactUsModal: React.FC<ContactUsProps> = ({
             variant="contained"
             color="primary"
             onClick={handleSendMessage}
+            sx={{ fontSize: "1.3rem"}}
           >
             Send Message
           </Button>
@@ -260,6 +270,7 @@ export const ContactUsModal: React.FC<ContactUsProps> = ({
             variant="contained"
             color="success"
             onClick={handleCloseModal}
+            sx={{ fontSize: "1.3rem"}}
           >
             Close
           </Button>

@@ -119,7 +119,6 @@ const TeacherDashboard = () => {
           {modalType === "contact" && (
             <ContactUsModal
               setContactUsDisplayModal={setModalType}
-              contactUsDisplayModal={modalType}
             />
           )}
           {modalType === "classAnnouncement" && (
@@ -172,10 +171,10 @@ const TeacherDashboard = () => {
   function renderPanels() {
     return (
       <>
-        {panelName === "overview" && (
+        {panelName === "overview" && data && (
           <TeacherOverviewPanel
             setPanelName={setPanelName}
-            data={data || {}}
+            data={data}
             students={filteredStudentList}
           />
         )}
