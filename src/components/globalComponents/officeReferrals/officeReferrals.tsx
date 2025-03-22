@@ -9,20 +9,31 @@ import {
 } from "@mui/material";
 import ArrowDropDownCircleIcon from "@mui/icons-material/ArrowDropDownCircle";
 import { dateCreateFormat } from "../../../helperFunctions/helperFunctions";
-import CircularProgress from "@mui/material/CircularProgress";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import { baseUrl } from "src/utils/jsonData";
 import axios from "axios";
+import { OfficeReferral } from "src/types/responses";
 
-const OfficeReferrals = ({ data = [] }) => {
+interface OfficeReferralProps {
+  data: OfficeReferral[];
+}
+
+interface ModalState {
+  display: boolean;
+  message: string;
+  buttonType: string;
+  data: OfficeReferral | null; // Allow data to be `OfficeReferral` or `null`
+}
+
+const OfficeReferrals: React.FC<OfficeReferralProps> = ({ data }) => {
   const [updatePage, setUpdatePage] = useState(false);
-  const [deletePayload, setDeletePayload] = useState(null);
+  const [deletePayload, setDeletePayload] = useState<OfficeReferral | null>(null);
   const [toast, setToast] = useState({ visible: false, message: "" });
   const [textareaValue, setTextareaValue] = useState("");
   const [barOpen, setBarOpen] = useState(true);
 
-  const [openModal, setOpenModal] = useState({
+  const [openModal, setOpenModal] = useState<ModalState>({
     display: false,
     message: "",
     buttonType: "",
@@ -46,7 +57,7 @@ const OfficeReferrals = ({ data = [] }) => {
     }, 500);
   };
 
-  const handleClosePunishment = (id, description) => {
+  const handleClosePunishment = (id: string, description: string) => {
     const payload = { id: id, comment: description };
 
     const url = `${baseUrl}/officeReferral/v1/closeId`;
@@ -60,7 +71,7 @@ const OfficeReferrals = ({ data = [] }) => {
       });
   };
 
-  const handleRejectPunishment = (obj) => {
+  const handleRejectPunishment = (obj: OfficeReferral) => {
     setLoadingPunishmentId({
       id: obj.officeReferralId,
       buttonType: "close",
@@ -79,7 +90,12 @@ const OfficeReferrals = ({ data = [] }) => {
         console.error(error);
       })
       .finally(() => {
-        setOpenModal({ display: false, message: "" });
+        setOpenModal({
+          display: false,
+          message: "",
+          buttonType: "",
+          data: null,
+        });
         setTimeout(() => {
           setToast({ visible: false, message: "" });
           setLoadingPunishmentId({ id: null, buttonType: "" });
@@ -87,7 +103,9 @@ const OfficeReferrals = ({ data = [] }) => {
       });
   };
 
-  const handleTextareaChange = (event) => {
+  const handleTextareaChange = (
+    event: React.ChangeEvent<HTMLTextAreaElement>
+  ) => {
     setTextareaValue(event.target.value);
   };
 
@@ -179,9 +197,9 @@ const OfficeReferrals = ({ data = [] }) => {
           <TableBody>
             {data?.length > 0 ? (
               data
-                ?.filter((x) => x.status !== "CLOSED")
+                ?.filter((x: OfficeReferral) => x.status !== "CLOSED")
                 .map((x, key) => (
-                  <TableRow key={key}>
+                  <TableRow key={key.valueOf()}>
                     <TableCell style={{ width: "20%", fontSize: 14 }}>
                       {dateCreateFormat(x.timeCreated)}
                     </TableCell>
@@ -258,7 +276,7 @@ const OfficeReferrals = ({ data = [] }) => {
             ) : (
               <TableRow>
                 <TableCell
-                  colSpan="4"
+                  colSpan={4}
                   style={{
                     fontSize: 18,
                     fontWeight: "lighter",
