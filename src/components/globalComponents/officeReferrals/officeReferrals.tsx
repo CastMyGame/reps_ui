@@ -296,7 +296,7 @@ const OfficeReferrals: React.FC<OfficeReferralProps> = ({ data }) => {
             <div className="modal-header">
               <h3>{openModal.message}</h3>
               <div className="answer-container">
-                {openModal.data.referralDescription.map((item, index) => {
+                {openModal?.data?.referralDescription.map((item, index) => {
                   if (index > 1) {
                     const match = item.match(
                       /question=([\s\S]+?),\s*answer=([\s\S]+?)(?=\))/
@@ -307,7 +307,7 @@ const OfficeReferrals: React.FC<OfficeReferralProps> = ({ data }) => {
 
                       return (
                         <div
-                          key={index}
+                          key={index.valueOf()}
                           style={{
                             display: "flex",
                             flexDirection: "row",
@@ -354,7 +354,10 @@ const OfficeReferrals: React.FC<OfficeReferralProps> = ({ data }) => {
             <div className="modal-buttons">
               <button
                 onClick={() => {
-                  setOpenModal({ display: false, message: "" });
+                  setOpenModal({ display: false,
+                    message: "",
+                    buttonType: "",
+                    data: null, });
                   setTextareaValue("");
                 }}
               >
