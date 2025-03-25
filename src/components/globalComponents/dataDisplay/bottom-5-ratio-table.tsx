@@ -49,6 +49,13 @@ export const Bottom4PositiveTeacherTable: React.FC<Bottom4Props> = ({
               ? Number(((posIncidents / totalIncidents) * 100).toFixed(2))
               : 0;
 
+          console.log(
+            `Incidents for ${teacher.firstName} ${teacher.lastName}:`,
+            incidentsForWeek
+          );
+          console.log(`Total incidents count:`, totalIncidents);
+          console.log(`Total incidents count:`, posRatio);
+
           return {
             teacherName: `${teacher.firstName} ${teacher.lastName}`,
             posRatio,
