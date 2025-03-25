@@ -3,7 +3,6 @@ import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 import {
-  AdminOverviewDto,
   IncidentList,
   TeacherDto,
 } from "src/types/responses";
@@ -14,9 +13,14 @@ import {
   extractDataByWeek,
 } from "src/helperFunctions/helperFunctions";
 
-export const Top5TeacherRatioTable: React.FC<AdminOverviewDto> = ({
-  punishmentResponse = [],
-  teachers = [],
+interface Top5Props {
+  punishmentResponse: TeacherDto[];
+  teachers: Employee[];
+}
+
+export const Top5TeacherRatioTable: React.FC<Top5Props> = ({
+  punishmentResponse,
+  teachers,
 }) => {
   const [mostPositiveRowData, setMostPositiveRowData] = useState<
     IncidentList[]
@@ -24,9 +28,9 @@ export const Top5TeacherRatioTable: React.FC<AdminOverviewDto> = ({
 
   useEffect(() => {
     // Create a list of teachers with incidents
-    const teachersWithIncidentsList = (teachers as Employee[])
+    const teachersWithIncidentsList = (teachers)
       .map((teacher: Employee) => {
-        const teacherIncidents = (punishmentResponse as TeacherDto[]).filter(
+        const teacherIncidents = (punishmentResponse).filter(
           (item: TeacherDto) => item.teacherEmail === teacher.email
         );
 
@@ -37,7 +41,7 @@ export const Top5TeacherRatioTable: React.FC<AdminOverviewDto> = ({
           );
           const totalIncidents = incidentsForWeek.length;
           const posIncidents = incidentsForWeek.filter(
-            (item) => item.infractionName === "Positive Behavior Shout Out!"
+            (item) => "infractionName" in item && item.infractionName === "Positive Behavior Shout Out!"
           ).length;
 
           // Avoid division by zero and ensure posRatio is a number

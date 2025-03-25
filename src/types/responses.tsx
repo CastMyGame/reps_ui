@@ -113,7 +113,7 @@ export interface TeacherOverviewDto {
   punishmentResponse?: TeacherDto[];
   writeUpResponse?: TeacherDto[];
   shoutOutsResponse?: TeacherDto[];
-  officeReferrals?: TeacherDto[];
+  officeReferrals?: OfficeReferral[];
   teacher?: Employee;
   school?: School;
   students?: Student[];
@@ -126,7 +126,7 @@ export interface AdminOverviewDto {
   teacher: Employee;
   school: School;
   teachers: Employee[];
-  officeReferrals: TeacherDto[];
+  officeReferrals: OfficeReferral[];
   students: Student[];
 }
 

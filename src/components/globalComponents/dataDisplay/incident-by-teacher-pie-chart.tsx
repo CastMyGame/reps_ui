@@ -1,5 +1,5 @@
 import React from "react";
-import { AdminOverviewDto, TeacherDto } from "src/types/responses";
+import { OfficeReferral, TeacherDto } from "src/types/responses";
 import { Employee } from "src/types/school";
 import ReactEcharts from "echarts-for-react";
 import {
@@ -7,20 +7,22 @@ import {
   getCurrentWeekOfYear,
 } from "src/helperFunctions/helperFunctions";
 
-export const IncidentByTeacherPieChart: React.FC<AdminOverviewDto> = ({
+interface IncidentByTeacherPieProps {
+  writeUpResponse: TeacherDto[];
+  officeReferrals: OfficeReferral[];
+  teachers: Employee[];
+}
+
+export const IncidentByTeacherPieChart: React.FC<IncidentByTeacherPieProps> = ({
   writeUpResponse = [],
   officeReferrals = [],
   teachers = [],
 }) => {
   const currentWeek = getCurrentWeekOfYear();
-  //grab total indcidents
-  const totalIncidents = (writeUpResponse as TeacherDto[]).length;
-
-  let uniqueTeachers: Record<string, number> = {};
 
   // Filter data for the current week
-  const weeklyTmIncidents = extractDataByWeek(currentWeek, writeUpResponse as TeacherDto[]);
-  const weeklyOmIncidents = extractDataByWeek(currentWeek, officeReferrals as TeacherDto[]);
+  const weeklyTmIncidents = extractDataByWeek(currentWeek, writeUpResponse);
+  const weeklyOmIncidents = extractDataByWeek(currentWeek, officeReferrals);
 
   // Combine both arrays into one
   const combinedIncidents = [...weeklyTmIncidents, ...weeklyOmIncidents];
@@ -35,17 +37,13 @@ export const IncidentByTeacherPieChart: React.FC<AdminOverviewDto> = ({
   // Map over unique teacher emails and get the incidents and teacher details
   const teachersWithIncidentsList = Object.entries(teacherIncidentMap).map(
     ([teacherEmail, incidents]) => {
-      // Find the first occurrence of the teacher in the combined incidents list
-      const teacher = combinedIncidents.find(
-        (item) => item.teacherEmail === teacherEmail
-      );
 
       // Find the teacher details from the teachers list (Employee)
-      const employee = (teachers as Employee[]).find(
+      const employee = teachers.find(
         (teacher) => teacher.email === teacherEmail
       );
-      const teacherFirstName = employee?.firstName || "Unknown";
-      const teacherLastName = employee?.lastName || "Unknown";
+      const teacherFirstName = employee?.firstName ?? "Unknown";
+      const teacherLastName = employee?.lastName ?? "Unknown";
 
       return {
         teacherEmail,

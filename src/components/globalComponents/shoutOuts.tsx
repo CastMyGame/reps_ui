@@ -9,10 +9,10 @@ import {
 } from "@mui/material";
 import ArrowDropDownCircleIcon from "@mui/icons-material/ArrowDropDownCircle";
 import { dateCreateFormat } from "../../helperFunctions/helperFunctions";
-import { TeacherOverviewDto } from "src/types/responses";
+import { AdminOverviewDto, TeacherOverviewDto } from "src/types/responses";
 
 interface ShoutOutsProps {
-  data: TeacherOverviewDto;
+  data: TeacherOverviewDto | AdminOverviewDto;
 }
 
 const ShoutOuts: React.FC<ShoutOutsProps> = ({ data = {} }) => {

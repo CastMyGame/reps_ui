@@ -28,7 +28,9 @@ interface ModalState {
 
 const OfficeReferrals: React.FC<OfficeReferralProps> = ({ data }) => {
   const [updatePage, setUpdatePage] = useState(false);
-  const [deletePayload, setDeletePayload] = useState<OfficeReferral | null>(null);
+  const [deletePayload, setDeletePayload] = useState<OfficeReferral | null>(
+    null
+  );
   const [toast, setToast] = useState({ visible: false, message: "" });
   const [textareaValue, setTextareaValue] = useState("");
   const [barOpen, setBarOpen] = useState(true);
@@ -40,7 +42,10 @@ const OfficeReferrals: React.FC<OfficeReferralProps> = ({ data }) => {
     data: null,
   });
 
-  const [loadingPunishmentId, setLoadingPunishmentId] = useState({
+  const [loadingPunishmentId, setLoadingPunishmentId] = useState<{
+    id: string | null;
+    buttonType: string;
+  }>({
     id: null,
     buttonType: "",
   });
@@ -65,9 +70,20 @@ const OfficeReferrals: React.FC<OfficeReferralProps> = ({ data }) => {
       .post(url, payload, { headers })
       .then((response) => {
         handleUpdatePage();
+        setToast({ visible: true, message: "Answers accepted successfully!" });
+        setOpenModal({
+          display: false,
+          message: "",
+          buttonType: "",
+          data: null,
+        });
       })
       .catch((error) => {
         console.error(error);
+        setToast({
+          visible: true,
+          message: "Failed to accept answers. Please try again.",
+        });
       });
   };
 
@@ -78,16 +94,26 @@ const OfficeReferrals: React.FC<OfficeReferralProps> = ({ data }) => {
     });
     const url = `${baseUrl}/officeReferral/v1/rejected/${obj.officeReferralId}`;
     axios
-      .put(url, { headers }) // Pass the headers option with the JWT token
+      .put(url, null, { headers }) // Pass the headers option with the JWT token
       .then(function (response) {
         setToast({
           visible: true,
           message:
             "You have rejected the student's answers and an email has been sent letting them know.",
         });
+        setOpenModal({
+          display: false,
+          message: "",
+          buttonType: "",
+          data: null,
+        });
       })
       .catch(function (error) {
         console.error(error);
+        setToast({
+          visible: true,
+          message: "Failed to reject answers. Try again.",
+        });
       })
       .finally(() => {
         setOpenModal({
@@ -296,50 +322,54 @@ const OfficeReferrals: React.FC<OfficeReferralProps> = ({ data }) => {
             <div className="modal-header">
               <h3>{openModal.message}</h3>
               <div className="answer-container">
-                {openModal?.data?.referralDescription.map((item, index) => {
-                  if (index > 1) {
-                    const match = item.match(
-                      /question=([\s\S]+?),\s*answer=([\s\S]+?)(?=\))/
-                    );
-                    if (match) {
-                      const question = match[1].trim();
-                      const answer = match[2].trim();
+                {Array.isArray(openModal?.data?.referralDescription) &&
+                  openModal.data.referralDescription.map(
+                    (item: string, index: number) => {
+                      if (index > 1) {
+                        const match = item.match(
+                          /question=([\s\S]+?),\s*answer=([\s\S]+?)(?=\))/
+                        );
+                        if (match) {
+                          const question = match[1].trim();
+                          const answer = match[2].trim();
 
-                      return (
-                        <div
-                          key={index.valueOf()}
-                          style={{
-                            display: "flex",
-                            flexDirection: "row",
-                            border: "1px solid black",
-                          }}
-                        >
-                          <div
-                            style={{
-                              backgroundColor: "grey",
-                              minHeight: "15px",
-                              width: "40%",
-                            }}
-                          >
-                            <strong>Question:</strong> {question}
-                          </div>
-                          <div
-                            style={{
-                              color: "black",
-                              backgroundColor: "lightBlue",
-                              minHeight: "50px",
-                              width: "60%",
-                              textAlign: "left",
-                              paddingLeft: "10px",
-                            }}
-                          >
-                            <strong>Answer:</strong> {answer}
-                          </div>
-                        </div>
-                      );
+                          return (
+                            <div
+                              key={index.valueOf()}
+                              style={{
+                                display: "flex",
+                                flexDirection: "row",
+                                border: "1px solid black",
+                              }}
+                            >
+                              <div
+                                style={{
+                                  backgroundColor: "grey",
+                                  minHeight: "15px",
+                                  width: "40%",
+                                }}
+                              >
+                                <strong>Question:</strong> {question}
+                              </div>
+                              <div
+                                style={{
+                                  color: "black",
+                                  backgroundColor: "lightBlue",
+                                  minHeight: "50px",
+                                  width: "60%",
+                                  textAlign: "left",
+                                  paddingLeft: "10px",
+                                }}
+                              >
+                                <strong>Answer:</strong> {answer}
+                              </div>
+                            </div>
+                          );
+                        }
+                      }
+                      return null; // Avoid returning undefined inside `.map()`
                     }
-                  }
-                })}
+                  )}
               </div>
             </div>
             <div className="modal-body">
@@ -354,10 +384,12 @@ const OfficeReferrals: React.FC<OfficeReferralProps> = ({ data }) => {
             <div className="modal-buttons">
               <button
                 onClick={() => {
-                  setOpenModal({ display: false,
+                  setOpenModal({
+                    display: false,
                     message: "",
                     buttonType: "",
-                    data: null, });
+                    data: null,
+                  });
                   setTextareaValue("");
                 }}
               >
@@ -368,7 +400,11 @@ const OfficeReferrals: React.FC<OfficeReferralProps> = ({ data }) => {
                 style={{
                   backgroundColor: textareaValue === "" ? "grey" : "red",
                 }}
-                onClick={() => handleRejectPunishment(deletePayload)}
+                onClick={() => {
+                  if (deletePayload) {
+                    handleRejectPunishment(deletePayload);
+                  }
+                }}
               >
                 Reject Answers
               </button>
@@ -378,10 +414,12 @@ const OfficeReferrals: React.FC<OfficeReferralProps> = ({ data }) => {
                   backgroundColor: textareaValue === "" ? "grey" : "green",
                 }}
                 onClick={() => {
-                  handleClosePunishment(
-                    deletePayload.officeReferralId,
-                    textareaValue
-                  );
+                  if (deletePayload) {
+                    handleClosePunishment(
+                      deletePayload?.officeReferralId,
+                      textareaValue
+                    );
+                  }
                 }}
               >
                 Accept Answers
@@ -395,103 +433,3 @@ const OfficeReferrals: React.FC<OfficeReferralProps> = ({ data }) => {
 };
 
 export default OfficeReferrals;
-
-{
-  /* <div
-  className="task-card"
-  onClick={() => setActiveIndex(index)}
-  key={index}
-  role="button"
->
-  <div className="tag">
-    <div className="color-stripe"></div>
-    <div className="tag-content">
-      <div className="index"> {index + 1}</div>
-      <div className="date"> {dateCreateFormat(item?.timeCreated)}</div>
-    </div>
-  </div>
-
-  <div className="card-body">
-    <div className="card-body-title">{item?.referralCode.codeName}</div>
-    <div className="card-body-description">{item?.referralDescription[0]}</div>
-    {/* USE THIS TO MAKE BADGES FOR OFFICE REFERRALS
-                               {item.referralDescription &&
-                          item.referralDescription[0] !== undefined &&
-                          categoryBadgeGenerator(item.referralDescription[0])} 
-  </div>
-  <div className="card-body">
-    <div className="card-body-title">Created By</div>
-    <div className="card-body-description">{item?.teacherEmail}</div>
-  </div>
-  <div className="card-actions">
-    <button
-      style={{
-        height: "60px",
-        width: "180px",
-        backgroundColor: "green",
-      }}
-      onClick={() => {
-        setOpenModal({
-          display: true,
-          message:
-            "You are attempting to remove the restorative assignment and close out a referral. If this was not your intent click cancel. If this is your intent, provide a brief explanation for why the restorative assignment is being removed and click Close",
-          buttonType: "close",
-        });
-        setDeletePayload(item);
-      }}
-    >
-      <p
-        style={{
-          marginBottom: "5px",
-          marginTop: "-2%",
-        }}
-      >
-        Close Referral
-      </p>
-      {loadingPunishmentId.id === item.officeReferralId &&
-      loadingPunishmentId.buttonType === "close" ? (
-        <CircularProgress
-          style={{ height: "20px", width: "20px" }}
-          color="secondary"
-        />
-      ) : (
-        <CheckBoxIcon />
-      )}
-    </button>
-    <button
-      style={{
-        height: "60px",
-        width: "180px",
-        backgroundColor: "red",
-      }}
-      onClick={() => {
-        setOpenModal({
-          display: true,
-          message:
-            "You are attempting to delete the record of this referral. If you were attempting to remove the restorative assignment and close out the referral please click cancel and hit the “Close Referral” button. If you still want to delete the record of this referral, provide a brief explanation for this action and click Delete Referral.",
-          buttonType: "delete",
-        });
-        setDeletePayload(item);
-      }}
-    >
-      <p
-        style={{
-          marginBottom: "5px",
-          marginTop: "-2%",
-        }}
-      >
-        Delete Referral
-      </p>
-      {loadingPunishmentId.id === item.officeReferralId &&
-      loadingPunishmentId.buttonType === "delete" ? (
-        <CircularProgress
-          style={{ height: "20px", width: "20px" }}
-          color="secondary"
-        />
-      ) : (
-        <DeleteForeverIcon />
-      )}
-    </button>
-  </div>
-</div>; */
-}

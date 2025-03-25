@@ -1,7 +1,7 @@
 import axios from "axios";
 import { baseUrl } from "../utils/jsonData";
 import { CLERICAL, BEHAVIORAL } from "src/types/constants";
-import { TeacherDto, TeacherReferral } from "src/types/responses";
+import { OfficeReferral, TeacherDto, TeacherReferral } from "src/types/responses";
 import { DateTimeFormatOptions } from "luxon";
 import { Student } from "src/types/school";
 
@@ -49,8 +49,8 @@ export const filterPunishmentsByLoggedInUser = (
 //This Method Returns a subset of punishments from a list by the week of year the punishment was created
 export const extractDataByWeek = (
   week: number,
-  data: (TeacherDto | TeacherReferral)[]
-): (TeacherDto | TeacherReferral)[] => {
+  data: (TeacherDto | TeacherReferral | OfficeReferral)[]
+): (TeacherDto | TeacherReferral | OfficeReferral)[] => {
   // Ensure data is valid
   if (!Array.isArray(data)) {
     console.error("Invalid data provided to extractDataByWeek:", data);
@@ -115,8 +115,8 @@ const isSameDay = (date1: Date, date2: Date) => {
 export const findDataByWeekAndByPunishment = (
   week: number,
   behavioral: string,
-  data: (TeacherDto | TeacherReferral)[]
-): (TeacherDto | TeacherReferral)[] => {
+  data: (TeacherDto | TeacherReferral | OfficeReferral)[]
+): (TeacherDto | TeacherReferral | OfficeReferral)[] => {
   // Ensure data is valid
   if (!Array.isArray(data)) {
     console.error(
@@ -128,7 +128,7 @@ export const findDataByWeekAndByPunishment = (
 
   // Filter data based on the behavioral infraction name
   const thisWeek = data
-    .filter((punish) => punish.infractionName === behavioral)
+    .filter((punish) => "infractionName" in punish && punish.infractionName === behavioral)
     .filter((punish) => {
       const date = new Date(punish.timeCreated);
       const weekNumber = getWeekNumber(date); // Ensure getWeekNumber is defined correctly
@@ -195,7 +195,7 @@ export const yearAdj = (cw: number) => {
 export const GenerateBxByWeek = (
   bx: string,
   numOfWeeks: number,
-  data: (TeacherDto | TeacherReferral)[]
+  data: (TeacherDto | TeacherReferral | OfficeReferral)[]
 ) => {
   const currentWeek = getCurrentWeekOfYear();
   const bxData = [];
