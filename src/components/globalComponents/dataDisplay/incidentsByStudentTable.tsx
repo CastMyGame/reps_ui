@@ -41,7 +41,7 @@ const weekOmData = officeReferrals
     const studentIncidentMap: Record<string, StudentIncidentList> = {};
 
     // Loop through combinedWeekData to accumulate incident counts per student
-    combinedWeekData.forEach((incident: TeacherDto | TeacherReferral) => {
+    combinedWeekData.forEach((incident: TeacherDto | TeacherReferral | OfficeReferral) => {
       const teacherDtoIncident = incident as TeacherDto; // Type assertion here
 
       const studentEmail = teacherDtoIncident.studentEmail || "Unknown";

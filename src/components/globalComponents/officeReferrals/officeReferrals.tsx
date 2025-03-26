@@ -323,7 +323,7 @@ const OfficeReferrals: React.FC<OfficeReferralProps> = ({ data }) => {
               <h3>{openModal.message}</h3>
               <div className="answer-container">
                 {Array.isArray(openModal?.data?.referralDescription) &&
-                  openModal.data.referralDescription.map(
+                  openModal.data?.referralDescription.map(
                     (item: string, index: number) => {
                       if (index > 1) {
                         const match = item.match(

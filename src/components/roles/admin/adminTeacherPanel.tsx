@@ -7,6 +7,7 @@ import "ag-grid-community/styles/ag-theme-alpine.css"; // Using "alpine" for a m
 import { AdminOverviewDto } from "src/types/responses";
 import { Employee } from "src/types/school";
 import { TeacherData } from "src/types/menus";
+import { ColDef, RowClickedEvent } from "ag-grid-community";
 
 interface AdminTeacherProps {
   adminDto: AdminOverviewDto;
@@ -114,12 +115,13 @@ const AdminTeacherPanel: React.FC<AdminTeacherProps> = ({ adminDto }) => {
     }
   }, [filteredData]);
 
-  const handleProfileClick = (x) => {
-    setActiveTeacher(x);
+  const handleProfileClick = (x: RowClickedEvent) => {
+    if (!x.data) return;
+    setActiveTeacher(x.data);
     setTeacherProfileModal(true);
   };
 
-  const columnDefs = [
+  const columnDefs: ColDef<TeacherData>[] = [
     { headerName: "Teacher Name", field: "fullName" },
     { headerName: "Positive Shout Outs", field: "shoutOuts" },
     { headerName: "Behavior Concerns", field: "behaviorConcerns" },
@@ -147,7 +149,7 @@ const AdminTeacherPanel: React.FC<AdminTeacherProps> = ({ adminDto }) => {
           rowData={rowData.length > 0 ? rowData : []} // Ensures rowData is an array
           columnDefs={columnDefs}
           domLayout="autoHeight" // Ensures dynamic row height
-          onRowClicked={(row) => handleProfileClick(row.data)}
+          onRowClicked={handleProfileClick}
         />
       </div>
     </>

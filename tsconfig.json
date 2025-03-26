@@ -5,7 +5,7 @@
       "@mui/*": ["node_modules/@mui/*"]
     },
     "target": "ESNext",
-    "lib": ["dom", "ES2023"],
+    "lib": ["dom", "ESNext"],
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,

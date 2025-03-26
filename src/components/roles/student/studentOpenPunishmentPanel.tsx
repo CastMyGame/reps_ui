@@ -29,7 +29,7 @@ const StudentOpenPunishmentPanel: React.FC<StudentOpenProps> = ({
 }) => {
   const loggedInUser = sessionStorage.getItem("email") ?? "";
 
-  const sortedPunishments = listOfPunishments.toSorted(
+  const sortedPunishments = listOfPunishments.slice().sort(
     (a: TeacherReferral, b: TeacherReferral) => {
       const dateA = new Date(a.timeCreated);
       const dateB = new Date(b.timeCreated);
@@ -37,7 +37,7 @@ const StudentOpenPunishmentPanel: React.FC<StudentOpenProps> = ({
     }
   );
 
-  const sortedReferrals = listOfReferrals.toSorted(
+  const sortedReferrals = listOfReferrals.slice().sort(
     (a: OfficeReferral, b: OfficeReferral) => {
       const dateA = new Date(a.timeCreated);
       const dateB = new Date(b.timeCreated);
