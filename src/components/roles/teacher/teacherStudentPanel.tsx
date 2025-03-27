@@ -17,6 +17,7 @@ import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css"; // Using "alpine" for a modern theme
 import {
+  AdminOverviewDto,
   TeacherOverviewDto,
   TeacherReferral,
 } from "src/types/responses";
@@ -25,7 +26,7 @@ import { CellClickedEvent, ColDef } from "ag-grid-community";
 
 interface StudentPanelProps {
   setPanelName: (panel: string) => void;
-  data?: TeacherOverviewDto;
+  data?: TeacherOverviewDto | AdminOverviewDto;
 }
 
 interface StudentDisplay {
@@ -39,7 +40,7 @@ interface StudentDisplay {
 
 const TeacherStudentPanel: React.FC<StudentPanelProps> = ({
   setPanelName,
-  data = {},
+  data,
 }) => {
   const [listOfStudents, setListOfStudents] = useState<StudentDisplay[]>([]);
   const [studentDisplay, setStudentDisplay] = useState(false);
@@ -52,15 +53,134 @@ const TeacherStudentPanel: React.FC<StudentPanelProps> = ({
   const [error, setError] = useState("");
   const [student, setStudent] = useState([]);
 
+  const isAdmin = !!(data as AdminOverviewDto)?.teachers; // If 'teachers' exists, it's an admin
+
+  const fetchAdminStudents = async (data: AdminOverviewDto, headers: any) => {
+    const url = `${baseUrl}/student/v1/allStudents`;
+    try {
+      const response = await axios.get(url, { headers });
+
+      // Extract referrals from the admin data
+      const teacherManagedReferrals = data?.writeUpResponse ?? [];
+      const officeManagedReferrals = data?.officeReferrals ?? [];
+
+      // Transform data to match StudentDisplay type
+      const formattedStudents: StudentDisplay[] = response.data.map(
+        (student: Student) => ({
+          fullName: `${student.firstName} ${student.lastName}`,
+          studentEmail: student.studentEmail,
+          grade: student.grade,
+          teacherManagedReferrals: teacherManagedReferrals.filter(
+            (w) => w.studentEmail === student.studentEmail
+          ).length,
+          officeManagedReferrals: officeManagedReferrals.filter(
+            (o) => o.studentEmail === student.studentEmail
+          ).length,
+          className: "N/A", // Admin doesn't have class-specific data
+        })
+      );
+
+      return formattedStudents;
+    } catch (error) {
+      console.error(error);
+      throw new Error("Failed to fetch students");
+    }
+  };
+
+  // Helper function to fetch students for teacher
+  const fetchTeacherStudents = async (
+    data: TeacherOverviewDto,
+    headers: any
+  ) => {
+    try {
+      const uniqueEmails = Array.from(
+        new Set(
+          data.teacher?.classes?.flatMap((classItem) => classItem.classRoster)
+        )
+      );
+
+      const url = `${baseUrl}/student/v1/getByEmailList`;
+      const response = await axios.post(url, uniqueEmails, { headers });
+
+      return response.data;
+    } catch (err) {
+      console.error(err);
+      throw new Error("Failed to fetch students");
+    }
+  };
+
+  useEffect(() => {
+    setLoading(true);
+    const headers = {
+      Authorization: `Bearer ${sessionStorage.getItem("Authorization")}`,
+    };
+
+    const fetchStudents = async () => {
+      try {
+        if (data) {
+          if ("teachers" in data) {
+            // Admin fetching all students
+            const fetchedStudents = await fetchAdminStudents(data, headers);
+          } else {
+            // Teacher fetching students from their class roster
+            const fetchedStudents = await fetchTeacherStudents(
+              data,
+              headers
+            );
+            const studentsArray: StudentDisplay[] = [];
+            data?.teacher?.classes?.forEach((classEntry) => {
+              classEntry.classRoster.forEach((student) => {
+                const foundStudent = fetchedStudents.find(
+                  (s: Student) => s.studentEmail === student
+                );
+                if (foundStudent) {
+                  studentsArray.push({
+                    fullName: `${foundStudent.firstName} ${foundStudent.lastName}`,
+                    studentEmail: foundStudent.studentEmail,
+                    grade: foundStudent.grade,
+                    teacherManagedReferrals: (
+                      data?.writeUpResponse ?? []
+                    ).filter(
+                      (w) => w.studentEmail === foundStudent.studentEmail
+                    ).length,
+                    officeManagedReferrals: (
+                      data?.officeReferrals ?? []
+                    ).filter(
+                      (o) => o.studentEmail === foundStudent.studentEmail
+                    ).length,
+                    className: classEntry.className,
+                  });
+                }
+              });
+            });
+            setListOfStudents(studentsArray);
+          }
+        }
+      } catch (error) {
+        console.error(error);
+
+        if (axios.isAxiosError(error)) {
+          setError(error.response?.data?.message || "Failed to fetch students");
+        } else {
+          setError("An unexpected error occurred");
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchStudents();
+  }, [data]);
+
   useEffect(() => {
     if (
-      data.teacher?.classes &&
-      data.teacher.classes.length > 0 &&
+      data?.teacher?.classes &&
+      data?.teacher.classes.length > 0 &&
       !selectedClass
     ) {
       setSelectedClass(data.teacher.classes[0].className);
     }
-  }, [data.teacher?.classes, selectedClass]);
+  }, [data?.teacher?.classes, selectedClass]);
 
   // Fetch specific student data when clicking the student name
   const fetchStudentData = async (studentEmail: string) => {
@@ -106,8 +226,11 @@ const TeacherStudentPanel: React.FC<StudentPanelProps> = ({
 
   const filteredData = useMemo(() => {
     return listOfStudents.filter((student) => {
-      const matchesQuery = student.fullName?.toLowerCase().includes(searchQuery.toLowerCase()) || false;
-      const matchesGrade = selectedGrade === "" || String(student.grade) === selectedGrade;
+      const matchesQuery =
+        student.fullName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        false;
+      const matchesGrade =
+        selectedGrade === "" || String(student.grade) === selectedGrade;
       return matchesQuery && matchesGrade;
     });
   }, [listOfStudents, searchQuery, selectedGrade]);
@@ -162,75 +285,37 @@ const TeacherStudentPanel: React.FC<StudentPanelProps> = ({
 
   // Process and format the list of students and referral data
   useEffect(() => {
-    const processData = () => {
-      if (!data) {
-        setError("No email list provided");
-        setLoading(false);
-        return;
-      }
-
-      const fetchStudents = async () => {
-        try {
-          setLoading(true);
-
-          // Extract all emails from the classRoster and ensure uniqueness
-          const uniqueEmails = Array.from(
-            new Set(
-              data.teacher?.classes?.flatMap(
-                (classItem) => classItem.classRoster
-              )
-            )
-          );
-
-          const url = `${baseUrl}/student/v1/getByEmailList`;
-          const response = await axios.post(
-            url,
-            uniqueEmails, // Sending the list of emails as the request body
-            {
-              headers: {
-                Authorization:
-                  "Bearer " + sessionStorage.getItem("Authorization"),
-              },
-            }
-          );
-
-          const fetchedStudents = response.data;
-          const studentsArray: StudentDisplay[] = [];
-          data.teacher?.classes?.forEach((classEntry) => {
-            classEntry.classRoster.forEach((student) => {
-              const foundStudent = fetchedStudents.find(
-                (s: Student) => s.studentEmail === student
-              );
-              if (foundStudent) {
-                studentsArray.push({
-                  fullName: `${foundStudent.firstName} ${foundStudent.lastName}`,
-                  studentEmail: foundStudent.studentEmail,
-                  grade: foundStudent.grade,
-                  teacherManagedReferrals: (data.writeUpResponse ?? []).filter(
-                    (w) => w.studentEmail === foundStudent.studentEmail
-                  ).length,
-                  officeManagedReferrals: (data.officeReferrals ?? []).filter(
-                    (o) => o.studentEmail === foundStudent.studentEmail
-                  ).length,
-                  className: classEntry.className,
-                });
-              }
-            });
-          });
-          setListOfStudents(studentsArray); // Update state properly
-          setLoading(false);
-        } catch (err) {
-          console.error(err);
-          setError("Failed to fetch students");
-          setLoading(false);
-        }
-      };
-
-      fetchStudents();
+    console.log("Fetching students...");
+    setLoading(true);
+    const headers = {
+      Authorization: `Bearer ${sessionStorage.getItem("Authorization")}`,
     };
 
-    processData();
-  }, [data, selectedClass]); // Ensure these dependencies trigger updates
+    const fetchStudents = async () => {
+      try {
+        if (data) {
+          let fetchedStudents: StudentDisplay[] = [];
+          if ("teachers" in data) {
+            fetchedStudents = await fetchAdminStudents(data, headers);
+          } else {
+            fetchedStudents = await fetchTeacherStudents(
+              data as TeacherOverviewDto,
+              headers
+            );
+          }
+          console.log("Fetched students:", fetchedStudents);
+          setListOfStudents(fetchedStudents);
+        }
+      } catch (error) {
+        console.error("Error fetching students:", error);
+        setError("Failed to fetch students");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchStudents();
+  }, [data]);
 
   const filteredStudentData = listOfStudents.filter(
     (student) => student.className === selectedClass
@@ -263,8 +348,9 @@ const TeacherStudentPanel: React.FC<StudentPanelProps> = ({
 
   return (
     <>
-      {/* Display a message if no classes are created */}
-      {!data?.teacher?.classes || data.teacher?.classes?.length === 0 ? (
+      {/* If no classes exist and not an admin */}
+      {!isAdmin &&
+      (!data?.teacher?.classes || data.teacher?.classes?.length === 0) ? (
         <div style={{ textAlign: "center", marginTop: "50px" }}>
           <h2>No classes have been created yet.</h2>
           <p>Please create a class to view and manage students.</p>
@@ -345,9 +431,9 @@ const TeacherStudentPanel: React.FC<StudentPanelProps> = ({
                     <AccountBoxIcon style={{ fontSize: "100px" }} />
                     <h4>{student}</h4>
                     <div className="details-box">
-                      <p>Email: {filteredData[0].studentEmail}</p>
-                      <p>Grade: {filteredData[0].grade || "N/A"}</p>
-                      <p>Class: {filteredData[0].className || "N/A"}</p>
+                      <p>Email: {filteredData[0]?.studentEmail}</p>
+                      <p>Grade: {filteredData[0]?.grade || "N/A"}</p>
+                      <p>Class: {filteredData[0]?.className || "N/A"}</p>
                     </div>
                   </div>
                   <div
@@ -357,17 +443,32 @@ const TeacherStudentPanel: React.FC<StudentPanelProps> = ({
                     <IncidentByTypePieChart data={studentData} />
                   </div>
                 </div>
-                <div className="modal-body-student" style={{ flexGrow: 1,
-        overflowY: "auto",
-        maxHeight: "50vh", }}>
-                  <TableContainer style={{ backgroundColor: "white", fontSize: "18" }}>
+                <div
+                  className="modal-body-student"
+                  style={{ flexGrow: 1, overflowY: "auto", maxHeight: "50vh" }}
+                >
+                  <TableContainer
+                    style={{ backgroundColor: "white", fontSize: "18" }}
+                  >
                     <Table stickyHeader>
                       <TableHead>
                         <TableRow>
-                          <TableCell sx={{fontSize: "1.5rem", textAlign: "center"}}>Status</TableCell>
-                          <TableCell sx={{fontSize: "1.5rem", textAlign: "center"}}>Description</TableCell>
+                          <TableCell
+                            sx={{ fontSize: "1.5rem", textAlign: "center" }}
+                          >
+                            Status
+                          </TableCell>
+                          <TableCell
+                            sx={{ fontSize: "1.5rem", textAlign: "center" }}
+                          >
+                            Description
+                          </TableCell>
                           {/* <TableCell>Date</TableCell> */}
-                          <TableCell sx={{fontSize: "1.5rem", textAlign: "center"}}>Infraction</TableCell>
+                          <TableCell
+                            sx={{ fontSize: "1.5rem", textAlign: "center" }}
+                          >
+                            Infraction
+                          </TableCell>
                         </TableRow>
                       </TableHead>
                       <TableBody>
@@ -379,12 +480,22 @@ const TeacherStudentPanel: React.FC<StudentPanelProps> = ({
                                 index % 2 === 0 ? "lightgrey" : "white",
                             }}
                           >
-                            <TableCell sx={{fontSize: "1.5rem", textAlign: "center"}}>{student.status}</TableCell>
-                            <TableCell sx={{fontSize: "1.5rem", textAlign: "center"}}>
+                            <TableCell
+                              sx={{ fontSize: "1.5rem", textAlign: "center" }}
+                            >
+                              {student.status}
+                            </TableCell>
+                            <TableCell
+                              sx={{ fontSize: "1.5rem", textAlign: "center" }}
+                            >
                               {student.infractionDescription}
                             </TableCell>
                             {/* <TableCell> {student.timeCreated}</TableCell> */}
-                            <TableCell sx={{fontSize: "1.5rem", textAlign: "center"}}>{student.infractionName}</TableCell>
+                            <TableCell
+                              sx={{ fontSize: "1.5rem", textAlign: "center" }}
+                            >
+                              {student.infractionName}
+                            </TableCell>
                           </TableRow>
                         ))}
                       </TableBody>
@@ -406,46 +517,45 @@ const TeacherStudentPanel: React.FC<StudentPanelProps> = ({
               </div>
             </div>
           )}
+          {/* Display Students Table */}
+          <div style={{ marginTop: "20px" }}>
+            <h3>{isAdmin ? "All Students" : selectedClass}</h3>
 
-          <div>
-            <label htmlFor="class-select" style={{ marginRight: "8px" }}>
-              Select Class:
-            </label>
-            <select
-              id="class-select"
-              value={selectedClass}
-              onChange={(e) => setSelectedClass(e.target.value)}
-              style={{
-                padding: "8px",
-                fontSize: "1rem",
-                borderRadius: "4px",
-                border: "1px solid #ccc",
-              }}
-            >
-              <option value="">-- Select a Class --</option>
-              {data.teacher?.classes
-                ?.filter(
-                  (classEntry, index) => classEntry.className.trim() !== ""
-                )
-                .map((classEntry, index) => (
-                  <option key={index} value={classEntry.className}>
-                    {classEntry.className}
-                  </option>
-                ))}
-            </select>
-
-            {selectedClass && (
-              <div style={{ marginTop: "20px" }}>
-                <h3>{selectedClass}</h3>
-                <div className="ag-theme-alpine" style={{ width: "100%" }}>
-                  <AgGridReact
-                    rowData={filteredStudentData}
-                    columnDefs={columnDefs as ColDef[]}
-                    domLayout="autoHeight"
-                  />
-                </div>
+            {/* Show class selection only for teachers */}
+            {!isAdmin && (
+              <div>
+                <label htmlFor="class-select" style={{ marginRight: "8px" }}>
+                  Select Class:
+                </label>
+                <select
+                  id="class-select"
+                  value={selectedClass}
+                  onChange={(e) => setSelectedClass(e.target.value)}
+                  style={{
+                    padding: "8px",
+                    fontSize: "1rem",
+                    borderRadius: "4px",
+                    border: "1px solid #ccc",
+                  }}
+                >
+                  <option value="">-- Select a Class --</option>
+                  {data?.teacher?.classes
+                    ?.filter((classEntry) => classEntry.className.trim() !== "")
+                    .map((classEntry, index) => (
+                      <option key={index} value={classEntry.className}>
+                        {classEntry.className}
+                      </option>
+                    ))}
+                </select>
               </div>
             )}
+            <div className="ag-theme-alpine" style={{ width: "100%" }}>
+              <AgGridReact
+                rowData={isAdmin ? listOfStudents : filteredStudentData}
+                columnDefs={columnDefs as ColDef[]}
+                domLayout="autoHeight"
+              />
+            </div>
           </div>
         </>
       )}
