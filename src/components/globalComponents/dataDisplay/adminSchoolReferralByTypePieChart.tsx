@@ -1,37 +1,44 @@
 import React from "react";
 import ReactEcharts from "echarts-for-react";
 import "./CustomPieChart.css";
-import { AdminOverviewDto, TeacherDto } from "src/types/responses";
+import { OfficeReferral, TeacherDto } from "src/types/responses";
 import {
   extractDataByWeek,
   getCurrentWeekOfYear,
   GenerateBxByWeek
 } from "src/helperFunctions/helperFunctions";
 
-export const AdminSchoolReferralByTypePieChart: React.FC<AdminOverviewDto> = ({
-  punishmentResponse = [],
-  writeUpResponse = [],
-  shoutOutsResponse = [],
-  officeReferrals = [],
+interface AdminReferralByTypeProps {
+  punishmentResponse: TeacherDto[];
+  writeUpResponse: TeacherDto[];
+  shoutOutsResponse: TeacherDto[];
+  officeReferrals: OfficeReferral[];
+}
+
+export const AdminSchoolReferralByTypePieChart: React.FC<AdminReferralByTypeProps> = ({
+  punishmentResponse,
+  writeUpResponse,
+  shoutOutsResponse,
+  officeReferrals,
 }) => {
   const currentWeek = getCurrentWeekOfYear();
 
   const behavioralConcerns = GenerateBxByWeek(
     "Behavioral Concern",
     currentWeek,
-    writeUpResponse as TeacherDto[]
+    writeUpResponse
   );
   const shoutOutWeek = extractDataByWeek(
     currentWeek,
-    shoutOutsResponse as TeacherDto[]
+    shoutOutsResponse
   );
   const officeReferralWeek = extractDataByWeek(
     currentWeek,
-    officeReferrals as TeacherDto[]
+    officeReferrals
   );
   const teacherReferralWeek = extractDataByWeek(
     currentWeek,
-    writeUpResponse as TeacherDto[]
+    writeUpResponse
   );
 
   const option = {

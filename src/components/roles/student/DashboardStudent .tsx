@@ -70,7 +70,6 @@ const StudentDashboard = () => {
           {modalType === "contact" && (
             <ContactUsModal
               setContactUsDisplayModal={setModalType}
-              contactUsDisplayModal={modalType}
             />
           )}
 

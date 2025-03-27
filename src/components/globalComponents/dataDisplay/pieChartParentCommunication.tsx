@@ -1,5 +1,5 @@
 import ReactEcharts from "echarts-for-react";
-import { TeacherDto, TeacherOverviewDto } from "src/types/responses";
+import { OfficeReferral, TeacherDto, TeacherOverviewDto } from "src/types/responses";
 import {
   extractDataByWeek,
   findDataByWeekAndByPunishment,
@@ -9,7 +9,7 @@ import {
 interface PieChartParentCommunicationProps {
   data: TeacherOverviewDto;
   shoutOutsResponse: TeacherDto[];
-  officeReferrals: TeacherDto[];
+  officeReferrals: OfficeReferral[];
   writeUpResponse: TeacherDto[];
 }
 

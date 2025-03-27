@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { AgGridReact } from "ag-grid-react";
 import { ColDef } from "ag-grid-community";
-import { StudentIncidentList, TeacherDto, TeacherReferral } from "src/types/responses";
+import { OfficeReferral, StudentIncidentList, TeacherDto, TeacherReferral } from "src/types/responses";
 import {
   currentWeek,
   extractDataByWeek,
@@ -12,7 +12,7 @@ import { Student } from "src/types/school";
 
 interface IncidentsByStudentTableProps {
   writeUpResponse: TeacherDto[];
-  officeReferrals: TeacherDto[];
+  officeReferrals: OfficeReferral[];
   students: Student[];
 }
 
@@ -41,7 +41,7 @@ const weekOmData = officeReferrals
     const studentIncidentMap: Record<string, StudentIncidentList> = {};
 
     // Loop through combinedWeekData to accumulate incident counts per student
-    combinedWeekData.forEach((incident: TeacherDto | TeacherReferral) => {
+    combinedWeekData.forEach((incident: TeacherDto | TeacherReferral | OfficeReferral) => {
       const teacherDtoIncident = incident as TeacherDto; // Type assertion here
 
       const studentEmail = teacherDtoIncident.studentEmail || "Unknown";

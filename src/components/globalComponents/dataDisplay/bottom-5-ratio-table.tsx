@@ -2,11 +2,7 @@ import React, { useState, useEffect } from "react";
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
-import {
-  AdminOverviewDto,
-  TeacherDto,
-  IncidentList,
-} from "src/types/responses";
+import { TeacherDto, IncidentList } from "src/types/responses";
 import { Employee } from "src/types/school";
 import { ColDef } from "ag-grid-community";
 import {
@@ -14,7 +10,12 @@ import {
   extractDataByWeek,
 } from "src/helperFunctions/helperFunctions";
 
-export const Bottom4PositiveTeacherTable: React.FC<AdminOverviewDto> = ({
+interface Bottom4Props {
+  punishmentResponse: TeacherDto[];
+  teachers: Employee[];
+}
+
+export const Bottom4PositiveTeacherTable: React.FC<Bottom4Props> = ({
   punishmentResponse = [],
   teachers = [],
 }) => {
@@ -37,7 +38,9 @@ export const Bottom4PositiveTeacherTable: React.FC<AdminOverviewDto> = ({
           );
           const totalIncidents = incidentsForWeek.length;
           const posIncidents = incidentsForWeek.filter(
-            (item) => item.infractionName === "Positive Behavior Shout Out!"
+            (item) =>
+              "infractionName" in item &&
+              item.infractionName === "Positive Behavior Shout Out!"
           ).length;
 
           // Avoid division by zero and ensure posRatio is a number
@@ -45,6 +48,13 @@ export const Bottom4PositiveTeacherTable: React.FC<AdminOverviewDto> = ({
             totalIncidents > 0
               ? Number(((posIncidents / totalIncidents) * 100).toFixed(2))
               : 0;
+
+          console.log(
+            `Incidents for ${teacher.firstName} ${teacher.lastName}:`,
+            incidentsForWeek
+          );
+          console.log(`Total incidents count:`, totalIncidents);
+          console.log(`Total incidents count:`, posRatio);
 
           return {
             teacherName: `${teacher.firstName} ${teacher.lastName}`,

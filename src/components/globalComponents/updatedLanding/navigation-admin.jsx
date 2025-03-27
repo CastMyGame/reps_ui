@@ -161,13 +161,13 @@ export const NavigationAdmin = (props) => {
                 }}
                 className="feature-menu-dropdown page-scroll"
               >
-                <div
+                {/* <div
                   onClick={() => dropdownHandler("createEditAssignments")}
                   className="item page-scroll"
                   type="button"
                 >
                   Create/Edit Assignments
-                </div>
+                </div> */}
                 <div
                   onClick={() => dropdownHandler("userManagement")}
                   className="item page-scroll"

@@ -5,7 +5,7 @@ import {
   GenerateBxByWeek,
 } from "../../../helperFunctions/helperFunctions";
 import { useEffect, useState } from "react";
-import { TeacherDto } from "src/types/responses";
+import { OfficeReferral, TeacherDto } from "src/types/responses";
 
 interface SeriesData {
   name: string;
@@ -16,7 +16,7 @@ interface SeriesData {
 
 interface TotalReferralProps {
   punishmentResponse: TeacherDto[];
-  officeReferrals: TeacherDto[];
+  officeReferrals: OfficeReferral[];
 }
 
 export const TotalReferralByWeek: React.FC<TotalReferralProps> = ({

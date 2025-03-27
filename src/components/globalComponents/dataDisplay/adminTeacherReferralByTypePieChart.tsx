@@ -1,58 +1,59 @@
 import React, { useState } from "react";
 import ReactEcharts from "echarts-for-react";
 import "./CustomPieChart.css";
-import { AdminOverviewDto, TeacherDto } from "src/types/responses";
+import { TeacherDto } from "src/types/responses";
 import {
-  extractDataByWeek,
-  getCurrentWeekOfYear,
   GenerateBxByWeek,
 } from "src/helperFunctions/helperFunctions";
 
-export const AdminTeacherReferralByTypePieChart: React.FC<AdminOverviewDto> = ({
-  writeUpResponse = [],
+interface AdminTeacherByTypeProps {
+  writeUpResponse: TeacherDto[];
+}
+
+export const AdminTeacherReferralByTypePieChart: React.FC<AdminTeacherByTypeProps> = ({
+  writeUpResponse,
 }) => {
-  const [rangeWeeks, setRangeWeek] = useState(10);
-  const currentWeek = getCurrentWeekOfYear();
+  const [rangeWeeks, setRangeWeeks] = useState(10);
 
   const tardyData = GenerateBxByWeek(
     "Tardy",
     rangeWeeks,
-    writeUpResponse as TeacherDto[]
+    writeUpResponse
   );
   const horseplayData = GenerateBxByWeek(
     "Horseplay",
     rangeWeeks,
-    writeUpResponse as TeacherDto[]
+    writeUpResponse
   );
   const dressCodeData = GenerateBxByWeek(
     "Dress Code",
     rangeWeeks,
-    writeUpResponse as TeacherDto[]
+    writeUpResponse
   );
   const unauthorizedDeviceData = GenerateBxByWeek(
     "Unauthorized Device/Cell Phone",
     rangeWeeks,
-    writeUpResponse as TeacherDto[]
+    writeUpResponse
   );
   const disruptiveBehaviorData = GenerateBxByWeek(
     "Disruptive Behavior",
     rangeWeeks,
-    writeUpResponse as TeacherDto[]
+    writeUpResponse
   );
   const inappropriateLanguage = GenerateBxByWeek(
     "Inappropriate Language",
     rangeWeeks,
-    writeUpResponse as TeacherDto[]
+    writeUpResponse
   );
   const behavioralConcernData = GenerateBxByWeek(
     "Behavioral Concern",
     rangeWeeks,
-    writeUpResponse as TeacherDto[]
+    writeUpResponse
   );
   const academicConcernData = GenerateBxByWeek(
     "Academic Concern",
     rangeWeeks,
-    writeUpResponse as TeacherDto[]
+    writeUpResponse
   );
 
   const option = {

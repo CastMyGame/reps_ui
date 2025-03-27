@@ -19,7 +19,7 @@ interface AdminOverviewProps {
   adminDto: AdminOverviewDto;
 }
 
-const AdminOverviewPanel:React.FC<AdminOverviewProps> = ({ adminDto }) => {
+const AdminOverviewPanel: React.FC<AdminOverviewProps> = ({ adminDto }) => {
   //Fetch Data to Prop Drill to Components
 
   const punishments = adminDto.punishmentResponse;
@@ -33,7 +33,9 @@ const AdminOverviewPanel:React.FC<AdminOverviewProps> = ({ adminDto }) => {
     return itemDate > sevenDaysAgo;
   });
 
-  const notClosed = adminDto.officeReferrals.filter((x) => x.status !== "CLOSED");
+  const notClosed = adminDto.officeReferrals.filter(
+    (x) => x.status !== "CLOSED"
+  );
 
   return (
     <>
@@ -97,6 +99,7 @@ const AdminOverviewPanel:React.FC<AdminOverviewProps> = ({ adminDto }) => {
         <div className="card-overview-third">
           <IncidentByTeacherPieChart
             writeUpResponse={adminDto.writeUpResponse}
+            officeReferrals={adminDto.officeReferrals}
             teachers={adminDto.teachers}
           />
         </div>
@@ -144,7 +147,9 @@ const AdminOverviewPanel:React.FC<AdminOverviewProps> = ({ adminDto }) => {
         </div>
 
         <div className="card-overview-third">
-          <TeacherManagedReferralByLevelByWeek punishmentResponse={adminDto.punishmentResponse} />
+          <TeacherManagedReferralByLevelByWeek
+            punishmentResponse={adminDto.punishmentResponse}
+          />
         </div>
 
         <div className="card-overview-third">

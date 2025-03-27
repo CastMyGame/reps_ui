@@ -23,7 +23,7 @@ export type TeacherData = {
   behaviorConcerns: number;
 }
 
-export type StudentIncident {
+export type StudentIncident = {
   studentEmail: string;
   firstName: string;
   lastName: string;

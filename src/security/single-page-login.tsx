@@ -298,7 +298,6 @@ export default function SinglePageSignIn() {
             {modalType === "contact" && (
               <ContactUsModal
                 setContactUsDisplayModal={setModalType}
-                contactUsDisplayModal={modalType}
               />
             )}
             {modalType === "reset" && <ForgotPassword />}

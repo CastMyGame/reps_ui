@@ -40,8 +40,10 @@ const AdminDashboard = () => {
 
   const [isDropdownOpen, setIsDropdownOpen] = useState("");
 
-  const handleClose = (event: React.SyntheticEvent | Event,
-      reason?: string) => {
+  const handleClose = (
+    event: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
     if (reason === "clickaway") {
       return;
     }
@@ -87,9 +89,7 @@ const AdminDashboard = () => {
       <div>
         <div>
           {modalType === "contact" && (
-            <ContactUsModal
-              setContactUsDisplayModal={setModalType}
-            />
+            <ContactUsModal setContactUsDisplayModal={setModalType} />
           )}
 
           <Snackbar
@@ -147,9 +147,7 @@ const AdminDashboard = () => {
                   />
                 )}
                 {panelName === "createOfficeReferral" && adminDto && (
-                  <CreateOfficeReferralPanel
-                    data={adminDto}
-                  />
+                  <CreateOfficeReferralPanel data={adminDto} />
                 )}
                 {panelName === "createNewStudent" && <CreateNewStudentPanel />}
                 {panelName === "userManagement" && adminDto && (
@@ -163,7 +161,9 @@ const AdminDashboard = () => {
                   />
                 )}
                 {panelName === "createEditAssignments" && <AssignmentManager />}
-                {panelName === "spendPoints" && adminDto && <SpendPage data={adminDto} />}
+                {panelName === "spendPoints" && adminDto && (
+                  <SpendPage data={adminDto} />
+                )}
               </div>
             </div>
           </div>

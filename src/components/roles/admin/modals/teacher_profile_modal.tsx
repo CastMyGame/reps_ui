@@ -148,7 +148,7 @@ export const TeacherDetailsModal: React.FC<TeacherDetailsProps> = ({
             </div>
             <div className="header-section-right">
               <TeacherProfileSpotter
-                teacher={selectedTeacher?.email}
+                teacher={selectedTeacher?.email ?? ""}
                 setDisplaySpotterAdd={setDisplaySpotterAdd}
                 displaySpotterAdd={displaySpotterAdd}
               />

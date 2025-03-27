@@ -49,7 +49,7 @@ export const WorseClassTable: React.FC<WorseClassProps> = ({
     const weekData = extractDataByWeek(currentWeek, punishmentResponse);
     const negWriteUpData = weekData.filter(
       (item) =>
-        item.infractionName !== "Positive Behavior Shout Out!" &&
+        "infractionName" in item && item.infractionName !== "Positive Behavior Shout Out!" &&
         item.teacherEmail === teacher.email
     );
 

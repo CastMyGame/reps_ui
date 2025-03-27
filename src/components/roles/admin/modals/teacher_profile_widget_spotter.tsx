@@ -8,7 +8,7 @@ import { Student } from "src/types/school";
 interface TeacherSpotterProps {
   teacher: string;
   setDisplaySpotterAdd: (value: boolean) => void;
-  displaySpotterAdd: (value: boolean) => void;
+  displaySpotterAdd: boolean;
 }
 export const TeacherProfileSpotter: React.FC<TeacherSpotterProps> = ({
   teacher,
@@ -70,7 +70,11 @@ export const TeacherProfileSpotter: React.FC<TeacherSpotterProps> = ({
       <div className="spotter-pill-container">
         {studentData.map((x) => {
           return (
-            <div onClick={() => removeSpotter(x)} className="spotter-pill">
+            <div
+              onClick={() => removeSpotter(x)}
+              className="spotter-pill"
+              key={x.studentEmail}
+            >
               {x.firstName}
               <div className="remove-x">x</div>
             </div>

@@ -63,14 +63,17 @@ const GlobalPunishmentPanel = ({ roleType }) => {
   }, [filter]);
 
   useEffect(() => {
+    fetchPunishments();
+  }, []);
+
+  const fetchPunishments = () => {
     setLoading(true);
     axios
-      .get(url, { headers }) // Pass the headers option with the JWT token
+      .get(url, { headers })
       .then(function (response) {
         const sortedData = response.data.sort(
           (a, b) =>
-            new Date(b.punishment.timeCreated) -
-            new Date(a.punishment.timeCreated)
+            new Date(b.punishment.timeCreated) - new Date(a.punishment.timeCreated)
         );
         if (roleType === "teacher") {
           const sortedByRole = sortedData.filter(
@@ -78,8 +81,7 @@ const GlobalPunishmentPanel = ({ roleType }) => {
           );
           setListOfPunishments(sortedByRole);
         } else {
-          const sortedByRole = sortedData;
-          setListOfPunishments(sortedByRole);
+          setListOfPunishments(sortedData);
         }
       })
       .catch(function (error) {
@@ -87,7 +89,7 @@ const GlobalPunishmentPanel = ({ roleType }) => {
       })
       .finally(() => {
         axios
-          .get(urlArchive, { headers }) // Pass the headers option with the JWT token
+          .get(urlArchive, { headers })
           .then(function (response) {
             const sortedData = response.data.sort(
               (a, b) => new Date(b.timeCreated) - new Date(a.timeCreated)
@@ -102,12 +104,13 @@ const GlobalPunishmentPanel = ({ roleType }) => {
             }
           })
           .catch(function (error) {
-            setLoading(false);
             console.error(error);
+          })
+          .finally(() => {
+            setLoading(false);
           });
-        setLoading(false);
       });
-  }, [roleType, filter]);
+  };
 
   //Merging the punishment and arhcived data
 
@@ -165,6 +168,7 @@ const GlobalPunishmentPanel = ({ roleType }) => {
       .post(url, [textareaValue], { headers }) // Pass the headers option with the JWT token
       .then(function (response) {
         setToast({ visible: true, message: "Your Referral was closed" });
+        fetchPunishments();
       })
       .catch(function (error) {
         console.error(error);
@@ -190,6 +194,7 @@ const GlobalPunishmentPanel = ({ roleType }) => {
       .put(url, [textareaValue], { headers: headers }) // Pass the headers option with the JWT token
       .then(function (response) {
         setToast({ visible: true, message: "Your Referral was Deleted" });
+        fetchPunishments();
       })
       .catch(function (error) {
         console.error(error);
