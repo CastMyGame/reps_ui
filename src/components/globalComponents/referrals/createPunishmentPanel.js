@@ -188,14 +188,14 @@ const CreatePunishmentPanel = ({ setPanelName, data = {} }) => {
     const payloadContent = [];
     studentNames.map((student) => {
       const studentPayload = {
-        studentEmail: student.value || "",
-        teacherEmail: teacherEmailSelected || "",
-        infractionPeriod: infractionPeriodSelected || "",
-        infractionName: infractionTypeSelected || "",
-        infractionDescription: infractionDescriptionSelected || "",
-        currency: currency || "",
-        guidanceDescription: isGuidance.guidanceDescription || "",
-        phoneLogDescription: isPhoneLog.phoneLogDescription || "",
+        studentEmail: student.value ?? "",
+        teacherEmail: teacherEmailSelected ?? "",
+        infractionPeriod: infractionPeriodSelected ?? "",
+        infractionName: infractionTypeSelected ?? "",
+        infractionDescription: infractionDescriptionSelected ?? "",
+        currency: currency ?? 0,
+        guidanceDescription: isGuidance.guidanceDescription ?? "",
+        phoneLogDescription: isPhoneLog.phoneLogDescription ?? "",
       };
       payloadContent.push(studentPayload);
       return payloadContent;
@@ -295,7 +295,7 @@ const CreatePunishmentPanel = ({ setPanelName, data = {} }) => {
   };
 
   const difference =
-    (data?.teacher.currency || 0) - currency * (studentNames.length || 0);
+    (data?.teacher.currency ?? 0) - currency * (studentNames.length || 0);
 
   const handleGuidanceChange = (event) => {
     const { name, value } = event.target;
