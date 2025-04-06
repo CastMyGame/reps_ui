@@ -1,43 +1,49 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import EssayFactory from "./ViolationContents/EssayFactory";
 import RetryQuestionFormat from "./ViolationContents/RetryQuestionFormat";
 import { baseUrl } from "../utils/jsonData";
 import OpenEndedFormat from "./ViolationContents/OpenEndedFormat";
 import MultipleChoiceFormat from "./ViolationContents/MultipleChoiceFormat";
+import { OfficeReferral, TeacherReferral } from "src/types/responses";
+import { getInfractionName, isOfficeReferral, isTeacherReferral } from "src/utils/helperFunctions";
+import { Assignment } from "src/types/school";
 
-export default function ViolationPage(props) {
-  const [selectedAnswer, setSelectedAnswer] = useState();
-  const [studentAnswers, setStudentAnswers] = useState([]);
+interface ViolationProps {
+  assignment: TeacherReferral | OfficeReferral;
+}
+
+const ViolationPage: React.FC<ViolationProps> = ({assignment}) => {
+  const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
+  const [studentAnswers, setStudentAnswers] = useState<string[]>([]);
   const [mapIndex, setMapIndex] = useState(0);
-  const [essay, setEssay] = useState();
+  const [essay, setEssay] = useState<Assignment | null>(null);
 
   useEffect(() => {
-    setMapIndex(props.data.mapIndex);
-  }, []);
+    setMapIndex(assignment.mapIndex);
+  }, [assignment.mapIndex]);
 
   useEffect(() => {
     const headers = {
       Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
     };
 
-    let theName = props.data.infractionName || "Office Referral";
+    let theName = getInfractionName(assignment);
 
     const url = `${baseUrl}/assignments/v1/`;
     axios
       .get(url, { headers })
       .then((response) => {
         const essay = response.data.filter(
-          (essay) =>
-            essay.infractionName === theName &&
-            essay.level === parseInt(props.data.infractionLevel)
-        );
+          (essay: TeacherReferral | OfficeReferral) =>
+            getInfractionName(essay) === theName &&
+          !isNaN(Number(essay.infractionLevel)));
         setEssay(essay[0]);
       })
       .catch((error) => {
         console.error(error);
       });
-  }, []);
+  }, [assignment]);
 
   useEffect(() => {
     if (mapIndex === 0) {
@@ -46,10 +52,10 @@ export default function ViolationPage(props) {
         Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
       };
       let url = "";
-      if (props.data.officeReferralId === undefined) {
-        url = `${baseUrl}/punish/v1/${props.data.punishmentId}/index/${mapIndex}`;
-      } else {
-        url = `${baseUrl}/officeReferral/v1/${props.data.officeReferralId}/index/${mapIndex}`;
+      if (isTeacherReferral(assignment)) {
+        url = `${baseUrl}/punish/v1/${assignment.punishmentId}/index/${mapIndex}`;
+      } else if (isOfficeReferral(assignment)) {
+        url = `${baseUrl}/officeReferral/v1/${assignment.officeReferralId}/index/${mapIndex}`;
       }
 
       axios
@@ -59,7 +65,7 @@ export default function ViolationPage(props) {
           console.error(error);
         });
     }
-  }, [mapIndex]);
+  }, [mapIndex, assignment]);
 
   const loggedInUser = sessionStorage.getItem("email");
 
@@ -78,52 +84,52 @@ export default function ViolationPage(props) {
     }
   };
 
-  const textCorrectlyCopied = (selectedAnswer) => {
-    if (selectedAnswer === "true") {
+  const textCorrectlyCopied = (payload: { question: string; answer: string }) => {
+    if (payload.answer === "true") {
       window.alert("Congratulations! That is correct!");
       setMapIndex((prev) => prev + 1);
     }
   };
 
-  const openEndedQuestionAnswered = (selectedAnswer) => {
-    if (selectedAnswer.answer === "agree") {
+  const openEndedQuestionAnswered = (payload: { question: string; answer: string }) => {
+    if (payload.answer === "agree") {
       setMapIndex((prev) => prev + 1);
-      setStudentAnswers((prev) => [...prev, selectedAnswer]);
+      setStudentAnswers((prev) => [...prev, payload.answer]);
     } else if (
-      selectedAnswer.answer === "disagree" ||
-      selectedAnswer.answer === "neutral"
+      payload.answer === "disagree" ||
+      payload.answer === "neutral"
     ) {
       setMapIndex((prev) => prev + 2);
-      setStudentAnswers((prev) => [...prev, selectedAnswer]);
+      setStudentAnswers((prev) => [...prev, payload.answer]);
     } else {
       setMapIndex((prev) => prev + 1);
-      setStudentAnswers((prev) => [...prev, selectedAnswer]);
+      setStudentAnswers((prev) => [...prev, payload.answer]);
     }
   };
 
-  const handleRadioChange = (e) => {
+  const handleRadioChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSelectedAnswer(e.target.value);
   };
 
   const handleSubmit = () => {
     const formattedInfraction =
-      essay.infractionName === "Unauthorized Device Cell Phone"
+      assignment && getInfractionName(assignment) === "Unauthorized Device Cell Phone"
         ? "Unauthorized Device/Cell Phone"
-        : essay.infractionName;
+        : assignment && getInfractionName(assignment);
 
     const headers = {
       Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
     };
 
-    var payload = {
+    let payload = {
       studentEmail: loggedInUser,
       infractionName: formattedInfraction,
       studentAnswer: studentAnswers,
       timeClosed: Date.now,
     };
 
-    if (formattedInfraction === "Office Referral") {
-      let url = `${baseUrl}/officeReferral/v1/submit/${props.data.officeReferralId}`;
+    if (assignment && isOfficeReferral(assignment)) {
+      let url = `${baseUrl}/officeReferral/v1/submit/${assignment.officeReferralId}`;
 
       axios
         .post(url, payload, { headers })
@@ -159,8 +165,8 @@ export default function ViolationPage(props) {
         <div className="form-container-violation" style={{ width: "100%" }}>
           <form onSubmit={handleSubmit}>
             <h1 className="instructions">
-              {essay && essay.infractionName} Violation Level:{" "}
-              {essay && essay.level}
+              {assignment && getInfractionName(assignment)} Violation Level:{" "}
+              {assignment?.infractionLevel}
             </h1>{" "}
             <hr></hr>
             <div>
@@ -170,6 +176,7 @@ export default function ViolationPage(props) {
                     {data.type === "reading" && mapIndex === index && (
                       <EssayFactory
                         essay={data}
+                        sectionName={data.type}
                         saveAnswerAndProgress={saveAnswerAndProgress}
                         handleRadioChange={handleRadioChange}
                       />
@@ -178,6 +185,7 @@ export default function ViolationPage(props) {
                     {data.type === "retryQuestion" && mapIndex === index && (
                       <RetryQuestionFormat
                         essay={data}
+                        sectionName={data.type}
                         saveAnswerAndProgress={textCorrectlyCopied}
                         handleRadioChange={handleRadioChange}
                       />
@@ -193,19 +201,16 @@ export default function ViolationPage(props) {
 
                     {data.type === "exploratory-radio" &&
                       mapIndex === index && (
-                        <>
                           <MultipleChoiceFormat
                             data={data}
                             saveAnswerAndProgress={openEndedQuestionAnswered}
                           />
-                        </>
                       )}
                   </>
                 );
               })}
 
-              {essay &&
-                essay.questions &&
+              {essay?.questions &&
                 mapIndex === essay.questions.length && (
                   <div>
                     <h1>Congratulations! You have Completed the Assignment </h1>
@@ -225,3 +230,4 @@ export default function ViolationPage(props) {
     </div>
   );
 }
+export default ViolationPage;

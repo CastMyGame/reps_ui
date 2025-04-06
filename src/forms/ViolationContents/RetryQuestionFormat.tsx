@@ -8,12 +8,15 @@ interface RetryQuestionProps {
     answer: string;
   }) => void;
   sectionName: string;
+  handleRadioChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 const RetryQuestionFormat: React.FC<RetryQuestionProps> = ({
   essay,
   saveAnswerAndProgress,
   sectionName,
+  handleRadioChange,
+
 }) => {
   const [copyText, setCopyText] = useState("");
   const [generatedImage, setGeneratedImage] = useState<HTMLImageElement | null>(
