@@ -6,14 +6,18 @@ import { baseUrl } from "../utils/jsonData";
 import OpenEndedFormat from "./ViolationContents/OpenEndedFormat";
 import MultipleChoiceFormat from "./ViolationContents/MultipleChoiceFormat";
 import { OfficeReferral, TeacherReferral } from "src/types/responses";
-import { getInfractionName, isOfficeReferral, isTeacherReferral } from "src/utils/helperFunctions";
+import {
+  getInfractionName,
+  isOfficeReferral,
+  isTeacherReferral,
+} from "src/utils/helperFunctions";
 import { Assignment } from "src/types/school";
 
 interface ViolationProps {
   assignment: TeacherReferral | OfficeReferral;
 }
 
-const ViolationPage: React.FC<ViolationProps> = ({assignment}) => {
+const ViolationPage: React.FC<ViolationProps> = ({ assignment }) => {
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [studentAnswers, setStudentAnswers] = useState<string[]>([]);
   const [mapIndex, setMapIndex] = useState(0);
@@ -35,9 +39,8 @@ const ViolationPage: React.FC<ViolationProps> = ({assignment}) => {
       .get(url, { headers })
       .then((response) => {
         const essay = response.data.filter(
-          (essay: TeacherReferral | OfficeReferral) =>
-            getInfractionName(essay) === theName &&
-          !isNaN(Number(essay.infractionLevel)));
+          (essay: Assignment) =>
+            essay.infractionName === theName && Number(essay.level) === Number(assignment.infractionLevel));
         setEssay(essay[0]);
       })
       .catch((error) => {
@@ -84,21 +87,24 @@ const ViolationPage: React.FC<ViolationProps> = ({assignment}) => {
     }
   };
 
-  const textCorrectlyCopied = (payload: { question: string; answer: string }) => {
+  const textCorrectlyCopied = (payload: {
+    question: string;
+    answer: string;
+  }) => {
     if (payload.answer === "true") {
       window.alert("Congratulations! That is correct!");
       setMapIndex((prev) => prev + 1);
     }
   };
 
-  const openEndedQuestionAnswered = (payload: { question: string; answer: string }) => {
+  const openEndedQuestionAnswered = (payload: {
+    question: string;
+    answer: string;
+  }) => {
     if (payload.answer === "agree") {
       setMapIndex((prev) => prev + 1);
       setStudentAnswers((prev) => [...prev, payload.answer]);
-    } else if (
-      payload.answer === "disagree" ||
-      payload.answer === "neutral"
-    ) {
+    } else if (payload.answer === "disagree" || payload.answer === "neutral") {
       setMapIndex((prev) => prev + 2);
       setStudentAnswers((prev) => [...prev, payload.answer]);
     } else {
@@ -113,7 +119,8 @@ const ViolationPage: React.FC<ViolationProps> = ({assignment}) => {
 
   const handleSubmit = () => {
     const formattedInfraction =
-      assignment && getInfractionName(assignment) === "Unauthorized Device Cell Phone"
+      assignment &&
+      getInfractionName(assignment) === "Unauthorized Device Cell Phone"
         ? "Unauthorized Device/Cell Phone"
         : assignment && getInfractionName(assignment);
 
@@ -137,7 +144,7 @@ const ViolationPage: React.FC<ViolationProps> = ({assignment}) => {
           window.alert(
             `You Work Has been Recorded for ${payload.studentEmail}`
           );
-          // window.location.href = "/dashboard/student";
+          window.location.href = "/dashboard/student";
         })
         .catch(function (error) {
           console.error(error);
@@ -151,7 +158,7 @@ const ViolationPage: React.FC<ViolationProps> = ({assignment}) => {
           window.alert(
             `You Work Has been Recorded for ${payload.studentEmail}`
           );
-          // window.location.href = "/dashboard/student";
+          window.location.href = "/dashboard/student";
         })
         .catch(function (error) {
           console.error(error);
@@ -201,33 +208,32 @@ const ViolationPage: React.FC<ViolationProps> = ({assignment}) => {
 
                     {data.type === "exploratory-radio" &&
                       mapIndex === index && (
-                          <MultipleChoiceFormat
-                            data={data}
-                            saveAnswerAndProgress={openEndedQuestionAnswered}
-                          />
+                        <MultipleChoiceFormat
+                          data={data}
+                          saveAnswerAndProgress={openEndedQuestionAnswered}
+                        />
                       )}
                   </>
                 );
               })}
 
-              {essay?.questions &&
-                mapIndex === essay.questions.length && (
-                  <div>
-                    <h1>Congratulations! You have Completed the Assignment </h1>
-                    <br />
-                    <h3>
-                      Hit Submit to Record Your Response for {loggedInUser}{" "}
-                    </h3>
-                    <button onClick={() => handleSubmit()} type="button">
-                      Submit
-                    </button>
-                  </div>
-                )}
+              {essay?.questions && mapIndex === essay.questions.length && (
+                <div>
+                  <h1>Congratulations! You have Completed the Assignment </h1>
+                  <br />
+                  <h3>
+                    Hit Submit to Record Your Response for {loggedInUser}{" "}
+                  </h3>
+                  <button onClick={() => handleSubmit()} type="button">
+                    Submit
+                  </button>
+                </div>
+              )}
             </div>
           </form>
         </div>
       </div>
     </div>
   );
-}
+};
 export default ViolationPage;

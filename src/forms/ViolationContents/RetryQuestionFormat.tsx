@@ -46,7 +46,7 @@ const RetryQuestionFormat: React.FC<RetryQuestionProps> = ({
     const threshold = minMatchPercent;
     if (percentage >= threshold) {
       window.alert("Correct");
-      saveAnswerAndProgress({ question: compareText, answer: copyText });
+      saveAnswerAndProgress({ question: compareText, answer: "true" });
     } else {
       window.alert(
         `Try Again, Text Must Match to at least ${minMatchPercent} % \n you are currently at ${percentage.toFixed(0)} % `
