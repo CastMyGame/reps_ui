@@ -86,7 +86,7 @@ export interface TeacherReferral {
   timeClosed: Date;
   classPeriod: string;
   teacherEmail: string;
-  isArchived: boolean;
+  archived: boolean;
   isStateFiled: boolean;
   stateIncidentNumber: string;
   archivedBy: string;

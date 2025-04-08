@@ -1,6 +1,4 @@
-import { useEffect, useState } from "react";
-import * as React from "react";
-
+import React, { useEffect, useState } from "react";
 import {
   Table,
   TableContainer,
@@ -13,7 +11,7 @@ import {
   Box,
   Chip,
   MenuItem,
-  createTheme,
+  SelectChangeEvent,
 } from "@mui/material";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import axios from "axios";
@@ -25,15 +23,30 @@ import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import { dateCreateFormat } from "../../../helperFunctions/helperFunctions";
 import LoadingWheelPanel from "../../roles/student/LoadingWheelPanel";
+import { PunishmentDto, TeacherReferral } from "src/types/responses";
 
-const GlobalPunishmentPanel = ({ roleType }) => {
-  const Alert = React.forwardRef(function Alert(props, ref) {
-    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
-  });
+const Alert = React.forwardRef<
+  HTMLDivElement,
+  React.ComponentProps<typeof MuiAlert>
+>(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
-  const [listOfPunishments, setListOfPunishments] = useState([]);
+interface GlobalPunishmentProps {
+  roleType: string;
+}
+
+const GlobalPunishmentPanel: React.FC<GlobalPunishmentProps> = ({
+  roleType,
+}) => {
+  const [listOfPunishments, setListOfPunishments] = useState<PunishmentDto[]>(
+    []
+  );
   const [sort, setSort] = useState("");
-  const [loadingPunihsmentId, setLoadingPunishmentId] = useState({
+  const [loadingPunishmentId, setLoadingPunishmentId] = useState<{
+    id: string | null;
+    buttonType: string;
+  }>({
     id: null,
     buttonType: "",
   });
@@ -43,13 +56,13 @@ const GlobalPunishmentPanel = ({ roleType }) => {
     message: "",
     buttonType: "",
   });
-  const [deletePayload, setDeletePayload] = useState(null);
+  const [deletePayload, setDeletePayload] = useState<PunishmentDto | null>(
+    null
+  );
   const [textareaValue, setTextareaValue] = useState("");
   const [archivedData, setArchivedData] = useState([]);
   const [filter, setFilter] = useState("OPEN");
   const [loading, setLoading] = useState(false);
-
-  const defaultTheme = createTheme();
 
   const headers = {
     Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
@@ -66,64 +79,66 @@ const GlobalPunishmentPanel = ({ roleType }) => {
     fetchPunishments();
   }, []);
 
-  const fetchPunishments = () => {
+  const fetchPunishments = async () => {
     setLoading(true);
-    axios
-      .get(url, { headers })
-      .then(function (response) {
-        const sortedData = response.data.sort(
-          (a, b) =>
-            new Date(b.punishment.timeCreated) - new Date(a.punishment.timeCreated)
+
+    try {
+      const [punishmentRes, archivedRes] = await Promise.all([
+        axios.get(url, { headers }),
+        axios.get(urlArchive, { headers }),
+      ]);
+
+      const sortedPunishments = punishmentRes.data.sort(
+        (a: PunishmentDto, b: PunishmentDto) =>
+          new Date(b.punishment.timeCreated).getTime() -
+          new Date(a.punishment.timeCreated).getTime()
+      );
+
+      const sortedArchived = archivedRes.data.sort(
+        (a: TeacherReferral, b: TeacherReferral) =>
+          new Date(b.timeCreated).getTime() - new Date(a.timeCreated).getTime()
+      );
+
+      if (roleType === "teacher") {
+        const email = sessionStorage.getItem("email");
+
+        setListOfPunishments(
+          sortedPunishments.filter(
+            (x: PunishmentDto) => x.punishment.teacherEmail === email
+          )
         );
-        if (roleType === "teacher") {
-          const sortedByRole = sortedData.filter(
-            (x) => x.punishment.teacherEmail === sessionStorage.getItem("email")
-          );
-          setListOfPunishments(sortedByRole);
-        } else {
-          setListOfPunishments(sortedData);
-        }
-      })
-      .catch(function (error) {
-        console.error(error);
-      })
-      .finally(() => {
-        axios
-          .get(urlArchive, { headers })
-          .then(function (response) {
-            const sortedData = response.data.sort(
-              (a, b) => new Date(b.timeCreated) - new Date(a.timeCreated)
-            );
-            if (roleType === "teacher") {
-              const sortedByRole = sortedData.filter(
-                (x) => x.teacherEmail === sessionStorage.getItem("email")
-              );
-              setArchivedData(sortedByRole);
-            } else {
-              setArchivedData(sortedData);
-            }
-          })
-          .catch(function (error) {
-            console.error(error);
-          })
-          .finally(() => {
-            setLoading(false);
-          });
-      });
+
+        setArchivedData(
+          sortedArchived.filter(
+            (x: TeacherReferral) => x.teacherEmail === email
+          )
+        );
+      } else {
+        setListOfPunishments(sortedPunishments);
+        setArchivedData(sortedArchived);
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   //Merging the punishment and arhcived data
 
-  const data =
-    sort === "ARCHIVED"
-      ? archivedData
-      : sort === "ALL"
-        ? listOfPunishments
-        : listOfPunishments.filter((x) => x.punishment.status === sort);
+  let data: typeof listOfPunishments | typeof archivedData = [];
+
+  if (sort === "ARCHIVED") {
+    data = archivedData;
+  } else if (sort === "ALL") {
+    data = listOfPunishments;
+  } else {
+    data = listOfPunishments.filter((x) => x.punishment.status === sort);
+  }
 
   const hasScroll = data.length > 10;
 
-  const calculateDaysSince = (dateCreated) => {
+  const calculateDaysSince = (dateCreated: Date) => {
     const currentDate = new Date();
     const createdDate = new Date(dateCreated);
 
@@ -131,16 +146,18 @@ const GlobalPunishmentPanel = ({ roleType }) => {
     currentDate.setUTCHours(0, 0, 0, 0);
     createdDate.setUTCHours(0, 0, 0, 0);
 
-    const timeDifference = currentDate - createdDate;
+    const timeDifference = currentDate.getTime() - createdDate.getTime();
     const daysDifference = Math.floor(timeDifference / (1000 * 60 * 60 * 24)); // Convert milliseconds to days
     return daysDifference;
   };
 
-  const handleTextareaChange = (event) => {
+  const handleTextareaChange = (
+    event: React.ChangeEvent<HTMLTextAreaElement>
+  ) => {
     setTextareaValue(event.target.value);
   };
 
-  const handleFilterChange = (event) => {
+  const handleFilterChange = (event: SelectChangeEvent) => {
     setFilter(event.target.value);
   };
 
@@ -153,7 +170,10 @@ const GlobalPunishmentPanel = ({ roleType }) => {
     { value: "REFERRAL", label: "Referral" },
   ];
 
-  const handleClose = (event, reason) => {
+  const handleClose = (
+    event: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
     if (reason === "clickaway") {
       return;
     }
@@ -161,8 +181,11 @@ const GlobalPunishmentPanel = ({ roleType }) => {
     setToast({ visible: false, message: "" });
   };
 
-  const handleClosePunishment = (obj) => {
-    setLoadingPunishmentId({ id: obj.punishmentId, buttonType: "close" });
+  const handleClosePunishment = (obj: PunishmentDto) => {
+    setLoadingPunishmentId({
+      id: obj.punishment.punishmentId,
+      buttonType: "close",
+    });
     const url = `${baseUrl}/punish/v1/close/${obj.punishment.punishmentId}`;
     axios
       .post(url, [textareaValue], { headers }) // Pass the headers option with the JWT token
@@ -174,7 +197,7 @@ const GlobalPunishmentPanel = ({ roleType }) => {
         console.error(error);
       })
       .finally(() => {
-        setOpenModal({ display: false, message: "" });
+        setOpenModal({ display: false, message: "", buttonType: "" });
         setTimeout(() => {
           setToast({ visible: false, message: "" });
           setLoadingPunishmentId({ id: null, buttonType: "" });
@@ -183,7 +206,7 @@ const GlobalPunishmentPanel = ({ roleType }) => {
   };
 
   //Delete has been changed to archived api
-  const handleDeletePunishment = (obj) => {
+  const handleDeletePunishment = (obj: PunishmentDto) => {
     setLoadingPunishmentId({
       id: obj.punishment.punishmentId,
       buttonType: "delete",
@@ -200,7 +223,7 @@ const GlobalPunishmentPanel = ({ roleType }) => {
         console.error(error);
       })
       .finally(() => {
-        setOpenModal({ display: false, message: "" });
+        setOpenModal({ display: false, message: "", buttonType: "" });
         setTextareaValue("");
         setTimeout(() => {
           setToast({ visible: false, message: "" });
@@ -232,7 +255,7 @@ const GlobalPunishmentPanel = ({ roleType }) => {
               <button
                 style={{ backgroundColor: "red" }}
                 onClick={() => {
-                  setOpenModal({ display: false, message: "" });
+                  setOpenModal({ display: false, message: "", buttonType: "" });
                   setTextareaValue("");
                 }}
               >
@@ -244,7 +267,9 @@ const GlobalPunishmentPanel = ({ roleType }) => {
                   style={{
                     backgroundColor: textareaValue === "" ? "grey" : "red",
                   }}
-                  onClick={() => handleDeletePunishment(deletePayload)}
+                  onClick={() =>
+                    deletePayload && handleDeletePunishment(deletePayload)
+                  }
                 >
                   Delete Referral
                 </button>
@@ -255,7 +280,9 @@ const GlobalPunishmentPanel = ({ roleType }) => {
                   style={{
                     backgroundColor: textareaValue === "" ? "grey" : "green",
                   }}
-                  onClick={() => handleClosePunishment(deletePayload)}
+                  onClick={() =>
+                    deletePayload && handleClosePunishment(deletePayload)
+                  }
                 >
                   Close Referral
                 </button>
@@ -289,7 +316,13 @@ const GlobalPunishmentPanel = ({ roleType }) => {
             </Box>
           );
         }}
-        MenuProps={"MenuProps"}
+        MenuProps={{
+          PaperProps: {
+            style: {
+              maxHeight: 300,
+            },
+          },
+        }}
       >
         {filterOptions.map((name) => (
           <MenuItem
@@ -308,7 +341,7 @@ const GlobalPunishmentPanel = ({ roleType }) => {
         autoHideDuration={6000}
         onClose={handleClose}
       >
-        <Alert Close={handleClose} severity="success" sx={{ width: "100%" }}>
+        <Alert onClose={handleClose} severity="success" sx={{ width: "100%" }}>
           {toast.message}
         </Alert>
       </Snackbar>
@@ -398,8 +431,18 @@ const GlobalPunishmentPanel = ({ roleType }) => {
                 data.map((x, key) => {
                   const days = calculateDaysSince(x.punishment.timeCreated);
 
+                  let statusClass = "tag-good";
+
+                  if (days >= 4) {
+                    statusClass = "tag-critical";
+                  } else if (days >= 3) {
+                    statusClass = "tag-danger";
+                  } else if (days >= 2) {
+                    statusClass = "tag-warning";
+                  }
+
                   return (
-                    <TableRow key={key}>
+                    <TableRow key={key.valueOf()}>
                       <TableCell>
                         <div style={{ display: "flex", alignItems: "center" }}>
                           <AccountCircleIcon
@@ -438,7 +481,7 @@ const GlobalPunishmentPanel = ({ roleType }) => {
                         <TableCell
                           style={{
                             fontSize: 14,
-                            textAlign: "auto",
+                            textAlign: "left",
                           }}
                         >
                           {x.punishment.teacherEmail}
@@ -447,7 +490,7 @@ const GlobalPunishmentPanel = ({ roleType }) => {
                         <TableCell
                           style={{
                             fontSize: 14,
-                            textAlign: "auto",
+                            textAlign: "left",
                           }}
                         >
                           {x.punishment.infractionLevel}
@@ -459,9 +502,7 @@ const GlobalPunishmentPanel = ({ roleType }) => {
                           fontSize: 14,
                         }}
                       >
-                        <div
-                          className={`status-tag ${days >= 4 ? "tag-critical" : days >= 3 ? "tag-danger" : days >= 2 ? "tag-warning" : "tag-good"}`}
-                        >
+                        <div className={`status-tag ${statusClass}`}>
                           {x.punishment.status}
                         </div>
                       </TableCell>
@@ -480,7 +521,13 @@ const GlobalPunishmentPanel = ({ roleType }) => {
                       >
                         {x.punishment.archived === false &&
                           (x.punishment.status === "OPEN" ? (
-                            <>
+                            <div
+                              style={{
+                                display: "flex",
+                                gap: "10px",
+                                flexWrap: "wrap",
+                              }}
+                            >
                               <button
                                 style={{
                                   height: "60px",
@@ -505,8 +552,9 @@ const GlobalPunishmentPanel = ({ roleType }) => {
                                 >
                                   Close Referral
                                 </p>
-                                {loadingPunihsmentId.id === x.punishmentId &&
-                                loadingPunihsmentId.buttonType === "close" ? (
+                                {loadingPunishmentId.id ===
+                                  x.punishment.punishmentId &&
+                                loadingPunishmentId.buttonType === "close" ? (
                                   <CircularProgress
                                     style={{ height: "20px", width: "20px" }}
                                     color="secondary"
@@ -540,8 +588,9 @@ const GlobalPunishmentPanel = ({ roleType }) => {
                                 >
                                   Delete Referral
                                 </p>
-                                {loadingPunihsmentId.id === x.punishmentId &&
-                                loadingPunihsmentId.buttonType === "delete" ? (
+                                {loadingPunishmentId.id ===
+                                  x.punishment.punishmentId &&
+                                loadingPunishmentId.buttonType === "delete" ? (
                                   <CircularProgress
                                     style={{ height: "20px", width: "20px" }}
                                     color="secondary"
@@ -550,9 +599,9 @@ const GlobalPunishmentPanel = ({ roleType }) => {
                                   <DeleteForeverIcon />
                                 )}
                               </button>
-                            </>
+                            </div>
                           ) : (
-                            <>
+                            <div style={{ display: "flex", gap: "10px" }}>
                               {" "}
                               <button
                                 style={{
@@ -578,8 +627,9 @@ const GlobalPunishmentPanel = ({ roleType }) => {
                                 >
                                   Delete Referral
                                 </p>
-                                {loadingPunihsmentId.id === x.punishmentId &&
-                                loadingPunihsmentId.buttonType === "delete" ? (
+                                {loadingPunishmentId.id ===
+                                  x.punishment.punishmentId &&
+                                loadingPunishmentId.buttonType === "delete" ? (
                                   <CircularProgress
                                     style={{ height: "20px", width: "20px" }}
                                     color="secondary"
@@ -588,7 +638,7 @@ const GlobalPunishmentPanel = ({ roleType }) => {
                                   <DeleteForeverIcon />
                                 )}
                               </button>
-                            </>
+                            </div>
                           ))}
                       </TableCell>
                     </TableRow>
@@ -597,7 +647,7 @@ const GlobalPunishmentPanel = ({ roleType }) => {
               ) : (
                 <TableRow>
                   <TableCell
-                    colSpan="5"
+                    colSpan={5}
                     style={{
                       fontSize: 18,
                       fontWeight: "lighter",

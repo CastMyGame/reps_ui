@@ -3,7 +3,7 @@ import Drawer from "@mui/material/Drawer";
 import CreatePunishmentPanel from "src/components/globalComponents/referrals/createPunishmentPanel.js";
 import TeacherStudentPanel from "src/components/roles/teacher/teacherStudentPanel";
 import TeacherFTCPanel from "src/components/roles/teacher/FTCpanel";
-import GlobalPunishmentPanel from "src/components/globalComponents/referrals/globalPunishmentPanel.js";
+import GlobalPunishmentPanel from "src/components/globalComponents/referrals/globalPunishmentPanel";
 import TeacherOverviewPanel from "src/components/roles/teacher/teacherOverview";
 import DetentionWidget from "src/components/globalComponents/detentionWidget";
 import ISSWidget from "src/components/globalComponents/issWidget";
