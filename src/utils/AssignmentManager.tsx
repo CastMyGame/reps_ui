@@ -16,21 +16,32 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
+import {
+  AssignmentPayload,
+  Question,
+  RadioAnswers,
+} from "src/types/assignments";
+
+interface ExistingAssignment extends AssignmentPayload {
+  assignmentId: string;
+}
 
 const AssignmentManager = () => {
-  const [numOfQuestions, setNumberOfQuestions] = useState(1);
-  const [openAccordion, setOpenAccordion] = useState(null);
+  const [numOfQuestions, setNumOfQuestions] = useState(1);
+  const [openAccordion, setOpenAccordion] = useState<number | null>(null);
   const [edit, setEdit] = useState(false);
-  const [existingAssignments, setExistingAssignments] = useState();
-  const [updateId, setUpdateId] = useState();
+  const [existingAssignments, setExistingAssignments] = useState<
+    ExistingAssignment[]
+  >([]);
+  const [updateId, setUpdateId] = useState<string | undefined>();
 
-  const [payload, setPayload] = useState({
+  const [payload, setPayload] = useState<AssignmentPayload>({
     infractionName: "",
     level: 0,
     questions: [
       {
         question: "",
-        type: "",
+        type: "reading",
         title: "",
         body: "",
         references: [""],
@@ -47,7 +58,7 @@ const AssignmentManager = () => {
       questions: [
         {
           question: "",
-          type: "",
+          type: "reading",
           title: "",
           body: "",
           references: [""],
@@ -57,18 +68,25 @@ const AssignmentManager = () => {
       ],
     });
 
-    setNumberOfQuestions(1);
+    setNumOfQuestions(1);
     setEdit(false);
   };
 
-  const handleChange = (key, value) => {
+  const handleChange = <K extends keyof AssignmentPayload>(
+    key: K,
+    value: any
+  ) => {
     setPayload((prevPayload) => ({
       ...prevPayload,
       [key]: value,
     }));
   };
 
-  const handleMappedChange = (key, value, questionIndex) => {
+  const handleMappedChange = <K extends keyof Question>(
+    key: K,
+    value: Question[K],
+    questionIndex: number
+  ) => {
     setPayload((prevPayload) => {
       const newQuestions = [...prevPayload.questions];
       newQuestions[questionIndex] = {
@@ -79,7 +97,12 @@ const AssignmentManager = () => {
     });
   };
 
-  const handleAnswerChange = (key, value, questionIndex, answerIndex) => {
+  const handleAnswerChange = (
+    key: keyof RadioAnswers[string],
+    value: string,
+    questionIndex: number,
+    answerIndex: string
+  ) => {
     const newAnswers = { ...payload.questions[questionIndex].radioAnswers };
     if (key === "label") {
       newAnswers[answerIndex][key] = value;
@@ -89,33 +112,27 @@ const AssignmentManager = () => {
     handleMappedChange("radioAnswers", newAnswers, questionIndex);
   };
 
-  const addAnswer = (questionIndex) => {
+  const addAnswer = (questionIndex: number) => {
     const newAnswers = { ...payload.questions[questionIndex].radioAnswers };
     const newIndex = Object.keys(newAnswers).length + 1; // Generate a new index
     newAnswers[newIndex] = { label: "", value: false }; // Default value to false
     handleMappedChange("radioAnswers", newAnswers, questionIndex);
   };
 
-  const handleRefChange = (key, value, questionIndex, referenceIndex) => {
+  const handleRefChange = (
+    key: "references",
+    value: string,
+    questionIndex: number,
+    referenceIndex: number
+  ) => {
     setPayload((prevPayload) => {
       const newQuestions = [...prevPayload.questions];
-
-      // Check if the key is 'references'
-      if (key === "references") {
-        newQuestions[questionIndex][key][referenceIndex] = value;
-      } else {
-        // Handle other keys normally
-        newQuestions[questionIndex] = {
-          ...newQuestions[questionIndex],
-          [key]: value,
-        };
-      }
-
+      newQuestions[questionIndex][key][referenceIndex] = value;
       return { ...prevPayload, questions: newQuestions };
     });
   };
 
-  const addReference = (questionIndex) => {
+  const addReference = (questionIndex: number) => {
     setPayload((prevPayload) => {
       const newQuestions = [...prevPayload.questions];
       const currentReferences = newQuestions[questionIndex]?.references || [];
@@ -191,7 +208,7 @@ const AssignmentManager = () => {
     <Container component="main" maxWidth="md">
       <Paper elevation={3} style={{ padding: 20, margin: "20px 0" }}>
         <Typography variant="h5">
-          {edit && payload !== ""
+          {edit
             ? `Edit ${payload.infractionName} ${payload.level}`
             : "Create New Assignment"}
         </Typography>
@@ -217,24 +234,24 @@ const AssignmentManager = () => {
             <FormControl fullWidth required>
               <Select
                 style={{ marginBottom: "10px" }}
-                value={payload.infractionName}
+                value={`${payload.infractionName}-${payload.level}`}
                 onChange={(e) => {
+                  const [infractionName, levelStr] = e.target.value.split("-");
+                  const level = parseInt(levelStr);
                   const selectedAssignment = existingAssignments.find(
                     (assignment) =>
-                      assignment.infractionName ===
-                        e.target.value.infractionName &&
-                      assignment.level === e.target.value.level
+                      assignment.infractionName === infractionName &&
+                      assignment.level === level
                   );
 
                   if (selectedAssignment) {
-                    setPayload((prevPayload) => ({
-                      ...prevPayload,
+                    setPayload({
                       infractionName: selectedAssignment.infractionName,
                       level: selectedAssignment.level,
                       questions: selectedAssignment.questions || [
                         {
                           question: "",
-                          type: "",
+                          type: "reading",
                           title: "",
                           body: "",
                           references: [""],
@@ -242,8 +259,8 @@ const AssignmentManager = () => {
                           textToCompare: "",
                         },
                       ],
-                    }));
-                    setNumberOfQuestions(
+                    });
+                    setNumOfQuestions(
                       selectedAssignment.questions
                         ? selectedAssignment.questions.length
                         : 1
@@ -254,11 +271,8 @@ const AssignmentManager = () => {
               >
                 {existingAssignments.map((assignment) => (
                   <MenuItem
-                    key={assignment.infractionName}
-                    value={{
-                      infractionName: assignment.infractionName,
-                      level: assignment.level,
-                    }}
+                    key={`${assignment.infractionName}-${assignment.level}`}
+                    value={`${assignment.infractionName}-${assignment.level}`}
                   >
                     {assignment.infractionName} {assignment.level}
                   </MenuItem>
@@ -319,7 +333,7 @@ const AssignmentManager = () => {
                       onChange={(e) =>
                         handleMappedChange(
                           "type",
-                          e.target.value,
+                          e.target.value as Question["type"],
                           questionIndex
                         )
                       }
@@ -482,25 +496,23 @@ const AssignmentManager = () => {
 
                   {payload.questions[questionIndex]?.type ===
                     "retryQuestion" && (
-                    <>
-                      <TextField
-                        label={`Text To Copy`}
-                        multiline
-                        rows={4}
-                        fullWidth
-                        required
-                        value={
-                          payload.questions[questionIndex]?.textToCompare || ""
-                        }
-                        onChange={(e) =>
-                          handleMappedChange(
-                            "textToCompare",
-                            e.target.value,
-                            questionIndex
-                          )
-                        }
-                      />
-                    </>
+                    <TextField
+                      label={`Text To Copy`}
+                      multiline
+                      rows={4}
+                      fullWidth
+                      required
+                      value={
+                        payload.questions[questionIndex]?.textToCompare || ""
+                      }
+                      onChange={(e) =>
+                        handleMappedChange(
+                          "textToCompare",
+                          e.target.value,
+                          questionIndex
+                        )
+                      }
+                    />
                   )}
 
                   {payload.questions[questionIndex]?.type.includes(
@@ -551,7 +563,7 @@ const AssignmentManager = () => {
         </form>
         <Button
           variant="outlined"
-          onClick={() => setNumberOfQuestions((prev) => prev + 1)}
+          onClick={() => setNumOfQuestions((prev) => prev + 1)}
         >
           Add Question
         </Button>

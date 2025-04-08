@@ -72,8 +72,6 @@ function App() {
                   </PDFViewer>
               }
             />
-
-            {/* <Route path="/forms/create-assignment" element={<CreateAssignmentForm/>} /> */}
           </Routes>
           {!isLoggedOut && <IdleTimerContainer></IdleTimerContainer>}
         </div>

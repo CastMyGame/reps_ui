@@ -8,7 +8,7 @@ import AdminTeacherPanel from "src/components/roles/admin/adminTeacherPanel";
 import GlobalPunishmentPanel from "src/components/globalComponents/referrals/globalPunishmentPanel";
 import GlobalArchivedPunishmentPanel from "src/components/globalComponents/referrals/globalArchivedPunishmentPanel";
 import AdminOverviewPanel from "src/components/roles/admin/adminOverview";
-import AssignmentManager from "src/utils/EssayForm";
+import AssignmentManager from "src/utils/AssignmentManager";
 import TeacherStudentPanel from "src/components/roles/teacher/teacherStudentPanel";
 import AddTeacherForm from "src/components/globalComponents/users/addTeacherForm";
 import { get } from "../../../utils/api/api";
