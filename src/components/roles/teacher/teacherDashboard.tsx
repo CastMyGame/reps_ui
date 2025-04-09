@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Drawer from "@mui/material/Drawer";
-import CreatePunishmentPanel from "src/components/globalComponents/referrals/createPunishmentPanel.js";
+import CreatePunishmentPanel from "src/components/globalComponents/referrals/createPunishmentPanel";
 import TeacherStudentPanel from "src/components/roles/teacher/teacherStudentPanel";
 import TeacherFTCPanel from "src/components/roles/teacher/FTCpanel";
 import GlobalPunishmentPanel from "src/components/globalComponents/referrals/globalPunishmentPanel";
