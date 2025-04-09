@@ -74,7 +74,7 @@ const AdminOverviewPanel: React.FC<AdminOverviewProps> = ({ adminDto }) => {
 
         <div className="card-overview-third">
           <AdminTeacherReferralByTypePieChart
-            writeUpResponse={adminDto.writeUpResponse}
+            writeUpResponse={adminDto.punishmentResponse}
           />
         </div>
 
