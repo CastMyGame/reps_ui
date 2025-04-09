@@ -9,7 +9,6 @@ import SendResourcesComponent from "../../globalComponents/modals/resources/reso
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import axios from "axios";
 import { baseUrl } from "src/utils/jsonData";
-import { DateTime } from "luxon";
 import {
   FormControlLabel,
   Switch,
@@ -24,7 +23,6 @@ import {
 import { get } from "src/utils/api/api";
 import { StudentDetailsModal } from "src/components/globalComponents/components/modals/studentDetailsModal";
 import NavbarCustom from "src/components/globalComponents/modals/navBar/navBar";
-import CreatePunishmentPanel from "src/components/globalComponents/referrals/createPunishmentPanel";
 import { TeacherDetailsModal } from "src/components/globalComponents/components/modals/teacherDetailsModal ";
 import { guidanceButtonData } from "src/types/navbars";
 import { BEHAVIORAL, CLERICAL } from "src/types/constants";

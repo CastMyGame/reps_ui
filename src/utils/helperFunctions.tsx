@@ -7,7 +7,7 @@ export const handleLogout = async () => {
     Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
   };
   try {
-    const res = await axios.post(`${baseUrl}/v1/logout`, [], { headers });
+    await axios.post(`${baseUrl}/v1/logout`, [], { headers });
     clearSessionStorage();
     window.location.href = "/login";
   } catch {

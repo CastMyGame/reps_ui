@@ -171,27 +171,22 @@ const CreatePunishmentPanel: React.FC<CreatePunishmentProps> = ({
     "Positive Behavior Shout Out!": "",
   };
 
-  const titles: Partial<Record<InfractionType, string>> = {
-    "Failure to Complete Work": "Failure to Complete Work",
-    "Positive Behavior Shout Out!": "Positive Behavior Shout Out!",
-  };
-
   type InfractionType = (typeof infractionSelectOptions)[number]["value"];
 
   const getDescription = (selectedOption: InfractionType): string => {
     return (
-      descriptions[selectedOption] ||
+      descriptions[selectedOption] ??
       "Description of Behavior/Event. This will be sent directly to the student and guardian so be sure to provide accurate and objective facts."
     );
-  };
-
-  const headers = {
-    Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
   };
 
   const url = `${baseUrl}/student/v1/allStudents`; // Replace with your actual API endpoint
 
   useEffect(() => {
+    const headers = {
+      Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
+    };
+
     axios
       .get(url, { headers }) // Pass the headers option with the JWT token
       .then(function (response) {
@@ -201,7 +196,7 @@ const CreatePunishmentPanel: React.FC<CreatePunishmentProps> = ({
         console.error(error);
         setListOfStudents([]);
       });
-  }, []);
+  }, [url]);
 
   const selectOptions = (listOfStudents || []).map((student) => ({
     value: student.studentEmail, // Use a unique value for each option
@@ -230,6 +225,10 @@ const CreatePunishmentPanel: React.FC<CreatePunishmentProps> = ({
 
   //Mapping selected students pushing indivdual payloads to post
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    const headers = {
+      Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
+    };
+
     event.preventDefault();
     setLoading(true);
     setOpenModal({ display: false, message: "", buttonType: "" });
@@ -361,7 +360,7 @@ const CreatePunishmentPanel: React.FC<CreatePunishmentProps> = ({
 
   const handlePhoneLogChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
-    setIsGuidance((prevState) => ({
+    setIsPhoneLog((prevState) => ({
       ...prevState,
       [name]: value,
     }));
@@ -709,7 +708,7 @@ const CreatePunishmentPanel: React.FC<CreatePunishmentProps> = ({
                                   <p>
                                     {" "}
                                     Wallet after shout out:{" "}
-                                    {difference ? difference : 0}
+                                    {difference ?? 0}
                                   </p>
                                 </div>
                                 <TextField
