@@ -1,31 +1,32 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { baseUrl, essayData } from "../utils/jsonData";
-import { useParams } from "react-router-dom";
-import Select from "react-select";
+import { baseUrl } from "../utils/jsonData";
+import Select, { SingleValue } from "react-select";
 import { dateCreateFormat } from "../helperFunctions/helperFunctions";
+import { Student } from "src/types/school";
+import { TeacherReferral } from "src/types/responses";
 
-function FailureToComplete() {
+const FailureToComplete = () => {
   const emailPattern = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
-  const [isAnswerCorrect, setIsAnswerCorrect] = useState(false);
-  const [sectionNumber, setSectionNumber] = useState(1); //what section fo form are we on
-  const [selectedAnswer, setSelectedAnswer] = useState("");
-  const [listOfStudents, setListOfStudents] = useState([]);
-  const [email, setEmail] = useState();
-  const [teacherEmail, setTeacherEmail] = useState();
-  const [userValidated, setUserValidated] = useState(false);
-  const [selectedOptions, setSelectedOptions] = useState();
+  const [listOfStudents, setListOfStudents] = useState<Student[]>([]);
+  const [email, setEmail] = useState<string | null>(null);
+  const [selectedOptions, setSelectedOptions] = useState<{
+    value: string;
+    firstName: string;
+    lastName: string;
+  } | null>(null);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [errorDisplay, setErrorDisplay] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const [listOfInfractions, setListOfInfractions] = useState([]);
-
-  const headers = {
-    Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
-  };
+  const [listOfInfractions, setListOfInfractions] = useState<TeacherReferral[]>(
+    []
+  );
 
   useEffect(() => {
+    const headers = {
+      Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
+    };
     axios
       .get(`${baseUrl}/student/v1/allStudents`, { headers })
       .then(function (response) {
@@ -37,6 +38,9 @@ function FailureToComplete() {
   }, []);
 
   useEffect(() => {
+    const headers = {
+      Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
+    };
     axios
       .get(`${baseUrl}/punish/v1/student/${email}`, { headers })
       .then(function (response) {
@@ -58,34 +62,48 @@ function FailureToComplete() {
 
   // Handle the selection change
 
-  function findStudentByEmail(email) {
+  function findStudentByEmail(email: string) {
     const foundStudent = listOfStudents.find(
       (student) => student.studentEmail === email
     );
     return foundStudent || null; // Returns the found student or null if not found
   }
 
-  function handleSelect(data) {
+  const handleSelect = (
+    data: SingleValue<{ value: string; firstName: string; lastName: string }>
+  ) => {
+    if (!data) {
+      setSelectedOptions(null);
+      setFirstName("");
+      setLastName("");
+      setEmail("");
+      return;
+    }
+
     setSelectedOptions(data);
     setFirstName(data.firstName);
     setLastName(data.lastName);
     setEmail(data.value);
-  }
+  };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!emailPattern.test(email)) {
+    if (!emailPattern.test(email ?? "")) {
       setErrorDisplay(true);
       setErrorMessage("Please enter a valid email address");
       return; // Do not proceed with submission
     }
 
-    const foundStudent = findStudentByEmail(email);
+    const foundStudent = findStudentByEmail(email ?? "");
     if (foundStudent) {
-      var payload = {
+      let payload = {
         studentEmail: email,
         infractionName: "Failure to Complete Work",
+      };
+
+      const headers = {
+        Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
       };
 
       axios
@@ -109,7 +127,10 @@ function FailureToComplete() {
     }
   };
 
-  const handleClose = (punishmentId) => {
+  const handleClose = (punishmentId: string) => {
+    const headers = {
+      Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
+    };
     axios
       .post(`${baseUrl}/punish/v1/close/${punishmentId}`, null, {
         headers: headers,
@@ -178,32 +199,35 @@ function FailureToComplete() {
               </tr>
             </thead>
             <tbody>
-              {listOfInfractions.map((x, key) => (
-                <tr key={key}>
-                  <td>
-                    {x.student.firstName} {x.student.lastName}
-                  </td>
-                  <td>{dateCreateFormat(x.timeCreated)}</td>
-                  <td>{x.teacherEmail}</td>
-                  <td>{x.infraction.infractionDescription}</td>
-                  <td>{x.status}</td>
-                  <td>
-                    <button
-                      onClick={() => {
-                        handleClose(x.punishmentId);
-                      }}
-                    >
-                      Mark Completed
-                    </button>
-                  </td>
-                </tr>
-              ))}
+              {listOfInfractions.map((x, key) => {
+                const student = listOfStudents.find(
+                  (student) => student.studentEmail === x.studentEmail
+                );
+                return (
+                  <tr key={key.valueOf()}>
+                    <td>
+                      {student
+                        ? `${student.firstName} ${student.lastName}`
+                        : "Unknown Student"}
+                    </td>
+                    <td>{dateCreateFormat(x.timeCreated)}</td>
+                    <td>{x.teacherEmail}</td>
+                    <td>{x.infractionDescription}</td>
+                    <td>{x.status}</td>
+                    <td>
+                      <button onClick={() => handleClose(x.punishmentId)}>
+                        Mark Completed
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
       </div>
     </div>
   );
-}
+};
 
 export default FailureToComplete;

@@ -150,8 +150,8 @@ const StudentDashboard = () => {
                     handleStartAssignment={handleStartAssignment}
                   />
                 )}
-                {panelName === "startAssignment" && (
-                  <ViolationPage data={selectAssignmentToStart} />
+                {panelName === "startAssignment" && selectAssignmentToStart && (
+                  <ViolationPage assignment={selectAssignmentToStart} />
                 )}
               </div>
             </>

@@ -1,5 +1,4 @@
 import "./App.css";
-import MyForm from "./forms/RepsForm";
 import ViolationPage from "./forms/ViolationPage";
 import FailureToComplete from "./forms/FailureToComplete";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
@@ -59,7 +58,6 @@ function App() {
               element={<TeacherDashboard />}
               allowedRoles={["TEACHER"]}
             />
-            <Route path="/forms/start-punishment" element={<MyForm />} />
             <Route path="/forms/ftc-closure" element={<FailureToComplete />} />
             <Route
               path="/admin/archived"
@@ -74,8 +72,6 @@ function App() {
                   </PDFViewer>
               }
             />
-
-            {/* <Route path="/forms/create-assignment" element={<CreateAssignmentForm/>} /> */}
           </Routes>
           {!isLoggedOut && <IdleTimerContainer></IdleTimerContainer>}
         </div>

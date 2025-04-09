@@ -8,12 +8,15 @@ interface RetryQuestionProps {
     answer: string;
   }) => void;
   sectionName: string;
+  handleRadioChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 const RetryQuestionFormat: React.FC<RetryQuestionProps> = ({
   essay,
   saveAnswerAndProgress,
   sectionName,
+  handleRadioChange,
+
 }) => {
   const [copyText, setCopyText] = useState("");
   const [generatedImage, setGeneratedImage] = useState<HTMLImageElement | null>(
@@ -43,7 +46,7 @@ const RetryQuestionFormat: React.FC<RetryQuestionProps> = ({
     const threshold = minMatchPercent;
     if (percentage >= threshold) {
       window.alert("Correct");
-      saveAnswerAndProgress({ question: compareText, answer: copyText });
+      saveAnswerAndProgress({ question: compareText, answer: "true" });
     } else {
       window.alert(
         `Try Again, Text Must Match to at least ${minMatchPercent} % \n you are currently at ${percentage.toFixed(0)} % `

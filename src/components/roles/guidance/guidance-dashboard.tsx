@@ -9,7 +9,6 @@ import SendResourcesComponent from "../../globalComponents/modals/resources/reso
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import axios from "axios";
 import { baseUrl } from "src/utils/jsonData";
-import { DateTime } from "luxon";
 import {
   FormControlLabel,
   Switch,
@@ -24,7 +23,6 @@ import {
 import { get } from "src/utils/api/api";
 import { StudentDetailsModal } from "src/components/globalComponents/components/modals/studentDetailsModal";
 import NavbarCustom from "src/components/globalComponents/modals/navBar/navBar";
-import CreatePunishmentPanel from "src/components/globalComponents/modals/functions/createPunishmentPanel.js";
 import { TeacherDetailsModal } from "src/components/globalComponents/components/modals/teacherDetailsModal ";
 import { guidanceButtonData } from "src/types/navbars";
 import { BEHAVIORAL, CLERICAL } from "src/types/constants";
@@ -619,7 +617,8 @@ const GuidanceDashboard = () => {
               </div>
             )}
 
-            {panelName === "new-referral-contact" && <CreatePunishmentPanel />}
+            {/* {panelName === "new-referral-contact" && <CreatePunishmentPanel setPanelName={setPanelName}
+                    data={data} />} */}
             {panelName === "create-assignment" && <h1>CREATE ASSIGNMENT</h1>}
             {panelName === "create-user" && <h1>CREATE USER</h1>}
             {panelName === "archvied-records" && <h1>ARCHIVED RECORD</h1>}
