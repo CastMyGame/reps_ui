@@ -103,6 +103,7 @@ const RecentContacts: React.FC<Partial<TeacherOverviewDto>> = ({
       headerName: "Last Contacted",
       flex: 1,
       resizable: true,
+      sort: "asc",
     },
     {
       field: "infractionName",
