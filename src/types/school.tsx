@@ -1,4 +1,4 @@
-import { Role } from "./responses";
+import { OfficeReferralCode, Role } from "./responses";
 
 export type UserModel = {
   id: string;
@@ -91,4 +91,36 @@ export type AssignmentQuestion = {
 export type RadioAnswer = {
   value: boolean;
   label: string;
+};
+
+export type PhoneLog = {
+  isPhoneLogBoolean: boolean;
+  phoneLogDescription: string;
+};
+
+export type StudentOption = {
+  value: string;
+  label: string;
+};
+
+export type ReferralPayload = {
+  studentEmail: string;
+  teacherEmail: string;
+  infractionPeriod: string;
+  infractionName: string;
+  infractionDescription: string;
+  currency: number;
+  guidanceDescription: string;
+  phoneLogDescription: string;
+};
+
+export type OfficeReferralPayload = {
+  studentEmail: string;
+  teacherEmail: string;
+  classPeriod: string;
+  referralCode: OfficeReferralCode;
+  referralDescription: string;
+  currency: number;
+  guidanceDescription?: string;
+  phoneLogDescription?: string;
 };

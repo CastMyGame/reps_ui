@@ -11,8 +11,14 @@ import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
-import Select from "@mui/material/Select";
+import Select, { SelectChangeEvent } from "@mui/material/Select";
 import Chip from "@mui/material/Chip";
+import { AdminOverviewDto, TeacherOverviewDto } from "src/types/responses";
+import {
+  OfficeReferralPayload,
+  Student,
+  StudentOption,
+} from "src/types/school";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -25,28 +31,50 @@ const MenuProps = {
   },
 };
 
-function getStyles(name, studentNames, theme) {
+function getStyles(
+  name: string,
+  theme: any,
+  studentNames: { value: string; label: string }[] = []
+) {
+  if (!Array.isArray(studentNames)) {
+    console.error("studentNames is not an array:", studentNames);
+    return { fontWeight: theme.typography.fontWeightRegular };
+  }
+
+  const studentValues = studentNames.map((student) => student.value); // Extract values
   return {
-    fontWeight:
-      studentNames.indexOf(name.value) === -1
-        ? theme.typography.fontWeightRegular
-        : theme.typography.fontWeightMedium,
+    fontWeight: studentValues.includes(name)
+      ? theme.typography.fontWeightMedium
+      : theme.typography.fontWeightRegular,
   };
 }
 
-const CreateOfficeReferralPanel = ({ data = {} }) => {
-  const Alert = React.forwardRef(function Alert(props, ref) {
-    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
-  });
+const Alert = React.forwardRef<
+  HTMLDivElement,
+  React.ComponentProps<typeof MuiAlert>
+>(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
-  const [listOfStudents, setListOfStudents] = useState([]);
-  const [infractionTypeSelected, setInfractionTypeSelected] = useState("");
-  const [infractionPeriodSelected, setInfractionPeriodSelected] = useState("");
-  const [teacherEmailSelected, setTeacherEmailSelected] = useState("");
+interface CreateOfficeProps {
+  data: TeacherOverviewDto | AdminOverviewDto;
+}
+
+const CreateOfficeReferralPanel: React.FC<CreateOfficeProps> = ({ data }) => {
+  const [listOfStudents, setListOfStudents] = useState<Student[]>([]);
+  const [infractionTypeSelected, setInfractionTypeSelected] = useState<
+    string | null
+  >(null);
+  const [infractionPeriodSelected, setInfractionPeriodSelected] = useState<
+    string | null
+  >(null);
+  const [teacherEmailSelected, setTeacherEmailSelected] = useState<
+    string | null
+  >(null);
   const [infractionDescriptionSelected, setInfractionDescriptionSelected] =
     useState("");
   const [toast, setToast] = useState({ display: false, message: "" });
-  const [studentNames, setStudentNames] = useState([]);
+  const [studentNames, setStudentNames] = useState<StudentOption[]>([]);
   const [loading, setLoading] = useState(false);
   const [openModal, setOpenModal] = useState({
     display: false,
@@ -62,7 +90,7 @@ const CreateOfficeReferralPanel = ({ data = {} }) => {
     }
   }, [storageEmail]);
 
-  const [currency, setCurrency] = useState(0);
+  const [currency, setCurrency] = useState<number>(0);
 
   const defaultTheme = createTheme();
 
@@ -92,29 +120,14 @@ const CreateOfficeReferralPanel = ({ data = {} }) => {
       value: "300 - Indecent Exposure",
       label: "300 - Indecent Exposure",
     },
-  ];
-
-  const descriptions = {
-    "Failure to Complete Work":
-      "Please provide a description of the overdue assignment, its original due date, and include a hyperlink to the assignment if accessible. Additionally, explain the impact the missing assignment is currently having on their overall grade and the points the student can earn by completing the work.",
-
-    "Positive Behavior Shout Out!": "",
-  };
-
-  const getDescription = (selectedOption) => {
-    return (
-      descriptions[selectedOption] ||
-      "Description of Behavior/Event. This will be sent directly to the student and guardian so be sure to provide accurate and objective facts."
-    );
-  };
-
-  const headers = {
-    Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
-  };
+  ] as const;
 
   const url = `${baseUrl}/student/v1/allStudents`; // Replace with your actual API endpoint
 
   useEffect(() => {
+    const headers = {
+      Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
+    };
     axios
       .get(url, { headers }) // Pass the headers option with the JWT token
       .then(function (response) {
@@ -124,14 +137,14 @@ const CreateOfficeReferralPanel = ({ data = {} }) => {
         console.error(error);
         setListOfStudents([]);
       });
-  }, []);
+  }, [url]);
 
   const selectOptions = (listOfStudents || []).map((student) => ({
     value: student.studentEmail, // Use a unique value for each option
     label: `${student.firstName} ${student.lastName} - ${student.studentEmail}`, // Display student's full name as the label
   }));
 
-  const getPhoneNumber = (email) => {
+  const getPhoneNumber = (email: string) => {
     if (email != null) {
       const result = (listOfStudents || []).filter(
         (student) => (student.studentEmail = email)
@@ -150,24 +163,33 @@ const CreateOfficeReferralPanel = ({ data = {} }) => {
   };
 
   //Mapping selected students pushing indivdual payloads to post
-  const handleSubmit = (event) => {
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    const headers = {
+      Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
+    };
+
     event.preventDefault();
     setLoading(true);
-    setOpenModal({ display: false, message: "" });
-    const payloadContent = [];
-    studentNames.map((student) => {
-      const referralCode = {
-        codeKey: infractionTypeSelected.split("-")[0] || "",
-        codeName: infractionTypeSelected.split("-")[1] || "",
-      };
+    setOpenModal({ display: false, message: "", buttonType: "" });
+    const payloadContent: OfficeReferralPayload[] = [];
+    studentNames.forEach((student) => {
+      let referralCode = { codeKey: 0, codeName: "" };
 
-      const studentPayload = {
-        studentEmail: student.value || "",
-        teacherEmail: teacherEmailSelected || "",
-        classPeriod: infractionPeriodSelected || "",
-        referralCode: referralCode || "",
-        referralDescription: [infractionDescriptionSelected] || [],
-        currency: currency || "",
+      if (infractionTypeSelected) {
+        const [key, name] = infractionTypeSelected.split("-");
+        referralCode = {
+          codeKey: Number(key ?? 0),
+          codeName: name ?? "",
+        };
+      }
+
+      const studentPayload: OfficeReferralPayload = {
+        studentEmail: student.value ?? "",
+        teacherEmail: teacherEmailSelected ?? "",
+        classPeriod: infractionPeriodSelected ?? "",
+        referralCode: referralCode,
+        referralDescription: infractionDescriptionSelected ?? "",
+        currency: currency ?? 0,
       };
       payloadContent.push(studentPayload);
       return payloadContent;
@@ -198,16 +220,20 @@ const CreateOfficeReferralPanel = ({ data = {} }) => {
       });
   };
 
-  const handleInfractionPeriodChange = (event) => {
+  const handleInfractionPeriodChange = (
+    event: SelectChangeEvent<string | null>
+  ) => {
     setInfractionPeriodSelected(event.target.value);
   };
 
-  const handleInfractionTypeChange = (event) => {
+  const handleInfractionTypeChange = (
+    event: SelectChangeEvent<string | null>
+  ) => {
     setInfractionTypeSelected(event.target.value);
   };
 
-  const handleCurrencyChange = (event) => {
-    const enteredValue = event.target.value;
+  const handleCurrencyChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const enteredValue = Number(event.target.value);
     // Check if the entered value is greater than or equal to the minimum value
     if (enteredValue >= 0) {
       // Fix this to display toast if difference is negative
@@ -232,7 +258,10 @@ const CreateOfficeReferralPanel = ({ data = {} }) => {
     }
   };
 
-  const handleClose = (event, reason) => {
+  const handleClose = (
+    event: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
     if (reason === "clickaway") {
       return;
     }
@@ -241,7 +270,7 @@ const CreateOfficeReferralPanel = ({ data = {} }) => {
   };
 
   let difference =
-    (data?.teacher.currency || 0) -
+    (data?.teacher?.currency ?? 0) -
     currency * (studentNames.length ? studentNames.length : 0);
 
   return (
@@ -249,11 +278,15 @@ const CreateOfficeReferralPanel = ({ data = {} }) => {
       {toast.display === true && (
         <Snackbar
           anchorOrigin={{ vertical: "top", horizontal: "center" }}
-          open={toast}
+          open={toast.display}
           autoHideDuration={6000}
           onClose={handleClose}
         >
-          <Alert Close={handleClose} severity="success" sx={{ width: "100%" }}>
+          <Alert
+            onClose={handleClose}
+            severity="success"
+            sx={{ width: "100%" }}
+          >
             {toast.message}
           </Alert>
         </Snackbar>
@@ -267,28 +300,28 @@ const CreateOfficeReferralPanel = ({ data = {} }) => {
             <div className="modal-buttons">
               <button
                 onClick={() => {
-                  setOpenModal({ display: false, message: "" });
+                  setOpenModal({ display: false, message: "", buttonType: "" });
                 }}
               >
                 Cancel
               </button>
               {openModal.buttonType === "submit" && (
-                <Button
-                  disabled={
-                    !infractionPeriodSelected ||
-                    !infractionTypeSelected ||
-                    !infractionDescriptionSelected ||
-                    studentNames.length === 0 ||
-                    difference < 0
-                  }
-                  type="submit"
-                  onClick={handleSubmit}
-                  width="50%"
-                  variant="contained"
-                  sx={{ height: "100%" }} // Set explicit height
-                >
-                  Submit
-                </Button>
+                <form onSubmit={handleSubmit}>
+                  <Button
+                    disabled={
+                      !infractionPeriodSelected ||
+                      !infractionTypeSelected ||
+                      !infractionDescriptionSelected ||
+                      studentNames.length === 0 ||
+                      difference < 0
+                    }
+                    type="submit"
+                    variant="contained"
+                    sx={{ height: "100%", width: "100%" }} // Set explicit height
+                  >
+                    Submit
+                  </Button>
+                </form>
               )}
             </div>
           </div>
@@ -338,12 +371,11 @@ const CreateOfficeReferralPanel = ({ data = {} }) => {
                   onChange={(event, newValue) => setStudentNames(newValue)}
                   options={selectOptions} // Pass the selectOptions array here
                   getOptionLabel={(option) => option.label}
-                  inputLabelProps={{ style: { fontSize: 18 } }}
                   renderInput={(params) => (
                     <TextField
                       {...params}
                       className="student-dropdown"
-                      inputLabelProps={{ style: { fontSize: 18 } }}
+                      InputLabelProps={{ style: { fontSize: 18 } }}
                       label="Select Students"
                       sx={{ width: "100%" }}
                     />
@@ -351,7 +383,6 @@ const CreateOfficeReferralPanel = ({ data = {} }) => {
                   renderTags={(value, getTagProps) =>
                     value.map((option, index) => (
                       <Chip
-                        key={option.value}
                         label={option.label}
                         sx={{ fontSize: 18 }}
                         {...getTagProps({ index })}
@@ -456,7 +487,11 @@ const CreateOfficeReferralPanel = ({ data = {} }) => {
                         <MenuItem
                           key={name.value}
                           value={name.value}
-                          style={getStyles(name, studentNames, defaultTheme)}
+                          style={getStyles(
+                            name.value,
+                            defaultTheme,
+                            studentNames
+                          )}
                           sx={{ fontSize: 18 }}
                         >
                           {name.label}
@@ -467,11 +502,10 @@ const CreateOfficeReferralPanel = ({ data = {} }) => {
                 </div>
                 <div className="question-container-text-area">
                   <p style={{ fontSize: 24 }}>
-                    {infractionTypeSelected === "Failure to Complete Work" ||
-                    infractionTypeSelected === "Positive Behavior Shout Out!" ||
-                    infractionTypeSelected === "Behavioral Concern"
-                      ? getDescription(infractionTypeSelected)
-                      : "Description of Behavior/Event. This will be sent directly to the student and guardian so be sure to provide accurate and objective facts as well as do NOT include the names of any other students."}
+                    Description of Behavior/Event. This will be sent directly to
+                    the student and guardian so be sure to provide accurate and
+                    objective facts as well as do NOT include the names of any
+                    other students.
                   </p>
                 </div>
                 <div>
@@ -501,14 +535,16 @@ const CreateOfficeReferralPanel = ({ data = {} }) => {
                     }}
                     sx={{ fontSize: 40 }} // Increase the font size of the input text
                     onKeyDown={(e) => {
+                      const target = e.target as HTMLTextAreaElement;
+
                       if (e.key === "Enter") {
                         e.preventDefault(); // Prevent form submission on Enter key
 
                         // Get the current cursor position
-                        const { selectionStart, selectionEnd } = e.target;
+                        const { selectionStart, selectionEnd } = target;
 
                         // Get the current value of the input
-                        const value = e.target.value;
+                        const value = target.value;
 
                         // Insert a newline character (\n) at the cursor position
                         const newValue =
@@ -517,8 +553,8 @@ const CreateOfficeReferralPanel = ({ data = {} }) => {
                           value.substring(selectionEnd);
 
                         // Update the input value and set the cursor position after the newline character
-                        e.target.value = newValue;
-                        e.target.selectionStart = e.target.selectionEnd =
+                        target.value = newValue;
+                        target.selectionStart = target.selectionEnd =
                           selectionStart + 1;
 
                         // Trigger the change event manually (React doesn't update the value automatically)

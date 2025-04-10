@@ -16,7 +16,7 @@ import "../admin/admin.css";
 import { NavigationLoggedIn } from "src/components/globalComponents/updatedLanding/navigation-loggedIn.jsx";
 import { handleLogout } from "src/utils/helperFunctions";
 import SpendPage from "src/components/globalComponents/spendPage/spend-page";
-import CreateOfficeReferralPanel from "src/components/globalComponents/referrals/createOfficeReferral.js";
+import CreateOfficeReferralPanel from "src/components/globalComponents/referrals/createOfficeReferral";
 import { ManageSpottersPopup } from "src/components/globalComponents/components/generic-components/manageSpottersPopup";
 import ClassUpdate from "src/components/globalComponents/components/generic-components/classUpdate";
 import { baseUrl } from "src/utils/jsonData";
