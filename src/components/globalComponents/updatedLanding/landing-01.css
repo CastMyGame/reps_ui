@@ -1,353 +1,670 @@
-.page{
-    width: 90%;
+.page {
+  width: 90%;
 }
-.landing-header{
-    display: flex;
-    height: 7em;
-    background-color: #25444C;
-    width: 100%;
-    justify-content: left;
-    align-content: center;
-    padding: 0.5em 2em;
-}
-
-.logo-text{
-width: 25%;
-
+.landing-header {
+  display: flex;
+  height: 7em;
+  background-color: #25444c;
+  width: 100%;
+  justify-content: flex-start;
+  align-content: center;
+  padding: 0.5em 2em;
 }
 
-.logo-text >h1{
-    height: 20em;
-    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-    color:#DE8455;
-    font-weight: bolder;
-
+.logo-text {
+  width: 25%;
 }
 
-.logo-text >h1 >span{
-    color: white;
+.logo-text h1 {
+  font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
+    "Lucida Sans", Arial, sans-serif;
+  color: #de8455;
+  font-weight: bolder;
 }
 
-
-.landing-header-menu{
-    text-align: center;
-    position: relative;
-    width: 20%;
-    color: white;
-    height: max-content;
-    padding: 1.0em;
-    font-size: x-large;
+.logo-text h1 span {
+  color: white;
 }
 
-.landing-header-menu:hover{
-    background-color: #5d949d;
+.landing-header-menu {
+  text-align: center;
+  position: relative;
+  width: 20%;
+  color: white;
+  min-height: fit-content;
+  padding: 1em;
+  font-size: x-large;
 }
 
-.landing-header-menu-login{
-    position: relative;
-    margin-left: 1em;
-    width: 15%;
-    color: white;
-    height: max-content;
-    padding: 1.0em;
-    font-size: x-large;
-    border-radius: 16px;
-    text-align: center;
-    background-color:#6ce2ec ;
+.landing-header-menu:hover {
+  background-color: #5d949d;
 }
 
-.landing-header-menu-login:hover{
-    background-color: #4a9fa7;
+.landing-header-menu-login {
+  position: relative;
+  margin-left: 1em;
+  width: 15%;
+  color: white;
+  min-height: fit-content;
+  padding: 1em;
+  font-size: x-large;
+  border-radius: 16px;
+  text-align: center;
+  background-color: #6ce2ec;
+}
+
+.landing-header-menu-login:hover {
+  background-color: #4a9fa7;
 }
 
 .intro-panel {
-    background-image: url(/public/backgroundPanel.png);
-    height: 1250px; /* Default height for large screens */
-    width: 97vw;
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center; /* Ensures the image is centered */
+  background-image: url("/public/backgroundPanel.png");
+  height: 120vh; /* Default height for large screens */
+  width: 100%;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center; /* Ensures the image is centered */
 }
 
 /* Media query for smaller screens */
 @media (max-width: 768px) {
-    .intro-panel {
-        height: 800px; /* Adjust the height for smaller screens */
-    }
+  .intro-panel {
+    height: 120vh; /* Default height for large screens */
+    width: 100%;
+  }
 }
 
 @media (max-width: 480px) {
-    .intro-panel {
-        height: 600px; /* Further reduce height for very small screens */
-    }
-}
-
-
-.intro-panel-cards{
-    display: flex;
+  .intro-panel {
+    height: 120vh; /* Default height for large screens */
     width: 100%;
-    overflow-x: auto;
-    
-
-}
-.ip-card{
-    display: flex;
-    flex-direction: column;
-    width: 20%;
-    height:300px;
-    background-color: #5d949d;
-    padding: 1em;
-    border: silver solid 1px;
-    justify-content: center;
-    align-items: center;
-    align-content: center;
-
-
+    background-image: url("/public/backgroundPanel.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: #25444c; /* Fallback background color */
+  }
 }
 
-.ip-card-img{
-    padding: 1em;
-    height: 200px;
-    width: 200px;
-
+.intro-panel-cards {
+  display: flex;
+  width: 100%;
+  overflow-x: auto;
+}
+.ip-card {
+  display: flex;
+  flex-direction: column;
+  width: 20%;
+  height: 300px;
+  background-color: #5d949d;
+  padding: 1em;
+  border: silver solid 1px;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
 }
 
-.ip-card-content{
-    color:white;
-    font-size: x-large;
-    overflow-wrap: break-word;
-    height: 200px;
-    text-align: center;
+.ip-card-img {
+  padding: 1em;
+  height: 200px;
+  width: 200px;
 }
 
-.landing-summary-container{
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    width: 100%;
-    background-color: #5d949d;
-    padding: 2em;
+.ip-card-content {
+  color: white;
+  font-size: x-large;
+  overflow-wrap: break-word;
+  height: 200px;
+  text-align: center;
+}
 
-    
-
+.landing-summary-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  width: 100%;
+  background-color: #5d949d;
+  padding: 2em;
 }
 
 .landing-summary-container-points {
-    color: white;
-    font-size: x-large;
-    padding: 2em;
-    height: auto;
-    width: 48%; /* Adjust to 48% so two items fit in a row with some spacing */
-    border: #febd73 solid 5px;
-    border-radius: 10px;
-    box-sizing: border-box; /* Ensures the width includes padding and borders */
-    margin-bottom: 1em; /* Adds space between rows */
+  color: white;
+  font-size: x-large;
+  padding: 2em;
+  height: auto;
+  width: 48%; /* Adjust to 48% so two items fit in a row with some spacing */
+  border: #febd73 solid 5px;
+  border-radius: 10px;
+  box-sizing: border-box; /* Ensures the width includes padding and borders */
+  margin-bottom: 1em; /* Adds space between rows */
 }
 
-.point-title{
-    font-size: xx-large;
-    text-align: center;
-    font-weight: bolder;
-
+.point-title {
+  font-size: xx-large;
+  text-align: center;
+  font-weight: bolder;
 }
 
-
-.about-us{
-   
+.about-container {
+  width: 100%; /* Ensures full width */
+  max-width: 1200px; /* Adjust based on your design */
+  margin: 0 auto; /* Centers them */
+  padding: 2rem; /* Makes padding consistent */
+  box-sizing: border-box; /* Prevents padding from increasing the size */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px; /* Adjust as needed */
 }
-.about-container{
-    padding: 3em;
+.about-us-title {
+  font-size: xx-large;
+  margin-bottom: 1em;
+  font-weight: bold;
 }
-.about-us-title{
-    font-size: xx-large;
-    margin-bottom: 1em;
-    font-weight: bold;
-
-}
-.about-us-content{
-    font-size: large;
-    margin-bottom: 1em;
-
-
+.about-us-content {
+  font-size: large;
+  margin-bottom: 1em;
 }
 
 .testimonials-container {
-    background-color: #5d949d;
-    padding: 2em;
+  background-color: #5d949d;
+  width: 100%; /* Ensures full width */
+  max-width: 1200px; /* Adjust based on your design */
+  margin: 0 auto; /* Centers them */
+  padding: 2rem; /* Makes padding consistent */
+  box-sizing: border-box; /* Prevents padding from increasing the size */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px; /* Adjust as needed */
 }
 
 .testimonial-title {
-    color: black;
-    font-size: xx-large;
-    text-align: center;
-    font-weight: bolder;
-    background-color: #5d949d ;
-    padding: 1em;
+  color: black;
+  font-size: xx-large;
+  text-align: center;
+  font-weight: bolder;
+  background-color: #5d949d;
+  padding: 1em;
 }
 
 .testimonial-carrousel {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    width: 100%;
-    background-color: #5d949d;
-    padding: 2em;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  width: 100%;
+  background-color: #5d949d;
+  padding: 2em;
 }
 
 .testimonial {
-    align-content: center;
-    color: black;
-    background-color: white;
-    padding: 1.5em;
-    height: 300px;
-    width: 33%;
-    border: #143c3c solid 5px;
-    border-radius: 10px;
-    box-sizing: border-box;
-    margin-bottom: 1em;
-    position: relative; /* Allows positioning of pseudo-elements */
+  align-content: center;
+  color: black;
+  background-color: white;
+  padding: 1.5em;
+  height: auto; /* Change from fixed 300px to auto */
+  width: 30%; /* Reduce width a bit for better spacing */
+  border: #143c3c solid 5px;
+  border-radius: 10px;
+  box-sizing: border-box;
+  margin-bottom: 1em;
+  position: relative;
+  word-break: break-word; /* Ensures long words break properly */
+  overflow-wrap: break-word; /* Helps break long text properly */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+@media (max-width: 1024px) {
+  .testimonial {
+    width: 45%; /* Take up more space on tablets */
+  }
+}
+
+@media (max-width: 768px) {
+  .testimonial {
+    background-color: white; /* Ensures readability */
+    width: 100%; /* Make testimonials full width on mobile */
+    height: auto; /* Allow them to expand based on content */
+  }
 }
 
 .testimonial::before {
-    content: "“"; /* Opening quotation mark */
-    font-size: 5em; /* Larger size for dramatic effect */
-    color: #febd73;
-    position: absolute;
-    top: 1em;
-    left: 10px;
-    line-height: 0; /* Removes extra space around the quotation mark */
+  content: "“"; /* Opening quotation mark */
+  font-size: 4em; /* Larger size for dramatic effect */
+  color: #febd73;
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 
 .testimonial::after {
-    content: "”"; /* Closing quotation mark */
-    font-size: 5em;
-    color: #febd73;
-    position: absolute;
-    bottom: 1em;
-    right: 10px;
-    line-height: 0; /* Removes extra space around the quotation mark */
+  content: "”"; /* Closing quotation mark */
+  font-size: 4em;
+  color: #febd73;
+  position: absolute;
+  bottom: 0;
+  right: 0;
 }
 
 .testimonial p {
-    margin-top: 1em;
-    margin: 0;
-    padding: 0;
-    font-size: 1em;
-    line-height: 1.5em;
-    text-align: justify;
-    position: relative; /* Ensure text is in front of the pseudo-elements */
+  margin-top: 1em;
+  font-size: 1em;
+  line-height: 1.5em;
+  text-align: justify;
+  position: relative; /* Ensure text is in front of the pseudo-elements */
+  padding: 1em; /* Add some padding inside */
 }
 
-
-.book-your-demo-container{
-    background-color: #143c3c;
-    height: 700px;
-    display: flex;
-
+.book-your-demo-container {
+  display: flex;
+  background-color: #5d949d !important; /* Ensures the background remains */
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  width: 100%;
+  max-width: 1200px; /* Adjust based on your design */
+  margin: 0 auto; /* Centers them */
+  padding: 2rem;
+  box-sizing: border-box;
+  overflow: hidden; /* Prevents unwanted overflow */
+  min-height: auto; /* Allows height to adjust dynamically */
 }
-.demo-text{
-    color:white;
-    padding: 2em;
-    width: 48%;
-
+.demo-text {
+  max-width: 800px;
+  width: 100%;
+  font-size: 1.2rem;
+  line-height: 1.6;
+  word-wrap: break-word;
 }
-ul.bullet{
-    margin-top: 1em;
-    color: white;
-    list-style-type: disc ;
-    list-style-position: outside;
-    
-
-}
-
-
-.book-your-demo-form{
-    padding:2em;
-    height: 100%;
-    width: 48%;
-    color: white;
-    text-align: center;
-}
-.form-header{
+.bullet {
+  text-align: left;
+  margin: 1rem 0;
+  padding-left: 1.5rem;
 }
 
-
- .form{}
-
-
- .form-logo-text{
-    font-size: xx-large;
-    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-    color:#DE8455;
-    font-weight: bolder;
-
+.bullet li {
+  margin-bottom: 0.5rem;
+  word-wrap: break-word;
 }
 
-.form-logo-2{    
-    font-size: xx-large;
-    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-    color:white;
-    font-weight: bolder;}
-
-.form-text-content{
-    font-size: large;
+.book-your-demo-form {
+  padding: 2em;
+  height: 100%;
+  width: 48%;
+  color: white;
+  text-align: center;
 }
 
+.form-logo-text {
+  font-size: xx-large;
+  font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
+    "Lucida Sans", Arial, sans-serif;
+  color: #de8455;
+  font-weight: bolder;
+}
+
+.form-logo-2 {
+  font-size: xx-large;
+  font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
+    "Lucida Sans", Arial, sans-serif;
+  color: white;
+  font-weight: bolder;
+}
+
+.form-text-content {
+  font-size: large;
+  color: white;
+}
 
 .form-container {
+  color: black;
+  display: flex;
+  flex-wrap: wrap;
+  background-color: #143c3c;
+  border: 0;
+  height: 80%;
+}
+
+.form-row {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 1em;
+}
+
+.form-column {
+  width: 48%; /* Adjust for two columns with space in between */
+}
+
+.full-width {
+  width: 100%; /* Full width for the last textarea */
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+textarea {
+  width: 100%; /* Ensure inputs take up full column width */
+  padding: 0.5em;
+  height: 50px;
+  box-sizing: border-box;
+}
+
+input[type="submit"] {
+  margin-left: 25%;
+  font-size: large;
+  background-color: orange;
+  margin-top: 1em;
+  width: 50%;
+  color: white;
+  min-height: fit-content;
+  padding: 1em;
+  border-radius: 16px;
+  text-align: center;
+}
+
+.panel-text {
+  position: absolute;
+  font-size: xx-large;
+  top: 65%;
+  left: 40%;
+  width: 500px;
+}
+
+.login-btn {
+  display: inline-block;
+  line-height: 15px;
+  padding: 9px;
+  text-align: center;
+  margin: 14px 0 13px 19px;
+  background: #555;
+  color: #fff;
+  width: 75px;
+  border-radius: 20px;
+  font-family: Lato, sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  max-width: 264px;
+}
+
+.none {
+  display: none;
+}
+
+#menu.navbar-default .navbar-nav > li > div {
+  font-family: "Lato", sans-serif;
+  text-transform: uppercase;
+  color: #555;
+  font-size: 15px;
+  font-weight: 400;
+  padding: 8px 2px;
+  border-radius: 0;
+  margin: 9px 20px 0;
+}
+#menu.navbar-default .navbar-nav > li > div:after {
+  display: block;
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(to right, #6372ff 0%, #5ca9fb 100%);
+  content: "";
+  transition: width 0.2s;
+}
+#menu.navbar-default .navbar-nav > li > div:hover:after {
+  width: 100%;
+}
+.navbar-default .navbar-nav > .active > div,
+.navbar-default .navbar-nav > .active > div:hover,
+.navbar-default .navbar-nav > .active > div:focus {
+  background-color: transparent;
+}
+.navbar-default .navbar-nav > .active > div:after,
+.navbar-default .navbar-nav > .active > div:hover:after,
+.navbar-default .navbar-nav > .active > div:focus:after {
+  display: block !important;
+  position: absolute !important;
+  left: 0 !important;
+  bottom: -1px !important;
+  width: 100% !important;
+  height: 2px !important;
+  background: linear-gradient(to right, #6372ff 0%, #5ca9fb 100%) !important;
+  content: "" !important;
+  transition: width 0.2s !important;
+}
+
+.feature-menu-dropdown {
+  position: absolute !important;
+  color: white;
+  left: 0 !important;
+  width: 100% !important;
+  background: linear-gradient(to right, #6372ff 0%, #5ca9fb 100%) !important;
+  z-index: 999;
+  min-width: fit-content; /* Ensure width adjusts to content */
+}
+
+.feature-menu-dropdown .item {
+  height: 100%;
+  padding: 5px;
+  font-size: smaller;
+  z-index: 999;
+  color: white;
+  min-width: fit-content; /* Ensure width adjusts to content */
+}
+
+.feature-menu-dropdown .item:hover {
+  height: 100%;
+  background-color: silver;
+  z-index: 999;
+  min-width: fit-content; /* Ensure width adjusts to content */
+}
+
+/* General styles for the hamburger container */
+.hamburger-container {
+  display: none; /* Hide by default */
+  padding-right: 5%;
+}
+
+@media only screen and (max-width: 768px) {
+  /* Show the hamburger menu when the screen width is below 768px */
+  .hamburger-container {
+    display: block; /* Show hamburger menu */
+    width: 100%;
+  }
+
+  /* Hide the regular navbar content */
+  .navbar-header .navbar-brand,
+  .navbar-header .container {
+    display: none;
+  }
+}
+
+@media only screen and (min-width: 769px) {
+  /* Hide the hamburger menu when the screen width is 769px or more */
+  .hamburger-container {
+    display: none;
+  }
+
+  /* Show the regular navbar content */
+  .navbar-header .navbar-brand,
+  .navbar-header .container {
+    display: inline-block;
+  }
+}
+
+@media (max-width: 768px) {
+  .landing-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+    background-color: #25444c; /* Ensure background color stays */
+  }
+
+  .testimonial-title {
+    color: black !important;
+  }
+
+  .landing-header-menu,
+  .landing-header-menu-login {
+    color: white !important; /* Ensures text remains visible */
+  }
+
+  .ip-card-content {
+    color: white !important;
+  }
+
+  .landing-header-menu {
+    display: block;
+    width: 100%;
+    text-align: center;
+    padding: 8px;
+  }
+
+  .logo-text h1 {
+    font-size: 1.5rem; /* Reduce size */
+  }
+}
+
+@media (max-width: 768px) {
+  .intro-panel-cards {
+    display: flex;
+    flex-direction: column; /* Stack cards in a column */
+    align-items: center; /* Center-align the cards */
+  }
+
+  .ip-card {
+    width: 90%; /* Make each card take most of the width */
+    margin-bottom: 20px; /* Add spacing between stacked cards */
+    text-align: center;
+  }
+
+  .ip-card-img {
+    max-width: 80%; /* Make images responsive */
+    height: auto; /* Maintain aspect ratio */
+  }
+
+  .ip-card-content {
+    font-size: 16px; /* Adjust text size for mobile */
+  }
+}
+
+/* General Mobile Styles */
+@media (max-width: 768px) {
+  .landing-header {
+    flex-direction: column;
+    align-items: center;
+    height: auto;
+    padding: 1em;
+  }
+
+  .landing-header-menu,
+  .landing-header-menu-login {
+    width: 100%;
+    padding: 0.8em;
+    font-size: large;
+  }
+
+  /* Make the logo text centered */
+  .logo-text {
+    text-align: center;
+    width: 100%;
+  }
+
+  /* Fix intro panel for mobile */
+  .intro-panel {
+    height: 500px;
+    width: 100%;
+    background-size: cover;
+  }
+
+  /* Make cards wrap instead of overflowing */
+  .intro-panel-cards {
     display: flex;
     flex-wrap: wrap;
-    background-color:#143c3c;
-    border: 0;
-    height: 80%;
+    justify-content: center;
+  }
 
- }
-  
-  .form-row {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
+  .ip-card {
+    width: 90%;
     margin-bottom: 1em;
   }
-  
-  .form-column {
-    width: 48%; /* Adjust for two columns with space in between */
+
+  .landing-summary-container,
+  .testimonials-container,
+  .testimonial-carrousel {
+    background-color: #5d949d !important; /* Ensures the background remains */
   }
-  
-  .full-width {
-    width: 100%; /* Full width for the last textarea */
+
+  /* Make summary points full width */
+  .landing-summary-container-points {
+    width: 100%;
+    padding: 1.5em;
   }
-  
-  input[type="text"],
-  input[type="email"],
-  input[type='password'],
-  textarea {
-    width: 100%; /* Ensure inputs take up full column width */
-    padding: 0.5em;
-    height: 50px;
-    box-sizing: border-box;
+
+  /* Fix about section text size */
+  .about-container {
+    padding: 2em;
   }
-  
-  input[type="submit"] {
-    margin-left: 25%;
-    font-size: large;
-    background-color: orange;
-    margin-top: 1em;
-    width: 50%;
-    color: white;
-    height: max-content;
-    padding: 1.0em;
+
+  .about-us-content {
     font-size: medium;
-    border-radius: 16px;
-    text-align: center;  }
-  
-.panel-text{
-    position: absolute;
-    font-size: xx-large;
-    top: 65%;
-    left:40%;
-    width: 500px;
+  }
+
+  /* Center testimonials */
+  .testimonial-carrousel {
+    text-align: center;
+  }
+
+  /* Fix form inputs */
+  .form-row {
+    flex-direction: column;
+  }
+
+  .form-column {
+    width: 100%;
+  }
+
+  /* Adjust buttons */
+  input[type="submit"] {
+    width: 100%;
+  }
 }
-.form-container{
-    color:black
+
+/* Media query for small devices */
+@media (max-width: 768px) {
+  .book-your-demo-container {
+    padding: 1rem; /* Reduce padding */
+    min-height: auto; /* Allow dynamic height */
+  }
+}
+
+@media (max-width: 480px) {
+  .book-your-demo-container {
+    padding: 0.5rem; /* Further reduce padding */
+  }
+}
+
+/* Adjust for smaller screens */
+@media (max-width: 768px) {
+  .testimonials-container,
+  .about-container,
+  .book-your-demo-container {
+    padding: 1.5rem;
+    min-height: auto; /* Allows dynamic height on smaller screens */
+  }
+}
+
+@media (max-width: 480px) {
+  .testimonials-container,
+  .about-container,
+  .book-your-demo-container {
+    padding: 1rem;
+  }
 }

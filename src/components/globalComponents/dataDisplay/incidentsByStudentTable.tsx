@@ -1,19 +1,22 @@
 import React, { useEffect, useState } from "react";
 import { AgGridReact } from "ag-grid-react";
 import { ColDef } from "ag-grid-community";
-import {
-  AdminOverviewDto,
-  StudentIncidentList,
-  TeacherDto,
-} from "src/types/responses";
+import { OfficeReferral, StudentIncidentList, TeacherDto, TeacherReferral } from "src/types/responses";
 import {
   currentWeek,
   extractDataByWeek,
 } from "src/helperFunctions/helperFunctions";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
+import { Student } from "src/types/school";
 
-const IncidentsByStudentTable: React.FC<AdminOverviewDto> = ({
+interface IncidentsByStudentTableProps {
+  writeUpResponse: TeacherDto[];
+  officeReferrals: OfficeReferral[];
+  students: Student[];
+}
+
+const IncidentsByStudentTable: React.FC<IncidentsByStudentTableProps> = ({
   writeUpResponse = [],
   officeReferrals = [],
   students = [],
@@ -22,15 +25,15 @@ const IncidentsByStudentTable: React.FC<AdminOverviewDto> = ({
     StudentIncidentList[]
   >([]);
 
-  // Handle null or undefined writeUpResponse and officeReferrals
-  const weekTmData = writeUpResponse
-    ? extractDataByWeek(currentWeek, writeUpResponse as TeacherDto[])
-    : [];
-  const weekOmData = officeReferrals
-    ? extractDataByWeek(currentWeek, officeReferrals as TeacherDto[])
-    : [];
-
   useEffect(() => {
+    // Handle null or undefined writeUpResponse and officeReferrals
+  const weekTmData = writeUpResponse
+  ? extractDataByWeek(currentWeek, writeUpResponse)
+  : [];
+const weekOmData = officeReferrals
+  ? extractDataByWeek(currentWeek, officeReferrals)
+  : [];
+
     // Combine weekTmData and weekOmData into one array
     const combinedWeekData = [...weekTmData, ...weekOmData];
 
@@ -38,10 +41,12 @@ const IncidentsByStudentTable: React.FC<AdminOverviewDto> = ({
     const studentIncidentMap: Record<string, StudentIncidentList> = {};
 
     // Loop through combinedWeekData to accumulate incident counts per student
-    combinedWeekData.forEach((incident: TeacherDto) => {
-      const studentEmail = incident.studentEmail || "Unknown";
-      const studentFirstName = incident.studentFirstName || "Unknown";
-      const studentLastName = incident.studentLastName || "";
+    combinedWeekData.forEach((incident: TeacherDto | TeacherReferral | OfficeReferral) => {
+      const teacherDtoIncident = incident as TeacherDto; // Type assertion here
+
+      const studentEmail = teacherDtoIncident.studentEmail || "Unknown";
+      const studentFirstName = teacherDtoIncident.studentFirstName || "Unknown";
+      const studentLastName = teacherDtoIncident.studentLastName || "";
 
       // If the student doesn't exist in the map, add them
       if (!studentIncidentMap[studentEmail]) {
@@ -106,7 +111,7 @@ const IncidentsByStudentTable: React.FC<AdminOverviewDto> = ({
         style={{ height: "25vh", width: "100%" }}
       >
         <AgGridReact
-          rowData={studentIncidentRowData as StudentIncidentList[]}
+          rowData={studentIncidentRowData}
           columnDefs={colDefs as ColDef<StudentIncidentList>[]}
           domLayout="autoHeight" // Ensures that the height is handled properly
         />

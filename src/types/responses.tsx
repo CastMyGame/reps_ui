@@ -10,18 +10,28 @@ export interface OfficeReferralCode {
   codeName: string;
 }
 
-export interface GuidanceResponse {
+export interface ThreadEvent {
+  date: Date | null;
+  createdBy: string;
+  event: string;
+  content: string;
+}
+
+export interface GuidanceReferral {
   guidanceId: string;
   studentEmail: string;
   schoolName: string;
   timeCreated: Date | null;
+  timeClosed: Date | null;
+  classPeriod: string;
   teacherEmail: string;
   guidanceEmail: string;
   referralDescription: [string];
   status: string;
-  notesArray: [string];
+  notesArray: [ThreadEvent];
   linkToPunishment: string;
   followUpDate: Date | null;
+  infractionName: string;
 }
 
 export interface StudentResponse {
@@ -76,7 +86,7 @@ export interface TeacherReferral {
   timeClosed: Date;
   classPeriod: string;
   teacherEmail: string;
-  isArchived: boolean;
+  archived: boolean;
   isStateFiled: boolean;
   stateIncidentNumber: string;
   archivedBy: string;
@@ -84,10 +94,6 @@ export interface TeacherReferral {
   archivedOn: Date;
   mapIndex: number;
   infractionDescription: string[];
-}
-
-export interface StudentPunishment {
-  data: TeacherReferral;
 }
 
 export interface TeacherDto {
@@ -104,24 +110,31 @@ export interface TeacherDto {
 }
 
 export interface TeacherOverviewDto {
-  punishmentResponse: TeacherDto;
-  writeUpResponse: TeacherDto;
-  shoutOutsResponse: TeacherDto;
-  officeReferrals: TeacherDto;
-  teacher: Employee;
-  school: School;
-  students: Student[]
+  punishmentResponse?: TeacherDto[];
+  writeUpResponse?: TeacherDto[];
+  shoutOutsResponse?: TeacherDto[];
+  officeReferrals?: OfficeReferral[];
+  teacher?: Employee;
+  school?: School;
+  students?: Student[];
 }
 
 export interface AdminOverviewDto {
-  punishmentResponse: TeacherDto;
-  writeUpResponse: TeacherDto;
-  shoutOutsResponse: TeacherDto;
+  punishmentResponse: TeacherDto[];
+  writeUpResponse: TeacherDto[];
+  shoutOutsResponse: TeacherDto[];
   teacher: Employee;
   school: School;
-  teachers: Employee;
-  officeReferrals: OfficeReferral;
+  teachers: Employee[];
+  officeReferrals: OfficeReferral[];
   students: Student[];
+}
+
+export interface PunishmentDto {
+  studentFirstName: string;
+  studentLastName: string;
+  studentEmail: string;
+  punishment: TeacherReferral;
 }
 
 export interface OfficeReferral {
@@ -130,6 +143,7 @@ export interface OfficeReferral {
   infractionLevel: string;
   studentEmail: string;
   adminEmail: string;
+  teacherEmail: string;
   schoolName: string;
   status: string;
   closedExplanation: string;

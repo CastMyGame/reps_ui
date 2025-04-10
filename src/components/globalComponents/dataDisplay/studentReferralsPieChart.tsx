@@ -1,19 +1,23 @@
 import ReactEcharts from "echarts-for-react";
-import { StudentPunishment, TeacherReferral } from "src/types/responses";
+import { TeacherReferral } from "src/types/responses";
 
-const StudentReferralsPieChart: React.FC<StudentPunishment> = ({
+interface StudentPieProps {
+  data: TeacherReferral[];
+}
+
+const StudentReferralsPieChart: React.FC<StudentPieProps> = ({
   data = [],
 }) => {
-  const referralData = (data as TeacherReferral[]).filter(
+  const referralData = (data).filter(
     (punishment: TeacherReferral) =>
       punishment.infractionName !== "Positive Shout Out!" ||
       "Behavioral Concern"
   ).length;
-  const positiveData = (data as TeacherReferral[]).filter(
+  const positiveData = (data).filter(
     (punishment: TeacherReferral) =>
       punishment.infractionName === "Positive Shout Out!"
   ).length;
-  const behavioralConcernData = (data as TeacherReferral[]).filter(
+  const behavioralConcernData = (data).filter(
     (punishment: TeacherReferral) =>
       punishment.infractionName === "Behavioral Concern"
   ).length;

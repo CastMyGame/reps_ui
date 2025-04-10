@@ -1,11 +1,10 @@
-import react, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import "./landing-01.css";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { baseUrl } from "src/utils/jsonData";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
-import { AlertProps } from "@mui/material/Alert";
 
 const summaryData = [
   {
@@ -146,7 +145,7 @@ const LandingPage = () => {
 
     try {
       const res = await axios.post(`${baseUrl}/auth`, payload);
-      if (res.data && res.data.userModel) {
+      if (res.data?.userModel) {
         const token = res.data.response;
         const userName = res.data.userModel.firstName;
         const schoolName = res.data.userModel.schoolName;
@@ -371,10 +370,10 @@ const LandingPage = () => {
       </div>
 
       <div className="testimonials-container" id="testimonials">
-        <div className="testimonial-title">Testimonial</div>
+        <div className="testimonial-title">Testimonials</div>
         <div className="testimonial-carrousel">
           {testimonialData.map((item) => {
-            return <div className="testimonial">{item.text}</div>;
+            return <div className="testimonial" key={item.text}>{item.text}</div>;
           })}
         </div>
       </div>

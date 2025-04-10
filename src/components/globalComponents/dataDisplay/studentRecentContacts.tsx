@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
   StudentContactList,
-  TeacherDto,
   TeacherOverviewDto,
 } from "src/types/responses";
 import { AgGridReact } from "ag-grid-react";
@@ -9,6 +8,7 @@ import { ColDef } from "ag-grid-community";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 import { dateCreateFormat } from "src/helperFunctions/helperFunctions";
+import { Student } from "src/types/school";
 
 const RecentContacts: React.FC<Partial<TeacherOverviewDto>> = ({
   punishmentResponse = [],
@@ -18,18 +18,20 @@ const RecentContacts: React.FC<Partial<TeacherOverviewDto>> = ({
   const [filteredData, setFilteredData] = useState<StudentContactList[]>([]);
 
   useEffect(() => {
-    // Ensure `students` is a valid array
     const safeStudents = Array.isArray(students) ? students : [];
-
-    const allContacts = [
-      ...(punishmentResponse as TeacherDto[]),
-      ...(officeReferrals as TeacherDto[]),
-    ].filter(Boolean); // Remove null/undefined
-
+  
+    // Create a lookup map for students by email
+    const studentMap = new Map<string, Student>();
+    safeStudents.forEach((student) => {
+      studentMap.set(student.studentEmail, student);
+    });
+  
+    const allContacts = [...punishmentResponse, ...officeReferrals].filter(Boolean);
+  
     const uniqueStudentEmails = new Set<string>();
     const recentContacts: StudentContactList[] = [];
-
-    // Sort the data in descending order by `timeCreated` to display the most recent first
+  
+    // Sort contacts by timeCreated (newest first)
     const sortedData = allContacts
       .slice()
       .sort((a, b) => {
@@ -37,56 +39,55 @@ const RecentContacts: React.FC<Partial<TeacherOverviewDto>> = ({
         const dateB = new Date(b.timeCreated || 0);
         return dateB.getTime() - dateA.getTime();
       });
-
+  
     sortedData.forEach((record) => {
       const studentEmail = record.studentEmail || "Unknown";
+  
+      // Get the student name from the lookup map
+      const studentData = studentMap.get(studentEmail);
+      const studentFirstName = "studentFirstName" in record ? record.studentFirstName : studentData?.firstName;
+      const studentLastName = "studentLastName" in record ? record.studentLastName : studentData?.lastName;
+
+      // Extract infraction description into a separate variable
+  let infractionDescription;
+  if ("infractionDescription" in record) {
+    infractionDescription = Array.isArray(record.infractionDescription)
+      ? record.infractionDescription.join(", ")
+      : record.infractionDescription || "";
+  } else {
+    infractionDescription = record.referralDescription || "";
+  }
+  
       if (!uniqueStudentEmails.has(studentEmail)) {
         uniqueStudentEmails.add(studentEmail);
         recentContacts.push({
           studentEmail,
-          studentName: `${record.studentFirstName || "Unknown"} ${
-            record.studentLastName || ""
-          }`.trim(),
-          timeCreated: record.timeCreated
-            ? dateCreateFormat(record.timeCreated)
-            : "N/A",
-          infractionName: record.infractionName || "",
-          infractionDescription: Array.isArray(record.infractionDescription)
-            ? record.infractionDescription.join(", ")
-            : record.infractionDescription || "",
+          studentName: `${studentFirstName ?? "Unknown"} ${studentLastName ?? ""}`.trim(),
+          timeCreated: record.timeCreated ? dateCreateFormat(record.timeCreated) : "N/A",
+          infractionName: "infractionName" in record 
+        ? record.infractionName 
+        : record.referralCode?.codeName || "",
+          infractionDescription,
         });
       }
     });
-
-    // Map over safeStudents to ensure no null error
+  
+    // Ensure all students appear in the list
     const allStudentsData = safeStudents.map((student) => {
-      const contact = recentContacts.find(
-        (contact) => contact.studentEmail === student.studentEmail
-      );
-
+      const contact = recentContacts.find((contact) => contact.studentEmail === student.studentEmail);
+  
       return (
         contact || {
           studentEmail: student.studentEmail || "Unknown",
-          studentName: `${student.firstName || "Unknown"} ${
-            student.lastName || ""
-          }`.trim(),
+          studentName: `${student.firstName || "Unknown"} ${student.lastName || ""}`.trim(),
           timeCreated: "N/A",
           infractionName: "",
           infractionDescription: "",
         }
       );
     });
-
-    const sortedAllStudentsData = allStudentsData.sort((a, b) => {
-      if (a.timeCreated === "N/A" && b.timeCreated !== "N/A") return -1; // "N/A" first
-      if (b.timeCreated === "N/A" && a.timeCreated !== "N/A") return 1;  // "N/A" first
-    
-      const dateA = new Date(a.timeCreated || 0);
-      const dateB = new Date(b.timeCreated || 0);
-      return dateA.getTime() - dateB.getTime(); // Oldest to newest
-    });
-
-    setFilteredData(sortedAllStudentsData);
+  
+    setFilteredData(allStudentsData);
   }, [punishmentResponse, students, officeReferrals]);
 
   // Column definitions for AgGrid
@@ -102,6 +103,7 @@ const RecentContacts: React.FC<Partial<TeacherOverviewDto>> = ({
       headerName: "Last Contacted",
       flex: 1,
       resizable: true,
+      sort: "asc",
     },
     {
       field: "infractionName",
@@ -121,7 +123,7 @@ const RecentContacts: React.FC<Partial<TeacherOverviewDto>> = ({
         style={{ height: "25vh", width: "100%" }}
       >
         <AgGridReact
-          rowData={filteredData as StudentContactList[]}
+          rowData={filteredData}
           columnDefs={colDefs as ColDef<StudentContactList>[]}
           domLayout="autoHeight"
         />
