@@ -11,6 +11,7 @@ import {
   CircularProgress,
   FormControlLabel,
   FormGroup,
+  Typography,
 } from "@mui/material";
 import Container from "@mui/material/Container";
 import Snackbar from "@mui/material/Snackbar";
@@ -23,7 +24,12 @@ import KeyboardDoubleArrowUpIcon from "@mui/icons-material/KeyboardDoubleArrowUp
 import KeyboardDoubleArrowDownIcon from "@mui/icons-material/KeyboardDoubleArrowDown";
 import Checkbox from "@mui/material/Checkbox";
 import { AdminOverviewDto, TeacherOverviewDto } from "src/types/responses";
-import { Student } from "src/types/school";
+import {
+  PhoneLog,
+  ReferralPayload,
+  Student,
+  StudentOption,
+} from "src/types/school";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -65,27 +71,6 @@ interface CreatePunishmentProps {
   setPanelName: (panel: string) => void;
   data: TeacherOverviewDto | AdminOverviewDto;
 }
-
-type PhoneLog = {
-  isPhoneLogBoolean: boolean;
-  phoneLogDescription: string;
-};
-
-type StudentOption = {
-  value: string;
-  label: string;
-};
-
-type ReferralPayload = {
-  studentEmail: string;
-  teacherEmail: string;
-  infractionPeriod: string;
-  infractionName: string;
-  infractionDescription: string;
-  currency: number;
-  guidanceDescription: string;
-  phoneLogDescription: string;
-};
 
 const CreatePunishmentPanel: React.FC<CreatePunishmentProps> = ({
   setPanelName,
@@ -234,12 +219,21 @@ const CreatePunishmentPanel: React.FC<CreatePunishmentProps> = ({
     setOpenModal({ display: false, message: "", buttonType: "" });
     const payloadContent: ReferralPayload[] = [];
     studentNames.forEach((student) => {
+      const studentOption = listOfStudents.find(
+        (s) => s.studentEmail === student.value
+      );
+      if (!studentOption) return;
+
+      const personalizedDescription = replaceTokens(
+        infractionDescriptionSelected,
+        studentOption
+      );
       const studentPayload: ReferralPayload = {
         studentEmail: student.value,
         teacherEmail: teacherEmailSelected ?? "",
         infractionPeriod: infractionPeriodSelected ?? "",
         infractionName: infractionTypeSelected ?? "",
-        infractionDescription: infractionDescriptionSelected ?? "",
+        infractionDescription: personalizedDescription ?? "",
         currency: currency ?? 0,
         guidanceDescription: isGuidance.guidanceDescription ?? "",
         phoneLogDescription: isPhoneLog.phoneLogDescription ?? "",
@@ -384,6 +378,51 @@ const CreatePunishmentPanel: React.FC<CreatePunishmentProps> = ({
       ...prevState,
       isPhoneLogBoolean: checked,
     }));
+  };
+
+  const insertAtCursor = (token: string) => {
+    const { selectionStart, selectionEnd, value } = document.getElementById(
+      "offenseDescription"
+    ) as HTMLTextAreaElement;
+
+    // Insert the token at the cursor position
+    const newValue =
+      value.substring(0, selectionStart) +
+      token +
+      value.substring(selectionEnd);
+
+    // Update the text area value in React state
+    setInfractionDescriptionSelected(newValue);
+
+    // Adjust the cursor position to be after the inserted token
+    setTimeout(() => {
+      const textArea = document.getElementById(
+        "offenseDescription"
+      ) as HTMLTextAreaElement;
+      textArea.selectionStart = textArea.selectionEnd =
+        selectionStart + token.length;
+    }, 0);
+  };
+
+  const handleTextAreaClick = (e: React.MouseEvent) => {
+    // This can be used to manage cursor behavior if necessary
+    const textArea = e.target as HTMLTextAreaElement;
+    const cursorPos = textArea.selectionStart;
+
+    // Save the cursor position so it doesn't reset
+    setTimeout(() => {
+      textArea.selectionStart = textArea.selectionEnd = cursorPos;
+    }, 0);
+  };
+
+  const replaceTokens = (template: string, student: Student): string => {
+    return template
+      .replace(/\$firstName/g, student.firstName)
+      .replace(/\$lastName/g, student.lastName)
+      .replace(/\$grade/g, student.grade)
+      .replace(/\$parentEmail/g, student.parentEmail)
+      .replace(/\$studentEmail/g, student.studentEmail);
+    // Add more .replace() lines if you want to support more tokens
   };
 
   return (
@@ -707,8 +746,7 @@ const CreatePunishmentPanel: React.FC<CreatePunishmentProps> = ({
                                 <div className="wallet-after">
                                   <p>
                                     {" "}
-                                    Wallet after shout out:{" "}
-                                    {difference ?? 0}
+                                    Wallet after shout out: {difference ?? 0}
                                   </p>
                                 </div>
                                 <TextField
@@ -798,39 +836,50 @@ const CreatePunishmentPanel: React.FC<CreatePunishmentProps> = ({
                             maxHeight: "150px", // Approximate height of 4 rows
                             overflowY: "auto", // Adds scrollbar if text overflows
                           }}
+                          onClick={handleTextAreaClick}
                           onKeyDown={(e) => {
                             const target = e.target as HTMLTextAreaElement;
-
                             if (e.key === "Enter") {
-                              e.preventDefault(); // Prevent form submission on Enter key
-
-                              // Get the current cursor position
+                              e.preventDefault();
                               const { selectionStart, selectionEnd } = target;
-
-                              // Get the current value of the input
                               const value = target.value;
-
-                              // Insert a newline character (\n) at the cursor position
                               const newValue =
                                 value.substring(0, selectionStart) +
                                 "\n" +
                                 value.substring(selectionEnd);
-
-                              // Update the input value and set the cursor position after the newline character
-                              target.value = newValue;
-                              target.selectionStart = target.selectionEnd =
-                                selectionStart + 1;
-
-                              // Trigger the change event manually (React doesn't update the value automatically)
-                              const event = new Event("input", {
-                                bubbles: true,
-                              });
-                              e.target.dispatchEvent(event);
-
-                              // Optionally, you can add your logic here for what should happen after Enter is pressed.
+                              setInfractionDescriptionSelected(newValue);
                             }
                           }}
                         />
+                        <Box sx={{ mt: 2 }}>
+                          <Typography
+                            variant="subtitle1"
+                            sx={{ fontSize: "1.2rem" }}
+                          >
+                            Insert Student Info:
+                          </Typography>
+                          {[
+                            { field: "firstName", label: "$firstName" },
+                            { field: "lastName", label: "$lastName" },
+                            { field: "grade", label: "$grade" },
+                            { field: "parentEmail", label: "$parentEmail" },
+                          ].map(({ field, label }) => (
+                            <Button
+                              key={field}
+                              size="large"
+                              variant="outlined"
+                              sx={{
+                                mr: 1,
+                                mb: 1,
+                                fontSize: "1.2rem", // Increase font size inside buttons
+                                padding: "12px 24px",
+                              }} // Adjust button padding for a larger button }}
+                              onClick={() => insertAtCursor(label)}
+                            >
+                              {field}
+                            </Button>
+                          ))}
+                        </Box>
                       </div>
                       {isGuidance.isGuidanceBoolean && (
                         <TextField
