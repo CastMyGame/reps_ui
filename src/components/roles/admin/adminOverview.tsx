@@ -101,6 +101,7 @@ const AdminOverviewPanel: React.FC<AdminOverviewProps> = ({ adminDto }) => {
             writeUpResponse={adminDto.writeUpResponse}
             officeReferrals={adminDto.officeReferrals}
             teachers={adminDto.teachers}
+            teacher={adminDto.teacher}
           />
         </div>
 
