@@ -48,47 +48,47 @@ export const TotalReferralByWeek: React.FC<TotalReferralProps> = ({
       "Tardy",
       rangeWeeks,
       safePunishmentResponse
-    ).map((week) => week.length);
+    ).map((week) => week);
     const horseplayData = GenerateBxByWeek(
       "Horseplay",
       rangeWeeks,
       safePunishmentResponse
-    ).map((week) => week.length);
+    ).map((week) => week);
     const dressCodeData = GenerateBxByWeek(
       "Dress Code",
       rangeWeeks,
       safePunishmentResponse
-    ).map((week) => week.length);
+    ).map((week) => week);
     const unauthorizedDeviceData = GenerateBxByWeek(
       "Unauthorized Device/Cell Phone",
       rangeWeeks,
       safePunishmentResponse
-    ).map((week) => week.length);
+    ).map((week) => week);
     const disruptiveBehaviorData = GenerateBxByWeek(
       "Disruptive Behavior",
       rangeWeeks,
       safePunishmentResponse
-    ).map((week) => week.length);
+    ).map((week) => week);
     const positiveData = GenerateBxByWeek(
       "Positive Behavior Shout Out!",
       rangeWeeks,
       safePunishmentResponse
-    ).map((week) => week.length);
+    ).map((week) => week);
     const behavioralConcernData = GenerateBxByWeek(
       "Behavioral Concern",
       rangeWeeks,
       safePunishmentResponse
-    ).map((week) => week.length);
+    ).map((week) => week);
     const officeReferralData = GenerateBxByWeek(
       "Office Referral",
       rangeWeeks,
       safeOfficeReferrals
-    ).map((week) => week.length);
+    ).map((week) => week);
     const inappropriateLanguageData = GenerateBxByWeek(
       "Inappropriate Language",
       rangeWeeks,
       safePunishmentResponse
-    ).map((week) => week.length);
+    ).map((week) => week);
 
     // Calculate Teacher Managed Referrals as the sum of selected infractions
     const teacherManagedReferrals = tardyData.map(

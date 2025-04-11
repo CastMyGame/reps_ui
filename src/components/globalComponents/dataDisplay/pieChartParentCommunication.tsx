@@ -70,7 +70,7 @@ export const PieChartParentCommunication: React.FC<PieChartParentCommunicationPr
             },
           },
           {
-            value: numBxConcern.length,
+            value: numBxConcern,
             name: "Behavioral Concern",
             itemStyle: {
               color: "#FFFF00",

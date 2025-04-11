@@ -11,9 +11,8 @@ interface StudentReferralsProps {
   data: TeacherReferral[];
 }
 
-const StudentReferralsByWeek: React.FC<StudentReferralsProps> = ({
-  data,
-}) => {
+const StudentReferralsByWeek: React.FC<StudentReferralsProps> = ({ data }) => {
+  console.log(" CHART DATA ", data);
   const [rangeWeeks, setRangeWeek] = useState(10);
   const [xAxisData, setXAxisData] = useState<string[]>([]);
   const [seriesData, setSeriesData] = useState<any[]>([]);
@@ -22,32 +21,16 @@ const StudentReferralsByWeek: React.FC<StudentReferralsProps> = ({
 
   // Recalculate X-axis (date range) and series data every time `rangeWeeks` changes
   useEffect(() => {
-    const displayDate = GenerateChartData(
-      currentWeek,
-      rangeWeeks,
-      data
-    );
+    const displayDate = GenerateChartData(currentWeek, rangeWeeks, data);
 
     // X-axis: week date ranges
     const xAxisData = displayDate.map((obj) => Object.keys(obj)[0]); // Extract the week date ranges
     setXAxisData(xAxisData);
 
     // Y-axis: Generate data for each series based on the same rangeWeeks
-    const tardyData = GenerateBxByWeek(
-      "Tardy",
-      rangeWeeks,
-      data
-    );
-    const horseplayData = GenerateBxByWeek(
-      "Horseplay",
-      rangeWeeks,
-      data
-    );
-    const dressCodeData = GenerateBxByWeek(
-      "Dress Code",
-      rangeWeeks,
-      data
-    );
+    const tardyData = GenerateBxByWeek("Tardy", rangeWeeks, data);
+    const horseplayData = GenerateBxByWeek("Horseplay", rangeWeeks, data);
+    const dressCodeData = GenerateBxByWeek("Dress Code", rangeWeeks, data);
     const unauthorizedDeviceData = GenerateBxByWeek(
       "Unauthorized Device/Cell Phone",
       rangeWeeks,

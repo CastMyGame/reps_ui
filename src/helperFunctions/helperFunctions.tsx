@@ -1,7 +1,11 @@
 import axios from "axios";
 import { baseUrl } from "../utils/jsonData";
 import { CLERICAL, BEHAVIORAL } from "src/types/constants";
-import { OfficeReferral, TeacherDto, TeacherReferral } from "src/types/responses";
+import {
+  OfficeReferral,
+  TeacherDto,
+  TeacherReferral,
+} from "src/types/responses";
 import { DateTimeFormatOptions } from "luxon";
 import { Student } from "src/types/school";
 
@@ -116,26 +120,27 @@ export const findDataByWeekAndByPunishment = (
   week: number,
   behavioral: string,
   data: (TeacherDto | TeacherReferral | OfficeReferral)[]
-): (TeacherDto | TeacherReferral | OfficeReferral)[] => {
-  // Ensure data is valid
+): number => {
   if (!Array.isArray(data)) {
     console.error(
       "Invalid data provided to findDataByWeekAndByPunishment:",
       data
     );
-    return [];
+    return 0;
   }
 
-  // Filter data based on the behavioral infraction name
   const thisWeek = data
-    .filter((punish) => "infractionName" in punish && punish.infractionName === behavioral)
+    .filter(
+      (punish) =>
+        "infractionName" in punish && punish.infractionName === behavioral
+    )
     .filter((punish) => {
       const date = new Date(punish.timeCreated);
-      const weekNumber = getWeekNumber(date); // Ensure getWeekNumber is defined correctly
-      return weekNumber === week; // Return true if the date matches the week
+      const weekNumber = getWeekNumber(date);
+      return weekNumber === week;
     });
 
-  return thisWeek; // Return the filtered array instead of its length
+  return thisWeek.length; // ✅ Return the count instead of the array
 };
 
 export const getIncidentByBehavior = (

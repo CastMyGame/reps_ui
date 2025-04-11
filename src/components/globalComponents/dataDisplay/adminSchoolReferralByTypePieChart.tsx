@@ -71,7 +71,7 @@ export const AdminSchoolReferralByTypePieChart: React.FC<AdminReferralByTypeProp
             },
           },
           {
-            value: behavioralConcerns[0].length,
+            value: behavioralConcerns.length,
             name: "Behavioral Concern",
             itemStyle: {
               color: "#FFFF00",

@@ -79,56 +79,56 @@ export const AdminTeacherReferralByTypePieChart: React.FC<AdminTeacherByTypeProp
         radius: "70%",
         data: [
           {
-            value: unauthorizedDeviceData[0].length,
+            value: unauthorizedDeviceData.length,
             name: "Unauthorized Device/Cell Phone",
             itemStyle: {
               color: "#ff0000",
             },
           },
           {
-            value: inappropriateLanguage[0].length,
+            value: inappropriateLanguage.length,
             name: "Inappropriate Language",
             itemStyle: {
               color: "#a5142c",
             },
           },
           {
-            value: disruptiveBehaviorData[0].length,
+            value: disruptiveBehaviorData.length,
             name: "Disruptive Behavior",
             itemStyle: {
               color: "#ffA500",
             },
           },
           {
-            value: dressCodeData[0].length,
+            value: dressCodeData.length,
             name: "Dress Code",
             itemStyle: {
               color: "#C7EA46",
             },
           },
           {
-            value: tardyData[0].length,
+            value: tardyData.length,
             name: "Tardy",
             itemStyle: {
               color: "#800080",
             },
           },
           {
-            value: horseplayData[0].length,
+            value: horseplayData.length,
             name: "Horseplay",
             itemStyle: {
               color: "#964B00",
             },
           },
           {
-            value: behavioralConcernData[0].length,
+            value: behavioralConcernData.length,
             name: "Behavioral Concern",
             itemStyle: {
               color: "#0000FF",
             },
           },
           {
-            value: academicConcernData[0].length,
+            value: academicConcernData.length,
             name: "Academic Concern",
             itemStyle: {
               color: "#000000",

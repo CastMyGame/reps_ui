@@ -74,7 +74,7 @@ const TeacherInfractionOverPeriodBarChart: React.FC<TeacherInfractionOverPeriodB
       {
         name: "Behavioral Concern",
         type: "bar",
-        data: [behavioralConcern.length],
+        data: [behavioralConcern],
         itemStyle: {
           color: "#0000FF",
         },
@@ -82,7 +82,7 @@ const TeacherInfractionOverPeriodBarChart: React.FC<TeacherInfractionOverPeriodB
       {
         name: "Disruptive Behavior",
         type: "bar",
-        data: [disruptivebehavior.length],
+        data: [disruptivebehavior],
         itemStyle: {
           color: "#ffA500",
         },
@@ -90,7 +90,7 @@ const TeacherInfractionOverPeriodBarChart: React.FC<TeacherInfractionOverPeriodB
       {
         name: "Dress Code",
         type: "bar",
-        data: [dressCode.length],
+        data: [dressCode],
         itemStyle: {
           color: "#C7EA46",
         },
@@ -98,7 +98,7 @@ const TeacherInfractionOverPeriodBarChart: React.FC<TeacherInfractionOverPeriodB
       {
         name: "Failure to Complete Work",
         type: "bar",
-        data: [ftc.length],
+        data: [ftc],
         itemStyle: {
           color: "#000000",
         },
@@ -106,7 +106,7 @@ const TeacherInfractionOverPeriodBarChart: React.FC<TeacherInfractionOverPeriodB
       {
         name: "Horseplay",
         type: "bar",
-        data: [horseplay.length],
+        data: [horseplay],
         itemStyle: {
           color: "#964B00",
         },
@@ -114,7 +114,7 @@ const TeacherInfractionOverPeriodBarChart: React.FC<TeacherInfractionOverPeriodB
       {
         name: "Inappropriate Language",
         type: "bar",
-        data: [innappropriateLanguage.length],
+        data: [innappropriateLanguage],
         itemStyle: {
           color: "#FFC0CB",
         },
@@ -122,7 +122,7 @@ const TeacherInfractionOverPeriodBarChart: React.FC<TeacherInfractionOverPeriodB
       {
         name: "Tardy",
         type: "bar",
-        data: [tardybehavior.length],
+        data: [tardybehavior],
         itemStyle: {
           color: "#800080",
         },
@@ -130,7 +130,7 @@ const TeacherInfractionOverPeriodBarChart: React.FC<TeacherInfractionOverPeriodB
       {
         name: "Unauthorized Device/Cell Phone",
         type: "bar",
-        data: [cellPhone.length],
+        data: [cellPhone],
         itemStyle: {
           color: "#ff0000",
         },
