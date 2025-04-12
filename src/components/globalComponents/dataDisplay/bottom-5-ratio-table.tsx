@@ -86,7 +86,6 @@ export const Bottom4PositiveTeacherTable: React.FC<Bottom4Props> = ({
       </h3>
       <div
         className="ag-theme-quartz"
-        style={{ height: "25vh", width: "100%" }}
       >
         <AgGridReact
           rowData={leastPositiveRowData}

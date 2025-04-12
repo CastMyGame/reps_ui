@@ -196,7 +196,16 @@ export const ReferralByBehavior: React.FC<ReferralByBehaviorProps> = ({
   };
 
   return (
-    <div>
+    <div style={{
+        width: "100%", // Makes the chart fit the container's width
+        height: "calc(50vh - 20px)", // Set a fixed height or use a percentage value (e.g., "50%")
+        overflow: "auto", // Prevents overflow of the chart
+      }}>
+      <ReactEcharts
+        option={option}
+        style={{ width: "100%", height: "100%" }}
+        opts={{ renderer: "canvas" }}
+      />
       <div
         style={{
           display: "flex",
@@ -231,7 +240,6 @@ export const ReferralByBehavior: React.FC<ReferralByBehaviorProps> = ({
           Weeks +1
         </button>
       </div>
-      <ReactEcharts option={option} />
     </div>
   );
 };
