@@ -1,5 +1,9 @@
 import ReactEcharts from "echarts-for-react";
-import { OfficeReferral, TeacherDto, TeacherOverviewDto } from "src/types/responses";
+import {
+  OfficeReferral,
+  TeacherDto,
+  TeacherOverviewDto,
+} from "src/types/responses";
 import {
   extractDataByWeek,
   findDataByWeekAndByPunishment,
@@ -13,7 +17,9 @@ interface PieChartParentCommunicationProps {
   writeUpResponse: TeacherDto[];
 }
 
-export const PieChartParentCommunication: React.FC<PieChartParentCommunicationProps> = ({
+export const PieChartParentCommunication: React.FC<
+  PieChartParentCommunicationProps
+> = ({
   data = {},
   shoutOutsResponse = [],
   officeReferrals = [],
@@ -70,7 +76,7 @@ export const PieChartParentCommunication: React.FC<PieChartParentCommunicationPr
             },
           },
           {
-            value: numBxConcern.length,
+            value: numBxConcern,
             name: "Behavioral Concern",
             itemStyle: {
               color: "#FFFF00",
@@ -102,13 +108,26 @@ export const PieChartParentCommunication: React.FC<PieChartParentCommunicationPr
     ],
   };
 
+  const fallbackOption = {
+    title: {
+      text: "No Referral Data This Week",
+      left: "center",
+    },
+    tooltip: { trigger: "item" },
+    series: [
+      {
+        type: "pie",
+        radius: "65%",
+        data: [
+          { value: 0, itemStyle: { color: "#ccc" } },
+        ],
+      },
+    ],
+  };
+
   return (
     <div>
-      {hasData ? (
-        <ReactEcharts option={option} />
-      ) : (
-        <ReactEcharts option={[]} />
-      )}
+        <ReactEcharts option={hasData ? option : fallbackOption} />
     </div>
   );
 };

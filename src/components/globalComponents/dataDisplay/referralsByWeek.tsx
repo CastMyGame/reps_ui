@@ -48,47 +48,47 @@ export const TotalReferralByWeek: React.FC<TotalReferralProps> = ({
       "Tardy",
       rangeWeeks,
       safePunishmentResponse
-    ).map((week) => week.length);
+    ).map((week) => week);
     const horseplayData = GenerateBxByWeek(
       "Horseplay",
       rangeWeeks,
       safePunishmentResponse
-    ).map((week) => week.length);
+    ).map((week) => week);
     const dressCodeData = GenerateBxByWeek(
       "Dress Code",
       rangeWeeks,
       safePunishmentResponse
-    ).map((week) => week.length);
+    ).map((week) => week);
     const unauthorizedDeviceData = GenerateBxByWeek(
       "Unauthorized Device/Cell Phone",
       rangeWeeks,
       safePunishmentResponse
-    ).map((week) => week.length);
+    ).map((week) => week);
     const disruptiveBehaviorData = GenerateBxByWeek(
       "Disruptive Behavior",
       rangeWeeks,
       safePunishmentResponse
-    ).map((week) => week.length);
+    ).map((week) => week);
     const positiveData = GenerateBxByWeek(
       "Positive Behavior Shout Out!",
       rangeWeeks,
       safePunishmentResponse
-    ).map((week) => week.length);
+    ).map((week) => week);
     const behavioralConcernData = GenerateBxByWeek(
       "Behavioral Concern",
       rangeWeeks,
       safePunishmentResponse
-    ).map((week) => week.length);
+    ).map((week) => week);
     const officeReferralData = GenerateBxByWeek(
       "Office Referral",
       rangeWeeks,
       safeOfficeReferrals
-    ).map((week) => week.length);
+    ).map((week) => week);
     const inappropriateLanguageData = GenerateBxByWeek(
       "Inappropriate Language",
       rangeWeeks,
       safePunishmentResponse
-    ).map((week) => week.length);
+    ).map((week) => week);
 
     // Calculate Teacher Managed Referrals as the sum of selected infractions
     const teacherManagedReferrals = tardyData.map(
@@ -180,7 +180,18 @@ export const TotalReferralByWeek: React.FC<TotalReferralProps> = ({
   };
 
   return (
-    <div style={{ maxHeight: "100%", maxWidth: "100%" }}>
+    <div
+      style={{
+        width: "100%", // Makes the chart fit the container's width
+        height: "calc(50vh - 20px)", // Set a fixed height or use a percentage value (e.g., "50%")
+        overflow: "auto", // Prevents overflow of the chart
+      }}
+    >
+      <ReactEcharts
+        option={option}
+        style={{ width: "100%", height: "100%" }}
+        opts={{ renderer: "canvas" }}
+      />
       <div
         style={{
           display: "flex",
@@ -215,7 +226,6 @@ export const TotalReferralByWeek: React.FC<TotalReferralProps> = ({
           Weeks +1
         </button>
       </div>
-      <ReactEcharts option={option}></ReactEcharts>
     </div>
   );
 };

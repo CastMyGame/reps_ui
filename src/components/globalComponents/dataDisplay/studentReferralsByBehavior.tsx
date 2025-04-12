@@ -5,16 +5,14 @@ import {
   GenerateChartData,
 } from "../../../helperFunctions/helperFunctions";
 import { useEffect, useState } from "react";
-import { TeacherDto, TeacherReferral } from "src/types/responses";
+import { TeacherReferral } from "src/types/responses";
 
 interface StudentReferralsProps {
   data: TeacherReferral[];
 }
 
-const StudentReferralsByWeek: React.FC<StudentReferralsProps> = ({
-  data,
-}) => {
-  const [rangeWeeks, setRangeWeek] = useState(10);
+const StudentReferralsByWeek: React.FC<StudentReferralsProps> = ({ data }) => {
+  const [rangeWeeks, setRangeWeeks] = useState(10);
   const [xAxisData, setXAxisData] = useState<string[]>([]);
   const [seriesData, setSeriesData] = useState<any[]>([]);
 
@@ -22,32 +20,16 @@ const StudentReferralsByWeek: React.FC<StudentReferralsProps> = ({
 
   // Recalculate X-axis (date range) and series data every time `rangeWeeks` changes
   useEffect(() => {
-    const displayDate = GenerateChartData(
-      currentWeek,
-      rangeWeeks,
-      data
-    );
+    const displayDate = GenerateChartData(currentWeek, rangeWeeks, data);
 
     // X-axis: week date ranges
     const xAxisData = displayDate.map((obj) => Object.keys(obj)[0]); // Extract the week date ranges
     setXAxisData(xAxisData);
 
     // Y-axis: Generate data for each series based on the same rangeWeeks
-    const tardyData = GenerateBxByWeek(
-      "Tardy",
-      rangeWeeks,
-      data
-    );
-    const horseplayData = GenerateBxByWeek(
-      "Horseplay",
-      rangeWeeks,
-      data
-    );
-    const dressCodeData = GenerateBxByWeek(
-      "Dress Code",
-      rangeWeeks,
-      data
-    );
+    const tardyData = GenerateBxByWeek("Tardy", rangeWeeks, data);
+    const horseplayData = GenerateBxByWeek("Horseplay", rangeWeeks, data);
+    const dressCodeData = GenerateBxByWeek("Dress Code", rangeWeeks, data);
     const unauthorizedDeviceData = GenerateBxByWeek(
       "Unauthorized Device/Cell Phone",
       rangeWeeks,
@@ -59,7 +41,7 @@ const StudentReferralsByWeek: React.FC<StudentReferralsProps> = ({
       data
     );
     const positiveData = GenerateBxByWeek(
-      "Positive Shout Out!",
+      "Positive Behavior Shout Out!",
       rangeWeeks,
       data
     );
@@ -154,8 +136,9 @@ const StudentReferralsByWeek: React.FC<StudentReferralsProps> = ({
     },
     grid: {
       left: "3%",
-      right: "4%",
-      bottom: "3%",
+      right: "3%",
+      bottom: "10%",
+      top: "10%",
       containLabel: true,
     },
     toolbox: {
@@ -176,42 +159,18 @@ const StudentReferralsByWeek: React.FC<StudentReferralsProps> = ({
   };
 
   return (
-    <div>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-evenly",
-          marginBottom: "20px",
-        }}
-      >
-        <button
-          onClick={() => setRangeWeek((prev) => (prev > 1 ? prev - 1 : prev))}
-          style={{
-            backgroundColor: "#5D949D",
-            color: "white",
-            border: "none",
-            padding: "10px 20px",
-            borderRadius: "5px",
-            cursor: "pointer",
-          }}
-        >
-          Weeks -1
-        </button>
-        <button
-          onClick={() => setRangeWeek((prev) => prev + 1)}
-          style={{
-            backgroundColor: "#5D949D",
-            color: "white",
-            border: "none",
-            padding: "10px 20px",
-            borderRadius: "5px",
-            cursor: "pointer",
-          }}
-        >
-          Weeks +1
-        </button>
-      </div>
-      <ReactEcharts option={option} />
+    <div
+      style={{
+        width: "100%", // Makes the chart fit the container's width
+        height: "calc(50vh - 20px)", // Set a fixed height or use a percentage value (e.g., "50%")
+        overflow: "hidden", // Prevents overflow of the chart
+      }}
+    >
+      <ReactEcharts
+        option={option}
+        style={{ width: "100%", height: "100%" }}
+        opts={{ renderer: "canvas" }}
+      />
     </div>
   );
 };

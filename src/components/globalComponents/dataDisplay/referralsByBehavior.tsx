@@ -44,48 +44,48 @@ export const ReferralByBehavior: React.FC<ReferralByBehaviorProps> = ({
 
     // Y-axis: Generate data for each series based on the same rangeWeeks
     const tardyData = GenerateBxByWeek("Tardy", rangeWeeks, safeData)
-      .map((week) => week.length)
+      .map((week) => week)
       .reverse();
     const horseplayData = GenerateBxByWeek("Horseplay", rangeWeeks, safeData)
-      .map((week) => week.length)
+      .map((week) => week)
       .reverse();
     const dressCodeData = GenerateBxByWeek("Dress Code", rangeWeeks, safeData)
-      .map((week) => week.length)
+      .map((week) => week)
       .reverse();
     const unauthorizedDeviceData = GenerateBxByWeek(
       "Unauthorized Device/Cell Phone",
       rangeWeeks,
       safeData
     )
-      .map((week) => week.length)
+      .map((week) => week)
       .reverse();
     const disruptiveBehaviorData = GenerateBxByWeek(
       "Disruptive Behavior",
       rangeWeeks,
       safeData
     )
-      .map((week) => week.length)
+      .map((week) => week)
       .reverse();
     const positiveData = GenerateBxByWeek(
       "Positive Behavior Shout Out!",
       rangeWeeks,
       safeData
     )
-      .map((week) => week.length)
+      .map((week) => week)
       .reverse();
     const behavioralConcernData = GenerateBxByWeek(
       "Behavioral Concern",
       rangeWeeks,
       safeData
     )
-      .map((week) => week.length)
+      .map((week) => week)
       .reverse();
     const inappropriateLanguageData = GenerateBxByWeek(
       "Inappropriate Language",
       rangeWeeks,
       safeData
     )
-      .map((week) => week.length)
+      .map((week) => week)
       .reverse();
 
     // Set the series data
@@ -196,7 +196,16 @@ export const ReferralByBehavior: React.FC<ReferralByBehaviorProps> = ({
   };
 
   return (
-    <div>
+    <div style={{
+        width: "100%", // Makes the chart fit the container's width
+        height: "calc(50vh - 20px)", // Set a fixed height or use a percentage value (e.g., "50%")
+        overflow: "auto", // Prevents overflow of the chart
+      }}>
+      <ReactEcharts
+        option={option}
+        style={{ width: "100%", height: "100%" }}
+        opts={{ renderer: "canvas" }}
+      />
       <div
         style={{
           display: "flex",
@@ -231,7 +240,6 @@ export const ReferralByBehavior: React.FC<ReferralByBehaviorProps> = ({
           Weeks +1
         </button>
       </div>
-      <ReactEcharts option={option} />
     </div>
   );
 };

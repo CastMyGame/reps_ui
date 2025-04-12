@@ -1,51 +1,16 @@
 import ReactEcharts from "echarts-for-react";
-import {
-  extractDataByWeek,
-  getCurrentWeekOfYear,
-  getFirstDayOfWeek,
-} from "../../../helperFunctions/helperFunctions";
-import { useState } from "react";
-import {
-  AdminOverviewDto,
-  TeacherDto,
-} from "src/types/responses";
+import { TeacherDto } from "src/types/responses";
 
 interface TeacherReferralByWeekProps {
   punishmentResponse: TeacherDto[];
 }
 
-const TeacherManagedReferralByLevelByWeek: React.FC<TeacherReferralByWeekProps> = ({
-  punishmentResponse = [],
-}) => {
-  const [rangeWeeks, setRangeWeek] = useState(10);
-  const currentWeek = getCurrentWeekOfYear();
-
-  const yearAdj = (cw: number): number => {
-    if (cw > 0) return cw;
-    if (cw <= 0) {
-      return 52 + cw;
-    }
-    return 1; // Fallback to week 1 in case of unexpected input
-  };
-
+const TeacherManagedReferralByLevelByWeek: React.FC<
+  TeacherReferralByWeekProps
+> = ({ punishmentResponse = [] }) => {
   // Helper function to filter data by referral level
   const filterByLevel = (data: TeacherDto[], level: string) => {
     return data.filter((item) => item.infractionLevel === level);
-  };
-
-  // Generate labels for xAxis
-  const GenerateChartData = (currentWeek: number, rangeWeeks: number) => {
-    const genData = [];
-    for (let i = 0; i < rangeWeeks; i++) {
-      const startDate = getFirstDayOfWeek(yearAdj(currentWeek - i));
-      const endDate = new Date(startDate);
-      endDate.setDate(startDate.getDate() + 6);
-      const label = `${startDate.getMonth() + 1}/${startDate.getDate()} - ${
-        endDate.getMonth() + 1
-      }/${endDate.getDate()}`;
-      genData.push(label);
-    }
-    return genData;
   };
 
   // Validate and sanitize punishmentResponse
@@ -54,10 +19,10 @@ const TeacherManagedReferralByLevelByWeek: React.FC<TeacherReferralByWeekProps> 
     : [];
 
   // Generate series data for each level
-  const level1Data = filterByLevel(safePunishmentResponse as TeacherDto[], "1");
-  const level2Data = filterByLevel(safePunishmentResponse as TeacherDto[], "2");
-  const level3Data = filterByLevel(safePunishmentResponse as TeacherDto[], "3");
-  const level4Data = filterByLevel(safePunishmentResponse as TeacherDto[], "4");
+  const level1Data = filterByLevel(safePunishmentResponse, "1");
+  const level2Data = filterByLevel(safePunishmentResponse, "2");
+  const level3Data = filterByLevel(safePunishmentResponse, "3");
+  const level4Data = filterByLevel(safePunishmentResponse, "4");
 
   const option = {
     responsive: true,
@@ -126,8 +91,12 @@ const TeacherManagedReferralByLevelByWeek: React.FC<TeacherReferralByWeekProps> 
   };
 
   return (
-    <div style={{ maxHeight: "100%", maxWidth: "100%" }}>
-      <ReactEcharts option={option} />
+    <div style={{ height: "calc(50vh - 20px)", width: "100%", overflow: "auto" }}>
+      <ReactEcharts
+        option={option}
+        style={{ width: "100%", height: "100%" }}
+        opts={{ renderer: "canvas" }}
+      />
     </div>
   );
 };

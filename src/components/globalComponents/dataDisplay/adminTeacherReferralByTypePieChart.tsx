@@ -79,56 +79,56 @@ export const AdminTeacherReferralByTypePieChart: React.FC<AdminTeacherByTypeProp
         radius: "70%",
         data: [
           {
-            value: unauthorizedDeviceData[0].length,
+            value: unauthorizedDeviceData.reduce((a, b) => a + b, 0),
             name: "Unauthorized Device/Cell Phone",
             itemStyle: {
               color: "#ff0000",
             },
           },
           {
-            value: inappropriateLanguage[0].length,
+            value: inappropriateLanguage.reduce((a, b) => a + b, 0),
             name: "Inappropriate Language",
             itemStyle: {
               color: "#a5142c",
             },
           },
           {
-            value: disruptiveBehaviorData[0].length,
+            value: disruptiveBehaviorData.reduce((a, b) => a + b, 0),
             name: "Disruptive Behavior",
             itemStyle: {
               color: "#ffA500",
             },
           },
           {
-            value: dressCodeData[0].length,
+            value: dressCodeData.reduce((a, b) => a + b, 0),
             name: "Dress Code",
             itemStyle: {
               color: "#C7EA46",
             },
           },
           {
-            value: tardyData[0].length,
+            value: tardyData.reduce((a, b) => a + b, 0),
             name: "Tardy",
             itemStyle: {
               color: "#800080",
             },
           },
           {
-            value: horseplayData[0].length,
+            value: horseplayData.reduce((a, b) => a + b, 0),
             name: "Horseplay",
             itemStyle: {
               color: "#964B00",
             },
           },
           {
-            value: behavioralConcernData[0].length,
+            value: behavioralConcernData.reduce((a, b) => a + b, 0),
             name: "Behavioral Concern",
             itemStyle: {
               color: "#0000FF",
             },
           },
           {
-            value: academicConcernData[0].length,
+            value: academicConcernData.reduce((a, b) => a + b, 0),
             name: "Academic Concern",
             itemStyle: {
               color: "#000000",
