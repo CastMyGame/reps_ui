@@ -1,6 +1,7 @@
 //Centralize Api Here
 
 import axios from "axios";
+import { Navigate } from "react-router-dom";
 import { baseUrl } from "../jsonData";
 
 const maxRetries = 5;
@@ -77,3 +78,42 @@ export const get = async (endpoint: string) => {
 
   throw new Error("Max retries reached without successful response.");
 };
+
+export const handleLogout = async () => {
+  const headers = {
+    Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
+  };
+  try {
+    await axios.post(`${baseUrl}/v1/logout`, [], { headers });
+    clearSessionStorage();
+    window.location.href = "/login";
+  } catch {
+    //for edge case where app is restared while in session, so log out still happens
+    clearSessionStorage();
+    window.location.href = "/login";
+  }
+};
+
+const clearSessionStorage = () => {
+  ["Authorization", "userName", "schoolName", "email", "role"].forEach(
+    (key) => {
+      sessionStorage.removeItem(key);
+    }
+  );
+};
+
+interface AuthRouteProps {
+  children: JSX.Element;
+  allowedRoles: string[];
+  userRole: string;
+}
+
+const AuthRoute = ({ children, allowedRoles, userRole }: AuthRouteProps) => {
+  if (!allowedRoles.includes(userRole)) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return children;
+};
+
+export default AuthRoute;

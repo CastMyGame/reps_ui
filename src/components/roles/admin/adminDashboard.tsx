@@ -11,11 +11,10 @@ import AdminOverviewPanel from "src/components/roles/admin/adminOverview";
 import AssignmentManager from "src/utils/AssignmentManager";
 import TeacherStudentPanel from "src/components/roles/teacher/teacherStudentPanel";
 import AddTeacherForm from "src/components/globalComponents/users/addTeacherForm";
-import { get } from "../../../utils/api/api";
+import { get, handleLogout } from "../../../utils/api/api";
 import LoadingWheelPanel from "src/components/roles/student/LoadingWheelPanel";
 import { ContactUsModal } from "src/security/contactUsModal";
 import { NavigationAdmin } from "src/components/globalComponents/updatedLanding/navigation-admin";
-import { handleLogout } from "src/utils/helperFunctions";
 import SpendPage from "src/components/globalComponents/spendPage/spend-page";
 import CreateOfficeReferralPanel from "src/components/globalComponents/referrals/createOfficeReferral";
 import Snackbar from "@mui/material/Snackbar";
@@ -112,7 +111,7 @@ const AdminDashboard = () => {
             setModalType={setModalType}
             setPanelName={setPanelName}
             setDropdown={setIsDropdownOpen}
-            isDropdownOpen={isDropdownOpen}
+            whichDropdownOpen={isDropdownOpen}
             setLogin={handleLogout}
           />
         </div>

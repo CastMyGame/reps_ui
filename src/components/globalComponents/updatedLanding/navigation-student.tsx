@@ -1,4 +1,5 @@
 import React from "react";
+import { AccessibleDiv } from "src/utils/accessibleDiv";
 import "./landing.css";
 
 interface NavigationStudentProps {
@@ -55,20 +56,20 @@ const NavigationStudent: React.FC<NavigationStudentProps> = ({
         >
           <ul className="nav navbar-nav navbar-right">
             <li>
-              <div
+              <AccessibleDiv
                 onClick={() => dropdownHandler("openAssignments")}
                 className="page-scroll"
               >
                 Open Assignments
-              </div>
+              </AccessibleDiv>
             </li>
             <li>
-              <div
+              <AccessibleDiv
                 onClick={() => dropdownHandler("closedAssignments")}
                 className="page-scroll"
               >
                 Contact History
-              </div>
+              </AccessibleDiv>
             </li>
             <li>
               <button
