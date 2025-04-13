@@ -6,11 +6,7 @@ import { baseUrl } from "../utils/jsonData";
 import OpenEndedFormat from "./ViolationContents/OpenEndedFormat";
 import MultipleChoiceFormat from "./ViolationContents/MultipleChoiceFormat";
 import { OfficeReferral, TeacherReferral } from "src/types/responses";
-import {
-  getInfractionName,
-  isOfficeReferral,
-  isTeacherReferral,
-} from "src/utils/helperFunctions";
+import { isTeacherReferral, getInfractionName, isOfficeReferral } from "src/helperFunctions/helperFunctions";
 import { Assignment } from "src/types/school";
 
 interface ViolationProps {
@@ -49,8 +45,7 @@ const ViolationPage: React.FC<ViolationProps> = ({ assignment }) => {
   }, [assignment]);
 
   useEffect(() => {
-    if (mapIndex === 0) {
-    } else {
+    if (mapIndex !== 0) {
       const headers = {
         Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
       };
@@ -106,9 +101,6 @@ const ViolationPage: React.FC<ViolationProps> = ({ assignment }) => {
       setStudentAnswers((prev) => [...prev, payload.answer]);
     } else if (payload.answer === "disagree" || payload.answer === "neutral") {
       setMapIndex((prev) => prev + 2);
-      setStudentAnswers((prev) => [...prev, payload.answer]);
-    } else {
-      setMapIndex((prev) => prev + 1);
       setStudentAnswers((prev) => [...prev, payload.answer]);
     }
   };

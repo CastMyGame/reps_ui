@@ -77,3 +77,26 @@ export const get = async (endpoint: string) => {
 
   throw new Error("Max retries reached without successful response.");
 };
+
+export const handleLogout = async () => {
+  const headers = {
+    Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
+  };
+  try {
+    await axios.post(`${baseUrl}/v1/logout`, [], { headers });
+    clearSessionStorage();
+    window.location.href = "/login";
+  } catch {
+    //for edge case where app is restared while in session, so log out still happens
+    clearSessionStorage();
+    window.location.href = "/login";
+  }
+};
+
+const clearSessionStorage = () => {
+  ["Authorization", "userName", "schoolName", "email", "role"].forEach(
+    (key) => {
+      sessionStorage.removeItem(key);
+    }
+  );
+};

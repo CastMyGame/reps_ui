@@ -15,12 +15,11 @@ import {
   ToggleButton,
   ToggleButtonGroup,
 } from "@mui/material";
-import { handleLogout } from "src/utils/helperFunctions";
 import {
   categoryBadgeGenerator,
   dateCreateFormat,
 } from "src/helperFunctions/helperFunctions";
-import { get } from "src/utils/api/api";
+import { get, handleLogout } from "src/utils/api/api";
 import { StudentDetailsModal } from "src/components/globalComponents/components/modals/studentDetailsModal";
 import NavbarCustom from "src/components/globalComponents/modals/navBar/navBar";
 import { TeacherDetailsModal } from "src/components/globalComponents/components/modals/teacherDetailsModal ";
