@@ -13,7 +13,7 @@ import { ContactUsModal } from "../../../security/contactUsModal";
 import { get } from "../../../utils/api/api";
 import LoadingWheelPanel from "src/components/roles/student/LoadingWheelPanel";
 import "../admin/admin.css";
-import { NavigationLoggedIn } from "src/components/globalComponents/updatedLanding/navigation-loggedIn.jsx";
+import { NavigationLoggedIn } from "src/components/globalComponents/updatedLanding/navigation-loggedIn";
 import { handleLogout } from "src/utils/helperFunctions";
 import SpendPage from "src/components/globalComponents/spendPage/spend-page";
 import CreateOfficeReferralPanel from "src/components/globalComponents/referrals/createOfficeReferral";
@@ -139,7 +139,7 @@ const TeacherDashboard = () => {
             setModalType={setModalType}
             setPanelName={setPanelName}
             setDropdown={setIsDropdownOpen}
-            isDropdownOpen={isDropdownOpen}
+            whichDropdownOpen={isDropdownOpen}
             setLogin={handleLogout}
           />
         </div>
