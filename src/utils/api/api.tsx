@@ -1,6 +1,7 @@
 //Centralize Api Here
 
 import axios from "axios";
+import { Navigate } from "react-router-dom";
 import { baseUrl } from "../jsonData";
 
 const maxRetries = 5;
@@ -100,3 +101,19 @@ const clearSessionStorage = () => {
     }
   );
 };
+
+interface AuthRouteProps {
+  children: JSX.Element;
+  allowedRoles: string[];
+  userRole: string;
+}
+
+const AuthRoute = ({ children, allowedRoles, userRole }: AuthRouteProps) => {
+  if (!allowedRoles.includes(userRole)) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return children;
+};
+
+export default AuthRoute;

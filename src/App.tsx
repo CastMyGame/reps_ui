@@ -16,6 +16,7 @@ import IdleTimerContainer from "./security/IdleTimerContainer";
 import SinglePageSignIn from "./security/single-page-login";
 import GuidanceDashboard from "./components/roles/guidance/guidance-dashboard";
 import LandingPage from "./components/globalComponents/updatedLanding/landing";
+import AuthRoute from "./utils/api/api";
 
 function App() {
   const [isLoggedOut, setIsLoggedOut] = useState(false);
@@ -26,7 +27,7 @@ function App() {
         <div>
           <Routes>
             <Route path="/student-login" element={<SinglePageSignIn />} />
-            <Route path="/login" element={<LandingPage/>} />
+            <Route path="/login" element={<LandingPage />} />
             <Route path="/reset-password/:token" element={<ResetPassword />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
 
@@ -35,41 +36,49 @@ function App() {
               path="/infractionAssignments/:param1/:param2"
               element={<ViolationPage />}
             />
-            <Route path="/" element={<LandingPage/>} />
+            <Route path="/" element={<LandingPage />} />
 
             {/* Use AuthRoute for role-based access control */}
             <Route
               path="/dashboard/admin"
-              element={<AdminDashboard />}
-              allowedRoles={["ADMIN"]}
+              element={
+                <AuthRoute allowedRoles={["ADMIN"]} userRole={"ADMIN"}>
+                  <AdminDashboard />
+                </AuthRoute>
+              }
             />
             <Route
               path="/dashboard/student"
-              element={<StudentDashboard />}
-              allowedRoles={["STUDENT"]}
+              element={
+                <AuthRoute allowedRoles={["STUDENT"]} userRole={"STUDENT"}>
+                  <StudentDashboard />
+                </AuthRoute>
+              }
             />
             <Route
               path="/dashboard/guidance"
-              element={<GuidanceDashboard />}
-              allowedRoles={["GUIDANCE"]}
+              element={
+                <AuthRoute allowedRoles={["GUIDANCE"]} userRole={"GUIDANCE"}>
+                  <GuidanceDashboard />
+                </AuthRoute>
+              }
             />
             <Route
               path="/dashboard/teacher"
-              element={<TeacherDashboard />}
-              allowedRoles={["TEACHER"]}
+              element={<AuthRoute allowedRoles={["TEACHER"]} userRole={"TEACHER"}><TeacherDashboard /></AuthRoute>}
             />
             <Route path="/forms/ftc-closure" element={<FailureToComplete />} />
             <Route
               path="/admin/archived"
-              element={<GlobalArchivedPunishmentPanel />}
+              element={<GlobalArchivedPunishmentPanel filter="PENDING" roleType="admin"/>}
             />
 
             <Route
               path="/forms/report"
               element={
-                  <PDFViewer width="100%" height="800px">
-                    <PDFReport />
-                  </PDFViewer>
+                <PDFViewer width="100%" height="800px">
+                  <PDFReport />
+                </PDFViewer>
               }
             />
           </Routes>

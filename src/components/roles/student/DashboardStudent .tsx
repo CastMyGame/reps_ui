@@ -62,8 +62,7 @@ const StudentDashboard = () => {
     setPanelName("startAssignment");
   };
 
-  return (
-    loggedIn && (
+  return loggedIn ? (
       <>
         <div>
           {modalType === "contact" && (
@@ -165,8 +164,7 @@ const StudentDashboard = () => {
           </Drawer>
         </div>
       </>
-    )
-  );
+    ) : null;
 };
 
 export default StudentDashboard;

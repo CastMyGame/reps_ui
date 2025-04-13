@@ -6,11 +6,15 @@ import { baseUrl } from "../utils/jsonData";
 import OpenEndedFormat from "./ViolationContents/OpenEndedFormat";
 import MultipleChoiceFormat from "./ViolationContents/MultipleChoiceFormat";
 import { OfficeReferral, TeacherReferral } from "src/types/responses";
-import { isTeacherReferral, getInfractionName, isOfficeReferral } from "src/helperFunctions/helperFunctions";
+import {
+  isTeacherReferral,
+  getInfractionName,
+  isOfficeReferral,
+} from "src/helperFunctions/helperFunctions";
 import { Assignment } from "src/types/school";
 
 interface ViolationProps {
-  assignment: TeacherReferral | OfficeReferral;
+  assignment?: TeacherReferral | OfficeReferral;
 }
 
 const ViolationPage: React.FC<ViolationProps> = ({ assignment }) => {
@@ -20,48 +24,60 @@ const ViolationPage: React.FC<ViolationProps> = ({ assignment }) => {
   const [essay, setEssay] = useState<Assignment | null>(null);
 
   useEffect(() => {
-    setMapIndex(assignment.mapIndex);
-  }, [assignment.mapIndex]);
+    if (assignment?.mapIndex !== undefined) {
+      setMapIndex(assignment.mapIndex);
+    }
+  }, [assignment?.mapIndex]);
 
   useEffect(() => {
-    const headers = {
-      Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
-    };
-
-    let theName = getInfractionName(assignment);
-
-    const url = `${baseUrl}/assignments/v1/`;
-    axios
-      .get(url, { headers })
-      .then((response) => {
-        const essay = response.data.filter(
-          (essay: Assignment) =>
-            essay.infractionName === theName && Number(essay.level) === Number(assignment.infractionLevel));
-        setEssay(essay[0]);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }, [assignment]);
-
-  useEffect(() => {
-    if (mapIndex !== 0) {
+    if (!assignment) {
+      return;
+    } else {
       const headers = {
         Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
       };
-      let url = "";
-      if (isTeacherReferral(assignment)) {
-        url = `${baseUrl}/punish/v1/${assignment.punishmentId}/index/${mapIndex}`;
-      } else if (isOfficeReferral(assignment)) {
-        url = `${baseUrl}/officeReferral/v1/${assignment.officeReferralId}/index/${mapIndex}`;
-      }
 
+      let theName = getInfractionName(assignment);
+
+      const url = `${baseUrl}/assignments/v1/`;
       axios
-        .put(url, {}, { headers }) // Include headers directly in the request config
-        .then((response) => {})
+        .get(url, { headers })
+        .then((response) => {
+          const essay = response.data.filter(
+            (essay: Assignment) =>
+              essay.infractionName === theName &&
+              Number(essay.level) === Number(assignment?.infractionLevel)
+          );
+          setEssay(essay[0]);
+        })
         .catch((error) => {
           console.error(error);
         });
+    }
+  }, [assignment]);
+
+  useEffect(() => {
+    if (!assignment) {
+      return;
+    } else {
+      if (mapIndex !== 0) {
+        const headers = {
+          Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
+        };
+        let url = "";
+        if (isTeacherReferral(assignment)) {
+          url = `${baseUrl}/punish/v1/${assignment.punishmentId}/index/${mapIndex}`;
+        } else if (isOfficeReferral(assignment)) {
+          url = `${baseUrl}/officeReferral/v1/${assignment.officeReferralId}/index/${mapIndex}`;
+        }
+
+        axios
+          .put(url, {}, { headers }) // Include headers directly in the request config
+          .then((response) => {})
+          .catch((error) => {
+            console.error(error);
+          });
+      }
     }
   }, [mapIndex, assignment]);
 
