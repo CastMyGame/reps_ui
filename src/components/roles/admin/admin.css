@@ -11,13 +11,6 @@
   width: 95%;
 }
 
-.shout-out-bar-container {
-  background-color: white;
-  width: 340vh;
-  height: 30px;
-  transition: height 0.3s ease; /* Smooth transition for height */
-}
-
 .bar-content {
   display: flex;
   flex-direction: row;

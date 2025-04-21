@@ -918,3 +918,52 @@ table th tr {
   border: #000;
   border-width: 5px;
 }
+
+.shout-out-bar-container,
+.bar-container.open {
+  background-color: #e0e0e0;
+  border-radius: 12px;
+  padding: 8px 12px;
+  margin-bottom: 12px;
+}
+
+.shoutouts-table,
+.shoutouts-table td,
+.shoutouts-table th,
+.bar-content h5 {
+  font-family: 'Nunito', sans-serif;
+  text-align: center;
+  align-items: center;
+}
+
+.table-header-cell {
+  font-weight: bold;
+  font-size: 18px;
+  background-color: #25444c;
+  color: white;
+  font-family: 'Nunito', sans-serif;
+  text-align: center;
+  align-items: center;
+}
+
+.shoutouts-table td {
+  word-break: break-word;
+  vertical-align: top;
+  padding: 8px 12px;
+}
+
+.shoutouts-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2; /* Make sure they stay above scrolling content */
+  font-family: 'Nunito', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: white;
+  background-color: #25444c;
+  text-align: center;
+}
+
+.shoutouts-table th, .shoutouts-table td {
+  padding: 12px;
+}

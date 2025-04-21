@@ -74,7 +74,13 @@ const TeacherOverviewPanel: React.FC<TeacherOverviewProps> = ({
       )}
 
       <div className="teacher-overview-first">
-        <Card variant="outlined">
+        <Card variant="outlined"
+        sx={{
+          borderRadius: 15, // larger number = rounder edges
+          boxShadow: 2, // or use 3+ for stronger shadow
+          padding: 2, // adds internal spacing
+          backgroundColor: "#ffffff", // or a soft background like "#fafafa"
+        }}>
           <ShoutOuts data={data} />
         </Card>
       </div>
@@ -89,6 +95,8 @@ const TeacherOverviewPanel: React.FC<TeacherOverviewProps> = ({
             outline: "1px solid  white",
             padding: "5px",
             fontSize: 36,
+            backgroundColor: "#25444c",
+            textAlign: "center",
           }}
         >
           Week At a Glance
@@ -122,6 +130,8 @@ const TeacherOverviewPanel: React.FC<TeacherOverviewProps> = ({
             outline: "1px solid  white",
             padding: "5px",
             fontSize: 36,
+            backgroundColor: "#25444c",
+            textAlign: "center",
           }}
         >
           Students of Concern
@@ -155,6 +165,8 @@ const TeacherOverviewPanel: React.FC<TeacherOverviewProps> = ({
             outline: "1px solid  white",
             padding: "5px",
             fontSize: 36,
+            backgroundColor: "#25444c",
+            textAlign: "center",
           }}
         >
           Longitudinal Reports
