@@ -72,30 +72,38 @@ const ShoutOuts: React.FC<ShoutOutsProps> = ({ data = {} }) => {
           overflowY: hasScroll ? "scroll" : "visible",
         }}
       >
-        <Table>
+        <Table className="shoutouts-table">
           <TableHead>
             <TableRow>
               <TableCell
-                variant="head"
-                style={{ fontWeight: "bold", width: "20%", fontSize: 18 }}
+                className="table-header-cell"
+                style={{
+                  width: "20%",
+                }}
               >
                 Created On
               </TableCell>
               <TableCell
-                variant="head"
-                style={{ fontWeight: "bold", width: "20%", fontSize: 18 }}
+                className="table-header-cell"
+                style={{
+                  width: "20%",
+                }}
               >
                 Student
               </TableCell>
               <TableCell
-                variant="head"
-                style={{ fontWeight: "bold", width: "30%", fontSize: 18 }}
+                className="table-header-cell"
+                style={{
+                  width: "20%",
+                }}
               >
                 Shout Outs
               </TableCell>
               <TableCell
-                variant="head"
-                style={{ fontWeight: "bold", width: "30%", fontSize: 18 }}
+                className="table-header-cell"
+                style={{
+                  width: "20%",
+                }}
               >
                 Created By
               </TableCell>

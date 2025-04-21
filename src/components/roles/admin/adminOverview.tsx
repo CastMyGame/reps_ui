@@ -40,13 +40,26 @@ const AdminOverviewPanel: React.FC<AdminOverviewProps> = ({ adminDto }) => {
   return (
     <>
       <div className="teacher-overview-first">
-        <Card variant="outlined">
+        <Card
+          variant="outlined"
+          sx={{
+            borderRadius: 15, // larger number = rounder edges
+            boxShadow: 2, // or use 3+ for stronger shadow
+            padding: 2, // adds internal spacing
+            backgroundColor: "#ffffff", // or a soft background like "#fafafa"
+          }}
+        >
           <ShoutOuts data={adminDto} />
         </Card>
       </div>
       {notClosed.length > 0 && (
         <div className="teacher-overview-first">
-          <Card variant="outlined">
+          <Card variant="outlined" sx={{
+          borderRadius: 15, // larger number = rounder edges
+          boxShadow: 2, // or use 3+ for stronger shadow
+          padding: 2, // adds internal spacing
+          backgroundColor: "#ffffff", // or a soft background like "#fafafa"
+        }}>
             <OfficeReferrals data={adminDto.officeReferrals} />
           </Card>
         </div>
@@ -56,7 +69,13 @@ const AdminOverviewPanel: React.FC<AdminOverviewProps> = ({ adminDto }) => {
         <Typography
           color="white"
           variant="h3"
-          style={{ flexGrow: 1, outline: "1px solid  white", padding: "5px" }}
+          style={{
+            flexGrow: 1,
+            outline: "1px solid  white",
+            padding: "5px",
+            backgroundColor: "#25444c",
+            textAlign: "center",
+          }}
         >
           Week At a Glance
         </Typography>
@@ -89,7 +108,13 @@ const AdminOverviewPanel: React.FC<AdminOverviewProps> = ({ adminDto }) => {
         <Typography
           color="white"
           variant="h3"
-          style={{ flexGrow: 1, outline: "1px solid  white", padding: "5px" }}
+          style={{
+            flexGrow: 1,
+            outline: "1px solid  white",
+            padding: "5px",
+            backgroundColor: "#25444c",
+            textAlign: "center",
+          }}
         >
           Coaching Information
         </Typography>
@@ -133,7 +158,13 @@ const AdminOverviewPanel: React.FC<AdminOverviewProps> = ({ adminDto }) => {
         <Typography
           color="white"
           variant="h3"
-          style={{ flexGrow: 1, outline: "1px solid  white", padding: "5px" }}
+          style={{
+            flexGrow: 1,
+            outline: "1px solid  white",
+            padding: "5px",
+            backgroundColor: "#25444c",
+            textAlign: "center",
+          }}
         >
           Longitudinal Reports
         </Typography>

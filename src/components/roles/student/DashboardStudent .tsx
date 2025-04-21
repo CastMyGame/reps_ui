@@ -24,8 +24,9 @@ const StudentDashboard = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState("");
   const [openNotificationDrawer, setOpenNotificationDrawer] = useState(false);
   const [panelName, setPanelName] = useState("openAssignments");
-  const [selectAssignmentToStart, setSelectAssignmentToStart] =
-    useState<(TeacherReferral | OfficeReferral)>();
+  const [selectAssignmentToStart, setSelectAssignmentToStart] = useState<
+    TeacherReferral | OfficeReferral
+  >();
   const [studentDetails, setStudentDetails] = useState<Student | undefined>();
   const [school, setSchool] = useState<School | undefined>();
 
@@ -57,114 +58,120 @@ const StudentDashboard = () => {
     setOpenNotificationDrawer(open);
   };
 
-  const handleStartAssignment = (data: (TeacherReferral | OfficeReferral)) => {
+  const handleStartAssignment = (data: TeacherReferral | OfficeReferral) => {
     setSelectAssignmentToStart(data);
     setPanelName("startAssignment");
   };
 
   return loggedIn ? (
-      <>
-        <div>
-          {modalType === "contact" && (
-            <ContactUsModal
-              setContactUsDisplayModal={setModalType}
-            />
-          )}
+    <>
+      <div>
+        {modalType === "contact" && (
+          <ContactUsModal setContactUsDisplayModal={setModalType} />
+        )}
 
-          <NavigationStudent
-            setPanelName={setPanelName}
-            setDropdown={setIsDropdownOpen}
-            setLogin={handleLogout}
-          />
+        <NavigationStudent
+          setPanelName={setPanelName}
+          setDropdown={setIsDropdownOpen}
+          setLogin={handleLogout}
+        />
+      </div>
+      <div className="student-main-content">
+        <div style={{ width: "100%" }} className="dashboard-title">
+          <div>Student Dashboard</div>
         </div>
-        <div className="student-main-content">
-          <div style={{ width: "100%" }} className="dashboard-title">
-            <div>Student Dashboard</div>
-          </div>
 
-          {punishments == null ? (
-            <div
-              style={{
-                backgroundColor: "white",
-                height: "80vh",
-                marginTop: "10px",
-              }}
-              className="student-panel"
-            >
-              <LoadingWheelPanel />
-            </div>
-          ) : (
-            <>
-              <div
-                className="student-overview"
-                style={{
-                  display: panelName === "startAssignment" ? "none" : "",
-                }}
-              >
-                <div className="student-overview-first">
-                  <Card variant="outlined">
-                    <ShoutOutWidget listOfPunishments={punishments} />
-                  </Card>
-                </div>
-                <div className="student-overview-second">
-                  <Card style={{ height: "200px" }} variant="outlined">
-                    <TotalPositivePoints
-                      data={studentDetails}
-                      school={school}
-                    />
-                  </Card>
-                </div>
-              </div>
-              {panelName === "openAssignments" && (
-                <div className="student-overview">
-                  <div className="student-overview-first">
-                    <Card
-                      style={{ minHeight: "200px", minWidth: "800px" }}
-                      variant="outlined"
-                    >
-                      <StudentReferralsByWeek data={punishments} />
-                    </Card>
-                  </div>
-                  <div className="student-overview-first">
-                    <Card
-                      style={{ minHeight: "200px", minWidth: "800px" }}
-                      variant="outlined"
-                    >
-                      <StudentReferralsPieChart data={punishments} />
-                    </Card>
-                  </div>
-                </div>
-              )}
-              <div style={{ height: "80vh" }} className="student-panel">
-                {panelName === "closedAssignments" && (
-                  <StudentClosedPunishmentPanel
-                    listOfPunishments={punishments}
-                  />
-                )}
-                {panelName === "openAssignments" && (
-                  <StudentOpenPunishmentPanel
-                    listOfReferrals={referrals}
-                    listOfPunishments={punishments}
-                    handleStartAssignment={handleStartAssignment}
-                  />
-                )}
-                {panelName === "startAssignment" && selectAssignmentToStart && (
-                  <ViolationPage assignment={selectAssignmentToStart} />
-                )}
-              </div>
-            </>
-          )}
-
-          <Drawer
-            anchor="right"
-            open={openNotificationDrawer}
-            onClose={() => toggleNotificationDrawer(false)}
+        {punishments == null ? (
+          <div
+            style={{
+              backgroundColor: "white",
+              height: "80vh",
+              marginTop: "10px",
+            }}
+            className="student-panel"
           >
-            <NotificationBar />
-          </Drawer>
-        </div>
-      </>
-    ) : null;
+            <LoadingWheelPanel />
+          </div>
+        ) : (
+          <>
+            <div
+              className="student-overview"
+              style={{
+                display: panelName === "startAssignment" ? "none" : "",
+              }}
+            >
+              <div className="student-overview-first">
+                <Card variant="outlined">
+                  <ShoutOutWidget listOfPunishments={punishments} />
+                </Card>
+              </div>
+              <div className="student-overview-second">
+                <Card
+                  variant="outlined"
+                  sx={{
+                    borderRadius: 3,
+                    boxShadow: 2,
+                    padding: 3,
+                    backgroundColor: "#f9fafb",
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    height: "200px",
+                  }}
+                >
+                  <TotalPositivePoints data={studentDetails} school={school} />
+                </Card>
+              </div>
+            </div>
+            {panelName === "openAssignments" && (
+              <div className="student-overview">
+                <div className="student-overview-first">
+                  <Card
+                    style={{ minHeight: "200px", minWidth: "800px" }}
+                    variant="outlined"
+                  >
+                    <StudentReferralsByWeek data={punishments} />
+                  </Card>
+                </div>
+                <div className="student-overview-first">
+                  <Card
+                    style={{ minHeight: "200px", minWidth: "800px" }}
+                    variant="outlined"
+                  >
+                    <StudentReferralsPieChart data={punishments} />
+                  </Card>
+                </div>
+              </div>
+            )}
+            <div style={{ height: "80vh" }} className="student-panel">
+              {panelName === "closedAssignments" && (
+                <StudentClosedPunishmentPanel listOfPunishments={punishments} />
+              )}
+              {panelName === "openAssignments" && (
+                <StudentOpenPunishmentPanel
+                  listOfReferrals={referrals}
+                  listOfPunishments={punishments}
+                  handleStartAssignment={handleStartAssignment}
+                />
+              )}
+              {panelName === "startAssignment" && selectAssignmentToStart && (
+                <ViolationPage assignment={selectAssignmentToStart} />
+              )}
+            </div>
+          </>
+        )}
+
+        <Drawer
+          anchor="right"
+          open={openNotificationDrawer}
+          onClose={() => toggleNotificationDrawer(false)}
+        >
+          <NotificationBar />
+        </Drawer>
+      </div>
+    </>
+  ) : null;
 };
 
 export default StudentDashboard;

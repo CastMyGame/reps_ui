@@ -4,15 +4,18 @@
 .landing-header {
   display: flex;
   height: 7em;
-  background-color: #25444c;
+  background-color: white;
   width: 100%;
-  justify-content: flex-start;
+  justify-content: space-between;
   align-content: center;
-  padding: 0.5em 2em;
+  padding: 0 1rem;
+  align-items: center;
 }
 
 .logo-text {
-  width: 25%;
+  height: 100%; /* ensures it matches the header height */
+  display: flex;
+  align-items: center;
 }
 
 .logo-text h1 {
@@ -23,14 +26,29 @@
 }
 
 .logo-text h1 span {
-  color: white;
+  color: #25444c;
+}
+
+.landing-header-menu,
+.landing-header-menu-login {
+  padding: 0.5rem 1rem;
+  border-radius: 999px; /* full pill shape */
+  transition: background-color 0.2s ease, color 0.2s ease;
+  cursor: pointer;
+}
+
+.landing-header-menu:hover,
+.landing-header-menu-login:hover {
+  color: #000; /* optional, for contrast on hover */
+  background-color: #f0f0f0;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .landing-header-menu {
   text-align: center;
   position: relative;
   width: 20%;
-  color: white;
+  color: #25444c;
   min-height: fit-content;
   padding: 1em;
   font-size: x-large;
@@ -50,7 +68,7 @@
   font-size: x-large;
   border-radius: 16px;
   text-align: center;
-  background-color: #6ce2ec;
+  background-color: #25444c;
 }
 
 .landing-header-menu-login:hover {
@@ -396,6 +414,12 @@ input[type="submit"] {
   display: none;
 }
 
+.navbar {
+  background-color: #c9ced6 !important;
+  border: none; /* optional, removes any default bottom border */
+  box-shadow: none; /* optional, keeps it flat and modern */
+}
+
 #menu.navbar-default .navbar-nav > li > div {
   font-family: "Lato", sans-serif;
   text-transform: uppercase;
@@ -667,4 +691,11 @@ input[type="submit"] {
   .book-your-demo-container {
     padding: 1rem;
   }
+}
+
+.logo-img {
+  height: 100%; /* or whatever fits your header nicely */
+  width: auto;
+  object-fit: contain;
+  display: block;
 }

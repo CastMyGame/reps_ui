@@ -29,21 +29,21 @@ const StudentOpenPunishmentPanel: React.FC<StudentOpenProps> = ({
 }) => {
   const loggedInUser = sessionStorage.getItem("email") ?? "";
 
-  const sortedPunishments = listOfPunishments.slice().sort(
-    (a: TeacherReferral, b: TeacherReferral) => {
+  const sortedPunishments = listOfPunishments
+    .slice()
+    .sort((a: TeacherReferral, b: TeacherReferral) => {
       const dateA = new Date(a.timeCreated);
       const dateB = new Date(b.timeCreated);
       return dateA.getTime() - dateB.getTime(); //descending order
-    }
-  );
+    });
 
-  const sortedReferrals = listOfReferrals.slice().sort(
-    (a: OfficeReferral, b: OfficeReferral) => {
+  const sortedReferrals = listOfReferrals
+    .slice()
+    .sort((a: OfficeReferral, b: OfficeReferral) => {
       const dateA = new Date(a.timeCreated);
       const dateB = new Date(b.timeCreated);
       return dateA.getTime() - dateB.getTime(); //descending order
-    }
-  );
+    });
 
   const handleAssignmentClick = (x: OfficeReferral | TeacherReferral) => {
     handleStartAssignment(x);
@@ -148,7 +148,14 @@ const StudentOpenPunishmentPanel: React.FC<StudentOpenProps> = ({
         <Typography
           color="white"
           variant="h6"
-          style={{ flexGrow: 1, outline: "1px solid  white", padding: "5px" }}
+          style={{
+            flexGrow: 1,
+            outline: "1px solid  white",
+            padding: "5px",
+            backgroundColor: "#25444c",
+            textAlign: "center",
+            fontSize: 18,
+          }}
         >
           Assignments To Complete
         </Typography>
@@ -161,29 +168,37 @@ const StudentOpenPunishmentPanel: React.FC<StudentOpenProps> = ({
           overflowY: hasScroll ? "scroll" : "visible",
         }}
       >
-        <Table>
+        <Table className="shoutouts-table">
           <TableHead>
             <TableRow>
               <TableCell
-                variant="head"
-                style={{ fontWeight: "bold" }}
+                className="table-header-cell"
+                style={{
+                  width: "10%",
+                }}
               ></TableCell>
 
               <TableCell
-                variant="head"
-                style={{ fontWeight: "bold", fontSize: "2rem" }}
+                className="table-header-cell"
+                style={{
+                  width: "20%",
+                }}
               >
                 Infraction Name
               </TableCell>
               <TableCell
-                variant="head"
-                style={{ fontWeight: "bold", fontSize: "2rem" }}
+                className="table-header-cell"
+                style={{
+                  width: "20%",
+                }}
               >
                 Description
               </TableCell>
               <TableCell
-                variant="head"
-                style={{ fontWeight: "bold", fontSize: "2rem", width: "5%" }}
+                className="table-header-cell"
+                style={{
+                  width: "5%",
+                }}
               >
                 Level
               </TableCell>
@@ -191,20 +206,26 @@ const StudentOpenPunishmentPanel: React.FC<StudentOpenProps> = ({
              Status
             </TableCell> */}
               <TableCell
-                variant="head"
-                style={{ fontWeight: "bold", fontSize: "2rem" }}
+                className="table-header-cell"
+                style={{
+                  width: "10%",
+                }}
               >
                 Created By
               </TableCell>
               <TableCell
-                variant="head"
-                style={{ fontWeight: "bold", fontSize: "2rem" }}
+                className="table-header-cell"
+                style={{
+                  width: "10%",
+                }}
               >
                 Created On
               </TableCell>
               <TableCell
-                variant="head"
-                style={{ fontWeight: "bold", fontSize: "2rem" }}
+                className="table-header-cell"
+                style={{
+                  width: "20%",
+                }}
               >
                 Consequence if not Completed by Tomorrow
               </TableCell>
@@ -288,7 +309,9 @@ const StudentOpenPunishmentPanel: React.FC<StudentOpenProps> = ({
                       {dateCreateFormat(x.timeCreated)}
                     </div>
                   </TableCell>
-                  <TableCell style={{ fontSize: "1.5rem" }}>
+                  <TableCell
+                    style={{ fontSize: "1.5rem", justifyContent: "center" }}
+                  >
                     <div style={{ display: "flex" }}>
                       {" "}
                       {x.status === "PENDING" ? "" : calculateImportance(x)}

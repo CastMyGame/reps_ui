@@ -197,9 +197,7 @@ const LandingPage = () => {
     <div>
       <header id="landing-header" className="landing-header">
         <div id="logo-text" className="logo-text">
-          <h1>
-            REPS <span>BMS</span>
-          </h1>
+          <img src="/repsLogo.png" alt="REPS BMS Logo" className="logo-img" />
         </div>
         <div
           className="landing-header-menu"
@@ -373,7 +371,11 @@ const LandingPage = () => {
         <div className="testimonial-title">Testimonials</div>
         <div className="testimonial-carrousel">
           {testimonialData.map((item) => {
-            return <div className="testimonial" key={item.text}>{item.text}</div>;
+            return (
+              <div className="testimonial" key={item.text}>
+                {item.text}
+              </div>
+            );
           })}
         </div>
       </div>
