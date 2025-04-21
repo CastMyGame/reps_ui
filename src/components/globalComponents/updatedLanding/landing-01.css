@@ -4,15 +4,18 @@
 .landing-header {
   display: flex;
   height: 7em;
-  background-color: #25444c;
+  background-color: white;
   width: 100%;
-  justify-content: flex-start;
+  justify-content: space-between;
   align-content: center;
-  padding: 0.5em 2em;
+  padding: 0 1rem;
+  align-items: center;
 }
 
 .logo-text {
-  width: 25%;
+  height: 100%; /* ensures it matches the header height */
+  display: flex;
+  align-items: center;
 }
 
 .logo-text h1 {
@@ -23,14 +26,14 @@
 }
 
 .logo-text h1 span {
-  color: white;
+  color: #25444c;
 }
 
 .landing-header-menu {
   text-align: center;
   position: relative;
   width: 20%;
-  color: white;
+  color: #25444c;
   min-height: fit-content;
   padding: 1em;
   font-size: x-large;
@@ -50,7 +53,7 @@
   font-size: x-large;
   border-radius: 16px;
   text-align: center;
-  background-color: #6ce2ec;
+  background-color: #25444c;
 }
 
 .landing-header-menu-login:hover {
@@ -667,4 +670,11 @@ input[type="submit"] {
   .book-your-demo-container {
     padding: 1rem;
   }
+}
+
+.logo-img {
+  height: 100%; /* or whatever fits your header nicely */
+  width: auto;
+  object-fit: contain;
+  display: block;
 }
