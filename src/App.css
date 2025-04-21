@@ -2,6 +2,11 @@
   width: 100%;
   margin: 0 auto;
   height: 95%;
+  background-color: #e0e0e0 !important;
+}
+
+#menu {
+  background-color: #e0e0e0 !important;
 }
 
 .level-three-button-container {

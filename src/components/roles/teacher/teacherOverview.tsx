@@ -45,7 +45,7 @@ const TeacherOverviewPanel: React.FC<TeacherOverviewProps> = ({
   }, [data]);
 
   return (
-    <>
+    <div className="dashboard-container">
       {openModal.display && (
         <div className="modal-overlay">
           <div className="modal-content">
@@ -177,7 +177,7 @@ const TeacherOverviewPanel: React.FC<TeacherOverviewProps> = ({
           <ReferralByBehavior data={data?.punishmentResponse || []} />
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

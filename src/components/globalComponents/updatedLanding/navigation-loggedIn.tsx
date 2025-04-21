@@ -46,7 +46,7 @@ export const NavigationLoggedIn: React.FC<NavigationLoggedInProps> = (
         className="container"
         style={{
           width: "100%",
-          display: "inline-block",
+          display: "inline-block"
         }}
         ref={dropdownRef}
       >

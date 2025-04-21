@@ -29,6 +29,21 @@
   color: #25444c;
 }
 
+.landing-header-menu,
+.landing-header-menu-login {
+  padding: 0.5rem 1rem;
+  border-radius: 999px; /* full pill shape */
+  transition: background-color 0.2s ease, color 0.2s ease;
+  cursor: pointer;
+}
+
+.landing-header-menu:hover,
+.landing-header-menu-login:hover {
+  color: #000; /* optional, for contrast on hover */
+  background-color: #f0f0f0;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
 .landing-header-menu {
   text-align: center;
   position: relative;
@@ -397,6 +412,12 @@ input[type="submit"] {
 
 .none {
   display: none;
+}
+
+.navbar {
+  background-color: #c9ced6 !important;
+  border: none; /* optional, removes any default bottom border */
+  box-shadow: none; /* optional, keeps it flat and modern */
 }
 
 #menu.navbar-default .navbar-nav > li > div {
