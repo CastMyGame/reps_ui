@@ -5,9 +5,8 @@ import {
   TeacherOverviewDto,
 } from "src/types/responses";
 import {
-  extractDataByWeek,
-  findDataByWeekAndByPunishment,
-  currentWeek,
+  countLast7Days,
+  isDateInLast7Days,
 } from "../../../helperFunctions/helperFunctions";
 
 interface PieChartParentCommunicationProps {
@@ -25,25 +24,21 @@ export const PieChartParentCommunication: React.FC<
   officeReferrals = [],
   writeUpResponse = [],
 }) => {
-  const numShoutout = extractDataByWeek(currentWeek, shoutOutsResponse || []);
-  const numOfficeReferral = extractDataByWeek(
-    currentWeek,
-    officeReferrals || []
-  );
-  const numBxConcern = findDataByWeekAndByPunishment(
-    currentWeek,
-    "Behavioral Concern",
-    data?.punishmentResponse || []
-  );
 
-  const teachReferrals = extractDataByWeek(currentWeek, writeUpResponse || []);
+  const numShoutout = countLast7Days(shoutOutsResponse || []);
+  const numOfficeReferral = countLast7Days(officeReferrals || []);
+  const teachReferrals = countLast7Days(writeUpResponse || []);
+  const numBxConcern = countLast7Days(
+    data?.punishmentResponse || [],
+    (item) => item.infractionName === "Behavioral Concern"
+  );
 
   // Check if there's no data to display
   const hasData =
-    numShoutout.length ||
-    numOfficeReferral.length ||
-    numBxConcern ||
-    teachReferrals.length;
+    numShoutout > 0 ||
+    numOfficeReferral > 0 ||
+    numBxConcern > 0 ||
+    teachReferrals > 0;
 
   const option = {
     responsive: true,
@@ -69,7 +64,7 @@ export const PieChartParentCommunication: React.FC<
         radius: "90%",
         data: [
           {
-            value: numShoutout.length,
+            value: numShoutout,
             name: "Positive Behavior Shout Out!",
             itemStyle: {
               color: "#008000",
@@ -83,14 +78,14 @@ export const PieChartParentCommunication: React.FC<
             },
           },
           {
-            value: teachReferrals.length,
+            value: teachReferrals,
             name: "Teacher Referrals",
             itemStyle: {
               color: "#ffA500",
             },
           },
           {
-            value: numOfficeReferral.length,
+            value: numOfficeReferral,
             name: "Office Referrals",
             itemStyle: {
               color: "#ff0000",
