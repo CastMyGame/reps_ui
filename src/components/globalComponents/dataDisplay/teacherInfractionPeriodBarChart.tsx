@@ -1,9 +1,5 @@
-import React from "react";
-import {
-  currentWeek,
-  extractDataByWeek,
-  findDataByWeekAndByPunishment,
-} from "src/helperFunctions/helperFunctions";
+import React, { useMemo } from "react";
+import { isDateInLast7Days } from "src/helperFunctions/helperFunctions";
 import ReactEcharts from "echarts-for-react";
 import { TeacherDto } from "src/types/responses";
 
@@ -11,48 +7,31 @@ interface TeacherInfractionOverPeriodBarChartProps {
   data: TeacherDto[];
 }
 
-const TeacherInfractionOverPeriodBarChart: React.FC<TeacherInfractionOverPeriodBarChartProps> = ({ data }) => {
-  const weekData = extractDataByWeek(currentWeek, data || []);
-  const tardybehavior = findDataByWeekAndByPunishment(
-    currentWeek,
-    "Tardy",
-    weekData || []
-  );
-  const disruptivebehavior = findDataByWeekAndByPunishment(
-    currentWeek,
-    "Disruptive Behavior",
-    weekData || []
-  );
-  const horseplay = findDataByWeekAndByPunishment(
-    currentWeek,
-    "Horseplay",
-    weekData || []
-  );
-  const dressCode = findDataByWeekAndByPunishment(
-    currentWeek,
-    "Dress Code",
-    weekData || []
-  );
-  const cellPhone = findDataByWeekAndByPunishment(
-    currentWeek,
-    "Unauthorized Device/Cell Phone",
-    weekData || []
-  );
-  const behavioralConcern = findDataByWeekAndByPunishment(
-    currentWeek,
-    "Behavioral Concern",
-    weekData || []
-  );
-  const ftc = findDataByWeekAndByPunishment(
-    currentWeek,
-    "Failure to Complete Work",
-    weekData || []
-  );
-  const innappropriateLanguage = findDataByWeekAndByPunishment(
-    currentWeek,
-    "Inappropriate Language",
-    weekData || []
-  );
+const TeacherInfractionOverPeriodBarChart: React.FC<
+  TeacherInfractionOverPeriodBarChartProps
+> = ({ data }) => {
+  const counts = useMemo(() => {
+    let counts = {
+      Tardy: 0,
+      "Disruptive Behavior": 0,
+      Horseplay: 0,
+      "Dress Code": 0,
+      "Unauthorized Device/Cell Phone": 0,
+      "Behavioral Concern": 0,
+      "Failure to Complete Work": 0,
+      "Inappropriate Language": 0,
+    };
+
+    for (const item of data || []) {
+      if (isDateInLast7Days(item.timeCreated)) {
+        const type = item.infractionName;
+        if (counts.hasOwnProperty(type)) {
+          counts[type as keyof typeof counts]++;
+        }
+      }
+    }
+    return counts;
+  }, [data]);
 
   const option = {
     tooltip: {
@@ -74,7 +53,7 @@ const TeacherInfractionOverPeriodBarChart: React.FC<TeacherInfractionOverPeriodB
       {
         name: "Behavioral Concern",
         type: "bar",
-        data: [behavioralConcern],
+        data: [counts["Behavioral Concern"]],
         itemStyle: {
           color: "#0000FF",
         },
@@ -82,7 +61,7 @@ const TeacherInfractionOverPeriodBarChart: React.FC<TeacherInfractionOverPeriodB
       {
         name: "Disruptive Behavior",
         type: "bar",
-        data: [disruptivebehavior],
+        data: [counts["Disruptive Behavior"]],
         itemStyle: {
           color: "#ffA500",
         },
@@ -90,7 +69,7 @@ const TeacherInfractionOverPeriodBarChart: React.FC<TeacherInfractionOverPeriodB
       {
         name: "Dress Code",
         type: "bar",
-        data: [dressCode],
+        data: [counts["Dress Code"]],
         itemStyle: {
           color: "#C7EA46",
         },
@@ -98,7 +77,7 @@ const TeacherInfractionOverPeriodBarChart: React.FC<TeacherInfractionOverPeriodB
       {
         name: "Failure to Complete Work",
         type: "bar",
-        data: [ftc],
+        data: [counts["Failure to Complete Work"]],
         itemStyle: {
           color: "#000000",
         },
@@ -106,7 +85,7 @@ const TeacherInfractionOverPeriodBarChart: React.FC<TeacherInfractionOverPeriodB
       {
         name: "Horseplay",
         type: "bar",
-        data: [horseplay],
+        data: [counts["Horseplay"]],
         itemStyle: {
           color: "#964B00",
         },
@@ -114,7 +93,7 @@ const TeacherInfractionOverPeriodBarChart: React.FC<TeacherInfractionOverPeriodB
       {
         name: "Inappropriate Language",
         type: "bar",
-        data: [innappropriateLanguage],
+        data: [counts["Inappropriate Language"]],
         itemStyle: {
           color: "#FFC0CB",
         },
@@ -122,7 +101,7 @@ const TeacherInfractionOverPeriodBarChart: React.FC<TeacherInfractionOverPeriodB
       {
         name: "Tardy",
         type: "bar",
-        data: [tardybehavior],
+        data: [counts["Tardy"]],
         itemStyle: {
           color: "#800080",
         },
@@ -130,7 +109,7 @@ const TeacherInfractionOverPeriodBarChart: React.FC<TeacherInfractionOverPeriodB
       {
         name: "Unauthorized Device/Cell Phone",
         type: "bar",
-        data: [cellPhone],
+        data: [counts["Unauthorized Device/Cell Phone"]],
         itemStyle: {
           color: "#ff0000",
         },
@@ -139,9 +118,7 @@ const TeacherInfractionOverPeriodBarChart: React.FC<TeacherInfractionOverPeriodB
   };
 
   return (
-    <div>
-      <ReactEcharts option={option} />
-    </div>
+    <ReactEcharts style={{ height: "40vh", width: "100%" }} option={option} />
   );
 };
 

@@ -103,8 +103,6 @@ export const IncidentByTeacherPieChart: React.FC<IncidentByTeacherPieProps> = ({
   console.log("Incidents list", teachersWithIncidentsList);
 
   return (
-    <div>
-      <ReactEcharts option={option} />
-    </div>
+    <ReactEcharts style={{ height: "40vh", width: "100%" }} option={option} />
   );
 };

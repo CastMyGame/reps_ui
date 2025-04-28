@@ -295,8 +295,13 @@ body {
 
 .section-header {
   background: #4caf50;
-  color: #fff;
+  background-color: #25444c;
+  color: white;
+  font-size: 36px;
+  font-weight: bold;
   padding: 10px;
+  text-align: center;
+  border-bottom: 1px solid white;
 }
 
 .question-header {
@@ -549,6 +554,7 @@ button:hover {
 table th tr {
   font-size: large;
   height: fit-content;
+  border: none;
 }
 
 /* Dropdown Content (Hidden by Default) */
@@ -921,7 +927,8 @@ table th tr {
 
 .shout-out-bar-container,
 .bar-container.open {
-  background-color: #e0e0e0;
+  background-color: #25444c;
+  color: white;
   border-radius: 12px;
   padding: 8px 12px;
   margin-bottom: 12px;
@@ -931,17 +938,18 @@ table th tr {
 .shoutouts-table td,
 .shoutouts-table th,
 .bar-content h5 {
-  font-family: 'Nunito', sans-serif;
+  font-family: "Nunito", sans-serif;
   text-align: center;
   align-items: center;
+  color: white;
 }
 
 .table-header-cell {
   font-weight: bold;
   font-size: 18px;
-  background-color: #25444c;
-  color: white;
-  font-family: 'Nunito', sans-serif;
+  background-color: #efeff0;
+  color: black;
+  font-family: "Nunito", sans-serif;
   text-align: center;
   align-items: center;
 }
@@ -956,14 +964,69 @@ table th tr {
   position: sticky;
   top: 0;
   z-index: 2; /* Make sure they stay above scrolling content */
-  font-family: 'Nunito', sans-serif;
+  font-family: "Nunito", sans-serif;
   font-size: 18px;
   font-weight: 700;
-  color: white;
-  background-color: #25444c;
+  color: black;
+  background-color: #efeff0;
   text-align: center;
 }
 
-.shoutouts-table th, .shoutouts-table td {
+.shoutouts-table th,
+.shoutouts-table td {
   padding: 12px;
+}
+
+.section-container {
+  margin-bottom: 30px;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  background-color: #f5f7fa;
+}
+
+.section-content {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 20px;
+  padding: 20px;
+  justify-content: space-between;
+  background-color: #f5f7fa;
+  border-radius: 8px;
+}
+
+.section-half {
+  flex: 1 1 45%;
+  min-width: 300px;
+  border-radius: 8px;
+  box-shadow: none;
+  overflow: hidden;
+  border: none;
+}
+
+.scrollable-section {
+  max-height: 40vh;
+  overflow-y: auto;
+  background-color: #f5f7fa;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+}
+
+.section-third {
+  flex: 1 1 30%;
+  min-width: 250px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.custom-card {
+  background-color: #f5f7fa;
+  border: 1px solid #ddd;
+  border-radius: 15px;
+  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+  padding: 16px;
 }

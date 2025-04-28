@@ -26,6 +26,26 @@ export const getCurrentWeekOfYear = (): number => {
   return weekNumber;
 };
 
+export function isDateInLast7Days(dateString: string | Date) {
+  const today = new Date();
+  const date = new Date(dateString);
+  const sevenDaysAgo = new Date();
+  sevenDaysAgo.setDate(today.getDate() - 7);
+
+  return date >= sevenDaysAgo && date <= today;
+}
+
+export function countLast7Days<T>(arr: T[], filterFn?: (item: T) => boolean): number {
+  return arr.reduce((count, item) => {
+    if (isDateInLast7Days((item as any).timeCreated)) {
+      if (!filterFn || filterFn(item)) {
+        return count + 1;
+      }
+    }
+    return count;
+  }, 0);
+}
+
 export const currentWeek = getCurrentWeekOfYear();
 
 export const getWeekNumber = (date: Date): number => {
