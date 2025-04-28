@@ -2,11 +2,7 @@ import React from "react";
 import ReactEcharts from "echarts-for-react";
 import "./CustomPieChart.css";
 import { OfficeReferral, TeacherDto } from "src/types/responses";
-import {
-  extractDataByWeek,
-  getCurrentWeekOfYear,
-  GenerateBxByWeek
-} from "src/helperFunctions/helperFunctions";
+import { countLast7Days } from "src/helperFunctions/helperFunctions";
 
 interface AdminReferralByTypeProps {
   punishmentResponse: TeacherDto[];
@@ -15,35 +11,30 @@ interface AdminReferralByTypeProps {
   officeReferrals: OfficeReferral[];
 }
 
-export const AdminSchoolReferralByTypePieChart: React.FC<AdminReferralByTypeProps> = ({
+export const AdminSchoolReferralByTypePieChart: React.FC<
+  AdminReferralByTypeProps
+> = ({
   punishmentResponse,
   writeUpResponse,
   shoutOutsResponse,
   officeReferrals,
 }) => {
-  const currentWeek = getCurrentWeekOfYear();
+  const behavioralConcerns = countLast7Days(
+    punishmentResponse || [],
+    (item) => item.infractionName === "Behavioral Concern"
+  );
+  const shoutOutWeek = countLast7Days(shoutOutsResponse || []);
+  const officeReferralWeek = countLast7Days(officeReferrals || []);
+  const teacherReferralWeek = countLast7Days(writeUpResponse || []);
 
-  const behavioralConcerns = GenerateBxByWeek(
-    "Behavioral Concern",
-    currentWeek,
-    writeUpResponse
-  );
-  const shoutOutWeek = extractDataByWeek(
-    currentWeek,
-    shoutOutsResponse
-  );
-  const officeReferralWeek = extractDataByWeek(
-    currentWeek,
-    officeReferrals
-  );
-  const teacherReferralWeek = extractDataByWeek(
-    currentWeek,
-    writeUpResponse
-  );
+  // Check if there's no data to display
+  const hasData =
+    shoutOutWeek > 0 ||
+    officeReferralWeek > 0 ||
+    behavioralConcerns > 0 ||
+    teacherReferralWeek > 0;
 
   const option = {
-    responsive: true,
-    maintainAspectRatio: false,
     tooltip: {
       trigger: "item",
     },
@@ -57,35 +48,36 @@ export const AdminSchoolReferralByTypePieChart: React.FC<AdminReferralByTypeProp
       {
         type: "pie",
         stillShowZeroSum: false,
-        left: "30%",
+        left: "20%",
+        bottom: "15%",
         label: {
           show: false,
         },
         radius: "70%",
         data: [
           {
-            value: shoutOutWeek.length,
+            value: shoutOutWeek,
             name: "Positive Behavior Shout Out!",
             itemStyle: {
               color: "#008000",
             },
           },
           {
-            value: behavioralConcerns.length,
+            value: behavioralConcerns,
             name: "Behavioral Concern",
             itemStyle: {
               color: "#FFFF00",
             },
           },
           {
-            value: teacherReferralWeek.length,
+            value: teacherReferralWeek,
             name: "Teacher Referrals",
             itemStyle: {
               color: "#ffA500",
             },
           },
           {
-            value: officeReferralWeek.length,
+            value: officeReferralWeek,
             name: "Office Referrals",
             itemStyle: {
               color: "#ff0000",
@@ -103,9 +95,25 @@ export const AdminSchoolReferralByTypePieChart: React.FC<AdminReferralByTypeProp
     ],
   };
 
+  const fallbackOption = {
+    title: {
+      text: "No Referral Data This Week",
+      left: "center",
+    },
+    tooltip: { trigger: "item" },
+    series: [
+      {
+        type: "pie",
+        radius: "65%",
+        data: [{ value: 0, itemStyle: { color: "#ccc" } }],
+      },
+    ],
+  };
+
   return (
-    <div style={{ maxHeight: "100%", maxWidth: "100%" }}>
-      <ReactEcharts option={option} />
-    </div>
+    <ReactEcharts
+      style={{ height: "40vh", width: "100%" }}
+      option={hasData ? option : fallbackOption}
+    />
   );
 };

@@ -805,6 +805,7 @@ const CreatePunishmentPanel: React.FC<CreatePunishmentProps> = ({
                         </div>
                       </div>
                       <div>
+                      {studentNames.length > 1 && (
                         <Box sx={{ mt: 2 }}>
                           <Typography
                             variant="subtitle1"
@@ -834,6 +835,7 @@ const CreatePunishmentPanel: React.FC<CreatePunishmentProps> = ({
                             </Button>
                           ))}
                         </Box>
+                      )}
                         <TextField
                           margin="normal"
                           required

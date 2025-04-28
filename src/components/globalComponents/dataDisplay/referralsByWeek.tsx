@@ -162,11 +162,7 @@ export const TotalReferralByWeek: React.FC<TotalReferralProps> = ({
       bottom: "8%",
       containLabel: true,
     },
-    toolbox: {
-      feature: {
-        saveAsImage: {},
-      },
-    },
+    toolbox: null,
     xAxis: {
       type: "category",
       boundaryGap: false,

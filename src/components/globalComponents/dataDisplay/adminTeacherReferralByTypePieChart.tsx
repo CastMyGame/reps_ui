@@ -3,6 +3,7 @@ import ReactEcharts from "echarts-for-react";
 import "./CustomPieChart.css";
 import { TeacherDto } from "src/types/responses";
 import {
+  countLast7Days,
   GenerateBxByWeek,
 } from "src/helperFunctions/helperFunctions";
 
@@ -10,50 +11,41 @@ interface AdminTeacherByTypeProps {
   writeUpResponse: TeacherDto[];
 }
 
-export const AdminTeacherReferralByTypePieChart: React.FC<AdminTeacherByTypeProps> = ({
-  writeUpResponse,
-}) => {
-  const [rangeWeeks, setRangeWeeks] = useState(10);
+export const AdminTeacherReferralByTypePieChart: React.FC<
+  AdminTeacherByTypeProps
+> = ({ writeUpResponse }) => {
+  const tardyData = countLast7Days(
+    writeUpResponse || [],
+    (item) => item.infractionName === "Tardy"
+  );
+  const horseplayData = countLast7Days(
+    writeUpResponse || [],
+    (item) => item.infractionName === "Horseplay"
+  );
+  const dressCodeData = countLast7Days(
+    writeUpResponse || [],
+    (item) => item.infractionName === "Dress Code"
+  );
+  const unauthorizedDeviceData = countLast7Days(
+    writeUpResponse || [],
+    (item) => item.infractionName === "Unauthorized Device/Cell Phone"
+  );
 
-  const tardyData = GenerateBxByWeek(
-    "Tardy",
-    rangeWeeks,
-    writeUpResponse
+  const disruptiveBehaviorData = countLast7Days(
+    writeUpResponse || [],
+    (item) => item.infractionName === "Disruptive Behavior"
   );
-  const horseplayData = GenerateBxByWeek(
-    "Horseplay",
-    rangeWeeks,
-    writeUpResponse
+  const inappropriateLanguage = countLast7Days(
+    writeUpResponse || [],
+    (item) => item.infractionName === "Inappropriate Language"
   );
-  const dressCodeData = GenerateBxByWeek(
-    "Dress Code",
-    rangeWeeks,
-    writeUpResponse
+  const behavioralConcernData = countLast7Days(
+    writeUpResponse || [],
+    (item) => item.infractionName === "Behavioral Concern"
   );
-  const unauthorizedDeviceData = GenerateBxByWeek(
-    "Unauthorized Device/Cell Phone",
-    rangeWeeks,
-    writeUpResponse
-  );
-  const disruptiveBehaviorData = GenerateBxByWeek(
-    "Disruptive Behavior",
-    rangeWeeks,
-    writeUpResponse
-  );
-  const inappropriateLanguage = GenerateBxByWeek(
-    "Inappropriate Language",
-    rangeWeeks,
-    writeUpResponse
-  );
-  const behavioralConcernData = GenerateBxByWeek(
-    "Behavioral Concern",
-    rangeWeeks,
-    writeUpResponse
-  );
-  const academicConcernData = GenerateBxByWeek(
-    "Academic Concern",
-    rangeWeeks,
-    writeUpResponse
+  const academicConcernData = countLast7Days(
+    writeUpResponse || [],
+    (item) => item.infractionName === "Academic Concern"
   );
 
   const option = {
@@ -79,56 +71,56 @@ export const AdminTeacherReferralByTypePieChart: React.FC<AdminTeacherByTypeProp
         radius: "70%",
         data: [
           {
-            value: unauthorizedDeviceData.reduce((a, b) => a + b, 0),
+            value: unauthorizedDeviceData,
             name: "Unauthorized Device/Cell Phone",
             itemStyle: {
               color: "#ff0000",
             },
           },
           {
-            value: inappropriateLanguage.reduce((a, b) => a + b, 0),
+            value: inappropriateLanguage,
             name: "Inappropriate Language",
             itemStyle: {
               color: "#a5142c",
             },
           },
           {
-            value: disruptiveBehaviorData.reduce((a, b) => a + b, 0),
+            value: disruptiveBehaviorData,
             name: "Disruptive Behavior",
             itemStyle: {
               color: "#ffA500",
             },
           },
           {
-            value: dressCodeData.reduce((a, b) => a + b, 0),
+            value: dressCodeData,
             name: "Dress Code",
             itemStyle: {
               color: "#C7EA46",
             },
           },
           {
-            value: tardyData.reduce((a, b) => a + b, 0),
+            value: tardyData,
             name: "Tardy",
             itemStyle: {
               color: "#800080",
             },
           },
           {
-            value: horseplayData.reduce((a, b) => a + b, 0),
+            value: horseplayData,
             name: "Horseplay",
             itemStyle: {
               color: "#964B00",
             },
           },
           {
-            value: behavioralConcernData.reduce((a, b) => a + b, 0),
+            value: behavioralConcernData,
             name: "Behavioral Concern",
             itemStyle: {
               color: "#0000FF",
             },
           },
           {
-            value: academicConcernData.reduce((a, b) => a + b, 0),
+            value: academicConcernData,
             name: "Academic Concern",
             itemStyle: {
               color: "#000000",
@@ -147,8 +139,6 @@ export const AdminTeacherReferralByTypePieChart: React.FC<AdminTeacherByTypeProp
   };
 
   return (
-    <div style={{ maxHeight: "100%", maxWidth: "100%" }}>
-      <ReactEcharts option={option} />
-    </div>
+    <ReactEcharts style={{ height: "40vh", width: "100%" }} option={option} />
   );
 };

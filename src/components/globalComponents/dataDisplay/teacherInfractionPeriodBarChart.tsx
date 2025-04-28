@@ -1,7 +1,5 @@
-import React from "react";
-import {
-  isDateInLast7Days,
-} from "src/helperFunctions/helperFunctions";
+import React, { useMemo } from "react";
+import { isDateInLast7Days } from "src/helperFunctions/helperFunctions";
 import ReactEcharts from "echarts-for-react";
 import { TeacherDto } from "src/types/responses";
 
@@ -9,26 +7,31 @@ interface TeacherInfractionOverPeriodBarChartProps {
   data: TeacherDto[];
 }
 
-const TeacherInfractionOverPeriodBarChart: React.FC<TeacherInfractionOverPeriodBarChartProps> = ({ data }) => {
-  let counts = {
-    "Tardy": 0,
-    "Disruptive Behavior": 0,
-    "Horseplay": 0,
-    "Dress Code": 0,
-    "Unauthorized Device/Cell Phone": 0,
-    "Behavioral Concern": 0,
-    "Failure to Complete Work": 0,
-    "Inappropriate Language": 0,
-  };
+const TeacherInfractionOverPeriodBarChart: React.FC<
+  TeacherInfractionOverPeriodBarChartProps
+> = ({ data }) => {
+  const counts = useMemo(() => {
+    let counts = {
+      Tardy: 0,
+      "Disruptive Behavior": 0,
+      Horseplay: 0,
+      "Dress Code": 0,
+      "Unauthorized Device/Cell Phone": 0,
+      "Behavioral Concern": 0,
+      "Failure to Complete Work": 0,
+      "Inappropriate Language": 0,
+    };
 
-  for (const item of data || []) {
-    if (isDateInLast7Days(item.timeCreated)) {
-      const type = item.infractionName;
-      if (counts.hasOwnProperty(type)) {
-        counts[type as keyof typeof counts]++;
+    for (const item of data || []) {
+      if (isDateInLast7Days(item.timeCreated)) {
+        const type = item.infractionName;
+        if (counts.hasOwnProperty(type)) {
+          counts[type as keyof typeof counts]++;
+        }
       }
     }
-  }
+    return counts;
+  }, [data]);
 
   const option = {
     tooltip: {
@@ -115,9 +118,7 @@ const TeacherInfractionOverPeriodBarChart: React.FC<TeacherInfractionOverPeriodB
   };
 
   return (
-    <div>
-      <ReactEcharts option={option} />
-    </div>
+    <ReactEcharts style={{ height: "40vh", width: "100%" }} option={option} />
   );
 };
 

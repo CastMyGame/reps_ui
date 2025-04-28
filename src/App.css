@@ -554,6 +554,7 @@ button:hover {
 table th tr {
   font-size: large;
   height: fit-content;
+  border: none;
 }
 
 /* Dropdown Content (Hidden by Default) */
@@ -992,19 +993,25 @@ table th tr {
   gap: 20px;
   padding: 20px;
   justify-content: space-between;
+  background-color: #f5f7fa;
+  border-radius: 8px;
 }
 
 .section-half {
   flex: 1 1 45%;
   min-width: 300px;
+  border-radius: 8px;
+  box-shadow: none;
+  overflow: hidden;
+  border: none;
 }
 
 .scrollable-section {
   max-height: 40vh;
   overflow-y: auto;
-  background-color: #ffffff;
+  background-color: #f5f7fa;
   padding: 10px;
-  border: 1px solid #ddd;
+  border: none;
   border-radius: 8px;
 }
 
@@ -1017,7 +1024,7 @@ table th tr {
 }
 
 .custom-card {
-  background-color: #ffffff;
+  background-color: #f5f7fa;
   border: 1px solid #ddd;
   border-radius: 15px;
   box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);

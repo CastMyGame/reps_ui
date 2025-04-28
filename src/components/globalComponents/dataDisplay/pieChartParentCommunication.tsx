@@ -4,10 +4,7 @@ import {
   TeacherDto,
   TeacherOverviewDto,
 } from "src/types/responses";
-import {
-  countLast7Days,
-  isDateInLast7Days,
-} from "../../../helperFunctions/helperFunctions";
+import { countLast7Days } from "../../../helperFunctions/helperFunctions";
 
 interface PieChartParentCommunicationProps {
   data: TeacherOverviewDto;
@@ -24,7 +21,6 @@ export const PieChartParentCommunication: React.FC<
   officeReferrals = [],
   writeUpResponse = [],
 }) => {
-
   const numShoutout = countLast7Days(shoutOutsResponse || []);
   const numOfficeReferral = countLast7Days(officeReferrals || []);
   const teachReferrals = countLast7Days(writeUpResponse || []);
@@ -113,16 +109,14 @@ export const PieChartParentCommunication: React.FC<
       {
         type: "pie",
         radius: "65%",
-        data: [
-          { value: 0, itemStyle: { color: "#ccc" } },
-        ],
+        data: [{ value: 0, itemStyle: { color: "#ccc" } }],
       },
     ],
   };
 
   return (
     <div>
-        <ReactEcharts option={hasData ? option : fallbackOption} />
+      <ReactEcharts option={hasData ? option : fallbackOption} />
     </div>
   );
 };
