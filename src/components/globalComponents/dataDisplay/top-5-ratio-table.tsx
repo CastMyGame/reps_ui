@@ -74,16 +74,16 @@ export const Top5TeacherRatioTable: React.FC<Top5Props> = ({
 
   return (
     <div
-      style={{ width: "100%", overflow: "auto", marginTop: "15vh" }}
+      style={{
+        width: "100%"
+      }}
     >
-      <h3 style={{ textAlign: "center", marginBottom: "10px" }}>
-        Most Positive
-      </h3>
+      <h3 style={{ textAlign: "center" }}>Most Positive</h3>
       <div className="ag-theme-quartz">
         <AgGridReact
           rowData={mostPositiveRowData}
           columnDefs={colDefs as ColDef[]}
-          domLayout="autoHeight" // Ensures that the height is handled properly
+          domLayout="autoHeight"
         />
       </div>
     </div>

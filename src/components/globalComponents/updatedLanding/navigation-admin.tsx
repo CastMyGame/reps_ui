@@ -58,7 +58,7 @@ export const NavigationAdmin: React.FC<NavigationAdminProps> = (props) => {
         <a
           className="navbar-brand page-scroll"
           href="#page-top"
-          style={{ fontSize: 16 }}
+          style={{ fontSize: 16, color: "black" }}
         >
           Welcome {sessionStorage.getItem("userName")}!
         </a>
