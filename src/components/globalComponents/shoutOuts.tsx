@@ -7,7 +7,6 @@ import {
   TableRow,
   TableCell,
 } from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
 import { dateCreateFormat } from "../../helperFunctions/helperFunctions";
 import { AdminOverviewDto, TeacherOverviewDto } from "src/types/responses";
 
@@ -61,7 +60,7 @@ const ShoutOuts: React.FC<ShoutOutsProps> = ({ data = {} }) => {
               cursor: "pointer",
               userSelect: "none",
               marginTop: "3px",
-              display: "inline-block", // important for transform to work correctly
+              display: "inline-block",
               transform: barOpen ? "translateY(-3px) scale(1.1)" : "scale(1)",
               transition: "transform 0.3s ease",
             }}

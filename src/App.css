@@ -296,6 +296,7 @@ body {
 .section-header {
   background: #4caf50;
   background-color: #25444c;
+  font-family: "Nunito", sans-serif;
   color: white;
   font-size: 36px;
   font-weight: bold;
@@ -980,6 +981,7 @@ table th tr {
 .section-container {
   margin-bottom: 30px;
   border: 1px solid #ddd;
+  font-family: "Nunito", sans-serif;
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -988,13 +990,16 @@ table th tr {
 
 .section-content {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   align-items: flex-start;
+  font-family: "Nunito", sans-serif;
+  height: 40vh;
   gap: 20px;
   padding: 20px;
   justify-content: space-between;
   background-color: #f5f7fa;
   border-radius: 8px;
+  overflow: hidden;
 }
 
 .section-half {
@@ -1016,11 +1021,14 @@ table th tr {
 }
 
 .section-third {
-  flex: 1 1 30%;
+  flex: 1;
   min-width: 250px;
+  max-height: 40vh;
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding-right: 8px;
 }
 
 .custom-card {

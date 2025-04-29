@@ -49,13 +49,6 @@ export const Bottom4PositiveTeacherTable: React.FC<Bottom4Props> = ({
               ? Number(((posIncidents / totalIncidents) * 100).toFixed(2))
               : 0;
 
-          console.log(
-            `Incidents for ${teacher.firstName} ${teacher.lastName}:`,
-            incidentsForWeek
-          );
-          console.log(`Total incidents count:`, totalIncidents);
-          console.log(`Total incidents count:`, posRatio);
-
           return {
             teacherName: `${teacher.firstName} ${teacher.lastName}`,
             posRatio,
@@ -80,17 +73,23 @@ export const Bottom4PositiveTeacherTable: React.FC<Bottom4Props> = ({
   ];
 
   return (
-    <div>
+    <div
+      style={{
+        width: "100%",
+        marginTop: "10px",
+      }}
+    >
       <h3 style={{ textAlign: "center", marginBottom: "10px" }}>
         Least Positive
       </h3>
       <div
         className="ag-theme-quartz"
+        style={{ textAlign: "center", marginBottom: "18px" }}
       >
         <AgGridReact
           rowData={leastPositiveRowData}
           columnDefs={colDefs as ColDef<IncidentList>[]}
-          domLayout="autoHeight" // Ensures that the height is handled properly
+          domLayout="autoHeight"
         />
       </div>
     </div>
