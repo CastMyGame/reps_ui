@@ -55,6 +55,7 @@ const testimonialData = [
 
 const LandingPage = () => {
   const [text, setText] = useState(""); // Initialize state for the textarea
+  const [booking, setBooking] = useState<boolean>(false);
 
   const handleScroll = (event: any) => {
     const targetId = event.target.getAttribute("data-target");
@@ -195,41 +196,54 @@ const LandingPage = () => {
 
   return (
     <div>
-      <header id="landing-header" className="landing-header">
-        <div id="logo-text" className="logo-text">
-          <img src="/repsLogo.png" alt="REPS BMS Logo" className="logo-img" />
+      <header className="landing-header">
+        <div className="logo-container">
+          <img src="/repsLogo.png" alt="REPS BMS Logo" className="logo" />
+          <span
+            className="logo-title"
+            style={{ fontSize: 40, fontWeight: "bolder", fontFamily: "Nunito" }}
+          >
+            Reps Discipline
+          </span>
         </div>
-        <div
-          className="landing-header-menu"
-          data-target="features"
-          onClick={handleScroll}
+        <nav className="nav-menu">
+          <div
+            data-target="about"
+            style={{ fontSize: 18, fontFamily: "Nunito" }}
+            onClick={handleScroll}
+          >
+            About Us
+          </div>
+          <div
+            data-target="features"
+            style={{ fontSize: 18, fontFamily: "Nunito" }}
+            onClick={handleScroll}
+          >
+            Features
+          </div>
+          <div
+            data-target="solutions"
+            style={{ fontSize: 18, fontFamily: "Nunito" }}
+            onClick={handleScroll}
+          >
+            Solutions
+          </div>
+          <button
+            className="demo-button"
+            data-target="demo"
+            style={{ fontSize: 18, fontFamily: "Nunito" }}
+            onClick={handleScroll}
+          >
+            Demo Request
+          </button>
+        </nav>
+        <button
+          className="landing-header-menu-login"
+          style={{ fontSize: 24, fontFamily: "Nunito", fontWeight: "bolder" }}
+          onClick={() => openLogin()}
         >
-          Features
-        </div>
-        <div
-          className="landing-header-menu"
-          data-target="about"
-          onClick={handleScroll}
-        >
-          About
-        </div>
-        <div
-          className="landing-header-menu"
-          data-target="testimonials"
-          onClick={handleScroll}
-        >
-          Testimonials
-        </div>
-        <div
-          className="landing-header-menu"
-          data-target="book-your-demo"
-          onClick={handleScroll}
-        >
-          Book a Demo
-        </div>
-        <div className="landing-header-menu-login" onClick={() => openLogin()}>
           Login
-        </div>
+        </button>
       </header>
       {modalType === "login" && (
         <div
@@ -400,12 +414,12 @@ const LandingPage = () => {
           </span>
         </div>
         {bookingMessage ? (
-          <div className="book-your-demo-form">
+          <div id="demo" className="book-your-demo-form">
             <h1>Thank you for your Interest</h1>
             <h2>A REP BMS representative you contact you shortly.</h2>
           </div>
         ) : (
-          <div className="book-your-demo-form">
+          <div id="demo" className="book-your-demo-form">
             <div className="form-header">
               <h1>Book Your Demo!</h1>
               <span>

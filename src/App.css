@@ -301,7 +301,7 @@ body {
   font-size: 36px;
   font-weight: bold;
   padding: 10px;
-  text-align: center;
+  text-align: start;
   border-bottom: 1px solid white;
 }
 
@@ -1037,4 +1037,36 @@ table th tr {
   border-radius: 15px;
   box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
   padding: 16px;
+}
+
+.nav-menu {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  font-size: 1rem;
+  color: #333;
+}
+
+.nav-menu div {
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.nav-menu div:hover {
+  color: #0d4a3a;
+}
+
+.demo-button {
+  background-color: #0d4a3a;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 0.5rem 1.25rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.demo-button:hover {
+  background-color: #092f27;
 }

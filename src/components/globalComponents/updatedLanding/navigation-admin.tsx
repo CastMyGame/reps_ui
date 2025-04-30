@@ -1,4 +1,4 @@
-import React, {useEffect, useRef} from "react";
+import React, { useEffect, useRef } from "react";
 import "./landing.css";
 import { AccessibleDiv } from "src/utils/accessibleDiv";
 
@@ -14,13 +14,14 @@ interface NavigationAdminProps {
 export const NavigationAdmin: React.FC<NavigationAdminProps> = (props) => {
   const dropdownRef = useRef<HTMLDivElement | null>(null);
 
-  const { setDropdown } = props; // Destructure only what's needed
-
-  // Close dropdown when clicking outside
+  const { setDropdown } = props;
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setDropdown(""); // Close the dropdown
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setDropdown("");
       }
     };
 
@@ -157,7 +158,8 @@ export const NavigationAdmin: React.FC<NavigationAdminProps> = (props) => {
               </AccessibleDiv>
               <div
                 style={{
-                  display: props.whichDropdownOpen === "tools" ? " block" : "none",
+                  display:
+                    props.whichDropdownOpen === "tools" ? " block" : "none",
                 }}
                 className="feature-menu-dropdown page-scroll"
               >
