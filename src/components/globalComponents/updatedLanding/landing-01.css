@@ -699,3 +699,7 @@ input[type="submit"] {
   object-fit: contain;
   display: block;
 }
+
+.full-width-container {
+  @apply px-4 sm:px-6 lg:px-8 xl:px-16;
+}

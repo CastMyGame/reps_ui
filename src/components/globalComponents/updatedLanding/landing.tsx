@@ -5,6 +5,8 @@ import axios from "axios";
 import { baseUrl } from "src/utils/jsonData";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
+import { Column } from "jspdf-autotable";
+import { relative } from "path";
 
 const summaryData = [
   {
@@ -195,8 +197,73 @@ const LandingPage = () => {
   };
 
   return (
-    <div>
-      <header className="landing-header">
+    <div className="full-width-container" >
+      
+      {modalType === "login" && (
+        <div
+          style={{ height: "auto", background: "red" }}
+          className="login-modal"
+        >
+          <form className="form-container" onSubmit={HandleLogin}>
+            <div className="form-row">
+              <div className="form-column">
+                <label htmlFor="uName">User Name*</label>
+                <br />
+                <input type="text" id="uName" name="username" />
+              </div>
+              <div className="form-column">
+                <label htmlFor="password">Password*</label>
+                <br />
+                <input type="password" id="password" name="password" />
+              </div>
+            </div>
+            <a href="/forgot-password">Forgot Password?</a>
+
+            <Snackbar
+              open={warningToast}
+              autoHideDuration={6000}
+              onClose={handleClose}
+            >
+              <Alert
+                onClose={handleClose}
+                severity="error"
+                sx={{ width: "100%" }}
+              >
+                Email or Password is incorrect
+              </Alert>
+            </Snackbar>
+            <input type="submit" value={loading ? "Loading..." : "Sign In"} />
+          </form>
+        </div>
+      )}
+
+        {/* TOP HEADER */}
+  <div>
+  {/* Inline SVG positioned in bottom right */}
+  <svg
+    id="heroShape"
+    viewBox="0 0 359 496"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    style={{
+      position: 'absolute',
+      bottom: 0,
+      right: 0,
+      height: '100%', // or use a specific height like '300px'
+      zIndex: 0 // Put behind text/image if needed
+    }}
+  >
+    <path
+      d="M340.849 18.1648C241.663 30.7341 191.813 84.0742 201.889 143.835C212.387 168.38 223.185 189.191 237.691 209.183C252.197 229.174 266.292 251.296 272.526 278.617C278.76 305.938 275.18 339.663 259.159 357.171C247.222 370.21 231.14 371.988 216.086 372.17C184.968 372.548 153.815 368.311 122.774 371.367C91.7323 374.423 60.0316 385.526 35.6095 412.945C17.5498 433.228 3.28068 463.824 0.566162 495.796L446.323 495.796V65.2735L368.184 0.353271V10.9958L340.849 18.1648Z"
+      fill="var(--svg-color, #254c4c)"
+    />
+  </svg>
+
+
+  <div style={{height:"max-content", display:"flex",flexDirection:'column'
+  }}className="section-00">
+
+  <header style={{padding:'15px 15px',height:"150px",zIndex:3,width:'100%'}} className="landing-header">
         <div className="logo-container">
           <img src="/repsLogo.png" alt="REPS BMS Logo" className="logo" />
           <span
@@ -245,45 +312,406 @@ const LandingPage = () => {
           Login
         </button>
       </header>
-      {modalType === "login" && (
-        <div
-          style={{ height: "auto", background: "red" }}
-          className="login-modal"
-        >
-          <form className="form-container" onSubmit={HandleLogin}>
-            <div className="form-row">
-              <div className="form-column">
-                <label htmlFor="uName">User Name*</label>
-                <br />
-                <input type="text" id="uName" name="username" />
-              </div>
-              <div className="form-column">
-                <label htmlFor="password">Password*</label>
-                <br />
-                <input type="password" id="password" name="password" />
-              </div>
-            </div>
-            <a href="/forgot-password">Forgot Password?</a>
 
-            <Snackbar
-              open={warningToast}
-              autoHideDuration={6000}
-              onClose={handleClose}
-            >
-              <Alert
-                onClose={handleClose}
-                severity="error"
-                sx={{ width: "100%" }}
-              >
-                Email or Password is incorrect
-              </Alert>
-            </Snackbar>
-            <input type="submit" value={loading ? "Loading..." : "Sign In"} />
-          </form>
-        </div>
-      )}
-      <div className="intro-panel"></div>
-      <div id="features" className="intro-panel-cards">
+
+    <div  className="section-01"
+          style={{
+            display: "flex",
+            position: "relative", // Important!
+            height: 'maxHeight',
+            marginTop: '15px',
+            padding: "4px"
+          }}
+        >
+
+
+            {/* Your two content sections */}
+      <div     className="section-01-01"
+        style={{ width: '50%', height: '90%', zIndex: 1 }}
+      >
+        <h1 style={{ color: '#254c4c' }}>
+          Transform Student Behavior with REPS Discipline
+        </h1>
+        <p style={{ fontSize: '20px' }}>
+          REPS Discipline offers a comprehensive solution to tackle behavioral challenges in schools, ensuring that every student has the opportunity to succeed academically. Our platform integrates behavior management, proactive communication, and positive reinforcement, paving the way to a more supportive educational environment.
+        </p>
+      </div>
+
+      <div className="section-01-02"
+
+        style={{ width: '50%', height: '90%', zIndex: 1 }}
+      >
+        <picture>
+          <img
+          style={{ height: '400px' }}
+          src="/repsLogo.png"
+          alt="REPS BMS Logo"
+          className="logo"
+        />      </picture>
+
+        {/* <img
+          style={{ height: '400px' }}
+          src="/repsLogo.png"
+          alt="REPS BMS Logo"
+          className="logo"
+        /> */}
+      </div>
+    </div>
+
+    <div  className="section-02-outer"
+          style={{
+            display: "flex",
+            position: "relative", // Important!
+            height: '500px',
+            flexDirection:'row',
+            marginTop: '15px',
+            padding: "20px 5px",
+            backgroundColor:"white",
+            width:"100%",
+            zIndex:3
+
+
+          }}>  
+
+
+
+      <div className="section-02-svg"
+      style={{width:"10%",border:"black 2px solid"}}>
+        
+        <svg
+      id="halfCirclesShapeLeft"
+      viewBox="0 0 135 463"
+      xmlns="http://www.w3.org/2000/svg"
+      width="135"
+      height="463"
+      style={{
+         position: 'absolute',
+         bottom: '0%',
+        left: 0,
+       height: '100%',
+        zIndex: 0,
+
+      }}
+    >
+      <mask
+        id="mask0_19_27294"
+        maskUnits="userSpaceOnUse"
+        x="-8"
+        y="0"
+        width="143"
+        height="463"
+      >
+        <rect
+          x="-7.09009"
+          y="0.258301"
+          width="142.09"
+          height="462.689"
+          fill="#D9D9D9"
+        />
+      </mask>
+      <g mask="url(#mask0_19_27294)">
+        <path
+          d="M-127.27 500.616L-122.963 -99.284C-78.3191 -80.6641 -43.1438 -56.2003 -22.3787 -17.5959C-7.0405 10.9606 -1.25163 40.9333 2.23722 70.8214C5.25135 96.4902 16.6895 113.357 36.1095 136.106C72.1115 178.284 121.975 220.267 111.176 270.727C98.5772 329.503 5.34573 372.526 -3.0467 431.644C-6.65406 457.342 -65.4077 476.297 -43.5623 497.304L-127.27 500.616Z"
+          fill="var(--svg-color2, #3B5E5E)"
+          opacity="1"
+        />
+        <path
+          d="M-103.133 418.469L-99.8875 -33.6469C-57.7959 -21.8134 -18.9885 -6.10061 13.3786 14.1109C77.9035 54.4368 113.084 114.398 89.2174 168.524C63.8548 226.158 -21.3317 269.066 -42.5493 327.301C-53.9085 358.524 -45.2038 389.775 -24.2462 418.961L-103.133 418.469Z"
+          fill="var(--svg-color, #FF7A35)"
+          opacity="0.9"
+        />
+      </g>
+    </svg>
+
+      </div>
+
+    <div className="section-02-inner" 
+    style={{position:"relative",border:"2px solid black",width:"90%",height:"100%"}}>
+
+      
+    <div className="section-02-title" style={{textAlign:"center", width:"100%"}}>
+        <h1 style={{ color: '#254c4c', alignItems:'center' }}> SECTION 2</h1>
+    </div> 
+
+
+  <div className="section-02-cards-box" style={{display:"flex",flexDirection:"row",justifyContent:"center",height:"80%"}} >
+      <div className="section-02-card" style={{width:"30%",height:"90%",backgroundColor:"",border:"1px solid black"}}>Hello</div>
+      <div className="section-02-card" style={{width:"30%",height:"90%",backgroundColor:"",border:"1px solid black"}}>Hello</div>
+      <div className="section-02-card" style={{width:"30%",height:"90%",backgroundColor:"",border:"1px solid black"}}>Hello</div>
+
+
+</div> 
+
+</div>
+
+ 
+
+
+    </div>
+
+
+    <div  className="section-03-outer"
+          style={{
+            display: "flex",
+            position: "relative", // Important!
+            height: '500px',
+            flexDirection:'row',
+            marginTop: '15px',
+            padding: "20px 5px",
+            backgroundColor:"white",
+            width:"100%",
+            zIndex:3
+
+
+          }}>  
+
+
+
+      <div className="section-02-image-box"
+      style={{width:"50%",border:"black 2px solid"}}>
+        <h1>IMAGE</h1>
+      </div>
+
+    <div className="section-02-inner" 
+    style={{position:"relative",border:"2px solid black",width:"50%",height:"100%"}}>
+
+      
+    <div className="section-02-title" style={{textAlign:"center", width:"100%"}}>
+        <h1 style={{ color: '#254c4c', alignItems:'center' }}> SECTION 2</h1>
+    </div> 
+
+    <div className="section-02-content" style={{textAlign:"center", width:"100%"}}>
+      <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+
+</p>
+    </div> 
+
+    <button>Button</button>
+
+
+
+
+</div>
+
+ 
+
+
+    </div>
+
+
+
+ 
+
+    <div  className="section-04"
+          style={{
+            display: "flex",
+            position: "relative", // Important!
+            height: '400px',
+            marginTop: '15px',
+            padding: "15px 15px",
+            backgroundColor:"white",
+            zIndex:3
+
+
+          }}
+        >
+
+        
+    
+
+            {/* Your two content sections */}
+      <div
+        style={{ width: '50%', height: '90%', zIndex: 3 }}
+        className="section-03-01"
+      >
+        <h1 style={{ color: '#254c4c' }}>
+    SECTION 3    </h1>
+    
+      </div>
+
+      <div
+        style={{ width: '50%', height: '90%', zIndex: 3 }}
+        className="section-01-01"
+      >
+
+
+      
+      </div>
+
+    </div>
+
+
+
+
+
+    <div  className="section-04-panel"
+          style={{
+            display: "flex",
+            position: "relative", // Important!
+            height: '600px',
+            marginTop: '15px',
+            padding: "15px 15px",
+            backgroundColor:"white",
+            zIndex:3
+
+
+          }}
+        >
+
+
+            {/* Your two content sections */}
+      <div
+        style={{ width: '50%', height: '90%', zIndex: 3 }}
+        className="section-01-01"
+      >
+        <h1 style={{ color: '#254c4c' }}>
+    SECTION 4    </h1>
+
+      </div>
+
+      <div
+        style={{ width: '50%', height: '90%', zIndex: 3 }}
+        className="section-01-01"
+      >
+
+
+      
+      </div>
+
+    </div>
+
+       <div  className="section-footer-outer"
+          style={{
+            display: "flex",
+            position: "relative", // Important!
+            height: '700px',
+            flexDirection:'row',
+            marginTop: '15px',
+            padding: "20px 5px",
+            backgroundColor:"white",
+            width:"100%",
+            zIndex:3
+
+
+          }}>  
+
+
+
+    
+
+    <div className="section-footer-inner" 
+    style={{position:"relative",border:"2px solid black",width:"90%",height:"100%"}}>
+
+      
+    <div className="section-footer-title" style={{textAlign:"center", width:"100%"}}>
+        <h1 style={{ color: '#254c4c', alignItems:'center' }}> Footer 2</h1>
+    </div> 
+
+
+
+
+
+
+</div>
+<div className="section-footer-svg"
+  style={{ width: "100%", border: "black 2px solid", position: "relative" }} // Add position: relative here
+>
+
+  {/* First SVG - Top */}
+  <div style={{ position: "absolute", top: 0,  right: 0, height: '70%' }}>
+    <svg
+      id="halfCirclesShapeRight"
+      viewBox="0 0 135 463"
+      xmlns="http://www.w3.org/2000/svg"
+      width="135"
+      height="463"
+      style={{
+        height: '100%',
+        width: '100%',
+        zIndex: 0,
+        transform: 'scaleX(-1)',
+      }}
+    >
+      <mask
+        id="mask0_19_27294"
+        maskUnits="userSpaceOnUse"
+        x="-8"
+        y="0"
+        width="143"
+        height="463"
+      >
+        <rect
+          x="-7.09009"
+          y="0.258301"
+          width="142.09"
+          height="462.689"
+          fill="#D9D9D9"
+        />
+      </mask>
+      <g mask="url(#mask0_19_27294)">
+        <path
+          d="M-127.27 500.616L-122.963 -99.284C-78.3191 -80.6641 -43.1438 -56.2003 -22.3787 -17.5959C-7.0405 10.9606 -1.25163 40.9333 2.23722 70.8214C5.25135 96.4902 16.6895 113.357 36.1095 136.106C72.1115 178.284 121.975 220.267 111.176 270.727C98.5772 329.503 5.34573 372.526 -3.0467 431.644C-6.65406 457.342 -65.4077 476.297 -43.5623 497.304L-127.27 500.616Z"
+          fill="var(--svg-color2, #3B5E5E)"
+          opacity="1"
+        />
+        <path
+          d="M-103.133 418.469L-99.8875 -33.6469C-57.7959 -21.8134 -18.9885 -6.10061 13.3786 14.1109C77.9035 54.4368 113.084 114.398 89.2174 168.524C63.8548 226.158 -21.3317 269.066 -42.5493 327.301C-53.9085 358.524 -45.2038 389.775 -24.2462 418.961L-103.133 418.469Z"
+          fill="var(--svg-color, #FF7A35)"
+          opacity="0.9"
+        />
+      </g>
+    </svg>
+  </div>
+
+  {/* Second SVG - Bottom */}
+  <div style={{ position: "absolute", bottom: 0, left: 0, right: 0}}>
+    <svg
+      id="bottomRightCornerShape"
+      width="515"
+      height="344"
+      viewBox="0 0 516 344"
+      xmlns="http://www.w3.org/2000/svg"
+      style={{
+        height: '100%',
+        width: '100%',
+        zIndex: 0,
+        transform: 'scaleX(1)',
+      }}
+    >
+      <path
+        d="M52.4415 337.119C111.306 320.279 176.711 322.775 239.953 320.489C303.169 318.203 371.105 309.002 414.33 275.589C458.347 241.586 466.074 190.972 498.275 150.645C534.749 104.945 605.745 76.8282 678.165 73.3422L678.165 343.482L33.8223 343.481C39.888 341.081 46.112 338.929 52.4415 337.119Z"
+        fill="var(--svg-color2, #FF7A35)"
+      />
+      <path
+        d="M47.7993 329.423C97.1165 319.879 148.992 321.651 199.681 317.555C250.369 313.46 303.379 301.916 336.081 272.561C363.588 247.854 373.979 212.917 407.156 192.591C438.936 173.142 484.376 171.656 518.898 155.064C591.212 120.318 594.483 31.8526 670.911 2.51651C673.285 1.60214 675.711 0.763975 678.138 0.00201234L678.138 343.482L0.75 343.481C15.5452 337.271 31.6063 332.547 47.7993 329.423Z"
+        fill="var(--svg-color2, #4F6F70)"
+        opacity={0.8}
+      />
+    </svg>
+  </div>
+
+</div>
+
+
+ 
+
+
+    </div>
+
+
+      
+
+  </div>
+ 
+</div>
+
+      
+
+
+
+   
+
+      {/* <div id="features" className="intro-panel-cards">
         <div className="ip-card">
           <img className="ip-card-img" src="thumbimg.png" alt="thumbs up" />
 
@@ -486,8 +914,8 @@ const LandingPage = () => {
             </form>
           </div>
         )}
-      </div>
-    </div>
+      </div> */}
+    </div> 
   );
 };
 
