@@ -1,3 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
+
+
 .page {
   width: 90%;
 }
@@ -703,3 +706,88 @@ input[type="submit"] {
 .full-width-container {
   @apply px-4 sm:px-6 lg:px-8 xl:px-16;
 }
+
+/* LANDING SECTIONS */
+
+
+/* SECTION 1 */
+
+
+/* SECTION 2 */
+
+.section-02-svg{
+  width: 10%;
+
+}
+
+.section-02-inner{
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  width: 90%;
+  min-height: 500px;
+  align-items: center;
+}
+
+
+/* LANDING CARDS */
+
+.section-02-card-box{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  width: 100%;
+  padding: 15px;
+}
+
+.section-02-card-title{
+  text-align: center;
+  width: 60%;
+  align-items: center;
+  color:#254c4c;
+  font-size: 32px;
+  font-weight: bolder;
+  font-family: 'Roboto', sans-serif;
+
+
+
+}
+
+.section-02-card{
+  display: flex;
+  flex-direction: column;
+  width: 30%;
+  margin-right: 10px;
+  min-height: 500px;
+  border: 0.5px solid lightgray;
+  padding: 15px;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+}
+
+.section-02-card-img{
+  height:222px
+}
+.section-02-card-title{
+  align-items: center;
+  color:#254c4c;
+  font-size: 22px;
+  font-weight: bolder;
+  font-family: 'Roboto', sans-serif;
+
+}
+
+.section-02-card-body{
+  margin-top: 10px;
+  align-items: center;
+  color: #254c4c;
+  font-size: 16px;
+  font-weight: normal;
+  font-family: 'Roboto', sans-serif;
+
+}
+
+
+
+

@@ -7,6 +7,8 @@ import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import { Column } from "jspdf-autotable";
 import { relative } from "path";
+import { red } from "@mui/material/colors";
+import { height } from "@mui/system";
 
 const summaryData = [
   {
@@ -250,7 +252,7 @@ const LandingPage = () => {
       bottom: 0,
       right: 0,
       height: '100%', // or use a specific height like '300px'
-      zIndex: 0 // Put behind text/image if needed
+      zIndex: 1 // Put behind text/image if needed
     }}
   >
     <path
@@ -263,13 +265,13 @@ const LandingPage = () => {
   <div style={{height:"max-content", display:"flex",flexDirection:'column'
   }}className="section-00">
 
-  <header style={{padding:'15px 15px',height:"150px",zIndex:3,width:'100%'}} className="landing-header">
+  <header style={{padding:'15px 15px',height:"100px",zIndex:3,width:'100%',backgroundColor:"#F5F8FF"}} className="landing-header">
         <div className="logo-container">
-          <img src="/repsLogo.png" alt="REPS BMS Logo" className="logo" />
+          {/* <img src="/repsLogo.png" alt="REPS BMS Logo" className="logo" /> */}
           <span
             className="logo-title"
-            style={{ fontSize: 40, fontWeight: "bolder", fontFamily: "Nunito" }}
-          >
+            style={{ fontSize: "30px", fontWeight: "bolder", fontFamily: "'Poppins', sans-serif" }}
+            >
             Reps Discipline
           </span>
         </div>
@@ -306,7 +308,7 @@ const LandingPage = () => {
         </nav>
         <button
           className="landing-header-menu-login"
-          style={{ fontSize: 24, fontFamily: "Nunito", fontWeight: "bolder" }}
+          style={{ fontSize: 20, fontFamily: "Nunito", fontWeight: "bolder" }}
           onClick={() => openLogin()}
         >
           Login
@@ -320,21 +322,25 @@ const LandingPage = () => {
             position: "relative", // Important!
             height: 'maxHeight',
             marginTop: '15px',
-            padding: "4px"
+            padding: "4px",
+            backgroundColor:"white"
           }}
         >
 
 
             {/* Your two content sections */}
       <div     className="section-01-01"
-        style={{ width: '50%', height: '90%', zIndex: 1 }}
+        style={{ width: '50%', height: '90%', zIndex: 1,padding:"50px" }}
       >
-        <h1 style={{ color: '#254c4c' }}>
+        <div style={{ color: '#254c4c', fontSize: "40px", fontWeight: "bolder", fontFamily: "'Roboto', sans-serif" }}>
           Transform Student Behavior with REPS Discipline
-        </h1>
-        <p style={{ fontSize: '20px' }}>
+        </div>
+        <p style={{ color: '#254c4c', fontSize: "16px", fontWeight: "normal", fontFamily: "'Roboto', sans-serif", marginTop:"15px"}}>
+
           REPS Discipline offers a comprehensive solution to tackle behavioral challenges in schools, ensuring that every student has the opportunity to succeed academically. Our platform integrates behavior management, proactive communication, and positive reinforcement, paving the way to a more supportive educational environment.
         </p>
+
+        <button style={{fontWeight:"bold",borderRadius:30,backgroundColor:'#254c4c',color:"white", marginTop:15}}>Schedule a Demo</button>
       </div>
 
       <div className="section-01-02"
@@ -362,7 +368,7 @@ const LandingPage = () => {
           style={{
             display: "flex",
             position: "relative", // Important!
-            height: '500px',
+            height: 'max-content',
             flexDirection:'row',
             marginTop: '15px',
             padding: "20px 5px",
@@ -375,8 +381,7 @@ const LandingPage = () => {
 
 
 
-      <div className="section-02-svg"
-      style={{width:"10%",border:"black 2px solid"}}>
+      <div className="section-02-svg">
         
         <svg
       id="halfCirclesShapeLeft"
@@ -426,18 +431,35 @@ const LandingPage = () => {
       </div>
 
     <div className="section-02-inner" 
-    style={{position:"relative",border:"2px solid black",width:"90%",height:"100%"}}>
+>
 
       
-    <div className="section-02-title" style={{textAlign:"center", width:"100%"}}>
-        <h1 style={{ color: '#254c4c', alignItems:'center' }}> SECTION 2</h1>
-    </div> 
+            <div className="section-02-card-title">
+             Empowering Schools through Innovative Behavior Management Solutions</div>
 
 
-  <div className="section-02-cards-box" style={{display:"flex",flexDirection:"row",justifyContent:"center",height:"80%"}} >
-      <div className="section-02-card" style={{width:"30%",height:"90%",backgroundColor:"",border:"1px solid black"}}>Hello</div>
-      <div className="section-02-card" style={{width:"30%",height:"90%",backgroundColor:"",border:"1px solid black"}}>Hello</div>
-      <div className="section-02-card" style={{width:"30%",height:"90%",backgroundColor:"",border:"1px solid black"}}>Hello</div>
+
+  <div className="section-02-card-box">
+      <div className="section-02-card">
+        <img className='section-02-card-img' src="https://landingsite-app-public.s3.us-east-2.amazonaws.com/client-files/eaa29386-62fc-4a88-ad9a-ee20e0f7c168" alt="undefined" />
+        <div className='section-02-card-title' >Transformative Data-Driven Insights</div>
+        <div className="section-02-card-body" style={{ marginTop:"10px",alignItems:'center',color: '#254c4c', fontSize: "16px", fontWeight: "normal", fontFamily: "'Roboto', sans-serif" }} >Monitor behavior trends and make informed decisions with our real-time analytics, paving the way for targeted interventions and enhanced student outcomes.</div>
+      
+      </div>
+    <div className="section-02-card">
+      <img className='section-02-card-img' src="https://landingsite-app-public.s3.us-east-2.amazonaws.com/client-files/e40928a4-18f2-45aa-921c-ae59d9aa172c" alt="undefined"/>
+      <div className="section-02-card-title">Proactive Parent Engagement</div>
+      <div className="section-02-card-body"  >REPS Discipline simplifies parent communication by combining logging, texting, and emailing into one step, ensuring timely updates and more informed parents.</div>
+
+      </div>
+
+   <div className="section-02-card">
+        <img className='section-02-card-img' src="https://landingsite-app-public.s3.us-east-2.amazonaws.com/client-files/eaa29386-62fc-4a88-ad9a-ee20e0f7c168" alt="undefined"/>
+        <div className="section-02-card-title">Streamlined Behavior Management
+</div>
+        <div className="section-02-card-body"  >Simplify disciplinary actions with our automated tracking system that promotes consistency and fairness while focusing on positive behavioral outcomes.</div>
+      
+      </div>
 
 
 </div> 
