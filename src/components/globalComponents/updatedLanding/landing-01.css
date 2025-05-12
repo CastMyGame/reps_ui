@@ -707,87 +707,193 @@ input[type="submit"] {
   @apply px-4 sm:px-6 lg:px-8 xl:px-16;
 }
 
-/* LANDING SECTIONS */
+:root {
+  --font-primary: 'Roboto', sans-serif;
+  --color-primary: #254c4c;
+  --color-secondary: #1E3A3A;
+  --color-muted: #6B7E7D;
 
-
-/* SECTION 1 */
-
-
-/* SECTION 2 */
-
-.section-02-svg{
-  width: 10%;
-
+  --font-title: clamp(1.5rem, 2.5vw, 2.5rem);   /* ~24px–40px */
+  --font-subtitle: clamp(1.25rem, 2vw, 2rem);   /* ~20px–32px */
+  --font-body: clamp(1rem, 1.5vw, 1.125rem);    /* ~16px–18px */
 }
 
-.section-02-inner{
+/* General Reset for Sections */
+section {
+  padding: 80px 20px;
+  margin-top: 15px;
+  background-color: white;
+  width: 100%;
+  position: relative;
+  z-index: 3;
+}
+
+/* SECTION 1 */
+.section-01 {
+  display: flex;
+  height: 70vh;
+  
+}
+
+/* SECTION 2 */
+.section-02 {
+  display: flex;
+  flex-direction: row;
+  height: 70vh;
+}
+
+.section-02-svg {
+  width: 10%;
+}
+
+.section-02-inner {
   display: flex;
   flex-direction: column;
-  position: relative;
   width: 90%;
   min-height: 500px;
   align-items: center;
 }
 
-
-/* LANDING CARDS */
-
-.section-02-card-box{
+/* Cards */
+.section-02-card-box {
   display: flex;
-  flex-direction: row;
   justify-content: center;
   width: 100%;
   padding: 15px;
+  flex-wrap: wrap;
+  gap: 20px;
 }
 
-.section-02-card-title{
-  text-align: center;
-  width: 60%;
-  align-items: center;
-  color:#254c4c;
-  font-size: 32px;
-  font-weight: bolder;
-  font-family: 'Roboto', sans-serif;
-
-
-
-}
-
-.section-02-card{
+.section-02-card {
   display: flex;
   flex-direction: column;
   width: 30%;
-  margin-right: 10px;
-  min-height: 500px;
-  border: 0.5px solid lightgray;
+  min-height: 100%;
   padding: 15px;
-  height: 100%;
+  border: 1px solid lightgray;
   align-items: center;
   justify-content: center;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.05);
 }
 
-.section-02-card-img{
-  height:222px
-}
-.section-02-card-title{
-  align-items: center;
-  color:#254c4c;
-  font-size: 22px;
-  font-weight: bolder;
-  font-family: 'Roboto', sans-serif;
-
+.section-02-card-img {
+  height: 222px;
+  object-fit: contain;
 }
 
-.section-02-card-body{
-  margin-top: 10px;
-  align-items: center;
-  color: #254c4c;
-  font-size: 16px;
-  font-weight: normal;
-  font-family: 'Roboto', sans-serif;
-
+/* Section Titles */
+.section-02-card-title,
+.section-03-card-title,
+.section-04-title {
+  font-family: var(--font-primary);
+  color: var(--color-primary);
+  font-size: var(--font-title);
+  font-weight: bold;
+  text-align: center;
+  line-height: 1.2;
+  margin-bottom: 20px;
 }
 
+.section-03-card-title {
+  color: var(--color-secondary);
+}
 
+/* Body Text */
+.section-02-card-body,
+.section-04-card-body,
+.section-04-card-footer,
+.call-to-action,
+.section-05-left-title {
+  font-family: var(--font-primary);
+  font-size: var(--font-body);
+  color: var(--color-muted);
+  line-height: 1.5;
+  text-align: left;
+}
 
+/* SECTION 3 */
+.section-03 {
+  display: flex;
+  flex-direction: row;
+  height: auto;
+  min-height: 70vh;
+  padding: 80px 20px;
+}
 
+.section-03-img {
+  height: 500px;
+  max-width: 100%;
+}
+
+.section-03-content {
+  width: 100%;
+  padding: 15px 30px;
+}
+
+.section-03-text {
+  text-align: left;
+  width: 100%;
+}
+
+/* SECTION 4 */
+.section-04 {
+  display: flex;
+  flex-direction: column;
+  background-color: #F5F8F7;
+}
+
+.section-04-card-box {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  height: 350px;
+  flex-wrap: wrap;
+}
+
+.section-04-card {
+  width: 33%;
+  background-color: white;
+  padding: 20px;
+  border-radius: 20px;
+  border: 1px solid lightgrey;
+}
+
+/* SECTION 5 */
+.section-05 {
+  display: flex;
+  flex-direction: row;
+  height: auto;
+  padding: 80px 20px;
+}
+
+.section-05-left {
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.section-05-right {
+  width: 50%;
+}
+
+/* Responsive Flex Wrapping */
+@media (max-width: 768px) {
+  .section-02,
+  .section-03,
+  .section-04-card-box,
+  .section-05 {
+    flex-direction: column;
+  }
+
+  .section-02-card,
+  .section-04-card {
+    width: 100%;
+  }
+
+  .section-05-left,
+  .section-05-right {
+    width: 100%;
+  }
+}

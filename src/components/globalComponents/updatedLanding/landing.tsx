@@ -252,7 +252,7 @@ const LandingPage = () => {
       bottom: 0,
       right: 0,
       height: '100%', // or use a specific height like '300px'
-      zIndex: 1 // Put behind text/image if needed
+      zIndex: 0 // Put behind text/image if needed
     }}
   >
     <path
@@ -316,19 +316,11 @@ const LandingPage = () => {
       </header>
 
 
-    <div  className="section-01"
-          style={{
-            display: "flex",
-            position: "relative", // Important!
-            height: 'maxHeight',
-            marginTop: '15px',
-            padding: "4px",
-            backgroundColor:"white"
-          }}
+    <section  className="section-01"
+         
         >
 
 
-            {/* Your two content sections */}
       <div     className="section-01-01"
         style={{ width: '50%', height: '90%', zIndex: 1,padding:"50px" }}
       >
@@ -349,40 +341,21 @@ const LandingPage = () => {
       >
         <picture>
           <img
-          style={{ height: '400px' }}
+          style={{ position:'relative', height:'400px',zIndex:0 }}
           src="/repsLogo.png"
           alt="REPS BMS Logo"
           className="logo"
         />      </picture>
 
-        {/* <img
-          style={{ height: '400px' }}
-          src="/repsLogo.png"
-          alt="REPS BMS Logo"
-          className="logo"
-        /> */}
-      </div>
-    </div>
-
-    <div  className="section-02-outer"
-          style={{
-            display: "flex",
-            position: "relative", // Important!
-            height: 'max-content',
-            flexDirection:'row',
-            marginTop: '15px',
-            padding: "20px 5px",
-            backgroundColor:"white",
-            width:"100%",
-            zIndex:3
-
-
-          }}>  
-
-
-
-      <div className="section-02-svg">
         
+      </div>
+    </section>
+
+    <section  className="section-02">  
+
+
+
+      <div className="section-02-svg"> 
         <svg
       id="halfCirclesShapeLeft"
       viewBox="0 0 135 463"
@@ -469,46 +442,35 @@ const LandingPage = () => {
  
 
 
-    </div>
+    </section>
 
 
-    <div  className="section-03-outer"
-          style={{
-            display: "flex",
-            position: "relative", // Important!
-            height: '500px',
-            flexDirection:'row',
-            marginTop: '15px',
-            padding: "20px 5px",
-            backgroundColor:"white",
-            width:"100%",
-            zIndex:3
-
-
-          }}>  
+    <section  className="section-03">  
 
 
 
-      <div className="section-02-image-box"
-      style={{width:"50%",border:"black 2px solid"}}>
-        <h1>IMAGE</h1>
-      </div>
+      <div className="section-03-image-box">
+        <img className='section-03-img' src="https://landingsite-app-public.s3.us-east-2.amazonaws.com/client-files/feb85756-5ccc-4a48-bb5f-613b63c83fc9" alt="undefined"/>
+        </div>
 
-    <div className="section-02-inner" 
-    style={{position:"relative",border:"2px solid black",width:"50%",height:"100%"}}>
+    <div className="section-03-content"> 
 
       
-    <div className="section-02-title" style={{textAlign:"center", width:"100%"}}>
-        <h1 style={{ color: '#254c4c', alignItems:'center' }}> SECTION 2</h1>
-    </div> 
+<div className="section-03-card-title">
+Stagnant Scores, Soaring Suspensions: It's Time to Fix What's Really Broken             </div>
 
-    <div className="section-02-content" style={{textAlign:"center", width:"100%"}}>
-      <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+
+    <div className="section-03-text" >
+      <p>Despite rising per-student spending, smaller class sizes, and better access to technology, student achievement in math and literacy has remained stagnant. At the same time, suspensions and student anxiety are increasing. The takeaway is clear: without intentional systems of accountability and support, even well-resourced schools struggle to meet their potential.
+
+<br/>
+REPS transforms schools by making behavior management seamless, data-driven, and restorative—reducing suspensions and improving student outcomes. New initiatives require time and money, but without strong behavior systems and meaningful support, schools risk repeating decades of underwhelming results.
 
 </p>
     </div> 
 
-    <button>Button</button>
+    <button style={{fontWeight:"bold",borderRadius:30,backgroundColor:'#254c4c',color:"white", marginTop:15}}>Schedule a Demo</button>
+
 
 
 
@@ -518,91 +480,110 @@ const LandingPage = () => {
  
 
 
-    </div>
+    </section>
 
 
 
  
 
-    <div  className="section-04"
-          style={{
-            display: "flex",
-            position: "relative", // Important!
-            height: '400px',
-            marginTop: '15px',
-            padding: "15px 15px",
-            backgroundColor:"white",
-            zIndex:3
+    <section  className="section-04">
+
+    
+            {/* Your two content sections */}
+      <div className="section-04-title">What Schools Are Saying About Reps</div>
+
+      <div className="section-04-card-box">
+      <div className="section-04-card">
+      <div className="section-04-card-body">The immediacy of the system turned what could've been a negative moment into a positive one. After submitting a tardy referral, the student's mother quickly explained they were late due to their father's emergency surgery. I was able to cancel the referral, check in, and strengthen my connection with the student.</div>
+      <div className="section-04-card-footer"  ><span style={{color:"black",fontWeight:"bold"}}>Sophia Lee</span><br/><span>Behavior Management Consultant</span>
+      </div>      
+      </div>
+
+      <div className="section-04-card">
+      <div className="section-04-card-body">With other discipline systems, we mostly saw the negatives. But with REPS, we got to see the positive things teachers were saying about our students. It made starting productive conversations so much easier—and helped students feel seen and valued for the good things they were doing.</div>
+      <div className="section-04-card-footer"  >
+        
+      </div>      
+      </div>
+
+      <div className="section-04-card">
+      <div className="section-04-card-body">This is the most user-friendly behavior management system I've ever used. The dashboards make it easy to spot where support is needed, and the coaching feedback gives us clear direction for helping both students and teachers. It's completely transformed how we approach support school-wide.</div>
+      <div className="section-04-card-footer"  >
+        
+      </div>      
+      </div>
+
+      </div>
+ 
+
+    </section>
 
 
-          }}
-        >
+
+
+
+    <section  className="section-05">
+        {/* TWO SECTIONS */}
+        <div className="section-05-left">
+          <div className="section-05-left-title">
+          Ready to Enhance Student Behavior and Engagement?</div>
+          <div className="call-to-action">
+          Get in Touch with Us
+        </div>
+
+        <form>
+  <input 
+    type="text" 
+    name="name" 
+    placeholder="Your Name" 
+    style={{ display: 'block', marginBottom: 10 }} 
+  />
+  
+  <input 
+    type="email" 
+    name="email" 
+    placeholder="Your Email Address" 
+    style={{ display: 'block', marginBottom: 10 }} 
+  />
+  
+  <textarea 
+    name="message" 
+    placeholder="Your message or inquiry" 
+    // rows="4" 
+    style={{ display: 'block', marginBottom: 10, width: '100%' }} 
+  />
+  
+  <button 
+    type="submit"
+    style={{ 
+      fontWeight: "bold", 
+      borderRadius: 30, 
+      backgroundColor: '#254c4c', 
+      color: "white", 
+      marginTop: 15,
+      padding: "10px 20px",
+      border: "none",
+      cursor: "pointer"
+    }}
+  >
+    Schedule a Demo
+  </button>
+</form>
 
         
-    
-
-            {/* Your two content sections */}
-      <div
-        style={{ width: '50%', height: '90%', zIndex: 3 }}
-        className="section-03-01"
-      >
-        <h1 style={{ color: '#254c4c' }}>
-    SECTION 3    </h1>
-    
-      </div>
-
-      <div
-        style={{ width: '50%', height: '90%', zIndex: 3 }}
-        className="section-01-01"
-      >
-
-
+        </div>
       
-      </div>
-
-    </div>
-
+        <div className="section-05-right"></div>
+       
 
 
 
 
-    <div  className="section-04-panel"
-          style={{
-            display: "flex",
-            position: "relative", // Important!
-            height: '600px',
-            marginTop: '15px',
-            padding: "15px 15px",
-            backgroundColor:"white",
-            zIndex:3
+   
 
+    </section>
 
-          }}
-        >
-
-
-            {/* Your two content sections */}
-      <div
-        style={{ width: '50%', height: '90%', zIndex: 3 }}
-        className="section-01-01"
-      >
-        <h1 style={{ color: '#254c4c' }}>
-    SECTION 4    </h1>
-
-      </div>
-
-      <div
-        style={{ width: '50%', height: '90%', zIndex: 3 }}
-        className="section-01-01"
-      >
-
-
-      
-      </div>
-
-    </div>
-
-       <div  className="section-footer-outer"
+       <section  className="section-footer-outer"
           style={{
             display: "flex",
             position: "relative", // Important!
@@ -718,7 +699,7 @@ const LandingPage = () => {
  
 
 
-    </div>
+    </section>
 
 
       
@@ -733,210 +714,6 @@ const LandingPage = () => {
 
    
 
-      {/* <div id="features" className="intro-panel-cards">
-        <div className="ip-card">
-          <img className="ip-card-img" src="thumbimg.png" alt="thumbs up" />
-
-          <div className="ip-card-content">Supports a Positive Culture</div>
-        </div>
-
-        <div className="ip-card">
-          <img
-            className="ip-card-img"
-            src="messageimg.png"
-            alt="message bubbles"
-          />
-
-          <div className="ip-card-content">Improves Communication</div>
-        </div>
-
-        <div className="ip-card">
-          <img className="ip-card-img" src="notepadimg.png" alt="imag" />
-
-          <div className="ip-card-content">
-            Supports for Exceptional Students
-          </div>
-        </div>
-
-        <div className="ip-card">
-          <img className="ip-card-img" src="graphimg.png" alt="graph" />
-
-          <div className="ip-card-content">Data that inspires Action</div>
-        </div>
-
-        <div className="ip-card">
-          <img className="ip-card-img" src="gearautomation.png" alt="gears" />
-
-          <div className="ip-card-content">Automated Support</div>
-        </div>
-
-        <div className="ip-card">
-          <img className="ip-card-img" src="custominzeimg.png" alt="imag" />
-          <div className="ip-card-content">Customzied to your school</div>
-        </div>
-      </div>
-      <div className="landing-summary-container">
-        {summaryData.map((sum) => {
-          return (
-            <div className="landing-summary-container-points">
-              <div className="point-title">{sum.title}</div>
-
-              <ul className="bullet">
-                <li>{sum.b1}</li>
-                <li>{sum.b2}</li>
-                {sum.b3 && <li>{sum.b3}</li>}
-              </ul>
-            </div>
-          );
-        })}
-        <div className="landing-summary-container-points">
-          <div className="point-title">Customized to Your School</div>
-          <p>
-            REPS knows that each school comes with its strengths and challenges
-            and we welcome the opportunity to provide customization in the form
-            of:
-          </p>
-          <ul className="bullet">
-            <li>
-              Creating automation to adhere to your schools progressive
-              discipline plan.{" "}
-            </li>
-            <li>
-              The ability to add and change restorative assignments and support
-              assignment to meet the needs of your students.{" "}
-            </li>
-            <li>
-              The integration of additional tools and reports for teachers,
-              admin and students
-            </li>
-          </ul>
-        </div>
-      </div>
-      <div className="about-us" id="about">
-        <div className="about-container">
-          <div className="about-us-title">About Us</div>
-          <div className="about-us-content">
-            REPS Behavior Management was created by two math teachers and
-            coaches who wanted to increase data collection, streamline decision
-            making processes and leverage coaching principles in the classroom.
-            We believe good coaches approach with an asset focus, maintain high
-            expectations, use productive means to hold athletes accountable,
-            develop a sense of community and continue to grow themselves. REPS
-            mirrors this approach by starting with what’s going well, when
-            necessary providing support and accountability that is designed to
-            benefit the student, involves the parents/guardians, improves
-            communication between teachers, administrators and school counselors
-            and provides data for continued improvement.
-          </div>
-        </div>
-      </div>
-
-      <div className="testimonials-container" id="testimonials">
-        <div className="testimonial-title">Testimonials</div>
-        <div className="testimonial-carrousel">
-          {testimonialData.map((item) => {
-            return (
-              <div className="testimonial" key={item.text}>
-                {item.text}
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
-      <div className="book-your-demo-container" id="book-your-demo">
-        <div className="demo-text">
-          <span className="form-logo-text">
-            REPS <span className="form-logo-2">BMS</span>
-          </span>{" "}
-          <span className="form-text-content">
-            {" "}
-            is looking to partner with 3 more schools this year to take part in
-            a free pilot program. We’re looking for schools that want to:
-            <ul className="bullet">
-              <li>
-                Improve communication between support structures within and
-                outisde of school
-              </li>
-              <li>Empower teachers to manage behavior within the classroom</li>
-              <li>Leverage automation to improve student performance.</li>
-            </ul>
-          </span>
-        </div>
-        {bookingMessage ? (
-          <div id="demo" className="book-your-demo-form">
-            <h1>Thank you for your Interest</h1>
-            <h2>A REP BMS representative you contact you shortly.</h2>
-          </div>
-        ) : (
-          <div id="demo" className="book-your-demo-form">
-            <div className="form-header">
-              <h1>Book Your Demo!</h1>
-              <span>
-                Fill out the form below and we’ll reach out as soon as possible
-                to discuss ways that we can help meet your school’s needs.
-              </span>
-            </div>
-            <form className="form-container" onSubmit={HandleDemoBooking}>
-              <div className="form-row">
-                <div className="form-column">
-                  <label htmlFor="fname">First Name*</label>
-                  <br />
-                  <input type="text" id="fname" name="firstName" />
-                </div>
-                <div className="form-column">
-                  <label htmlFor="lname">Last Name*</label>
-                  <br />
-                  <input type="text" id="lname" name="lastName" />
-                </div>
-              </div>
-
-              <div className="form-row">
-                <div className="form-column">
-                  <label htmlFor="email">Email*</label>
-                  <br />
-                  <input type="email" id="email" name="email" />
-                </div>
-                <div className="form-column">
-                  <label htmlFor="pnumber">Phone Number*</label>
-                  <br />
-                  <input type="text" id="pnumber" name="phoneNumber" />
-                </div>
-              </div>
-
-              <div className="form-row">
-                <div className="form-column">
-                  <label htmlFor="district">School/District*</label>
-                  <br />
-                  <input type="text" id="district" name="district" />
-                </div>
-                <div className="form-column">
-                  <label htmlFor="state">State*</label>
-                  <br />
-                  <input type="text" id="state" name="state" />
-                </div>
-              </div>
-              <label htmlFor="multiline-text">
-                What do you hope to learn more about:
-              </label>
-              <br />
-
-              <div className="form-row full-width">
-                <textarea
-                  id="multiline-text"
-                  name="multiline-text"
-                  rows={4}
-                  cols={50}
-                  value={text} // Bind the value to the state variable 'text'
-                  onChange={(e) => setText(e.target.value)} // Update 'text' when user types
-                />
-              </div>
-
-              <input type="submit" value="Submit" />
-            </form>
-          </div>
-        )}
-      </div> */}
     </div> 
   );
 };
