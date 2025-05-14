@@ -611,7 +611,7 @@ REPS transforms schools by making behavior management seamless, data-driven, and
 <div className="section-footer-svg">
 
 
-{/*   <div style={{ position: "absolute", top: 0,  right: 0, height: '70%' }}>
+  <div style={{ position: "absolute", top: 0,  right: 0, height: '70%' }}>
     <svg
       id="halfCirclesShapeRight"
       viewBox="0 0 135 463"
@@ -680,7 +680,7 @@ REPS transforms schools by making behavior management seamless, data-driven, and
         opacity={0.8}
       />
     </svg>
-  </div> */}
+  </div>
 
 </div>
 
