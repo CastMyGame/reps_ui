@@ -715,23 +715,24 @@ input[type="submit"] {
 
   --font-title: clamp(1.5rem, 2.5vw, 2.5rem);   /* ~24px–40px */
   --font-subtitle: clamp(1.25rem, 2vw, 2rem);   /* ~20px–32px */
-  --font-body: clamp(1rem, 1.5vw, 1.125rem);    /* ~16px–18px */
+  --font-body: clamp(1.2rem, 1.5vw, 1.3rem); /* Slightly larger min and max */
 }
 
 /* General Reset for Sections */
 section {
+  align-self: center; 
   padding: 80px 20px;
-  margin-top: 15px;
+  margin-top: 10px;
   background-color: white;
-  width: 100%;
+  width: 95%;
   position: relative;
   z-index: 3;
+  height: 60vh;
 }
 
 /* SECTION 1 */
 .section-01 {
   display: flex;
-  height: 70vh;
   
 }
 
@@ -739,7 +740,6 @@ section {
 .section-02 {
   display: flex;
   flex-direction: row;
-  height: 70vh;
 }
 
 .section-02-svg {
@@ -750,7 +750,6 @@ section {
   display: flex;
   flex-direction: column;
   width: 90%;
-  min-height: 500px;
   align-items: center;
 }
 
@@ -768,7 +767,6 @@ section {
   display: flex;
   flex-direction: column;
   width: 30%;
-  min-height: 100%;
   padding: 15px;
   border: 1px solid lightgray;
   align-items: center;
@@ -816,9 +814,7 @@ section {
 .section-03 {
   display: flex;
   flex-direction: row;
-  height: auto;
-  min-height: 70vh;
-  padding: 80px 20px;
+  padding: 20px;
 }
 
 .section-03-img {
@@ -848,13 +844,14 @@ section {
   flex-direction: row;
   gap: 20px;
   height: 350px;
-  flex-wrap: wrap;
 }
+
+
 
 .section-04-card {
   width: 33%;
   background-color: white;
-  padding: 20px;
+  padding: 30px;
   border-radius: 20px;
   border: 1px solid lightgrey;
 }
@@ -896,4 +893,67 @@ section {
   .section-05-right {
     width: 100%;
   }
+
+
 }
+
+
+
+
+.section-footer {
+  justify-content: center;
+  background-color: #F6F9FF;
+  /* z-index: 3; */
+  /* display: grid; */
+  /* grid-template-columns: auto auto auto; */
+}
+
+.grid-container {
+  display: grid;
+  -ms-flex-align: left;
+  grid-template-columns: repeat(3, 1fr); /* 3 equal columns */
+  grid-auto-rows: 1fr;                   /* Equal height for each row */
+  gap: 10px;
+  height: 100%;                         /* For visualization */
+  padding: 10px 20px;
+  width: 100%;
+  background-color: #F6F9FF;
+}
+
+.item {
+  font-family: 'Roboto', sans-serif;
+  font-size: 16px;   color: var(--color-primary);
+  text-align: left;
+  line-height: 1.2;
+  margin-bottom: 20px;
+  padding: 15px;
+  font-weight: lighter;
+}
+
+.header{
+  font-weight: bold;
+
+}
+
+.item-1 {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: flex-start; 
+  grid-column: 1 / 4;                    /* Spans across 3 columns */
+  text-align: left;   
+          /* Darker border for emphasis */
+}
+.item1.logo-title{
+  font-family: 'Poppins', sans-serif;
+  font-size: 50px; 
+}
+
+.item-1>p{
+  margin-top: 10px;
+  font-family: 'Roboto', sans-serif;
+  font-size: 20px; 
+}
+
+
+

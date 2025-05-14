@@ -321,14 +321,11 @@ const LandingPage = () => {
         >
 
 
-      <div     className="section-01-01"
-        style={{ width: '50%', height: '90%', zIndex: 1,padding:"50px" }}
-      >
+      <div  className="section-01-01" style={{ width: '50%', height: '90%', zIndex: 1,padding:"50px" }}>
         <div style={{ color: '#254c4c', fontSize: "40px", fontWeight: "bolder", fontFamily: "'Roboto', sans-serif" }}>
           Transform Student Behavior with REPS Discipline
         </div>
         <p style={{ color: '#254c4c', fontSize: "16px", fontWeight: "normal", fontFamily: "'Roboto', sans-serif", marginTop:"15px"}}>
-
           REPS Discipline offers a comprehensive solution to tackle behavioral challenges in schools, ensuring that every student has the opportunity to succeed academically. Our platform integrates behavior management, proactive communication, and positive reinforcement, paving the way to a more supportive educational environment.
         </p>
 
@@ -416,7 +413,7 @@ const LandingPage = () => {
       <div className="section-02-card">
         <img className='section-02-card-img' src="https://landingsite-app-public.s3.us-east-2.amazonaws.com/client-files/eaa29386-62fc-4a88-ad9a-ee20e0f7c168" alt="undefined" />
         <div className='section-02-card-title' >Transformative Data-Driven Insights</div>
-        <div className="section-02-card-body" style={{ marginTop:"10px",alignItems:'center',color: '#254c4c', fontSize: "16px", fontWeight: "normal", fontFamily: "'Roboto', sans-serif" }} >Monitor behavior trends and make informed decisions with our real-time analytics, paving the way for targeted interventions and enhanced student outcomes.</div>
+        <div className="section-02-card-body"  >Monitor behavior trends and make informed decisions with our real-time analytics, paving the way for targeted interventions and enhanced student outcomes.</div>
       
       </div>
     <div className="section-02-card">
@@ -521,7 +518,7 @@ REPS transforms schools by making behavior management seamless, data-driven, and
 
 
 
-
+{/* FORM */}
     <section  className="section-05">
         {/* TWO SECTIONS */}
         <div className="section-05-left">
@@ -583,45 +580,38 @@ REPS transforms schools by making behavior management seamless, data-driven, and
 
     </section>
 
-       <section  className="section-footer-outer"
-          style={{
-            display: "flex",
-            position: "relative", // Important!
-            height: '700px',
-            flexDirection:'row',
-            marginTop: '15px',
-            padding: "20px 5px",
-            backgroundColor:"white",
-            width:"100%",
-            zIndex:3
 
+ <section  className="section-footer">  
 
-          }}>  
+  <div className="grid-container">
+  <div className="item-1">
+  <div className="logo-title" style={{fontWeight:"bolder",marginTop:"10px",fontSize:"25px"}}>Reps Discipline</div>
+    <p>Everything You Need to Know About REPS Behavior Management. REPS addresses the behavioral issues undermining student success by integrating discipline management, parent communication, and positive reinforcement into a single, user-friendly platform.</p>
+
+  </div>
+  <div className="item header">Our Services</div>
+  <div className="item header">About US</div>
+  <div className="item header">Contact Information</div>
+  <div className="item">Key Features</div>
+  <div className="item">Our Mission</div>
+  <div className="item">123 Reps Discipline Ave, Suite 456, Education City, NC 28201</div>
+  <div className="item">Solutions</div>
+  <div className="item">Our Vision</div>
+  <div className="item">+1 (888) 123-4567</div>
+  <div className="item">Analyics</div>
+  <div className="item">Get in Touch</div>
+  <div className="item">info@repsdiscipline.com</div>
+</div>
 
 
 
     
 
-    <div className="section-footer-inner" 
-    style={{position:"relative",border:"2px solid black",width:"90%",height:"100%"}}>
-
-      
-    <div className="section-footer-title" style={{textAlign:"center", width:"100%"}}>
-        <h1 style={{ color: '#254c4c', alignItems:'center' }}> Footer 2</h1>
-    </div> 
+    
+<div className="section-footer-svg">
 
 
-
-
-
-
-</div>
-<div className="section-footer-svg"
-  style={{ width: "100%", border: "black 2px solid", position: "relative" }} // Add position: relative here
->
-
-  {/* First SVG - Top */}
-  <div style={{ position: "absolute", top: 0,  right: 0, height: '70%' }}>
+{/*   <div style={{ position: "absolute", top: 0,  right: 0, height: '70%' }}>
     <svg
       id="halfCirclesShapeRight"
       viewBox="0 0 135 463"
@@ -666,7 +656,6 @@ REPS transforms schools by making behavior management seamless, data-driven, and
     </svg>
   </div>
 
-  {/* Second SVG - Bottom */}
   <div style={{ position: "absolute", bottom: 0, left: 0, right: 0}}>
     <svg
       id="bottomRightCornerShape"
@@ -691,7 +680,7 @@ REPS transforms schools by making behavior management seamless, data-driven, and
         opacity={0.8}
       />
     </svg>
-  </div>
+  </div> */}
 
 </div>
 
