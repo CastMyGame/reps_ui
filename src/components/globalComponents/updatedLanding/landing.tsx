@@ -9,6 +9,7 @@ import { Column } from "jspdf-autotable";
 import { relative } from "path";
 import { red } from "@mui/material/colors";
 import { height } from "@mui/system";
+import { AccordionItem } from "./AccordianItem";
 
 const summaryData = [
   {
@@ -242,24 +243,7 @@ const LandingPage = () => {
         {/* TOP HEADER */}
   <div>
   {/* Inline SVG positioned in bottom right */}
-  <svg
-    id="heroShape"
-    viewBox="0 0 359 496"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-    style={{
-      position: 'absolute',
-      bottom: 0,
-      right: 0,
-      height: '100%', // or use a specific height like '300px'
-      zIndex: 0 // Put behind text/image if needed
-    }}
-  >
-    <path
-      d="M340.849 18.1648C241.663 30.7341 191.813 84.0742 201.889 143.835C212.387 168.38 223.185 189.191 237.691 209.183C252.197 229.174 266.292 251.296 272.526 278.617C278.76 305.938 275.18 339.663 259.159 357.171C247.222 370.21 231.14 371.988 216.086 372.17C184.968 372.548 153.815 368.311 122.774 371.367C91.7323 374.423 60.0316 385.526 35.6095 412.945C17.5498 433.228 3.28068 463.824 0.566162 495.796L446.323 495.796V65.2735L368.184 0.353271V10.9958L340.849 18.1648Z"
-      fill="var(--svg-color, #254c4c)"
-    />
-  </svg>
+ 
 
 
   <div style={{height:"max-content", display:"flex",flexDirection:'column'
@@ -316,9 +300,25 @@ const LandingPage = () => {
       </header>
 
 
-    <section  className="section-01"
-         
-        >
+    <section  className="section-01">
+    <svg
+    id="heroShape"
+    viewBox="0 0 359 496"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    style={{
+      position: 'absolute',
+      bottom: 0,
+      right: 0,
+      height: '100%', // or use a specific height like '300px'
+      zIndex: 0 // Put behind text/image if needed
+    }}
+  >
+    <path
+      d="M340.849 18.1648C241.663 30.7341 191.813 84.0742 201.889 143.835C212.387 168.38 223.185 189.191 237.691 209.183C252.197 229.174 266.292 251.296 272.526 278.617C278.76 305.938 275.18 339.663 259.159 357.171C247.222 370.21 231.14 371.988 216.086 372.17C184.968 372.548 153.815 368.311 122.774 371.367C91.7323 374.423 60.0316 385.526 35.6095 412.945C17.5498 433.228 3.28068 463.824 0.566162 495.796L446.323 495.796V65.2735L368.184 0.353271V10.9958L340.849 18.1648Z"
+      fill="var(--svg-color, #254c4c)"
+    />
+  </svg>
 
 
       <div  className="section-01-01" style={{ width: '50%', height: '90%', zIndex: 1,padding:"50px" }}>
@@ -520,37 +520,44 @@ REPS transforms schools by making behavior management seamless, data-driven, and
 
 {/* FORM */}
     <section  className="section-05">
-        {/* TWO SECTIONS */}
         <div className="section-05-left">
-          <div className="section-05-left-title">
+          <div>
+          <div className="section-5-title">
           Ready to Enhance Student Behavior and Engagement?</div>
           <div className="call-to-action">
           Get in Touch with Us
         </div>
-
+          </div>
+         
+        <div>
         <form>
-  <input 
+  <input
+    className="section-input" 
     type="text" 
     name="name" 
     placeholder="Your Name" 
-    style={{ display: 'block', marginBottom: 10 }} 
   />
   
   <input 
+    className="section-input"
     type="email" 
     name="email" 
     placeholder="Your Email Address" 
-    style={{ display: 'block', marginBottom: 10 }} 
   />
-  
-  <textarea 
-    name="message" 
-    placeholder="Your message or inquiry" 
-    // rows="4" 
-    style={{ display: 'block', marginBottom: 10, width: '100%' }} 
+   <input 
+    className="section-input"
+    type="text" 
+    name="inquiry" 
+    placeholder="Your Message or Inquiry" 
   />
+
   
-  <button 
+  
+  
+ 
+</form>
+<div>
+<button 
     type="submit"
     style={{ 
       fontWeight: "bold", 
@@ -565,12 +572,25 @@ REPS transforms schools by making behavior management seamless, data-driven, and
   >
     Schedule a Demo
   </button>
-</form>
+</div>
+
+        </div>
+
 
         
         </div>
       
-        <div className="section-05-right"></div>
+        <div className="section-05-right" >
+        <div className="qa-accordion">
+      <AccordionItem question="How does REPS improve behavioral outcomes?" answer="REPS empowers schools by providing a structured approach to behavior management that emphasizes positive reinforcement, enabling educators to effectively track and respond to student behavior in real-time." />
+      <AccordionItem question="What support does REPS provide for teachers?" answer="Our platform offers ongoing professional development and training, equipping teachers with the skills and knowledge to leverage REPS effectively and maximize its benefits in managing classroom behavior." />
+      <AccordionItem question="How does REPS facilitate parent involvement?" answer="REPS automates communication with parents, providing timely updates on their child's behavior and actionable next steps, fostering a collaborative environment between home and school." />
+      <AccordionItem question="What kind of data does REPS provide?" answer="The platform generates comprehensive reports on student behavior trends, allowing educators and administrators to make data-driven decisions to enhance classroom management and policy adjustments." />
+      <AccordionItem question="How can schools get started with REPS?" answer="Schools can easily initiate the process by scheduling a demo through our website, where they will receive personalized guidance on integrating REPS into their existing systems." />
+
+
+    </div>
+        </div>
        
 
 
@@ -609,8 +629,6 @@ REPS transforms schools by making behavior management seamless, data-driven, and
 
     
 <div className="section-footer-svg">
-
-
   <div style={{ position: "absolute", top: 0,  right: 0, height: '70%' }}>
     <svg
       id="halfCirclesShapeRight"
@@ -655,54 +673,12 @@ REPS transforms schools by making behavior management seamless, data-driven, and
       </g>
     </svg>
   </div>
-
-  <div style={{ position: "absolute", bottom: 0, left: 0, right: 0}}>
-    <svg
-      id="bottomRightCornerShape"
-      width="515"
-      height="344"
-      viewBox="0 0 516 344"
-      xmlns="http://www.w3.org/2000/svg"
-      style={{
-        height: '100%',
-        width: '100%',
-        zIndex: 0,
-        transform: 'scaleX(1)',
-      }}
-    >
-      <path
-        d="M52.4415 337.119C111.306 320.279 176.711 322.775 239.953 320.489C303.169 318.203 371.105 309.002 414.33 275.589C458.347 241.586 466.074 190.972 498.275 150.645C534.749 104.945 605.745 76.8282 678.165 73.3422L678.165 343.482L33.8223 343.481C39.888 341.081 46.112 338.929 52.4415 337.119Z"
-        fill="var(--svg-color2, #FF7A35)"
-      />
-      <path
-        d="M47.7993 329.423C97.1165 319.879 148.992 321.651 199.681 317.555C250.369 313.46 303.379 301.916 336.081 272.561C363.588 247.854 373.979 212.917 407.156 192.591C438.936 173.142 484.376 171.656 518.898 155.064C591.212 120.318 594.483 31.8526 670.911 2.51651C673.285 1.60214 675.711 0.763975 678.138 0.00201234L678.138 343.482L0.75 343.481C15.5452 337.271 31.6063 332.547 47.7993 329.423Z"
-        fill="var(--svg-color2, #4F6F70)"
-        opacity={0.8}
-      />
-    </svg>
-  </div>
-
 </div>
-
-
- 
-
 
     </section>
-
-
-      
-
   </div>
  
 </div>
-
-      
-
-
-
-   
-
     </div> 
   );
 };
