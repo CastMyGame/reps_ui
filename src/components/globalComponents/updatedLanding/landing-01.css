@@ -700,7 +700,7 @@ input[type="submit"] {
 }
 
 :root {
-  --font-primary: 'Roboto', sans-serif;
+  --font-primary: ob'Roto', sans-serif;
   --color-primary: #254c4c;
   --color-secondary: #1E3A3A;
   --color-muted: #6B7E7D;
@@ -853,9 +853,11 @@ section {
   height: max-content;
   flex-direction: row;
   padding: 80px 20px;
+
 }
 
 .section-05-left {
+  padding-left: 5%;
   width: 50%;
   display: flex;
   /* justify-content: space-between; */
@@ -1019,11 +1021,12 @@ textarea {
   font-size: 0.95rem;
 }
 
-.section-5-title{
+.sections-title{
   font-size: 42px;
-  font-family: --font-primary;
-  color: #1E3A3A;
-  font-weight:bolder;
+  margin-bottom: 10px;
+  color: '#254c4c';
+  font-weight: bolder;
+  font-family: var(--font-primary)
 
 }
 

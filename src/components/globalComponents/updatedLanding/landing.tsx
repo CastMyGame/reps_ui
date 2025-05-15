@@ -404,7 +404,7 @@ const LandingPage = () => {
 >
 
       
-            <div className="section-02-card-title">
+            <div className="sections-title">
              Empowering Schools through Innovative Behavior Management Solutions</div>
 
 
@@ -453,7 +453,7 @@ const LandingPage = () => {
     <div className="section-03-content"> 
 
       
-<div className="section-03-card-title">
+<div className="sections-title">
 Stagnant Scores, Soaring Suspensions: It's Time to Fix What's Really Broken             </div>
 
 
@@ -487,7 +487,7 @@ REPS transforms schools by making behavior management seamless, data-driven, and
 
     
             {/* Your two content sections */}
-      <div className="section-04-title">What Schools Are Saying About Reps</div>
+      <div className="sections-title" style={{textAlign:"center"}}>What Schools Are Saying About Reps</div>
 
       <div className="section-04-card-box">
       <div className="section-04-card">
@@ -522,7 +522,7 @@ REPS transforms schools by making behavior management seamless, data-driven, and
     <section  className="section-05">
         <div className="section-05-left">
           <div>
-          <div className="section-5-title">
+          <div className="sections-title">
           Ready to Enhance Student Behavior and Engagement?</div>
           <div className="call-to-action">
           Get in Touch with Us
@@ -605,7 +605,7 @@ REPS transforms schools by making behavior management seamless, data-driven, and
 
   <div className="grid-container">
   <div className="item-1">
-  <div className="logo-title" style={{fontWeight:"bolder",marginTop:"10px",fontSize:"25px"}}>Reps Discipline</div>
+  <div className="sections-title">Reps Discipline</div>
     <p>Everything You Need to Know About REPS Behavior Management. REPS addresses the behavioral issues undermining student success by integrating discipline management, parent communication, and positive reinforcement into a single, user-friendly platform.</p>
 
   </div>
