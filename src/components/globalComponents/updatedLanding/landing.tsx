@@ -606,7 +606,7 @@ REPS transforms schools by making behavior management seamless, data-driven, and
   <div className="grid-container">
   <div className="item-1">
   <div className="sections-title">Reps Discipline</div>
-    <p>Everything You Need to Know About REPS Behavior Management. REPS addresses the behavioral issues undermining student success by integrating discipline management, parent communication, and positive reinforcement into a single, user-friendly platform.</p>
+    <div className='sub-text'>Everything You Need to Know About REPS Behavior Management. REPS addresses the behavioral issues undermining student success by integrating discipline management, parent communication, and positive reinforcement into a single, user-friendly platform.</div>
 
   </div>
   <div className="item header">Our Services</div>

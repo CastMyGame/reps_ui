@@ -700,7 +700,7 @@ input[type="submit"] {
 }
 
 :root {
-  --font-primary: ob'Roto', sans-serif;
+  --font-primary: 'Roboto', sans-serif;
   --color-primary: #254c4c;
   --color-secondary: #1E3A3A;
   --color-muted: #6B7E7D;
@@ -719,7 +719,8 @@ section {
   width: 100%;
   position: relative;
   z-index: 3;
-  height: 60vh;
+  min-height: 60vh;
+  max-height: max-content;
 }
 
 /* SECTION 1 */
@@ -901,30 +902,30 @@ section {
 
 .grid-container {
   display: grid;
-  -ms-flex-align: left;
-  grid-template-columns: repeat(3, 1fr); /* 3 equal columns */
-  grid-auto-rows: 1fr;                   /* Equal height for each row */
-  gap: 10px;
-  height: 100%;                         /* For visualization */
+  grid-template-columns: repeat(3, 1fr);
+  grid-auto-rows: 1fr;
+  row-gap: 1px;
+  column-gap: 10px;
   padding: 10px 20px;
-  width: 100%;
-  background-color: #F6F9FF;
+  width: 90%;
+  position: relative;
+  z-index: 3;
 }
 
 .item {
   font-family: 'Roboto', sans-serif;
-  font-size: 16px;   color: var(--color-primary);
+  font-size: 16px;
+  color: var(--color-primary);
   text-align: left;
-  line-height: 1.2;
-  margin-bottom: 20px;
-  padding: 15px;
+  padding: 8px 15px;
+  line-height: 1.1;
   font-weight: lighter;
 }
 
-.header{
+.header {
   font-weight: bold;
-
 }
+
 
 .item-1 {
   display: flex;
@@ -932,7 +933,7 @@ section {
   justify-content: space-around;
   align-items: flex-start; 
   grid-column: 1 / 4;                    /* Spans across 3 columns */
-  text-align: left;   
+  text-align: left; 
           /* Darker border for emphasis */
 }
 .item1.logo-title{
@@ -1032,16 +1033,23 @@ textarea {
 
 .accordion-question >span{
   font-size: 24px;
-  font-family: --font-primary;
+  font-family: var(--font-primary);
   color: #1E3A3A;
   font-weight:bolder;
 }
 
 .accordion-answer{
   font-size: 16px;
-  font-family: --font-primary;
+  font-family: var(--font-primary);
   color: #1E3A3A;
   font-weight:lighter;
 
+
+}
+.sub-text{
+  font-size: 16px;
+  font-family: var(--font-primary);
+  color: #1E3A3A;
+  font-weight:lighter;
 
 }
