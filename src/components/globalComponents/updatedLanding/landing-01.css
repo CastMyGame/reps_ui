@@ -897,6 +897,7 @@ section {
 .section-footer {
   justify-content: center;
   background-color: #F6F9FF;
+  height: 30vh;
   z-index: 3;
 }
 
@@ -909,6 +910,10 @@ section {
   padding: 10px 20px;
   width: 90%;
   position: relative;
+  grid-template-rows: auto;
+  gap: 10px; /* 10px spacing between rows and columns */
+    /* Other grid-specific properties */
+  
   z-index: 3;
 }
 
