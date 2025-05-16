@@ -78,38 +78,54 @@ const LandingPage = () => {
       setModalType("login");
     }
   };
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName:'',
+    email: '',
+    message: ''
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+  
+  
+  
 
   const [bookingMessage, setBookingMessage] = useState(false);
 
-  const HandleDemoBooking = async (event: {
-    preventDefault: () => void;
-    currentTarget: HTMLFormElement | undefined;
-  }) => {
+  
+
+  const HandleDemoBooking = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-
+  
     const payload = {
-      email: data.get("email"),
-      subject: "Book A Demo",
-      message: `Name:  ${data.get("firstName")} ${data.get("lastName")}
-                        Contact: Phone ${data.get("phoneNumber")}, Email: ${data.get("email")}
-                        Distict/State: ${data.get("district")} / ${data.get("state")}
-                        Inquiry Message: ${data.get("multiline-text")}
-                    
-                            `,
+      email: formData.email,
+      subject: "Book A Demo - Landing Page",
+      message: `Name:  ${formData.firstName} ${formData.lastName}
+                Contact:Email: ${formData.email}
+                Inquiry Message: ${formData.message}`,
     };
-
-    axios
-      .post(`${baseUrl}/contact-us`, payload)
-      .then((response) => {
-        setText("");
-        setBookingMessage(true);
-        setTimeout(() => {
-          setBookingMessage(false);
-        }, 3000);
-      })
-      .catch((error) => console.error(error));
+  
+    try {
+      await axios.post(`${baseUrl}/contact-us`, payload);
+      setText(""); // assuming this clears some UI text
+      setBookingMessage(true);
+      setTimeout(() => {
+        setBookingMessage(false);
+        setFormData({
+          firstName: '',
+          lastName: '',
+          email: '',
+          message: ''
+        });
+      }, 3000);
+    } catch (error) {
+      console.error(error);
+    }
   };
+  
 
   const [warningToast, setWarningToast] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -218,9 +234,9 @@ const LandingPage = () => {
                 <label htmlFor="password">Password*</label>
                 <br />
                 <input type="password" id="password" name="password" />
+                <a href="/forgot-password">Forgot Password?</a>
               </div>
             </div>
-            <a href="/forgot-password">Forgot Password?</a>
 
             <Snackbar
               open={warningToast}
@@ -235,7 +251,7 @@ const LandingPage = () => {
                 Email or Password is incorrect
               </Alert>
             </Snackbar>
-            <input type="submit" value={loading ? "Loading..." : "Sign In"} />
+            <input style={{borderRadius:30,width:"200px",height:'20px'}} type="submit" value={loading ? "Loading..." : "Sign In"} />
           </form>
         </div>
       )}
@@ -329,7 +345,7 @@ const LandingPage = () => {
           REPS Discipline offers a comprehensive solution to tackle behavioral challenges in schools, ensuring that every student has the opportunity to succeed academically. Our platform integrates behavior management, proactive communication, and positive reinforcement, paving the way to a more supportive educational environment.
         </p>
 
-        <button style={{fontWeight:"bold",borderRadius:30,backgroundColor:'#254c4c',color:"white", marginTop:15}}>Schedule a Demo</button>
+        <button className="pill-btn-style" >Schedule a Demo</button>
       </div>
 
       <div className="section-01-02"
@@ -530,49 +546,74 @@ REPS transforms schools by making behavior management seamless, data-driven, and
           </div>
          
         <div>
-        <form>
+        <form onSubmit={HandleDemoBooking}>
   <input
-    className="section-input" 
-    type="text" 
-    name="name" 
-    placeholder="Your Name" 
-  />
-  
-  <input 
     className="section-input"
-    type="email" 
-    name="email" 
-    placeholder="Your Email Address" 
+    type="text"
+    name='firstName'
+    value={formData.firstName}
+    onChange={handleChange}
+    placeholder="First Name"
+    required
   />
-   <input 
+
+  <input
+      className="section-input"
+      type="text"
+      name='lastName'
+      value={formData.lastName}
+      onChange={handleChange}
+      placeholder="Last Name"
+      required
+  />
+
+  <input
     className="section-input"
-    type="text" 
-    name="inquiry" 
-    placeholder="Your Message or Inquiry" 
+    type="email"
+    name="email"
+    value={formData.email}
+    onChange={handleChange}
+    placeholder="Your Email"
+      required
   />
+
+  <textarea
+        name="message"
+        value={formData.message}
+        onChange={handleChange}
+        placeholder="Message or Inquiry"
+        />
+
+
+  <button
+    type="submit"
+    style={{
+      fontWeight: "bold",
+      borderRadius: 30,
+      backgroundColor: "#254c4c",
+      color: "white",
+      marginTop: 15,
+      padding: "10px 20px",
+      border: "none",
+      cursor: "pointer",
+    }}
+  >
+    Schedule a Demo
+  </button>
+</form>
+
+{bookingMessage && (
+  <p style={{ color: "green", marginTop: 10 }}>
+    Demo booked successfully! We’ll be in touch.
+  </p>
+)}
+
 
   
   
   
  
-</form>
-<div>
-<button 
-    type="submit"
-    style={{ 
-      fontWeight: "bold", 
-      borderRadius: 30, 
-      backgroundColor: '#254c4c', 
-      color: "white", 
-      marginTop: 15,
-      padding: "10px 20px",
-      border: "none",
-      cursor: "pointer"
-    }}
-  >
-    Schedule a Demo
-  </button>
-</div>
+
 
         </div>
 

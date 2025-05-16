@@ -343,12 +343,13 @@
 }
 
 .form-container {
+  align-items: center;
   color: black;
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: row;
+  /* --flex-wrap: wrap; */
   background-color: #143c3c;
-  border: 0;
-  height: 80%;
+  height: 20vh;
 }
 
 .form-row {
@@ -981,6 +982,7 @@ section {
 
 input[type="text"],
 input[type="email"],
+input[type="tel"],
 input[type="password"],
 textarea {
   width: 70%; /* Ensure inputs take up full column width */
@@ -1057,4 +1059,12 @@ textarea {
   color: #1E3A3A;
   font-weight:lighter;
 
+}
+
+.pill-btn-style{
+  font-weight: bold !important;
+  border-radius: 30px !important;
+  background-color: #254c4c !important;
+  color: white !important;
+  margin-top: 15px !important;
 }
