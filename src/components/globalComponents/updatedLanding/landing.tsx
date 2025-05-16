@@ -655,13 +655,12 @@ REPS transforms schools by making behavior management seamless, data-driven, and
   <div className="item header">Contact Information</div>
   <div className="item">Key Features</div>
   <div className="item">Our Mission</div>
-  <div className="item">123 Reps Discipline Ave, Suite 456, Education City, NC 28201</div>
   <div className="item">Solutions</div>
   <div className="item">Our Vision</div>
-  <div className="item">+1 (888) 123-4567</div>
+  <div className="item">+1 (732) 232-4422</div>
   <div className="item">Analyics</div>
   <div className="item">Get in Touch</div>
-  <div className="item">info@repsdiscipline.com</div>
+  <div className="item">repsdiscipline@gmail.com</div>
 </div>
 
 
