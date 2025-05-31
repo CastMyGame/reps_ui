@@ -39,25 +39,31 @@ const ShoutOutWidget: React.FC<ShoutOutWidgetProps> = ({
           overflowY: hasScroll ? "scroll" : "visible",
         }}
       >
-        <Table>
+        <Table className="shoutouts-table">
           <TableHead>
             <TableRow>
               <TableCell
-                variant="head"
-                style={{ fontWeight: "bold", fontSize: "2rem" }}
+                className="table-header-cell"
+                style={{
+                  width: "20%",
+                }}
               >
                 Created On
               </TableCell>
 
               <TableCell
-                variant="head"
-                style={{ fontWeight: "bold", fontSize: "2rem" }}
+                className="table-header-cell"
+                style={{
+                  width: "20%",
+                }}
               >
                 Shout Outs
               </TableCell>
               <TableCell
-                variant="head"
-                style={{ fontWeight: "bold", fontSize: "2rem" }}
+                className="table-header-cell"
+                style={{
+                  width: "20%",
+                }}
               >
                 Created By
               </TableCell>
@@ -65,7 +71,7 @@ const ShoutOutWidget: React.FC<ShoutOutWidgetProps> = ({
           </TableHead>
           <TableBody>
             {data.length > 0 ? (
-              data.map((x, key) => (
+              [...data].reverse().map((x, key) => (
                 <TableRow key={key.valueOf()}>
                   <TableCell style={{ fontSize: "1.5rem" }}>
                     {dateCreateFormat(x.timeCreated)}

@@ -2,10 +2,7 @@ import React, { useState, useEffect } from "react";
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
-import {
-  IncidentList,
-  TeacherDto,
-} from "src/types/responses";
+import { IncidentList, TeacherDto } from "src/types/responses";
 import { Employee } from "src/types/school";
 import { ColDef } from "ag-grid-community";
 import {
@@ -28,9 +25,9 @@ export const Top5TeacherRatioTable: React.FC<Top5Props> = ({
 
   useEffect(() => {
     // Create a list of teachers with incidents
-    const teachersWithIncidentsList = (teachers)
+    const teachersWithIncidentsList = teachers
       .map((teacher: Employee) => {
-        const teacherIncidents = (punishmentResponse).filter(
+        const teacherIncidents = punishmentResponse.filter(
           (item: TeacherDto) => item.teacherEmail === teacher.email
         );
 
@@ -41,7 +38,9 @@ export const Top5TeacherRatioTable: React.FC<Top5Props> = ({
           );
           const totalIncidents = incidentsForWeek.length;
           const posIncidents = incidentsForWeek.filter(
-            (item) => "infractionName" in item && item.infractionName === "Positive Behavior Shout Out!"
+            (item) =>
+              "infractionName" in item &&
+              item.infractionName === "Positive Behavior Shout Out!"
           ).length;
 
           // Avoid division by zero and ensure posRatio is a number
@@ -67,22 +66,24 @@ export const Top5TeacherRatioTable: React.FC<Top5Props> = ({
     // Set the rowData for both tables
     setMostPositiveRowData(topTwoTeachers);
   }, [punishmentResponse, teachers]);
-  
+
   const colDefs = [
     { field: "teacherName", headerName: "Teacher Name" },
     { field: "posRatio", headerName: "Positive Ratio (%)" },
   ];
 
   return (
-    <div>
-      <h3 style={{ textAlign: "center", marginBottom: "10px" }}>
-        Most Positive
-      </h3>
+    <div
+      style={{
+        width: "100%"
+      }}
+    >
+      <h3 style={{ textAlign: "center" }}>Most Positive</h3>
       <div className="ag-theme-quartz">
         <AgGridReact
           rowData={mostPositiveRowData}
           columnDefs={colDefs as ColDef[]}
-          domLayout="autoHeight" // Ensures that the height is handled properly
+          domLayout="autoHeight"
         />
       </div>
     </div>

@@ -7,7 +7,6 @@ import {
   TableRow,
   TableCell,
 } from "@mui/material";
-import ArrowDropDownCircleIcon from "@mui/icons-material/ArrowDropDownCircle";
 import { dateCreateFormat } from "../../helperFunctions/helperFunctions";
 import { AdminOverviewDto, TeacherOverviewDto } from "src/types/responses";
 
@@ -23,16 +22,21 @@ const ShoutOuts: React.FC<ShoutOutsProps> = ({ data = {} }) => {
   return !barOpen ? (
     <div className="shout-out-bar-container">
       <div className="bar-content">
-        <ArrowDropDownCircleIcon
-          className="arrowIcon"
+        <span
           style={{
-            transform: "rotate(0deg)",
+            fontSize: "32px",
+            fontWeight: "bold",
             cursor: "pointer",
+            userSelect: "none",
             marginTop: "3px",
-            fontSize: "large",
+            display: "inline-block", // important for transform to work correctly
+            transform: barOpen ? "translateY(-3px) scale(1.1)" : "scale(1)",
+            transition: "transform 0.3s ease",
           }}
-          onClick={() => setBarOpen(true)}
-        />{" "}
+          onClick={() => setBarOpen(!barOpen)}
+        >
+          {barOpen ? "-" : "+"}
+        </span>
         <h5
           style={{
             marginLeft: "20px",
@@ -49,16 +53,21 @@ const ShoutOuts: React.FC<ShoutOutsProps> = ({ data = {} }) => {
     <>
       <div className="bar-container open">
         <div className="bar-content">
-          <ArrowDropDownCircleIcon
-            className="arrowIcon"
+          <span
             style={{
-              transform: "rotate(180deg)",
+              fontSize: "32px",
+              fontWeight: "bold",
               cursor: "pointer",
+              userSelect: "none",
               marginTop: "3px",
-              fontSize: "large",
+              display: "inline-block",
+              transform: barOpen ? "translateY(-3px) scale(1.1)" : "scale(1)",
+              transition: "transform 0.3s ease",
             }}
-            onClick={() => setBarOpen(false)}
-          />{" "}
+            onClick={() => setBarOpen(!barOpen)}
+          >
+            {barOpen ? "-" : "+"}
+          </span>
           <h5 style={{ marginLeft: "20px", fontSize: 24, fontWeight: "bold" }}>
             Positive Behavior | Wallet: {data.teacher?.currency}{" "}
             {data.school?.currency}
@@ -72,30 +81,38 @@ const ShoutOuts: React.FC<ShoutOutsProps> = ({ data = {} }) => {
           overflowY: hasScroll ? "scroll" : "visible",
         }}
       >
-        <Table>
+        <Table className="shoutouts-table">
           <TableHead>
             <TableRow>
               <TableCell
-                variant="head"
-                style={{ fontWeight: "bold", width: "20%", fontSize: 18 }}
+                className="table-header-cell"
+                style={{
+                  width: "20%",
+                }}
               >
                 Created On
               </TableCell>
               <TableCell
-                variant="head"
-                style={{ fontWeight: "bold", width: "20%", fontSize: 18 }}
+                className="table-header-cell"
+                style={{
+                  width: "20%",
+                }}
               >
                 Student
               </TableCell>
               <TableCell
-                variant="head"
-                style={{ fontWeight: "bold", width: "30%", fontSize: 18 }}
+                className="table-header-cell"
+                style={{
+                  width: "20%",
+                }}
               >
                 Shout Outs
               </TableCell>
               <TableCell
-                variant="head"
-                style={{ fontWeight: "bold", width: "30%", fontSize: 18 }}
+                className="table-header-cell"
+                style={{
+                  width: "20%",
+                }}
               >
                 Created By
               </TableCell>
@@ -105,16 +122,24 @@ const ShoutOuts: React.FC<ShoutOutsProps> = ({ data = {} }) => {
             {(data.shoutOutsResponse || []).length > 0 ? (
               data.shoutOutsResponse?.map((x, key) => (
                 <TableRow key={key.valueOf()}>
-                  <TableCell style={{ width: "20%", fontSize: 14 }}>
+                  <TableCell
+                    style={{ width: "20%", fontSize: 14, color: "black" }}
+                  >
                     {dateCreateFormat(x.timeCreated)}
                   </TableCell>
-                  <TableCell style={{ width: "20%", fontSize: 14 }}>
+                  <TableCell
+                    style={{ width: "20%", fontSize: 14, color: "black" }}
+                  >
                     {x.studentFirstName} {x.studentLastName}{" "}
                   </TableCell>
-                  <TableCell style={{ width: "30%", fontSize: 14 }}>
+                  <TableCell
+                    style={{ width: "30%", fontSize: 14, color: "black" }}
+                  >
                     {x.infractionDescription}
                   </TableCell>
-                  <TableCell style={{ width: "30%", fontSize: 14 }}>
+                  <TableCell
+                    style={{ width: "30%", fontSize: 14, color: "black" }}
+                  >
                     {x.teacherEmail}
                   </TableCell>
                 </TableRow>

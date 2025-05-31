@@ -1,7 +1,11 @@
 import axios from "axios";
 import { baseUrl } from "../utils/jsonData";
 import { CLERICAL, BEHAVIORAL } from "src/types/constants";
-import { OfficeReferral, TeacherDto, TeacherReferral } from "src/types/responses";
+import {
+  OfficeReferral,
+  TeacherDto,
+  TeacherReferral,
+} from "src/types/responses";
 import { DateTimeFormatOptions } from "luxon";
 import { Student } from "src/types/school";
 
@@ -21,6 +25,26 @@ export const getCurrentWeekOfYear = (): number => {
 
   return weekNumber;
 };
+
+export function isDateInLast7Days(dateString: string | Date) {
+  const today = new Date();
+  const date = new Date(dateString);
+  const sevenDaysAgo = new Date();
+  sevenDaysAgo.setDate(today.getDate() - 7);
+
+  return date >= sevenDaysAgo && date <= today;
+}
+
+export function countLast7Days<T>(arr: T[], filterFn?: (item: T) => boolean): number {
+  return arr.reduce((count, item) => {
+    if (isDateInLast7Days((item as any).timeCreated)) {
+      if (!filterFn || filterFn(item)) {
+        return count + 1;
+      }
+    }
+    return count;
+  }, 0);
+}
 
 export const currentWeek = getCurrentWeekOfYear();
 
@@ -116,26 +140,27 @@ export const findDataByWeekAndByPunishment = (
   week: number,
   behavioral: string,
   data: (TeacherDto | TeacherReferral | OfficeReferral)[]
-): (TeacherDto | TeacherReferral | OfficeReferral)[] => {
-  // Ensure data is valid
+): number => {
   if (!Array.isArray(data)) {
     console.error(
       "Invalid data provided to findDataByWeekAndByPunishment:",
       data
     );
-    return [];
+    return 0;
   }
 
-  // Filter data based on the behavioral infraction name
   const thisWeek = data
-    .filter((punish) => "infractionName" in punish && punish.infractionName === behavioral)
+    .filter(
+      (punish) =>
+        "infractionName" in punish && punish.infractionName === behavioral
+    )
     .filter((punish) => {
       const date = new Date(punish.timeCreated);
-      const weekNumber = getWeekNumber(date); // Ensure getWeekNumber is defined correctly
-      return weekNumber === week; // Return true if the date matches the week
+      const weekNumber = getWeekNumber(date);
+      return weekNumber === week;
     });
 
-  return thisWeek; // Return the filtered array instead of its length
+  return thisWeek.length; // ✅ Return the count instead of the array
 };
 
 export const getIncidentByBehavior = (
@@ -225,3 +250,29 @@ export const GenerateChartData = (
     return { [label]: weekData };
   });
 };
+
+export function isTeacherReferral(
+  referral: TeacherReferral | OfficeReferral
+): referral is TeacherReferral {
+  return (referral as TeacherReferral).punishmentId !== undefined;
+}
+
+export function isOfficeReferral(
+  referral: TeacherReferral | OfficeReferral
+): referral is OfficeReferral {
+  return (referral as OfficeReferral).officeReferralId !== undefined;
+}
+
+export function getInfractionName(
+  referral: TeacherReferral | OfficeReferral
+): string {
+  return isTeacherReferral(referral)
+    ? referral.infractionName
+    : referral.referralCode.codeName;
+}
+
+export function getInfractionDescription(ref: TeacherReferral | OfficeReferral): string {
+  return isTeacherReferral(ref)
+    ? ref.infractionDescription.join(", ")
+    : ref.referralDescription;
+}

@@ -10,11 +10,10 @@ import ISSWidget from "src/components/globalComponents/issWidget";
 import LevelThreePanel from "src/components/globalComponents/referrals/levelThreePanel";
 import ClassAnnouncement from "src/components/globalComponents/components/generic-components/classAnnouncement";
 import { ContactUsModal } from "../../../security/contactUsModal";
-import { get } from "../../../utils/api/api";
+import { get, handleLogout } from "../../../utils/api/api";
 import LoadingWheelPanel from "src/components/roles/student/LoadingWheelPanel";
 import "../admin/admin.css";
-import { NavigationLoggedIn } from "src/components/globalComponents/updatedLanding/navigation-loggedIn.jsx";
-import { handleLogout } from "src/utils/helperFunctions";
+import { NavigationLoggedIn } from "src/components/globalComponents/updatedLanding/navigation-loggedIn";
 import SpendPage from "src/components/globalComponents/spendPage/spend-page";
 import CreateOfficeReferralPanel from "src/components/globalComponents/referrals/createOfficeReferral";
 import { ManageSpottersPopup } from "src/components/globalComponents/components/generic-components/manageSpottersPopup";
@@ -139,7 +138,7 @@ const TeacherDashboard = () => {
             setModalType={setModalType}
             setPanelName={setPanelName}
             setDropdown={setIsDropdownOpen}
-            isDropdownOpen={isDropdownOpen}
+            whichDropdownOpen={isDropdownOpen}
             setLogin={handleLogout}
           />
         </div>

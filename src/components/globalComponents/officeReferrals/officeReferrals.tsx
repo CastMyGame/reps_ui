@@ -138,16 +138,21 @@ const OfficeReferrals: React.FC<OfficeReferralProps> = ({ data }) => {
   return !barOpen ? (
     <div className="shout-out-bar-container">
       <div className="bar-content">
-        <ArrowDropDownCircleIcon
-          className="arrowIcon"
+        <span
           style={{
-            transform: "rotate(0deg)",
+            fontSize: "32px",
+            fontWeight: "bold",
             cursor: "pointer",
+            userSelect: "none",
             marginTop: "3px",
-            fontSize: "large",
+            display: "inline-block",
+            transform: barOpen ? "translateY(-3px) scale(1.1)" : "scale(1)",
+            transition: "transform 0.3s ease",
           }}
-          onClick={() => setBarOpen(true)}
-        />{" "}
+          onClick={() => setBarOpen(!barOpen)}
+        >
+          {barOpen ? "-" : "+"}
+        </span>
         <h5
           style={{
             marginLeft: "20px",
@@ -163,16 +168,21 @@ const OfficeReferrals: React.FC<OfficeReferralProps> = ({ data }) => {
     <>
       <div className="bar-container open">
         <div className="bar-content">
-          <ArrowDropDownCircleIcon
-            className="arrowIcon"
+          <span
             style={{
-              transform: "rotate(180deg)",
+              fontSize: "32px",
+              fontWeight: "bold",
               cursor: "pointer",
+              userSelect: "none",
               marginTop: "3px",
-              fontSize: "large",
+              display: "inline-block",
+              transform: barOpen ? "translateY(-3px) scale(1.1)" : "scale(1)",
+              transition: "transform 0.3s ease",
             }}
-            onClick={() => setBarOpen(false)}
-          />{" "}
+            onClick={() => setBarOpen(!barOpen)}
+          >
+            {barOpen ? "-" : "+"}
+          </span>
           <h5 style={{ marginLeft: "20px", fontSize: 24, fontWeight: "bold" }}>
             Office Managed Referrals
           </h5>{" "}
@@ -185,36 +195,46 @@ const OfficeReferrals: React.FC<OfficeReferralProps> = ({ data }) => {
           overflowY: hasScroll ? "scroll" : "visible",
         }}
       >
-        <Table>
+        <Table className="shoutouts-table">
           <TableHead>
             <TableRow>
               <TableCell
-                variant="head"
-                style={{ fontWeight: "bold", width: "20%", fontSize: 18 }}
+                className="table-header-cell"
+                style={{
+                  width: "20%",
+                }}
               >
                 Created On
               </TableCell>
               <TableCell
-                variant="head"
-                style={{ fontWeight: "bold", width: "20%", fontSize: 18 }}
+                className="table-header-cell"
+                style={{
+                  width: "20%",
+                }}
               >
                 Student
               </TableCell>
               <TableCell
-                variant="head"
-                style={{ fontWeight: "bold", width: "30%", fontSize: 18 }}
+                className="table-header-cell"
+                style={{
+                  width: "20%",
+                }}
               >
                 Description
               </TableCell>
               <TableCell
-                variant="head"
-                style={{ fontWeight: "bold", width: "30%", fontSize: 18 }}
+                className="table-header-cell"
+                style={{
+                  width: "20%",
+                }}
               >
                 Created By
               </TableCell>
               <TableCell
-                variant="head"
-                style={{ fontWeight: "bold", width: "30%", fontSize: 18 }}
+                className="table-header-cell"
+                style={{
+                  width: "20%",
+                }}
               >
                 Actions
               </TableCell>
@@ -226,19 +246,44 @@ const OfficeReferrals: React.FC<OfficeReferralProps> = ({ data }) => {
                 ?.filter((x: OfficeReferral) => x.status !== "CLOSED")
                 .map((x, key) => (
                   <TableRow key={key.valueOf()}>
-                    <TableCell style={{ width: "20%", fontSize: 14 }}>
+                    <TableCell
+                      style={{ width: "20%", fontSize: 18, color: "black", whiteSpace: "normal",
+                        wordWrap: "break-word",
+                        textAlign: "center",
+                        verticalAlign: "middle"}}
+                    >
                       {dateCreateFormat(x.timeCreated)}
                     </TableCell>
-                    <TableCell style={{ width: "20%", fontSize: 14 }}>
+                    <TableCell
+                      style={{ width: "20%", fontSize: 18, color: "black", whiteSpace: "normal",
+                        wordWrap: "break-word",
+                        textAlign: "center",
+                        verticalAlign: "middle" }}
+                    >
                       {x.studentEmail}{" "}
                     </TableCell>
-                    <TableCell style={{ width: "30%", fontSize: 14 }}>
+                    <TableCell
+                      style={{ width: "30%", fontSize: 18, color: "black", whiteSpace: "normal",
+                        wordWrap: "break-word",
+                        textAlign: "center",
+                        verticalAlign: "middle" }}
+                    >
                       {x.referralDescription}
                     </TableCell>
-                    <TableCell style={{ width: "30%", fontSize: 14 }}>
+                    <TableCell
+                      style={{ width: "30%", fontSize: 18, color: "black", whiteSpace: "normal",
+                        wordWrap: "break-word",
+                        textAlign: "center",
+                        verticalAlign: "middle" }}
+                    >
                       {x.teacherEmail}
                     </TableCell>
-                    <TableCell style={{ width: "30%", fontSize: 14 }}>
+                    <TableCell
+                      style={{ width: "30%", fontSize: 18, color: "black", whiteSpace: "normal",
+                        wordWrap: "break-word",
+                        textAlign: "center",
+                        verticalAlign: "middle" }}
+                    >
                       <>
                         <button
                           style={{
@@ -302,7 +347,7 @@ const OfficeReferrals: React.FC<OfficeReferralProps> = ({ data }) => {
             ) : (
               <TableRow>
                 <TableCell
-                  colSpan={4}
+                  colSpan={5}
                   style={{
                     fontSize: 18,
                     fontWeight: "lighter",

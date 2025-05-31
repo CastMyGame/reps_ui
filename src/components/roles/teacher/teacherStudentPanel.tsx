@@ -6,6 +6,7 @@ import {
   TableHead,
   TableBody,
   TableRow,
+  Card,
 } from "@mui/material";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import "jspdf-autotable";
@@ -23,6 +24,7 @@ import {
 } from "src/types/responses";
 import { Student } from "src/types/school";
 import { CellClickedEvent, ColDef } from "ag-grid-community";
+import StudentReferralsByWeek from "src/components/globalComponents/dataDisplay/studentReferralsByBehavior";
 
 interface StudentPanelProps {
   setPanelName: (panel: string) => void;
@@ -51,7 +53,7 @@ const TeacherStudentPanel: React.FC<StudentPanelProps> = ({
   const [selectedClass, setSelectedClass] = useState(""); // Selected class name
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [student, setStudent] = useState([]);
+  const [selectedStudentName, setSelectedStudentName] = useState([]);
 
   const isAdmin = !!(data as AdminOverviewDto)?.teachers; // If 'teachers' exists, it's an admin
 
@@ -121,12 +123,10 @@ const TeacherStudentPanel: React.FC<StudentPanelProps> = ({
           if ("teachers" in data) {
             // Admin fetching all students
             const fetchedStudents = await fetchAdminStudents(data, headers);
+            setListOfStudents(fetchedStudents);
           } else {
             // Teacher fetching students from their class roster
-            const fetchedStudents = await fetchTeacherStudents(
-              data,
-              headers
-            );
+            const fetchedStudents = await fetchTeacherStudents(data, headers);
             const studentsArray: StudentDisplay[] = [];
             data?.teacher?.classes?.forEach((classEntry) => {
               classEntry.classRoster.forEach((student) => {
@@ -238,7 +238,7 @@ const TeacherStudentPanel: React.FC<StudentPanelProps> = ({
   const handleProfileClick = (x: CellClickedEvent) => {
     fetchStudentData(x.data.studentEmail);
     setSpotEmail(x.data.studentEmail);
-    setStudent(x.data.fullName);
+    setSelectedStudentName(x.data.fullName);
   };
 
   const pdfRef = useRef();
@@ -283,40 +283,6 @@ const TeacherStudentPanel: React.FC<StudentPanelProps> = ({
 
   const hasScroll = listOfStudents.length > 10;
 
-  // Process and format the list of students and referral data
-  useEffect(() => {
-    console.log("Fetching students...");
-    setLoading(true);
-    const headers = {
-      Authorization: `Bearer ${sessionStorage.getItem("Authorization")}`,
-    };
-
-    const fetchStudents = async () => {
-      try {
-        if (data) {
-          let fetchedStudents: StudentDisplay[] = [];
-          if ("teachers" in data) {
-            fetchedStudents = await fetchAdminStudents(data, headers);
-          } else {
-            fetchedStudents = await fetchTeacherStudents(
-              data as TeacherOverviewDto,
-              headers
-            );
-          }
-          console.log("Fetched students:", fetchedStudents);
-          setListOfStudents(fetchedStudents);
-        }
-      } catch (error) {
-        console.error("Error fetching students:", error);
-        setError("Failed to fetch students");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchStudents();
-  }, [data]);
-
   const filteredStudentData = listOfStudents.filter(
     (student) => student.className === selectedClass
   );
@@ -345,6 +311,17 @@ const TeacherStudentPanel: React.FC<StudentPanelProps> = ({
     },
     { headerName: "Office Managed Referrals", field: "officeManagedReferrals" },
   ];
+
+  useEffect(() => {
+    const classes = data?.teacher?.classes ?? [];
+
+    if (!isAdmin && selectedClass === "" && classes?.length > 0) {
+      const firstClass = classes?.find((c) => c.className.trim() !== "");
+      if (firstClass) {
+        setSelectedClass(firstClass.className);
+      }
+    }
+  }, [isAdmin, selectedClass, data]);
 
   return (
     <>
@@ -410,42 +387,67 @@ const TeacherStudentPanel: React.FC<StudentPanelProps> = ({
                 left: 0,
                 width: "100%",
                 height: "100%",
+                backgroundColor: "rgba(0,0,0,0.5)",
+                zIndex: 1300,
               }}
             >
               <div
                 className="modal-content"
                 style={{
-                  maxHeight: "80rem",
-                  width: "80%",
+                  width: "90%",
+                  maxWidth: "1200px",
+                  maxHeight: "90vh",
                   padding: "20px",
                   borderRadius: "8px",
                   boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-                  overflowY: "scroll",
+                  backgroundColor: "white",
+                  overflowY: "auto",
+                  display: "flex",
+                  flexDirection: "column",
                 }}
               >
                 <div
                   className="modal-header"
-                  style={{ display: "flex", flexDirection: "row" }}
+                  style={{
+                    display: "flex",
+                    flexWrap: "wrap",
+                    gap: "20px",
+                    justifyContent: "space-between",
+                  }}
                 >
-                  <div className="box-left">
+                  <div
+                    className="box-left"
+                    style={{ minWidth: "200px", flex: "1" }}
+                  >
                     <AccountBoxIcon style={{ fontSize: "100px" }} />
-                    <h4>{student}</h4>
+                    <h4>{selectedStudentName}</h4>
                     <div className="details-box">
                       <p>Email: {filteredData[0]?.studentEmail}</p>
                       <p>Grade: {filteredData[0]?.grade || "N/A"}</p>
                       <p>Class: {filteredData[0]?.className || "N/A"}</p>
                     </div>
                   </div>
+                  <Card
+                    style={{ width: "100%", flex: "2", height: "100%" }}
+                    variant="outlined"
+                  >
+                    <StudentReferralsByWeek data={studentData} />
+                  </Card>
                   <div
                     className="box-right"
-                    style={{ marginLeft: "auto", color: "white" }}
+                    style={{ minWidth: "250px", flex: "1" }}
                   >
                     <IncidentByTypePieChart data={studentData} />
                   </div>
                 </div>
                 <div
                   className="modal-body-student"
-                  style={{ flexGrow: 1, overflowY: "auto", maxHeight: "50vh" }}
+                  style={{
+                    flexGrow: 1,
+                    overflowY: "auto",
+                    maxHeight: "40vh",
+                    marginTop: "20px",
+                  }}
                 >
                   <TableContainer
                     style={{ backgroundColor: "white", fontSize: "18" }}
@@ -463,7 +465,11 @@ const TeacherStudentPanel: React.FC<StudentPanelProps> = ({
                           >
                             Description
                           </TableCell>
-                          {/* <TableCell>Date</TableCell> */}
+                          <TableCell
+                            sx={{ fontSize: "1.5rem", textAlign: "center" }}
+                          >
+                            Date
+                          </TableCell>
                           <TableCell
                             sx={{ fontSize: "1.5rem", textAlign: "center" }}
                           >
@@ -490,7 +496,13 @@ const TeacherStudentPanel: React.FC<StudentPanelProps> = ({
                             >
                               {student.infractionDescription}
                             </TableCell>
-                            {/* <TableCell> {student.timeCreated}</TableCell> */}
+                            <TableCell
+                              sx={{ fontSize: "1.5rem", textAlign: "center" }}
+                            >
+                              {new Date(student.timeCreated).toLocaleDateString(
+                                "en-US"
+                              )}
+                            </TableCell>
                             <TableCell
                               sx={{ fontSize: "1.5rem", textAlign: "center" }}
                             >

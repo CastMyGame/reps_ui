@@ -1,5 +1,3 @@
-import Typography from "@mui/material/Typography";
-import Card from "@mui/material/Card";
 import { TotalReferralByWeek } from "src/components/globalComponents/dataDisplay/referralsByWeek";
 import { ReferralByBehavior } from "src/components/globalComponents/dataDisplay/referralsByBehavior";
 import TeacherInfractionOverPeriodBarChart from "src/components/globalComponents/dataDisplay/teacherInfractionPeriodBarChart";
@@ -38,125 +36,103 @@ const AdminOverviewPanel: React.FC<AdminOverviewProps> = ({ adminDto }) => {
   );
 
   return (
-    <>
+    <div className="admin-overview-wrapper">
       <div className="teacher-overview-first">
-        <Card variant="outlined">
+        <div className="custom-card">
           <ShoutOuts data={adminDto} />
-        </Card>
+        </div>
       </div>
+
       {notClosed.length > 0 && (
         <div className="teacher-overview-first">
-          <Card variant="outlined">
+          <div className="custom-card">
             <OfficeReferrals data={adminDto.officeReferrals} />
-          </Card>
+          </div>
         </div>
       )}
 
-      <div className="card-title">
-        <Typography
-          color="white"
-          variant="h3"
-          style={{ flexGrow: 1, outline: "1px solid  white", padding: "5px" }}
-        >
-          Week At a Glance
-        </Typography>
-      </div>
+      <div className="section-container">
+        <div className="section-header">Week At a Glance</div>
+        <div className="section-content">
+          <div className="section-third">
+            <AdminSchoolReferralByTypePieChart
+              writeUpResponse={adminDto?.writeUpResponse || []}
+              shoutOutsResponse={adminDto?.shoutOutsResponse || []}
+              punishmentResponse={adminDto?.punishmentResponse || []}
+              officeReferrals={adminDto?.officeReferrals || []}
+            />
+          </div>
 
-      <div className="overview-row">
-        <div className="card-overview-third">
-          <AdminSchoolReferralByTypePieChart
-            writeUpResponse={adminDto.writeUpResponse}
-            shoutOutsResponse={adminDto.shoutOutsResponse}
-            punishmentResponse={adminDto.punishmentResponse}
-            officeReferrals={adminDto.officeReferrals}
-          />
+          <div className="section-third">
+            <AdminTeacherReferralByTypePieChart
+              writeUpResponse={adminDto.punishmentResponse}
+            />
+          </div>
+
+          <div className="section-third">
+            <TeacherInfractionOverPeriodBarChart
+              data={weeklyDataIncSOBxConcern}
+            />
+          </div>
         </div>
 
-        <div className="card-overview-third">
-          <AdminTeacherReferralByTypePieChart
-            writeUpResponse={adminDto.punishmentResponse}
-          />
+        <div className="section-header">Coaching Information</div>
+        <div className="section-content">
+          <div className="section-third">
+            <IncidentByTeacherPieChart
+              writeUpResponse={adminDto.writeUpResponse}
+              officeReferrals={adminDto.officeReferrals}
+              teachers={adminDto.teachers}
+              teacher={adminDto.teacher}
+            />
+          </div>
+
+          <div className="section-third">
+            {adminDto.teachers && (
+              <>
+                <Top5TeacherRatioTable
+                  punishmentResponse={adminDto.punishmentResponse}
+                  teachers={adminDto.teachers}
+                />
+                <br />
+                <Bottom4PositiveTeacherTable
+                  punishmentResponse={adminDto.punishmentResponse}
+                  teachers={adminDto.teachers}
+                />
+              </>
+            )}
+          </div>
+
+          <div className="section-third">
+            <WorseClassTable
+              punishmentResponse={adminDto.punishmentResponse}
+              teachers={adminDto.teachers}
+            />
+          </div>
         </div>
 
-        <div className="card-overview-third">
-          <TeacherInfractionOverPeriodBarChart
-            data={weeklyDataIncSOBxConcern}
-          />
-        </div>
-      </div>
+        {/* Longitudinal Reports */}
+        <div className="section-header">Longitudinal Reports</div>
+        <div className="section-content">
+          <div className="section-third">
+            <TotalReferralByWeek
+              punishmentResponse={adminDto.punishmentResponse}
+              officeReferrals={adminDto.officeReferrals}
+            />
+          </div>
 
-      <div className="card-title">
-        <Typography
-          color="white"
-          variant="h3"
-          style={{ flexGrow: 1, outline: "1px solid  white", padding: "5px" }}
-        >
-          Coaching Information
-        </Typography>
-      </div>
+          <div className="section-third">
+            <TeacherManagedReferralByLevelByWeek
+              punishmentResponse={adminDto.punishmentResponse}
+            />
+          </div>
 
-      <div className="overview-row">
-        <div className="card-overview-third">
-          <IncidentByTeacherPieChart
-            writeUpResponse={adminDto.writeUpResponse}
-            officeReferrals={adminDto.officeReferrals}
-            teachers={adminDto.teachers}
-          />
-        </div>
-
-        <div className="card-overview-third">
-          {adminDto.teachers && (
-            <>
-              <Top5TeacherRatioTable
-                punishmentResponse={adminDto.punishmentResponse}
-                teachers={adminDto.teachers}
-              />
-              <br></br>
-              <Bottom4PositiveTeacherTable
-                punishmentResponse={adminDto.punishmentResponse}
-                teachers={adminDto.teachers}
-              />
-            </>
-          )}
-        </div>
-
-        <div className="card-overview-third">
-          <WorseClassTable
-            punishmentResponse={adminDto.punishmentResponse}
-            teachers={adminDto.teachers}
-          />
-        </div>
-      </div>
-
-      <div className="card-title">
-        <Typography
-          color="white"
-          variant="h3"
-          style={{ flexGrow: 1, outline: "1px solid  white", padding: "5px" }}
-        >
-          Longitudinal Reports
-        </Typography>
-      </div>
-
-      <div className="overview-row">
-        <div className="card-overview-third">
-          <TotalReferralByWeek
-            punishmentResponse={adminDto.punishmentResponse}
-            officeReferrals={adminDto.officeReferrals}
-          />
-        </div>
-
-        <div className="card-overview-third">
-          <TeacherManagedReferralByLevelByWeek
-            punishmentResponse={adminDto.punishmentResponse}
-          />
-        </div>
-
-        <div className="card-overview-third">
-          <ReferralByBehavior data={adminDto.punishmentResponse} />
+          <div className="section-third">
+            <ReferralByBehavior data={adminDto.punishmentResponse} />
+          </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

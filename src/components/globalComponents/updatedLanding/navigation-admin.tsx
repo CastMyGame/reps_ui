@@ -1,17 +1,27 @@
-import React, {useEffect, useRef} from "react";
+import React, { useEffect, useRef } from "react";
 import "./landing.css";
-import PropTypes from 'prop-types';
+import { AccessibleDiv } from "src/utils/accessibleDiv";
 
-export const NavigationAdmin = (props) => {
-  const dropdownRef = useRef(null);
+interface NavigationAdminProps {
+  toggleNotificationDrawer: (open: boolean) => void;
+  setModalType: (type: string) => void;
+  setPanelName: (name: string) => void;
+  setDropdown: React.Dispatch<React.SetStateAction<string>>;
+  whichDropdownOpen: string;
+  setLogin: () => void;
+}
 
-  const { setDropdown } = props; // Destructure only what's needed
+export const NavigationAdmin: React.FC<NavigationAdminProps> = (props) => {
+  const dropdownRef = useRef<HTMLDivElement | null>(null);
 
-  // Close dropdown when clicking outside
+  const { setDropdown } = props;
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setDropdown(""); // Close the dropdown
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setDropdown("");
       }
     };
 
@@ -21,7 +31,7 @@ export const NavigationAdmin = (props) => {
     };
   }, [setDropdown]);
 
-  const dropdownHandler = (panel) => {
+  const dropdownHandler = (panel: string) => {
     props.setPanelName(panel);
     props.setDropdown("");
   };
@@ -49,7 +59,7 @@ export const NavigationAdmin = (props) => {
         <a
           className="navbar-brand page-scroll"
           href="#page-top"
-          style={{ fontSize: 16 }}
+          style={{ fontSize: 16, color: "black" }}
         >
           Welcome {sessionStorage.getItem("userName")}!
         </a>
@@ -60,104 +70,96 @@ export const NavigationAdmin = (props) => {
         >
           <ul className="nav navbar-nav navbar-right">
             <li>
-              <div
+              <AccessibleDiv
                 onClick={() => dropdownHandler("overview")}
                 className="page-scroll"
-                type="button"
               >
                 Overview
-              </div>
+              </AccessibleDiv>
             </li>
             <li>
-              <div
+              <AccessibleDiv
                 className="page-scroll"
                 onClick={() =>
                   props.setDropdown((prev) =>
                     prev === "referral" ? "" : "referral"
                   )
                 }
-                type="button"
               >
                 Referrals
-              </div>
+              </AccessibleDiv>
               <div
                 style={{
                   display:
-                    props.isDropdownOpen === "referral" ? "block" : "none",
+                    props.whichDropdownOpen === "referral" ? "block" : "none",
                 }}
                 className="feature-menu-dropdown"
               >
-                <div
+                <AccessibleDiv
                   onClick={() => dropdownHandler("createPunishment")}
                   className="item page-scroll"
-                  type="button"
                 >
                   New Teacher Referral/Shout Out
-                </div>
-                <div
+                </AccessibleDiv>
+                <AccessibleDiv
                   onClick={() => dropdownHandler("punishment")}
                   className="item page-scroll"
-                  type="button"
                 >
                   Existing Referrals/Shout Outs
-                </div>
-                <div
+                </AccessibleDiv>
+                <AccessibleDiv
                   onClick={() => dropdownHandler("createOfficeReferral")}
                   className="item page-scroll"
-                  type="button"
                 >
                   New Office Referral
-                </div>
+                </AccessibleDiv>
               </div>
             </li>
             <li>
-              <div
+              <AccessibleDiv
                 className="page-scroll"
                 onClick={() =>
                   props.setDropdown((prev) =>
                     prev === "reports" ? "" : "reports"
                   )
                 }
-                type="button"
               >
                 Reports
-              </div>
+              </AccessibleDiv>
               <div
                 style={{
                   display:
-                    props.isDropdownOpen === "reports" ? " block" : "none",
+                    props.whichDropdownOpen === "reports" ? " block" : "none",
                 }}
                 className="feature-menu-dropdown page-scroll"
               >
-                <div
+                <AccessibleDiv
                   onClick={() => dropdownHandler("student")}
                   className="item page-scroll"
-                  type="button"
                 >
                   By Students
-                </div>
-                <div
+                </AccessibleDiv>
+                <AccessibleDiv
                   onClick={() => dropdownHandler("viewTeacher")}
                   className="item page-scroll"
-                  type="button"
                 >
                   By Teachers
-                </div>
+                </AccessibleDiv>
               </div>
             </li>
             <li>
-              <div
+              <AccessibleDiv
                 className="page-scroll"
                 onClick={() =>
                   props.setDropdown((prev) => (prev === "tools" ? "" : "tools"))
                 }
-                type="button"
               >
                 Tools
-              </div>
+              </AccessibleDiv>
               <div
                 style={{
-                  display: props.isDropdownOpen === "tools" ? " block" : "none",
+                  display:
+                    props.whichDropdownOpen === "tools" ? " block" : "none",
                 }}
                 className="feature-menu-dropdown page-scroll"
               >
@@ -168,39 +170,35 @@ export const NavigationAdmin = (props) => {
                 >
                   Create/Edit Assignments
                 </div> */}
-                <div
+                <AccessibleDiv
                   onClick={() => dropdownHandler("userManagement")}
                   className="item page-scroll"
-                  type="button"
                 >
                   Create A Student
-                </div>
-                <div
+                </AccessibleDiv>
+                <AccessibleDiv
                   onClick={() => dropdownHandler("studentManagement")}
                   className="item page-scroll"
-                  type="button"
                 >
                   Edit A Student
-                </div>
-                <div
+                </AccessibleDiv>
+                <AccessibleDiv
                   onClick={() => dropdownHandler("archived")}
                   className="item page-scroll"
-                  type="button"
                 >
                   Archived
-                </div>
+                </AccessibleDiv>
               </div>
             </li>
             <li>
-              <div
+              <AccessibleDiv
                 className="page-scroll"
                 onClick={() => {
                   props.toggleNotificationDrawer(true);
                 }}
-                type="button"
               >
                 Detention/ISS List
-              </div>
+              </AccessibleDiv>
             </li>
             {/* This will be brought back in when we have a school that wants a store  
             <li>
@@ -214,15 +212,14 @@ export const NavigationAdmin = (props) => {
               </div>
             </li> */}
             <li>
-              <div
+              <AccessibleDiv
                 className="page-scroll"
                 onClick={() => {
                   props.setModalType("contact");
                 }}
-                type="button"
               >
                 Contact Us
-              </div>
+              </AccessibleDiv>
             </li>
             <li>
               <button
@@ -237,13 +234,4 @@ export const NavigationAdmin = (props) => {
       </div>
     </nav>
   );
-};
-
-NavigationAdmin.propTypes = {
-  setDropdown: PropTypes.func.isRequired,
-  setPanelName: PropTypes.func.isRequired,
-  isDropdownOpen: PropTypes.string,
-  setModalType: PropTypes.func,
-  toggleNotificationDrawer: PropTypes.func,
-  setLogin: PropTypes.func.isRequired,
 };

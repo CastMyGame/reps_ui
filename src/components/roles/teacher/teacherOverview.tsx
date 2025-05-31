@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "../admin/admin.css";
-import Typography from "@mui/material/Typography";
 import IncidentsByStudentTable from "src/components/globalComponents/dataDisplay/incidentsByStudentTable";
 import { TotalReferralByWeek } from "src/components/globalComponents/dataDisplay/referralsByWeek";
-import Card from "@mui/material/Card";
 import { ReferralByBehavior } from "src/components/globalComponents/dataDisplay/referralsByBehavior";
 import TeacherInfractionOverPeriodBarChart from "src/components/globalComponents/dataDisplay/teacherInfractionPeriodBarChart";
 import { PieChartParentCommunication } from "src/components/globalComponents/dataDisplay/pieChartParentCommunication";
@@ -45,7 +43,7 @@ const TeacherOverviewPanel: React.FC<TeacherOverviewProps> = ({
   }, [data]);
 
   return (
-    <>
+    <div className="dashboard-container">
       {openModal.display && (
         <div className="modal-overlay">
           <div className="modal-content">
@@ -74,69 +72,43 @@ const TeacherOverviewPanel: React.FC<TeacherOverviewProps> = ({
       )}
 
       <div className="teacher-overview-first">
-        <Card variant="outlined">
+        <div className="custom-card">
           <ShoutOuts data={data} />
-        </Card>
-      </div>
-
-      {/* Title Cards */}
-      <div className="card-title">
-        <Typography
-          color="white"
-          variant="h6"
-          style={{
-            flexGrow: 1,
-            outline: "1px solid  white",
-            padding: "5px",
-            fontSize: 36,
-          }}
-        >
-          Week At a Glance
-        </Typography>
-      </div>
-
-      <div className="overview-row">
-        <div className="card-overview-half">
-          <PieChartParentCommunication
-            data={data || {}}
-            shoutOutsResponse={data?.shoutOutsResponse || []}
-            officeReferrals={data?.officeReferrals || []}
-            writeUpResponse={data?.writeUpResponse || []}
-          />
-        </div>
-
-        <div className="card-overview-half">
-          <TeacherInfractionOverPeriodBarChart
-            data={data?.punishmentResponse || []}
-          />
         </div>
       </div>
 
-      {/* Students of Concern */}
-      <div className="card-title">
-        <Typography
-          color="white"
-          variant="h6"
-          style={{
-            flexGrow: 1,
-            outline: "1px solid  white",
-            padding: "5px",
-            fontSize: 36,
-          }}
-        >
-          Students of Concern
-        </Typography>
+      <div className="section-container">
+        <div className="section-header">Week At a Glance</div>
+
+        <div className="section-content">
+          <div className="section-half">
+            <PieChartParentCommunication
+              data={data || {}}
+              shoutOutsResponse={data?.shoutOutsResponse || []}
+              officeReferrals={data?.officeReferrals || []}
+              writeUpResponse={data?.writeUpResponse || []}
+            />
+          </div>
+
+          <div className="section-half">
+            <TeacherInfractionOverPeriodBarChart
+              data={data?.punishmentResponse || []}
+            />
+          </div>
+        </div>
       </div>
 
-      <div className="overview-row">
-        <div className="card-overview-half">
+      <div className="section-header">Students of Concern</div>
+
+      <div className="section-content">
+        <div className="section-half scrollable-section">
           <IncidentsByStudentTable
             writeUpResponse={data?.writeUpResponse || []}
             officeReferrals={data?.officeReferrals || []}
             students={students || []}
           />
         </div>
-        <div className="card-overview-half">
+        <div className="section-half scrollable-section">
           <RecentIncidents
             punishmentResponse={data?.punishmentResponse || []}
             officeReferrals={data?.officeReferrals || []}
@@ -145,39 +117,25 @@ const TeacherOverviewPanel: React.FC<TeacherOverviewProps> = ({
         </div>
       </div>
 
-      {/* Longitudinal Reports */}
-      <div className="card-title">
-        <Typography
-          color="white"
-          variant="h6"
-          style={{
-            flexGrow: 1,
-            outline: "1px solid  white",
-            padding: "5px",
-            fontSize: 36,
-          }}
-        >
-          Longitudinal Reports
-        </Typography>
-      </div>
+      <div className="section-header">Longitudinal Reports</div>
 
-      <div className="overview-row">
-        <div className="card-overview-third">
+      <div className="section-content">
+        <div className="section-third">
           <TotalReferralByWeek
             punishmentResponse={data?.punishmentResponse || []}
             officeReferrals={data?.officeReferrals || []}
           />
         </div>
-        <div className="card-overview-third">
+        <div className="section-third">
           <TeacherManagedReferralByLevelByWeek
             punishmentResponse={data?.writeUpResponse || []}
           />
         </div>
-        <div className="card-overview-third">
+        <div className="section-third">
           <ReferralByBehavior data={data?.punishmentResponse || []} />
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

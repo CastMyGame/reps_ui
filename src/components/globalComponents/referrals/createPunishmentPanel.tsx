@@ -805,6 +805,37 @@ const CreatePunishmentPanel: React.FC<CreatePunishmentProps> = ({
                         </div>
                       </div>
                       <div>
+                      {studentNames.length > 1 && (
+                        <Box sx={{ mt: 2 }}>
+                          <Typography
+                            variant="subtitle1"
+                            sx={{ fontSize: "1.2rem" }}
+                          >
+                            Insert Student Info:
+                          </Typography>
+                          {[
+                            { field: "firstName", label: "$firstName" },
+                            { field: "lastName", label: "$lastName" },
+                            { field: "grade", label: "$grade" },
+                            { field: "parentEmail", label: "$parentEmail" },
+                          ].map(({ field, label }) => (
+                            <Button
+                              key={field}
+                              size="large"
+                              variant="outlined"
+                              sx={{
+                                mr: 1,
+                                mb: 1,
+                                fontSize: "1.2rem", // Increase font size inside buttons
+                                padding: "12px 24px",
+                              }} // Adjust button padding for a larger button }}
+                              onClick={() => insertAtCursor(label)}
+                            >
+                              {field}
+                            </Button>
+                          ))}
+                        </Box>
+                      )}
                         <TextField
                           margin="normal"
                           required
@@ -851,35 +882,6 @@ const CreatePunishmentPanel: React.FC<CreatePunishmentProps> = ({
                             }
                           }}
                         />
-                        <Box sx={{ mt: 2 }}>
-                          <Typography
-                            variant="subtitle1"
-                            sx={{ fontSize: "1.2rem" }}
-                          >
-                            Insert Student Info:
-                          </Typography>
-                          {[
-                            { field: "firstName", label: "$firstName" },
-                            { field: "lastName", label: "$lastName" },
-                            { field: "grade", label: "$grade" },
-                            { field: "parentEmail", label: "$parentEmail" },
-                          ].map(({ field, label }) => (
-                            <Button
-                              key={field}
-                              size="large"
-                              variant="outlined"
-                              sx={{
-                                mr: 1,
-                                mb: 1,
-                                fontSize: "1.2rem", // Increase font size inside buttons
-                                padding: "12px 24px",
-                              }} // Adjust button padding for a larger button }}
-                              onClick={() => insertAtCursor(label)}
-                            >
-                              {field}
-                            </Button>
-                          ))}
-                        </Box>
                       </div>
                       {isGuidance.isGuidanceBoolean && (
                         <TextField

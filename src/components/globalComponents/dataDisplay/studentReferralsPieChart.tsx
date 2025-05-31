@@ -10,12 +10,12 @@ const StudentReferralsPieChart: React.FC<StudentPieProps> = ({
 }) => {
   const referralData = (data).filter(
     (punishment: TeacherReferral) =>
-      punishment.infractionName !== "Positive Shout Out!" ||
+      punishment.infractionName !== "Positive Behavior Shout Out!" ||
       "Behavioral Concern"
   ).length;
   const positiveData = (data).filter(
     (punishment: TeacherReferral) =>
-      punishment.infractionName === "Positive Shout Out!"
+      punishment.infractionName === "Positive Behavior Shout Out!"
   ).length;
   const behavioralConcernData = (data).filter(
     (punishment: TeacherReferral) =>

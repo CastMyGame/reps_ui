@@ -84,15 +84,18 @@ export const WorseClassTable: React.FC<WorseClassProps> = ({
   ];
 
   return (
-    <div>
+    <div style={{
+      width: "100%",
+      marginTop: "10px",
+    }}>
       <h3 style={{ textAlign: "center", marginBottom: "10px" }}>
         Classes With Highest Write-Ups By Period
       </h3>
-      <div className="ag-theme-alpine" style={{ height: "25vh" }}>
+      <div className="ag-theme-alpine">
         <AgGridReact
           rowData={sortedPeriods}
           columnDefs={columnDefs}
-          domLayout="autoHeight" // Ensures that the height is handled properly
+          domLayout="autoHeight"
           autoSizeStrategy={autoSizeStrategy}
         />
       </div>
