@@ -5,10 +5,6 @@ import axios from "axios";
 import { baseUrl } from "src/utils/jsonData";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
-import { Column } from "jspdf-autotable";
-import { relative } from "path";
-import { red } from "@mui/material/colors";
-import { height } from "@mui/system";
 import { AccordionItem } from "./AccordianItem";
 
 const summaryData = [
