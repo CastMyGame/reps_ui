@@ -724,6 +724,13 @@ section {
   max-height: max-content;
 }
 
+.section-priv{
+  background:whitel;
+  height:fit-content;
+  padding:10px 10px
+
+}
+
 /* SECTION 1 */
 .section-01 {
   display: flex;

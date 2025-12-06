@@ -279,6 +279,9 @@ const routeChange = (role: string) => {
     setWarningToast(false);
   };
 
+  const FFTraditionalLogin = false
+  const FFGOOGLESSOLOGIN = true
+
   return (
     <div className="full-width-container" >
       
@@ -287,6 +290,7 @@ const routeChange = (role: string) => {
           style={{ height: "auto", background: "red" }}
           className="login-modal"
         >
+          {FFTraditionalLogin &&
           <form className="form-container" onSubmit={HandleLogin}>
             <div className="form-row">
               <div className="form-column">
@@ -315,7 +319,13 @@ const routeChange = (role: string) => {
                 Email or Password is incorrect
               </Alert>
             </Snackbar>
-             <button style={{background:"none"}}
+           
+
+            <input style={{borderRadius:30,width:"200px",height:'20px'}} type="submit" value={loading ? "Loading..." : "Sign In"} />
+          </form>}
+          {FFGOOGLESSOLOGIN &&
+          <form className="form-container" style={{flexDirection:"row-reverse",height:"AUTO"}}>
+          <button style={{background:"none",fontSize:10}}
       onClick={handleGoogleLogin}
       className="google-login-button"
       type="button"
@@ -326,11 +336,12 @@ const routeChange = (role: string) => {
         <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
         <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
       </svg>
-      <span>Sign in with Google</span>
+      <span style={{fontSize:12}}>Sign in with Google</span>
     </button>
+    </form>
 
-            <input style={{borderRadius:30,width:"200px",height:'20px'}} type="submit" value={loading ? "Loading..." : "Sign In"} />
-          </form>
+          }
+            
         </div>
       )}
 
@@ -739,6 +750,8 @@ REPS transforms schools by making behavior management seamless, data-driven, and
   <div className="item">Analyics</div>
   <div className="item">Get in Touch</div>
   <div className="item">repsdiscipline@gmail.com</div>
+  <div className="item" style={{cursor: "pointer"}} onClick={()=>navigate("/privacy-policy")}>Privacy Policy</div>
+
 </div>
 
 
