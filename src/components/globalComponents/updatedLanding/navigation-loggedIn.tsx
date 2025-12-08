@@ -119,6 +119,14 @@ export const NavigationLoggedIn: React.FC<NavigationLoggedInProps> = (
             <li>
               <AccessibleDiv
                 className="page-scroll"
+                onClick={() => dropdownHandler("assignmentTemplates")}
+              >
+                Assignment Templates
+              </AccessibleDiv>
+            </li>
+            <li>
+              <AccessibleDiv
+                className="page-scroll"
                 onClick={() =>
                   props.setDropdown((prev) =>
                     prev === "student" ? "" : "student"
