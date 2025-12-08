@@ -1,11 +1,17 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { AssignmentTemplateBinding, AssignmentTemplateSummaryDTO } from "src/types/assignments";
-import { getTeacherBindings, searchAssignmentTemplates, setTeacherDefaultBinding } from "src/utils/api/assignmentApi";
-
+import {
+  AssignmentTemplateBinding,
+  AssignmentTemplateSummaryDTO,
+} from "src/types/assignments";
+import {
+  getTeacherBindings,
+  searchAssignmentTemplates,
+  setTeacherDefaultBinding,
+} from "src/utils/api/assignmentApi";
+import { TemplateEditorInline } from "./templateEditorInline";
 
 // TODO: replace this with your real auth mechanism
 const getCurrentTeacherEmail = () => {
-  // Adjust this to however you store the teacher's email
   return sessionStorage.getItem("userEmail") || "";
 };
 
@@ -16,15 +22,43 @@ export const TeacherAssignmentTemplatesPanel: React.FC = () => {
   const [loadingBindings, setLoadingBindings] = useState(false);
 
   const [searchDialogOpen, setSearchDialogOpen] = useState(false);
-  const [searchResults, setSearchResults] = useState<AssignmentTemplateSummaryDTO[]>([]);
+  const [searchResults, setSearchResults] = useState<
+    AssignmentTemplateSummaryDTO[]
+  >([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedInfraction, setSelectedInfraction] = useState<string | null>(null);
+  const [selectedInfraction, setSelectedInfraction] = useState<string | null>(
+    null
+  );
   const [selectedLevel, setSelectedLevel] = useState<number | null>(null);
   const [searchLoading, setSearchLoading] = useState(false);
 
   const [error, setError] = useState<string | null>(null);
 
-  // Load current bindings for this teacher
+  const [showEditor, setShowEditor] = useState(false);
+  const [lastCreatedTemplateId, setLastCreatedTemplateId] = useState<
+    string | null
+  >(null);
+  const [systemTemplates, setSystemTemplates] = useState<
+    AssignmentTemplateSummaryDTO[]
+  >([]);
+  const [loadingSystemTemplates, setLoadingSystemTemplates] = useState(false);
+
+  const systemInfractionOptions = useMemo(() => {
+    const set = new Set<string>();
+    systemTemplates.forEach((t) => {
+      set.add(t.infractionName);
+    });
+    return Array.from(set).sort((a, b) => a.localeCompare(b));
+  }, [systemTemplates]);
+
+  const systemLevelOptions = useMemo(() => {
+    const set = new Set<number>();
+    systemTemplates.forEach((t) => {
+      set.add(t.level);
+    });
+    return Array.from(set).sort((a, b) => a - b);
+  }, [systemTemplates]);
+
   useEffect(() => {
     if (!teacherEmail) return;
     setLoadingBindings(true);
@@ -34,7 +68,6 @@ export const TeacherAssignmentTemplatesPanel: React.FC = () => {
       .finally(() => setLoadingBindings(false));
   }, [teacherEmail]);
 
-  // Unique (infraction, level) rows
   const rows = useMemo(() => {
     const keyMap = new Map<string, AssignmentTemplateBinding>();
     bindings.forEach((b) => {
@@ -50,6 +83,17 @@ export const TeacherAssignmentTemplatesPanel: React.FC = () => {
       return a.infractionName.localeCompare(b.infractionName);
     });
   }, [bindings]);
+
+  useEffect(() => {
+    setLoadingSystemTemplates(true);
+
+    searchAssignmentTemplates({ createdBySystem: true })
+      .then((results) => {
+        setSystemTemplates(results);
+      })
+      .catch((e: any) => setError(e.message))
+      .finally(() => setLoadingSystemTemplates(false));
+  }, []);
 
   const openSearchDialog = (infractionName: string, level: number) => {
     setSelectedInfraction(infractionName);
@@ -67,6 +111,7 @@ export const TeacherAssignmentTemplatesPanel: React.FC = () => {
         infractionName: selectedInfraction,
         level: selectedLevel,
         q: searchQuery || undefined,
+        createdBySystem: true,
       });
       setSearchResults(results);
     } catch (e: any) {
@@ -76,7 +121,9 @@ export const TeacherAssignmentTemplatesPanel: React.FC = () => {
     }
   };
 
-  const handleSelectTemplate = async (template: AssignmentTemplateSummaryDTO) => {
+  const handleSelectTemplate = async (
+    template: AssignmentTemplateSummaryDTO
+  ) => {
     if (!teacherEmail || !selectedInfraction || selectedLevel == null) return;
     try {
       const updatedBinding = await setTeacherDefaultBinding({
@@ -86,7 +133,6 @@ export const TeacherAssignmentTemplatesPanel: React.FC = () => {
         assignmentTemplateId: template.id,
       });
 
-      // Replace any existing binding for same teacher/infraction/level
       setBindings((prev) => {
         const filtered = prev.filter(
           (b) =>
@@ -105,18 +151,57 @@ export const TeacherAssignmentTemplatesPanel: React.FC = () => {
     }
   };
 
+  const handleCreatedTemplate = (templateId: string) => {
+    setLastCreatedTemplateId(templateId || null);
+    setShowEditor(false);
+    // Teacher can now use the search modal to bind this template
+  };
+
   return (
-    <div className="teacher-assignment-templates-panel" style={{ padding: "20px" }}>
+    <div
+      className="teacher-assignment-templates-panel"
+      style={{ padding: "20px" }}
+    >
       <h2>Assignment Templates</h2>
       <p>
-        Choose which assignment template to use by default for each infraction and level.
+        Choose which assignment template to use by default for each infraction
+        and level, or create new templates to use in the future.
       </p>
 
       {error && (
-        <div style={{ marginBottom: "10px", color: "red" }}>
-          {error}
-        </div>
+        <div style={{ marginBottom: "10px", color: "red" }}>{error}</div>
       )}
+
+      <div style={{ marginBottom: "10px" }}>
+        <button
+          type="button"
+          className="btn btn-primary"
+          onClick={() => {
+            setShowEditor((prev) => !prev);
+            setLastCreatedTemplateId(null);
+          }}
+        >
+          {showEditor ? "Hide Template Creator" : "Create New Template"}
+        </button>
+        {lastCreatedTemplateId && (
+          <span style={{ marginLeft: "10px", fontSize: "13px", color: "#2c7" }}>
+            Template created (ID: {lastCreatedTemplateId}). Use "Search
+            Templates" to bind it.
+          </span>
+        )}
+      </div>
+
+      {showEditor && (
+        <TemplateEditorInline
+          teacherEmail={teacherEmail}
+          infractionOptions={systemInfractionOptions}
+          levelOptions={systemLevelOptions}
+          onCreated={handleCreatedTemplate}
+          onCancel={() => setShowEditor(false)}
+        />
+      )}
+
+      <hr />
 
       <div className="table-responsive">
         <table className="table table-striped table-bordered">
@@ -138,7 +223,8 @@ export const TeacherAssignmentTemplatesPanel: React.FC = () => {
             {!loadingBindings && rows.length === 0 && (
               <tr>
                 <td colSpan={4}>
-                  No defaults set yet. Once you choose templates, they will appear here.
+                  No defaults set yet. Once you choose templates, they will
+                  appear here.
                 </td>
               </tr>
             )}
@@ -148,8 +234,6 @@ export const TeacherAssignmentTemplatesPanel: React.FC = () => {
                 <td>{b.infractionName}</td>
                 <td>{b.level}</td>
                 <td>
-                  {/* For now, just show the template ID.
-                      Later we can fetch the template name/preview and show that. */}
                   <span
                     style={{
                       display: "inline-block",
@@ -185,7 +269,7 @@ export const TeacherAssignmentTemplatesPanel: React.FC = () => {
         </table>
       </div>
 
-      {/* Simple "modal" implemented with divs */}
+      {/* Search "modal" */}
       {searchDialogOpen && (
         <div
           className="assignment-search-modal-backdrop"
@@ -247,7 +331,8 @@ export const TeacherAssignmentTemplatesPanel: React.FC = () => {
 
             {!searchLoading && searchResults.length === 0 && (
               <div style={{ fontSize: "14px", color: "#555" }}>
-                No templates found. Try a different search or create a new template.
+                No templates found. Try a different search or create a new
+                template.
               </div>
             )}
 

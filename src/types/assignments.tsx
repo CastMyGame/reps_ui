@@ -1,25 +1,27 @@
 export type RadioAnswers = {
-    [key: string]: {
-      label: string;
-      value: boolean;
-    };
+  [key: string]: {
+    label: string;
+    value: boolean;
   };
-  
-  export interface Question {
-    question: string;
-    type: "reading" | "retryQuestion" | "exploratory-open-ended" | "exploratory-radio";
-    title: string;
-    body: string;
-    references: string[];
-    radioAnswers: RadioAnswers;
-    textToCompare: string;
-  }
-  
-  export interface AssignmentPayload {
-    infractionName: string;
-    level: number;
-    questions: Question[];
-  }
+};
+
+export interface Question {
+  question: string;
+  type: "reading" | "retryQuestion" | "exploratory-open-ended" | "exploratory-radio";
+  title: string;
+  body: string;
+  references: string[];
+  radioAnswers: RadioAnswers;
+  textToCompare: string;
+}
+
+export interface AssignmentPayload {
+  infractionName: string;
+  level: number;
+  questions: Question[];
+}
+
+// ------------------ v2 Template Types ------------------
 
 export type QuestionType = "READING_MC" | "EXPLORATORY_OPEN" | "EXPLORATORY_RADIO";
 export type SelectionMode = "SINGLE" | "MULTIPLE";
@@ -44,14 +46,19 @@ export interface TemplateQuestion {
   order: number;
   type: QuestionType;
   required: boolean;
+
   prompt: string | null;
   title: string | null;
+
   passageBody: string | null;
   passageReferences: string[] | null;
+
   options: AnswerOption[] | null;
   selectionMode: SelectionMode | null;
   gradingMode: GradingMode | null;
+
   retry: RetryConfig | null;
+
   minLength: number | null;
   maxLength: number | null;
   graded: boolean | null;
@@ -61,17 +68,24 @@ export type Scope = "SYSTEM_DEFAULT" | "SCHOOL_DEFAULT" | "TEACHER_DEFAULT";
 export type Visibility = "PRIVATE" | "SCHOOL";
 
 export interface AssignmentTemplate {
-  id: string;
+  // ✅ optional on frontend – created by Mongo/Java
+  id?: string;
+
   infractionName: string;
   level: number;
+
   createdBySystem: boolean;
   createdByUserId: string | null;
   schoolId: string | null;
+
   scope: Scope;
   active: boolean;
   visibility: Visibility;
-  createdAt: string;
-  updatedAt: string;
+
+  // ✅ optional – set by backend
+  createdAt?: string;
+  updatedAt?: string;
+
   questions: TemplateQuestion[];
 }
 
@@ -98,4 +112,27 @@ export interface AssignmentTemplateBinding {
   createdAt: string;
   updatedAt: string;
 }
-  
+
+// ✅ Create payload: everything except id/createdAt/updatedAt
+export type AssignmentTemplateCreatePayload = Omit<
+  AssignmentTemplate,
+  "id" | "createdAt" | "updatedAt"
+>;
+
+export const DEFAULT_INFRACTION_OPTIONS = [
+  "Class Disruption",
+  "Disrespect",
+  "Unprepared for Class",
+  "Missing Assignment",
+  "Tardy",
+] as const;
+
+export const DEFAULT_LEVEL_OPTIONS = [1, 2, 3, 4];
+
+export interface AssignmentTemplateSearchParams {
+  infractionName?: string;
+  level?: number;
+  creatorEmail?: string;
+  createdBySystem?: boolean;
+  q?: string;
+}

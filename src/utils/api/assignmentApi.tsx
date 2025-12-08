@@ -1,5 +1,10 @@
-import { AssignmentTemplateBinding, AssignmentTemplateSummaryDTO } from "src/types/assignments";
-
+import {
+  AssignmentTemplate,
+  AssignmentTemplateBinding,
+  AssignmentTemplateCreatePayload,
+  AssignmentTemplateSearchParams,
+  AssignmentTemplateSummaryDTO,
+} from "src/types/assignments";
 
 const BASE_URL = process.env.REACT_APP_API_BASE_URL ?? "http://localhost:8080";
 
@@ -34,7 +39,9 @@ async function apiDelete(url: string, body?: any): Promise<void> {
   }
 }
 
-export function getTeacherBindings(teacherEmail: string): Promise<AssignmentTemplateBinding[]> {
+export function getTeacherBindings(
+  teacherEmail: string
+): Promise<AssignmentTemplateBinding[]> {
   return apiGet<AssignmentTemplateBinding[]>(
     `/assignments/v1/bindings/teacher-default?teacherEmail=${encodeURIComponent(
       teacherEmail
@@ -42,25 +49,32 @@ export function getTeacherBindings(teacherEmail: string): Promise<AssignmentTemp
   );
 }
 
-export function searchAssignmentTemplates(params: {
-  infractionName?: string;
-  level?: number;
-  creatorEmail?: string;
-  createdBySystem?: boolean;
-  q?: string;
-}): Promise<AssignmentTemplateSummaryDTO[]> {
+export async function searchAssignmentTemplates(
+  params: AssignmentTemplateSearchParams
+): Promise<AssignmentTemplateSummaryDTO[]> {
   const query = new URLSearchParams();
-  if (params.infractionName) query.append("infractionName", params.infractionName);
-  if (params.level != null) query.append("level", String(params.level));
-  if (params.creatorEmail) query.append("creatorEmail", params.creatorEmail);
-  if (params.createdBySystem != null)
-    query.append("createdBySystem", String(params.createdBySystem));
-  if (params.q) query.append("q", params.q);
+
+  if (params.infractionName) {
+    query.append("infractionName", params.infractionName);
+  }
+  if (typeof params.level === "number") {
+    query.append("level", String(params.level));
+  }
+  if (params.creatorEmail) {
+    query.append("creatorEmail", params.creatorEmail);
+  }
+  if (typeof params.createdBySystem === "boolean") {
+    query.append("createdBySystem", String(params.createdBySystem)); // "true" / "false"
+  }
+  if (params.q) {
+    query.append("q", params.q);
+  }
 
   const qs = query.toString();
-  return apiGet<AssignmentTemplateSummaryDTO[]>(
-    `/assignments/v1/templates/search${qs ? `?${qs}` : ""}`
-  );
+  const path = `/assignments/v1/templates/search${qs ? `?${qs}` : ""}`;
+
+  // ✅ use the same helper as all other endpoints
+  return apiGet<AssignmentTemplateSummaryDTO[]>(path);
 }
 
 export function setTeacherDefaultBinding(payload: {
@@ -82,4 +96,10 @@ export function clearTeacherDefaultBinding(payload: {
   level: number;
 }): Promise<void> {
   return apiDelete("/assignments/v1/bindings/teacher-default", payload);
+}
+
+export function createAssignmentTemplate(
+  payload: AssignmentTemplateCreatePayload
+): Promise<AssignmentTemplate> {
+  return apiPost<AssignmentTemplate>("/assignments/v1/templates", payload);
 }

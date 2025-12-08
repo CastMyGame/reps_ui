@@ -1150,3 +1150,10 @@ table th tr {
   flex: 1;
   overflow: auto;
 }
+
+.template-editor-inline .field-label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: #333 !important;
+}
