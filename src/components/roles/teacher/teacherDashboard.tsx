@@ -22,6 +22,7 @@ import { baseUrl } from "src/utils/jsonData";
 import axios from "axios";
 import { ClassRoster, Employee, Student } from "src/types/school.js";
 import { TeacherOverviewDto } from "src/types/responses.js";
+import { TeacherAssignmentTemplatesPanel } from "src/components/globalComponents/components/generic-components/teacherAssignmentTemplateModel";
 
 const TeacherDashboard = () => {
   const [loggedIn, setLoggedIn] = useState(true);
@@ -193,6 +194,7 @@ const TeacherDashboard = () => {
         {panelName === "classUpdate" && (
           <ClassUpdate setPanelName={setPanelName} teacher={teacher} />
         )}
+        {panelName === "assignmentTemplates" && <TeacherAssignmentTemplatesPanel />}
       </>
     );
   }

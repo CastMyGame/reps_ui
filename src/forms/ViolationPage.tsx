@@ -11,7 +11,10 @@ import {
   getInfractionName,
   isOfficeReferral,
 } from "src/helperComponents/helperComponents";
-import { Assignment } from "src/types/school";
+import {
+  AssignmentTemplate,
+  StudentAnswerPayload,
+} from "src/types/assignments";
 
 interface ViolationProps {
   assignment?: TeacherReferral | OfficeReferral;
@@ -19,9 +22,13 @@ interface ViolationProps {
 
 const ViolationPage: React.FC<ViolationProps> = ({ assignment }) => {
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
-  const [studentAnswers, setStudentAnswers] = useState<string[]>([]);
+  const [studentAnswers, setStudentAnswers] = useState<StudentAnswerPayload[]>(
+    []
+  );
   const [mapIndex, setMapIndex] = useState(0);
-  const [essay, setEssay] = useState<Assignment | null>(null);
+  const [template, setTemplate] = useState<AssignmentTemplate | null>(null);
+  const [showRetry, setShowRetry] = useState(false);
+  const [showSubmitModal, setShowSubmitModal] = useState(false);
 
   useEffect(() => {
     if (assignment?.mapIndex !== undefined) {
@@ -30,94 +37,126 @@ const ViolationPage: React.FC<ViolationProps> = ({ assignment }) => {
   }, [assignment?.mapIndex]);
 
   useEffect(() => {
-    if (!assignment) {
-      return;
-    } else {
-      const headers = {
-        Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
-      };
+    if (!assignment) return;
 
-      let theName = getInfractionName(assignment);
+    const headers = {
+      Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
+    };
 
-      const url = `${baseUrl}/assignments/v1/`;
+    if (isTeacherReferral(assignment)) {
+      const url = `${baseUrl}/assignments/v1/by-punishment/${assignment.punishmentId}`;
+
       axios
         .get(url, { headers })
         .then((response) => {
-          const essay = response.data.filter(
-            (essay: Assignment) =>
-              essay.infractionName === theName &&
-              Number(essay.level) === Number(assignment?.infractionLevel)
-          );
-          setEssay(essay[0]);
+          const templateFromServer: AssignmentTemplate = response.data;
+          setTemplate(templateFromServer);
         })
         .catch((error) => {
-          console.error(error);
+          console.error(
+            "Failed to load assignment template for punishment:",
+            error
+          );
         });
+    } else if (isOfficeReferral(assignment)) {
+      console.warn("Office referral assignment resolution not wired yet.");
     }
   }, [assignment]);
 
+  // Save "where the student is" in the punishment/officeReferral index
   useEffect(() => {
-    if (!assignment) {
-      return;
-    } else {
-      if (mapIndex !== 0) {
-        const headers = {
-          Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
-        };
-        let url = "";
-        if (isTeacherReferral(assignment)) {
-          url = `${baseUrl}/punish/v1/${assignment.punishmentId}/index/${mapIndex}`;
-        } else if (isOfficeReferral(assignment)) {
-          url = `${baseUrl}/officeReferral/v1/${assignment.officeReferralId}/index/${mapIndex}`;
-        }
+    if (!assignment) return;
 
-        axios
-          .put(url, {}, { headers }) // Include headers directly in the request config
-          .then((response) => {})
-          .catch((error) => {
-            console.error(error);
-          });
+    if (mapIndex !== 0) {
+      const headers = {
+        Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
+      };
+      let url = "";
+      if (isTeacherReferral(assignment)) {
+        url = `${baseUrl}/punish/v1/${assignment.punishmentId}/index/${mapIndex}`;
+      } else if (isOfficeReferral(assignment)) {
+        url = `${baseUrl}/officeReferral/v1/${assignment.officeReferralId}/index/${mapIndex}`;
       }
+
+      axios
+        .put(url, {}, { headers })
+        .then(() => {})
+        .catch((error) => {
+          console.error(error);
+        });
     }
   }, [mapIndex, assignment]);
 
   const loggedInUser = sessionStorage.getItem("email");
 
+  // For READING_MC questions
   const saveAnswerAndProgress = () => {
-    if (loggedInUser) {
-      if (selectedAnswer === "true") {
-        window.alert("Congratulations! That is correct!");
-        setMapIndex((prev) => prev + 2);
-        setSelectedAnswer(null);
+    if (!loggedInUser) {
+      window.alert("Email Not Registered in Reps DMS System");
+      return;
+    }
+
+    const currentQuestion = template?.questions?.[mapIndex];
+    if (!currentQuestion) return;
+
+    if (selectedAnswer === "true") {
+      window.alert("Congratulations! That is correct!");
+      setSelectedAnswer(null);
+      setShowRetry(false);
+      // go to next question
+      setMapIndex((prev) => prev + 1);
+    } else {
+      window.alert("Sorry, that is incorrect");
+
+      // if retry is enabled, show retry screen instead of moving to next question
+      if (currentQuestion.retry?.enabled) {
+        setShowRetry(true);
       } else {
-        window.alert("Sorry, that is incorrect");
         setMapIndex((prev) => prev + 1);
       }
-    } else {
-      window.alert("Email Not Registered in Reps DMS System");
     }
   };
 
+  // When student passes the retry text-copy check
   const textCorrectlyCopied = (payload: {
     question: string;
     answer: string;
   }) => {
     if (payload.answer === "true") {
       window.alert("Congratulations! That is correct!");
+      setShowRetry(false);
       setMapIndex((prev) => prev + 1);
     }
   };
 
+  // Used for both EXPLORATORY_OPEN and EXPLORATORY_RADIO
   const openEndedQuestionAnswered = (payload: {
     question: string;
     answer: string;
   }) => {
-    if (payload.answer === "agree") {
+    const ans = payload.answer;
+
+    if (ans === "agree") {
+      // EXPLORATORY_RADIO - "good" path (keep old behavior)
       setMapIndex((prev) => prev + 1);
-      setStudentAnswers((prev) => [...prev, payload.answer]);
-    } else if (payload.answer === "disagree" || payload.answer === "neutral") {
+      setStudentAnswers((prev) => [
+        ...prev,
+        { question: payload.question, answer: ans },
+      ]);
+    } else if (ans === "disagree" || ans === "neutral") {
+      // EXPLORATORY_RADIO - "needs more work" path (keep old behavior)
       setMapIndex((prev) => prev + 2);
-      setStudentAnswers((prev) => [...prev, payload.answer]);
+      setStudentAnswers((prev) => [
+        ...prev,
+        { question: payload.question, answer: ans },
+      ]);
+    } else {
+      // NEW: EXPLORATORY_OPEN free-text answer
+      setMapIndex((prev) => prev + 1);
+      setStudentAnswers((prev) => [
+        ...prev,
+        { question: payload.question, answer: ans },
+      ]);
     }
   };
 
@@ -136,112 +175,161 @@ const ViolationPage: React.FC<ViolationProps> = ({ assignment }) => {
       Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
     };
 
-    let payload = {
+    const payload = {
       studentEmail: loggedInUser,
       infractionName: formattedInfraction,
-      studentAnswer: studentAnswers,
-      timeClosed: Date.now,
+      studentAnswer: studentAnswers, // now List<{ question, answer }>
+      // no timeClosed from frontend
     };
 
-    if (assignment && isOfficeReferral(assignment)) {
-      let url = `${baseUrl}/officeReferral/v1/submit/${assignment.officeReferralId}`;
+    const url =
+      assignment && isOfficeReferral(assignment)
+        ? `${baseUrl}/officeReferral/v1/submit/${assignment.officeReferralId}`
+        : `${baseUrl}/punish/v1/punishId/close`;
 
-      axios
-        .post(url, payload, { headers })
-        .then(function (res) {
-          window.alert(
-            `You Work Has been Recorded for ${payload.studentEmail}`
-          );
-          window.location.href = "/dashboard/student";
-        })
-        .catch(function (error) {
-          console.error(error);
-        });
-    } else {
-      let url = `${baseUrl}/punish/v1/punishId/close`;
-
-      axios
-        .post(url, payload, { headers })
-        .then(function (res) {
-          window.alert(
-            `You Work Has been Recorded for ${payload.studentEmail}`
-          );
-          window.location.href = "/dashboard/student";
-        })
-        .catch(function (error) {
-          console.error(error);
-        });
-    }
+    axios
+      .post(url, payload, { headers })
+      .then(() => {
+        setShowSubmitModal(true);
+      })
+      .catch((error) => {
+        console.error("Submission failed:", error);
+        window.alert(
+          "There was an error submitting your assignment. Please try again or contact your teacher."
+        );
+      });
   };
 
   return (
-    <div className="">
-      <div className="">
+    <div>
+      <div>
         <div className="form-container-violation" style={{ width: "100%" }}>
-          <form onSubmit={handleSubmit}>
+          <form>
             <h1 className="instructions">
               {assignment && getInfractionName(assignment)} Violation Level:{" "}
               {assignment?.infractionLevel}
-            </h1>{" "}
-            <hr></hr>
+            </h1>
+            <hr />
             <div>
-              {essay?.questions?.map((data, index) => {
-                return (
-                  <>
-                    {data.type === "reading" && mapIndex === index && (
-                      <EssayFactory
-                        essay={data}
-                        sectionName={data.type}
-                        saveAnswerAndProgress={saveAnswerAndProgress}
-                        handleRadioChange={handleRadioChange}
-                      />
-                    )}
+              {template?.questions?.map((q, index) => {
+                if (mapIndex !== index) return null; // only show the current question
 
-                    {data.type === "retryQuestion" && mapIndex === index && (
+                // READING_MC: show either the normal MC view or the retry view
+                if (q.type === "READING_MC") {
+                  if (showRetry && q.retry?.enabled) {
+                    return (
                       <RetryQuestionFormat
-                        essay={data}
-                        sectionName={data.type}
+                        key={q.id + "-retry"}
+                        essay={q}
+                        sectionName="Retry Question"
                         saveAnswerAndProgress={textCorrectlyCopied}
                         handleRadioChange={handleRadioChange}
                       />
-                    )}
+                    );
+                  }
 
-                    {data.type === "exploratory-open-ended" &&
-                      mapIndex === index && (
-                        <OpenEndedFormat
-                          question={data}
-                          saveAnswerAndProgress={openEndedQuestionAnswered}
-                        />
-                      )}
+                  return (
+                    <EssayFactory
+                      key={q.id}
+                      essay={q}
+                      sectionName="READING_MC"
+                      saveAnswerAndProgress={saveAnswerAndProgress}
+                      handleRadioChange={handleRadioChange}
+                    />
+                  );
+                }
 
-                    {data.type === "exploratory-radio" &&
-                      mapIndex === index && (
-                        <MultipleChoiceFormat
-                          data={data}
-                          saveAnswerAndProgress={openEndedQuestionAnswered}
-                        />
-                      )}
-                  </>
-                );
+                // EXPLORATORY_OPEN
+                if (q.type === "EXPLORATORY_OPEN") {
+                  return (
+                    <OpenEndedFormat
+                      key={q.id}
+                      question={q}
+                      saveAnswerAndProgress={openEndedQuestionAnswered}
+                    />
+                  );
+                }
+
+                // EXPLORATORY_RADIO
+                if (q.type === "EXPLORATORY_RADIO") {
+                  return (
+                    <MultipleChoiceFormat
+                      key={q.id}
+                      data={q}
+                      saveAnswerAndProgress={openEndedQuestionAnswered}
+                    />
+                  );
+                }
+
+                return null;
               })}
 
-              {essay?.questions && mapIndex === essay.questions.length && (
-                <div>
-                  <h1>Congratulations! You have Completed the Assignment </h1>
-                  <br />
-                  <h3>
-                    Hit Submit to Record Your Response for {loggedInUser}{" "}
-                  </h3>
-                  <button onClick={() => handleSubmit()} type="button">
-                    Submit
-                  </button>
-                </div>
-              )}
+              {template?.questions &&
+                mapIndex === template.questions.length && (
+                  <div>
+                    <h1>Congratulations! You have Completed the Assignment </h1>
+                    <br />
+                    <h3>
+                      Hit Submit to Record Your Response for {loggedInUser}
+                    </h3>
+                    <button
+                      type="submit"
+                      onClick={() => {
+                        handleSubmit();
+                      }}
+                    >
+                      Submit
+                    </button>
+                  </div>
+                )}
             </div>
           </form>
+          {showSubmitModal && (
+            <div
+              className="modal-backdrop"
+              onClick={() => (window.location.href = "/dashboard/student")}
+              style={{
+                position: "fixed",
+                top: 0,
+                left: 0,
+                width: "100vw",
+                height: "100vh",
+                background: "rgba(0, 0, 0, 0.5)",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                zIndex: 9999,
+              }}
+            >
+              <div
+                className="modal-content"
+                onClick={(e) => e.stopPropagation()} // prevent outside click from closing instantly
+                style={{
+                  background: "white",
+                  padding: "30px",
+                  borderRadius: "10px",
+                  maxWidth: "400px",
+                  textAlign: "center",
+                }}
+              >
+                <h2>Assignment Submitted</h2>
+                <p>Your work has been recorded successfully.</p>
+                <button
+                  onClick={() => (window.location.href = "/dashboard/student")}
+                  style={{
+                    marginTop: "20px",
+                    padding: "10px 20px",
+                  }}
+                >
+                  OK
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
   );
 };
+
 export default ViolationPage;

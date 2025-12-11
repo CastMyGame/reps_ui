@@ -1,71 +1,71 @@
 import React from "react";
-import { AssignmentQuestion } from "src/types/school";
+import { TemplateQuestion } from "src/types/assignments";
 
 interface MultipleChoiceProps {
-  data: AssignmentQuestion;
+  data: TemplateQuestion;
   saveAnswerAndProgress: (payload: {
     question: string;
     answer: string;
   }) => void;
 }
 
-  const MultipleChoiceFormat: React.FC<MultipleChoiceProps> = ({data, saveAnswerAndProgress}) => {
- 
-    const handleRadioChange = (value: string) =>{
-      const payload = {question:data.question, answer:value}
-      saveAnswerAndProgress(payload)
-    }
-  
-    return (
-      <>
-        <div className="essay-container">
-          <div className="section-header" style={{ background: "green", color: "white" }}>
-            {data.title}
-            <h4 className="question-header" style={{ color: "green", background: "#FDFD96" }}>{data.question}</h4>
-          </div>
-          {/* <h1 className="section-name">{question.title}</h1> */}
-          <p className="question-text">{data.question}</p>
+const MultipleChoiceFormat: React.FC<MultipleChoiceProps> = ({
+  data,
+  saveAnswerAndProgress,
+}) => {
+  const handleRadioChange = (value: string) => {
+    const payload = { question: data.prompt, answer: value };
+    saveAnswerAndProgress(payload);
+  };
+
+  const options = data.options ?? [];
+
+  return (
+    <>
+      <div className="essay-container">
+        <div
+          className="section-header"
+          style={{ background: "green", color: "white" }}
+        >
+          {data.title}
+          <h4
+            className="question-header"
+            style={{ color: "green", background: "#FDFD96" }}
+          >
+            {data.prompt}
+          </h4>
         </div>
-        <div className="md0UAd" aria-hidden="true" dir="auto">
-          * Indicates required question
-        </div>
-    
-        <div className="radio-container">
-         <div className="radio">
-          <input
-            type="radio"
-            id={"1"}
-            name="radioAnswer"
-            value="agree"
-            onChange={() => handleRadioChange("agree")}
-          />
-          <label style={{marginLeft:"10px",color:"black"}}htmlFor={"1"}>Agree</label>
-          </div>
-          <div className="radio">
-          <input
-            type="radio"
-            id={"2"}
-            name="radioAnswer"
-            value="disagree"
-            onChange={() => handleRadioChange("disagree")}
-          />
-          <label style={{marginLeft:"10px",color:"black"}} htmlFor={"2"}>Disagree</label>
-    </div>
-    <div className="radio">
-          <input
-            type="radio"
-            id={"3"}
-            name="radioAnswer"
-            value="neutral"
-            onChange={() => handleRadioChange("neutral")}
-          />
-          <label style={{marginLeft:"10px",color:"black"}} htmlFor={"3"}>Neutral</label>
-          </div>
-        </div>
-      </>
-    );
-    
-  }
-  
-  
-  export default MultipleChoiceFormat;
+        <p className="question-text">{data.prompt}</p>
+      </div>
+
+      <div className="md0UAd" aria-hidden="true" dir="auto">
+        * Indicates required question
+      </div>
+
+      <div className="radio-container">
+        {options.map((opt) => {
+          const value = opt.label.toLowerCase(); // "agree", "disagree", etc.
+          return (
+            <div className="radio" key={opt.id}>
+              <input
+                type="radio"
+                id={opt.id}
+                name="radioAnswer"
+                value={value}
+                onChange={() => handleRadioChange(value)}
+              />
+              <label
+                style={{ marginLeft: "10px", color: "black" }}
+                htmlFor={opt.id}
+              >
+                {opt.label}
+              </label>
+            </div>
+          );
+        })}
+      </div>
+    </>
+  );
+};
+
+export default MultipleChoiceFormat;
