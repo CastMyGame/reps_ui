@@ -28,6 +28,7 @@ const ViolationPage: React.FC<ViolationProps> = ({ assignment }) => {
   const [mapIndex, setMapIndex] = useState(0);
   const [template, setTemplate] = useState<AssignmentTemplate | null>(null);
   const [showRetry, setShowRetry] = useState(false);
+  const [showSubmitModal, setShowSubmitModal] = useState(false);
 
   useEffect(() => {
     if (assignment?.mapIndex !== undefined) {
@@ -177,38 +178,26 @@ const ViolationPage: React.FC<ViolationProps> = ({ assignment }) => {
     const payload = {
       studentEmail: loggedInUser,
       infractionName: formattedInfraction,
-      studentAnswer: studentAnswers,
+      studentAnswer: studentAnswers, // now List<{ question, answer }>
+      // no timeClosed from frontend
     };
 
-    if (assignment && isOfficeReferral(assignment)) {
-      const url = `${baseUrl}/officeReferral/v1/submit/${assignment.officeReferralId}`;
+    const url =
+      assignment && isOfficeReferral(assignment)
+        ? `${baseUrl}/officeReferral/v1/submit/${assignment.officeReferralId}`
+        : `${baseUrl}/punish/v1/punishId/close`;
 
-      axios
-        .post(url, payload, { headers })
-        .then(() => {
-          window.alert(
-            `You Work Has been Recorded for ${payload.studentEmail}`
-          );
-          window.location.href = "/dashboard/student";
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-    } else {
-      const url = `${baseUrl}/punish/v1/punishId/close`;
-
-      axios
-        .post(url, payload, { headers })
-        .then(() => {
-          window.alert(
-            `You Work Has been Recorded for ${payload.studentEmail}`
-          );
-          window.location.href = "/dashboard/student";
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-    }
+    axios
+      .post(url, payload, { headers })
+      .then(() => {
+        setShowSubmitModal(true);
+      })
+      .catch((error) => {
+        console.error("Submission failed:", error);
+        window.alert(
+          "There was an error submitting your assignment. Please try again or contact your teacher."
+        );
+      });
   };
 
   return (
@@ -295,6 +284,48 @@ const ViolationPage: React.FC<ViolationProps> = ({ assignment }) => {
                 )}
             </div>
           </form>
+          {showSubmitModal && (
+            <div
+              className="modal-backdrop"
+              onClick={() => (window.location.href = "/dashboard/student")}
+              style={{
+                position: "fixed",
+                top: 0,
+                left: 0,
+                width: "100vw",
+                height: "100vh",
+                background: "rgba(0, 0, 0, 0.5)",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                zIndex: 9999,
+              }}
+            >
+              <div
+                className="modal-content"
+                onClick={(e) => e.stopPropagation()} // prevent outside click from closing instantly
+                style={{
+                  background: "white",
+                  padding: "30px",
+                  borderRadius: "10px",
+                  maxWidth: "400px",
+                  textAlign: "center",
+                }}
+              >
+                <h2>Assignment Submitted</h2>
+                <p>Your work has been recorded successfully.</p>
+                <button
+                  onClick={() => (window.location.href = "/dashboard/student")}
+                  style={{
+                    marginTop: "20px",
+                    padding: "10px 20px",
+                  }}
+                >
+                  OK
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
