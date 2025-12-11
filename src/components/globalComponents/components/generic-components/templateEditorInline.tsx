@@ -17,7 +17,7 @@ interface TemplateEditorInlineProps {
   onCreated: (templateId: string) => void;
   onCancel: () => void;
 
-  // NEW (optional – can be wired up later)
+  // optional – can be wired up later
   infractionOptions?: string[];
   levelOptions?: number[];
 }
@@ -76,9 +76,13 @@ export const TemplateEditorInline: React.FC<TemplateEditorInlineProps> = ({
     makeEmptyQuestion(1),
   ]);
 
+  const [templateName, setTemplateName] = useState("");
+
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+  // ---------- question handlers ----------
 
   const handleQuestionChange = (
     index: number,
@@ -106,6 +110,7 @@ export const TemplateEditorInline: React.FC<TemplateEditorInlineProps> = ({
         if (!q.selectionMode) q.selectionMode = "SINGLE";
         if (!q.gradingMode) q.gradingMode = "ALL_CORRECT";
       } else {
+        // open-ended: no options / grading
         q.options = null;
         q.selectionMode = null;
         q.gradingMode = null;
@@ -195,6 +200,8 @@ export const TemplateEditorInline: React.FC<TemplateEditorInlineProps> = ({
     });
   };
 
+  // ---------- submit ----------
+
   const handleSubmit = async () => {
     setError(null);
     setSuccessMessage(null);
@@ -204,42 +211,74 @@ export const TemplateEditorInline: React.FC<TemplateEditorInlineProps> = ({
       return;
     }
 
-    const cleanedQuestions: TemplateQuestion[] = questions.map((q, idx) => ({
-      ...q,
-      id: `q${idx + 1}`,
-      order: idx + 1,
-      prompt: q.prompt?.trim() || "",
-      title: q.title?.trim() || "",
-      passageBody: q.passageBody?.trim() || "",
-      passageReferences:
-        q.passageReferences && q.passageReferences.length > 0
-          ? q.passageReferences
-          : [],
-      options:
-        q.options && q.options.length > 0
-          ? q.options.map((o, i) => ({
-              id: o.id || String(i + 1),
-              label: o.label || "",
-              correct: !!o.correct,
-            }))
-          : q.options,
-      retry: q.retry
-        ? {
-            ...q.retry,
-            textToCopy: q.retry.textToCopy || "",
-          }
-        : null,
-    }));
+    if (!templateName.trim()) {
+      setError("Template name is required.");
+      return;
+    }
+
+    if (!questions.length) {
+      setError("You must add at least one question.");
+      return;
+    }
+
+    const cleanedQuestions: TemplateQuestion[] = questions.map(
+      (q, idx): TemplateQuestion => {
+        const prompt: string = (q.prompt ?? "").trim();
+        const title: string = (q.title ?? "").trim();
+        const passageBody: string = (q.passageBody ?? "").trim();
+
+        const passageReferences: string[] =
+          q.passageReferences && q.passageReferences.length > 0
+            ? q.passageReferences
+            : [];
+
+        const options =
+          q.options && q.options.length > 0
+            ? q.options.map((o, i) => ({
+                id: o.id || String(i + 1),
+                label: o.label || "",
+                correct: !!o.correct,
+              }))
+            : null;
+
+        const retry: RetryConfig = {
+          enabled: q.retry?.enabled ?? false,
+          mode: q.retry?.mode ?? "TEXT",
+          textToCopy: (q.retry?.textToCopy ?? "").trim(),
+          requiredAccuracyPercent: q.retry?.requiredAccuracyPercent ?? null,
+        };
+
+        return {
+          ...q,
+          id: `q${idx + 1}`,
+          order: idx + 1,
+          prompt,
+          title,
+          passageBody,
+          passageReferences,
+          options,
+          retry,
+        };
+      }
+    );
 
     const payload: AssignmentTemplateCreatePayload = {
+      // 🔹 human-friendly label
+      name: templateName.trim(),
+
       infractionName: infractionName.trim(),
       level: Number(level) || 1,
+
+      // 🔹 this is a teacher-created template
       createdBySystem: false,
-      createdByUserId: teacherEmail || null,
-      schoolId: null, // can fill later if you pass it in
+      createdByUserId: teacherEmail,
+      schoolId: null, // later: pass real schoolId
+
+      // 🔹 scope & visibility: teacher default + private
       scope: "TEACHER_DEFAULT",
       active: true,
       visibility: "PRIVATE",
+
       questions: cleanedQuestions,
     };
 
@@ -254,6 +293,8 @@ export const TemplateEditorInline: React.FC<TemplateEditorInlineProps> = ({
       setSaving(false);
     }
   };
+
+  // ---------- render ----------
 
   return (
     <div
@@ -278,6 +319,28 @@ export const TemplateEditorInline: React.FC<TemplateEditorInlineProps> = ({
       )}
 
       {/* Top-level fields */}
+      <div className="form-group">
+        <label
+          htmlFor="template-name"
+          style={{
+            display: "block",
+            fontWeight: 600,
+            marginBottom: 4,
+            color: "#000",
+          }}
+        >
+          Template Name
+        </label>
+        <input
+          id="template-name"
+          type="text"
+          className="form-control"
+          value={templateName}
+          onChange={(e) => setTemplateName(e.target.value)}
+          placeholder="e.g. Tardy L1 – Reading + Reflection"
+        />
+      </div>
+
       <div className="form-group">
         <label
           htmlFor="template-infraction-name"
@@ -416,7 +479,7 @@ export const TemplateEditorInline: React.FC<TemplateEditorInlineProps> = ({
               />
             </div>
 
-            {/* For reading questions, allow passage body */}
+            {/* Reading passage */}
             {q.type === "READING_MC" && (
               <div className="form-group">
                 <label
@@ -440,7 +503,7 @@ export const TemplateEditorInline: React.FC<TemplateEditorInlineProps> = ({
               </div>
             )}
 
-            {/* For MC or radio, show options */}
+            {/* Options */}
             {(q.type === "READING_MC" || q.type === "EXPLORATORY_RADIO") && (
               <div className="form-group">
                 <label
@@ -470,13 +533,9 @@ export const TemplateEditorInline: React.FC<TemplateEditorInlineProps> = ({
                       value={opt.label}
                       placeholder={`Option ${optIndex + 1}`}
                       onChange={(e) =>
-                        handleOptionChange(
-                          optIndex === null ? 0 : index,
-                          optIndex,
-                          {
-                            label: e.target.value,
-                          }
-                        )
+                        handleOptionChange(index, optIndex, {
+                          label: e.target.value,
+                        })
                       }
                     />
                     <label
@@ -496,13 +555,7 @@ export const TemplateEditorInline: React.FC<TemplateEditorInlineProps> = ({
                             correct: e.target.checked,
                           })
                         }
-                        style={{
-                          marginRight: "4px",
-                          display: "block",
-                          fontWeight: 600,
-                          marginBottom: 4,
-                          color: "#000",
-                        }}
+                        style={{ marginRight: "4px" }}
                       />
                       Correct
                     </label>
@@ -510,13 +563,6 @@ export const TemplateEditorInline: React.FC<TemplateEditorInlineProps> = ({
                       type="button"
                       className="btn btn-xs btn-default"
                       onClick={() => handleRemoveOption(index, optIndex)}
-                      style={{
-                        marginRight: "4px",
-                        display: "block",
-                        fontWeight: 600,
-                        marginBottom: 4,
-                        color: "#000",
-                      }}
                     >
                       X
                     </button>

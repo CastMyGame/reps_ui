@@ -1,92 +1,49 @@
+// src/utils/api/assignmentApi.ts
+import { api } from "./http";
 import {
   AssignmentTemplate,
   AssignmentTemplateBinding,
   AssignmentTemplateCreatePayload,
   AssignmentTemplateSearchParams,
   AssignmentTemplateSummaryDTO,
+  SetTeacherDefaultBindingRequest,
 } from "src/types/assignments";
 
-const BASE_URL = process.env.REACT_APP_API_BASE_URL ?? "http://localhost:8080";
-
-async function apiGet<T>(url: string): Promise<T> {
-  const res = await fetch(`${BASE_URL}${url}`, {
-    credentials: "include",
-  });
-  if (!res.ok) throw new Error(`GET ${url} failed: ${res.status}`);
-  return res.json();
+async function apiGet<T>(url: string, params?: any): Promise<T> {
+  const { data } = await api.get<T>(url, { params });
+  return data;
 }
 
-async function apiPost<T>(url: string, body: any): Promise<T> {
-  const res = await fetch(`${BASE_URL}${url}`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    credentials: "include",
-    body: JSON.stringify(body),
-  });
-  if (!res.ok) throw new Error(`POST ${url} failed: ${res.status}`);
-  return res.json();
+async function apiPost<T>(url: string, body?: any): Promise<T> {
+  const { data } = await api.post<T>(url, body);
+  return data;
 }
 
-async function apiDelete(url: string, body?: any): Promise<void> {
-  const res = await fetch(`${BASE_URL}${url}`, {
-    method: "DELETE",
-    headers: body ? { "Content-Type": "application/json" } : undefined,
-    credentials: "include",
-    body: body ? JSON.stringify(body) : undefined,
-  });
-  if (!res.ok && res.status !== 204) {
-    throw new Error(`DELETE ${url} failed: ${res.status}`);
-  }
+async function apiDelete<T = void>(url: string, body?: any): Promise<T> {
+  const { data } = await api.delete<T>(url, { data: body });
+  return data;
 }
+
+// ---- bindings ----
 
 export function getTeacherBindings(
   teacherEmail: string
 ): Promise<AssignmentTemplateBinding[]> {
   return apiGet<AssignmentTemplateBinding[]>(
-    `/assignments/v1/bindings/teacher-default?teacherEmail=${encodeURIComponent(
-      teacherEmail
-    )}`
+    "/assignments/v1/bindings/teacher-default",
+    { teacherEmail }
   );
 }
 
-export async function searchAssignmentTemplates(
-  params: AssignmentTemplateSearchParams
-): Promise<AssignmentTemplateSummaryDTO[]> {
-  const query = new URLSearchParams();
-
-  if (params.infractionName) {
-    query.append("infractionName", params.infractionName);
-  }
-  if (typeof params.level === "number") {
-    query.append("level", String(params.level));
-  }
-  if (params.creatorEmail) {
-    query.append("creatorEmail", params.creatorEmail);
-  }
-  if (typeof params.createdBySystem === "boolean") {
-    query.append("createdBySystem", String(params.createdBySystem)); // "true" / "false"
-  }
-  if (params.q) {
-    query.append("q", params.q);
-  }
-
-  const qs = query.toString();
-  const path = `/assignments/v1/templates/search${qs ? `?${qs}` : ""}`;
-
-  // ✅ use the same helper as all other endpoints
-  return apiGet<AssignmentTemplateSummaryDTO[]>(path);
-}
-
-export function setTeacherDefaultBinding(payload: {
-  teacherEmail: string;
-  schoolId?: string;
-  infractionName: string;
-  level: number;
-  assignmentTemplateId: string;
-}): Promise<AssignmentTemplateBinding> {
+export function setTeacherDefaultBinding(
+  payload: SetTeacherDefaultBindingRequest
+): Promise<AssignmentTemplateBinding> {
   return apiPost<AssignmentTemplateBinding>(
     "/assignments/v1/bindings/teacher-default",
-    payload
+    {
+      ...payload,
+      schoolId: payload.schoolId ?? null,
+    }
   );
 }
 
@@ -95,7 +52,24 @@ export function clearTeacherDefaultBinding(payload: {
   infractionName: string;
   level: number;
 }): Promise<void> {
-  return apiDelete("/assignments/v1/bindings/teacher-default", payload);
+  return apiDelete<void>("/assignments/v1/bindings/teacher-default", payload);
+}
+
+// ---- templates ----
+
+export function searchAssignmentTemplates(
+  params: AssignmentTemplateSearchParams
+): Promise<AssignmentTemplateSummaryDTO[]> {
+  return apiGet<AssignmentTemplateSummaryDTO[]>(
+    "/assignments/v1/templates/search",
+    {
+      infractionName: params.infractionName,
+      level: params.level,
+      creatorEmail: params.creatorEmail,
+      createdBySystem: params.createdBySystem,
+      q: params.q,
+    }
+  );
 }
 
 export function createAssignmentTemplate(

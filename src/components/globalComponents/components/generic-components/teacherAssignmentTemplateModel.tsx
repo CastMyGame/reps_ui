@@ -12,7 +12,16 @@ import { TemplateEditorInline } from "./templateEditorInline";
 
 // TODO: replace this with your real auth mechanism
 const getCurrentTeacherEmail = () => {
-  return sessionStorage.getItem("userEmail") || "";
+  return sessionStorage.getItem("email") || "";
+};
+
+type TemplateRow = {
+  key: string;
+  infractionName: string;
+  level: number;
+  currentTemplateId: string | null;
+  currentTemplateName: string;
+  isCustom: boolean; // true if teacher has overridden
 };
 
 export const TeacherAssignmentTemplatesPanel: React.FC = () => {
@@ -34,15 +43,53 @@ export const TeacherAssignmentTemplatesPanel: React.FC = () => {
 
   const [error, setError] = useState<string | null>(null);
 
-  const [showEditor, setShowEditor] = useState(false);
-  const [lastCreatedTemplateId, setLastCreatedTemplateId] = useState<
-    string | null
-  >(null);
   const [systemTemplates, setSystemTemplates] = useState<
     AssignmentTemplateSummaryDTO[]
   >([]);
   const [loadingSystemTemplates, setLoadingSystemTemplates] = useState(false);
 
+  const [teacherTemplates, setTeacherTemplates] = useState<
+    AssignmentTemplateSummaryDTO[]
+  >([]);
+  const [loadingTeacherTemplates, setLoadingTeacherTemplates] = useState(false);
+
+  const [showEditor, setShowEditor] = useState(false);
+  const [lastCreatedTemplateId, setLastCreatedTemplateId] = useState<
+    string | null
+  >(null);
+
+  // ---- load teacher bindings ----
+  useEffect(() => {
+    if (!teacherEmail) return;
+    setLoadingBindings(true);
+    getTeacherBindings(teacherEmail)
+      .then(setBindings)
+      .catch((e: any) => setError(e.message))
+      .finally(() => setLoadingBindings(false));
+  }, [teacherEmail]);
+
+  // ---- load system templates (REPS defaults) ----
+  useEffect(() => {
+    setLoadingSystemTemplates(true);
+    searchAssignmentTemplates({ createdBySystem: true })
+      .then(setSystemTemplates)
+      .catch((e: any) => setError(e.message))
+      .finally(() => setLoadingSystemTemplates(false));
+  }, []);
+
+  // ---- load templates created by this teacher ----
+  useEffect(() => {
+    if (!teacherEmail) return;
+    setLoadingTeacherTemplates(true);
+    searchAssignmentTemplates({
+      creatorEmail: teacherEmail,
+    })
+      .then(setTeacherTemplates)
+      .catch((e: any) => setError(e.message))
+      .finally(() => setLoadingTeacherTemplates(false));
+  }, [teacherEmail]);
+
+  // ---- dropdown options for the editor ----
   const systemInfractionOptions = useMemo(() => {
     const set = new Set<string>();
     systemTemplates.forEach((t) => {
@@ -59,42 +106,82 @@ export const TeacherAssignmentTemplatesPanel: React.FC = () => {
     return Array.from(set).sort((a, b) => a - b);
   }, [systemTemplates]);
 
-  useEffect(() => {
-    if (!teacherEmail) return;
-    setLoadingBindings(true);
-    getTeacherBindings(teacherEmail)
-      .then(setBindings)
-      .catch((e: any) => setError(e.message))
-      .finally(() => setLoadingBindings(false));
-  }, [teacherEmail]);
+  // ---- build rows: REPS defaults + teacher bindings ----
+  const rows: TemplateRow[] = useMemo(() => {
+    const keySet = new Set<string>();
 
-  const rows = useMemo(() => {
-    const keyMap = new Map<string, AssignmentTemplateBinding>();
+    // All infraction/levels where REPS has a default template
+    systemTemplates.forEach((t) => {
+      keySet.add(`${t.infractionName}::${t.level}`);
+    });
+
+    // Map all templates by ID (system + teacher)
+    const allTemplatesById = new Map<string, AssignmentTemplateSummaryDTO>();
+    [...systemTemplates, ...teacherTemplates].forEach((t) => {
+      allTemplatesById.set(t.id, t);
+    });
+
+    // Map bindings by (infractionName::level)
+    const bindingsByKey = new Map<string, AssignmentTemplateBinding>();
     bindings.forEach((b) => {
       const key = `${b.infractionName}::${b.level}`;
-      if (!keyMap.has(key)) {
-        keyMap.set(key, b);
-      }
+      bindingsByKey.set(key, b);
     });
-    return Array.from(keyMap.values()).sort((a, b) => {
+
+    const result: TemplateRow[] = [];
+
+    keySet.forEach((key) => {
+      const [infractionName, levelStr] = key.split("::");
+      const level = parseInt(levelStr, 10);
+
+      const binding = bindingsByKey.get(key);
+
+      let currentTemplateId: string | null = null;
+      let currentTemplateName = "No template configured";
+      let isCustom = false;
+
+      if (binding) {
+        // Teacher has chosen a specific template
+        currentTemplateId = binding.assignmentTemplateId;
+        const tmpl = allTemplatesById.get(binding.assignmentTemplateId);
+
+        currentTemplateName =
+          tmpl?.name || `Template ${binding.assignmentTemplateId.slice(0, 8)}…`;
+        isCustom = !!tmpl && !tmpl.createdBySystem;
+      } else {
+        // No teacher override: fallback to REPS system default, if present
+        const systemDefault = systemTemplates.find(
+          (t) => t.infractionName === infractionName && t.level === level
+        );
+
+        if (systemDefault) {
+          currentTemplateId = systemDefault.id;
+          currentTemplateName =
+            systemDefault.name || `REPS default (${infractionName} L${level})`;
+          isCustom = false;
+        }
+      }
+
+      result.push({
+        key,
+        infractionName,
+        level,
+        currentTemplateId,
+        currentTemplateName,
+        isCustom,
+      });
+    });
+
+    // Sort by infraction name then level
+    return result.sort((a, b) => {
       if (a.infractionName === b.infractionName) {
         return a.level - b.level;
       }
       return a.infractionName.localeCompare(b.infractionName);
     });
-  }, [bindings]);
+  }, [bindings, systemTemplates, teacherTemplates]);
 
-  useEffect(() => {
-    setLoadingSystemTemplates(true);
-
-    searchAssignmentTemplates({ createdBySystem: true })
-      .then((results) => {
-        setSystemTemplates(results);
-      })
-      .catch((e: any) => setError(e.message))
-      .finally(() => setLoadingSystemTemplates(false));
-  }, []);
-
+  // ---- dialog handlers ----
   const openSearchDialog = (infractionName: string, level: number) => {
     setSelectedInfraction(infractionName);
     setSelectedLevel(level);
@@ -111,7 +198,6 @@ export const TeacherAssignmentTemplatesPanel: React.FC = () => {
         infractionName: selectedInfraction,
         level: selectedLevel,
         q: searchQuery || undefined,
-        createdBySystem: true,
       });
       setSearchResults(results);
     } catch (e: any) {
@@ -124,14 +210,41 @@ export const TeacherAssignmentTemplatesPanel: React.FC = () => {
   const handleSelectTemplate = async (
     template: AssignmentTemplateSummaryDTO
   ) => {
-    if (!teacherEmail || !selectedInfraction || selectedLevel == null) return;
+    console.log("Use this template clicked", {
+      teacherEmail,
+      selectedInfraction,
+      selectedLevel,
+      templateId: template.id,
+    });
+
+    if (!teacherEmail) {
+      console.error("No teacherEmail in sessionStorage");
+      setError(
+        "Cannot save default template: no teacher email found in session. Make sure userEmail is stored on login."
+      );
+      return;
+    }
+    if (!selectedInfraction || selectedLevel == null) {
+      console.error("Missing infraction/level when selecting template", {
+        selectedInfraction,
+        selectedLevel,
+      });
+      setError(
+        "Cannot save default template: infraction or level is not selected."
+      );
+      return;
+    }
+
     try {
       const updatedBinding = await setTeacherDefaultBinding({
         teacherEmail,
         infractionName: selectedInfraction,
         level: selectedLevel,
         assignmentTemplateId: template.id,
+        // schoolId is added in the API helper
       });
+
+      console.log("Binding saved:", updatedBinding);
 
       setBindings((prev) => {
         const filtered = prev.filter(
@@ -145,9 +258,16 @@ export const TeacherAssignmentTemplatesPanel: React.FC = () => {
         return [...filtered, updatedBinding];
       });
 
+      // Make sure this template is known so its name resolves
+      setTeacherTemplates((prev) => {
+        if (prev.some((t) => t.id === template.id)) return prev;
+        return [...prev, template];
+      });
+
       setSearchDialogOpen(false);
     } catch (e: any) {
-      setError(e.message);
+      console.error("Error in handleSelectTemplate:", e);
+      setError(e.message || "Failed to set default template.");
     }
   };
 
@@ -157,6 +277,7 @@ export const TeacherAssignmentTemplatesPanel: React.FC = () => {
     // Teacher can now use the search modal to bind this template
   };
 
+  // ---- render ----
   return (
     <div
       className="teacher-assignment-templates-panel"
@@ -214,25 +335,30 @@ export const TeacherAssignmentTemplatesPanel: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {loadingBindings && (
+            {(loadingBindings ||
+              loadingSystemTemplates ||
+              loadingTeacherTemplates) && (
               <tr>
                 <td colSpan={4}>Loading...</td>
               </tr>
             )}
 
-            {!loadingBindings && rows.length === 0 && (
-              <tr>
-                <td colSpan={4}>
-                  No defaults set yet. Once you choose templates, they will
-                  appear here.
-                </td>
-              </tr>
-            )}
+            {!loadingBindings &&
+              !loadingSystemTemplates &&
+              !loadingTeacherTemplates &&
+              rows.length === 0 && (
+                <tr>
+                  <td colSpan={4}>
+                    No templates found yet. Once REPS or your school defines
+                    defaults, they'll appear here.
+                  </td>
+                </tr>
+              )}
 
-            {rows.map((b) => (
-              <tr key={b.id}>
-                <td>{b.infractionName}</td>
-                <td>{b.level}</td>
+            {rows.map((row) => (
+              <tr key={row.key}>
+                <td>{row.infractionName}</td>
+                <td>{row.level}</td>
                 <td>
                   <span
                     style={{
@@ -243,14 +369,19 @@ export const TeacherAssignmentTemplatesPanel: React.FC = () => {
                       fontSize: "12px",
                     }}
                   >
-                    {b.assignmentTemplateId}
+                    {row.currentTemplateName}{" "}
+                    <span style={{ color: "#888" }}>
+                      {row.isCustom ? "(Custom)" : "(REPS default)"}
+                    </span>
                   </span>
                 </td>
                 <td style={{ textAlign: "right" }}>
                   <button
                     type="button"
                     className="btn btn-sm btn-primary"
-                    onClick={() => openSearchDialog(b.infractionName, b.level)}
+                    onClick={() =>
+                      openSearchDialog(row.infractionName, row.level)
+                    }
                     style={{ marginRight: "8px" }}
                   >
                     Change Template
@@ -258,7 +389,9 @@ export const TeacherAssignmentTemplatesPanel: React.FC = () => {
                   <button
                     type="button"
                     className="btn btn-sm btn-default"
-                    onClick={() => openSearchDialog(b.infractionName, b.level)}
+                    onClick={() =>
+                      openSearchDialog(row.infractionName, row.level)
+                    }
                   >
                     Search Templates
                   </button>
@@ -352,14 +485,14 @@ export const TeacherAssignmentTemplatesPanel: React.FC = () => {
                 >
                   <div>
                     <div style={{ fontWeight: 600 }}>
-                      {t.infractionName} (Level {t.level})
+                      {t.name || `${t.infractionName} (Level ${t.level})`}
                     </div>
                     <div style={{ fontSize: "13px", color: "#555" }}>
                       {t.firstQuestionPreview || "No preview available"}
                     </div>
                     <div style={{ fontSize: "12px", color: "#888" }}>
                       {t.createdBySystem
-                        ? "System template"
+                        ? "REPS default template"
                         : `Created by ${t.createdByUserId ?? "Unknown"}`}
                     </div>
                   </div>

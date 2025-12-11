@@ -7,7 +7,11 @@ export type RadioAnswers = {
 
 export interface Question {
   question: string;
-  type: "reading" | "retryQuestion" | "exploratory-open-ended" | "exploratory-radio";
+  type:
+    | "reading"
+    | "retryQuestion"
+    | "exploratory-open-ended"
+    | "exploratory-radio";
   title: string;
   body: string;
   references: string[];
@@ -23,7 +27,10 @@ export interface AssignmentPayload {
 
 // ------------------ v2 Template Types ------------------
 
-export type QuestionType = "READING_MC" | "EXPLORATORY_OPEN" | "EXPLORATORY_RADIO";
+export type QuestionType =
+  | "READING_MC"
+  | "EXPLORATORY_OPEN"
+  | "EXPLORATORY_RADIO";
 export type SelectionMode = "SINGLE" | "MULTIPLE";
 export type GradingMode = "ALL_CORRECT" | "ANY_CORRECT";
 export type RetryMode = "TEXT";
@@ -31,7 +38,7 @@ export type RetryMode = "TEXT";
 export interface RetryConfig {
   enabled: boolean;
   mode: RetryMode;
-  textToCopy: string | null;
+  textToCopy: string;
   requiredAccuracyPercent: number | null;
 }
 
@@ -47,17 +54,17 @@ export interface TemplateQuestion {
   type: QuestionType;
   required: boolean;
 
-  prompt: string | null;
-  title: string | null;
+  prompt: string;
+  title: string;
 
-  passageBody: string | null;
-  passageReferences: string[] | null;
+  passageBody: string;
+  passageReferences: string[];
 
   options: AnswerOption[] | null;
   selectionMode: SelectionMode | null;
   gradingMode: GradingMode | null;
 
-  retry: RetryConfig | null;
+  retry: RetryConfig;
 
   minLength: number | null;
   maxLength: number | null;
@@ -69,13 +76,14 @@ export type Visibility = "PRIVATE" | "SCHOOL";
 
 export interface AssignmentTemplate {
   // ✅ optional on frontend – created by Mongo/Java
-  id?: string;
+  id: string;
+  name: string;
 
   infractionName: string;
   level: number;
 
   createdBySystem: boolean;
-  createdByUserId: string | null;
+  createdByUserId: string;
   schoolId: string | null;
 
   scope: Scope;
@@ -83,14 +91,15 @@ export interface AssignmentTemplate {
   visibility: Visibility;
 
   // ✅ optional – set by backend
-  createdAt?: string;
-  updatedAt?: string;
+  createdAt: number;
+  updatedAt: number;
 
   questions: TemplateQuestion[];
 }
 
 export interface AssignmentTemplateSummaryDTO {
   id: string;
+  name: string;
   infractionName: string;
   level: number;
   createdBySystem: boolean;
@@ -136,3 +145,13 @@ export interface AssignmentTemplateSearchParams {
   createdBySystem?: boolean;
   q?: string;
 }
+
+export interface SetTeacherDefaultBindingRequest {
+  teacherEmail: string;
+  infractionName: string;
+  level: number;
+  assignmentTemplateId: string;
+  schoolId?: string | null; // optional for now
+}
+
+export type StudentAnswerPayload = { question: string; answer: string };
