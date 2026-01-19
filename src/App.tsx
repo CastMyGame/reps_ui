@@ -1,7 +1,7 @@
 import "./App.css";
 import ViolationPage from "./forms/ViolationPage";
 import FailureToComplete from "./forms/FailureToComplete";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import Register from "./security/Register";
 import StudentDashboard from "./components/roles/student/DashboardStudent ";
 import AdminDashboard from "./components/roles/admin/adminDashboard";
@@ -18,6 +18,8 @@ import GuidanceDashboard from "./components/roles/guidance/guidance-dashboard";
 import LandingPage from "./components/globalComponents/updatedLanding/landing";
 import AuthRoute from "./utils/api/api";
 import PrivatePolicyPage from "./components/globalComponents/updatedLanding/privacy-policy";
+import CheckoutCancel from "./security/checkoutCancel";
+import CheckoutSuccess from "./security/checkoutSuccess";
 
 function App() {
   const [isLoggedOut, setIsLoggedOut] = useState(false);
@@ -28,6 +30,8 @@ function App() {
         <div>
           <Routes>
             <Route path="/sign-up" element={<Register />} />
+            <Route path="/checkout/success" element={<CheckoutSuccess />} />
+            <Route path="/checkout/cancel" element={<CheckoutCancel />} />
             <Route path="/privacy-policy" element={<PrivatePolicyPage />} />
             <Route path="/student-login" element={<SinglePageSignIn />} />
             <Route path="/login" element={<LandingPage />} />
@@ -68,12 +72,21 @@ function App() {
             />
             <Route
               path="/dashboard/teacher"
-              element={<AuthRoute allowedRoles={["TEACHER"]} userRole={"TEACHER"}><TeacherDashboard /></AuthRoute>}
+              element={
+                <AuthRoute allowedRoles={["TEACHER"]} userRole={"TEACHER"}>
+                  <TeacherDashboard />
+                </AuthRoute>
+              }
             />
             <Route path="/forms/ftc-closure" element={<FailureToComplete />} />
             <Route
               path="/admin/archived"
-              element={<GlobalArchivedPunishmentPanel filter="PENDING" roleType="admin"/>}
+              element={
+                <GlobalArchivedPunishmentPanel
+                  filter="PENDING"
+                  roleType="admin"
+                />
+              }
             />
 
             <Route

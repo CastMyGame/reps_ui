@@ -1,14 +1,26 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { useIdleTimer } from 'react-idle-timer';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { baseUrl } from 'src/utils/jsonData';
 
 export default function IdleComponent() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [showNotification, setShowNotification] = useState(false);
 
   // Correct type for notificationIntervalRef
   const notificationIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const isPublicRoute =
+    location.pathname === "/" ||
+    location.pathname === "/login" ||
+    location.pathname === "/register" ||
+    location.pathname === "/sign-up" ||
+    location.pathname.startsWith("/reset-password") ||
+    location.pathname === "/forgot-password" ||
+    location.pathname === "/privacy-policy" ||
+    location.pathname.startsWith("/checkout/") ||
+    location.pathname === "/student-login";
 
   const onIdle = () => {
     sessionStorage.clear();
@@ -18,7 +30,11 @@ export default function IdleComponent() {
   useIdleTimer({
     crossTab: true,
     timeout: 10 * 60 * 1000, // 10 minutes
-    onIdle: onIdle,
+    onIdle: () => {
+      const token = sessionStorage.getItem("Authorization");
+      if (!token) return; // not logged in -> ignore
+      onIdle();
+    },
   });
 
   const refreshToken = async () => {
@@ -56,8 +72,10 @@ export default function IdleComponent() {
   };
 
   const checkTokenExpiration = () => {
+    if (isPublicRoute) return;
+
     const token = sessionStorage.getItem("Authorization");
-    if (!token) return onIdle(); // No token? Force logout.
+    if (!token) return; 
   
     try {
       const payload = JSON.parse(atob(token.split(".")[1])); // Decode JWT
@@ -74,7 +92,7 @@ export default function IdleComponent() {
   useEffect(() => {
     const interval = setInterval(checkTokenExpiration, 60000); // Check every 60 sec
     return () => clearInterval(interval); // Cleanup on unmount
-  }, []);
+  }, [isPublicRoute]);
 
   const startNotificationInterval = () => {
     notificationIntervalRef.current = setInterval(() => {
@@ -83,24 +101,19 @@ export default function IdleComponent() {
   };
 
   useEffect(() => {
-    startNotificationInterval();
+    // ✅ notifications only matter when logged in, and not on public routes
+    if (isPublicRoute) return;
+
+    notificationIntervalRef.current = setInterval(() => {
+      setShowNotification(true);
+    }, (5 * 60 - 1) * 1000);
 
     return () => {
-      if (notificationIntervalRef.current) {
-        clearInterval(notificationIntervalRef.current);
-      }
+      if (notificationIntervalRef.current) clearInterval(notificationIntervalRef.current);
     };
-  }, []);
+  }, [isPublicRoute]);
 
   return (
-    <div>
-      {/* {showNotification && (
-        <div>
-          Your session will expire in 1 minute. Do you want to keep it?
-          <button onClick={handleKeepSession}>Keep Session</button>
-        </div>
-      )} */}
-      {/* You can add more content or styling as needed */}
-    </div>
+    <div  />
   );
 }
