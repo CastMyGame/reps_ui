@@ -46,33 +46,121 @@ export default function Register() {
   const [checkoutLoading, setCheckoutLoading] = useState(false);
   const [checkoutError, setCheckoutError] = useState("");
 
+  const [city, setCity] = useState("");
+  const [state, setState] = useState("");
+  const [zip, setZip] = useState("");
+
+  const zipDigits = zip.replace(/\D/g, "");
+
+  const [zipLookupLoading, setZipLookupLoading] = useState(false);
+  const [zipLookupError, setZipLookupError] = useState("");
+
+  const lookupZip = async (zip5: string) => {
+    // Using Zippopotam.us (no key). Example: https://api.zippopotam.us/us/29455
+    const url = `https://api.zippopotam.us/us/${zip5}`;
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(`ZIP lookup failed (${res.status})`);
+    return res.json();
+  };
+
+  useEffect(() => {
+    setSchoolQuery("");
+    setSelectedSchool(null);
+    setShowCreateSchool(false);
+    setCreateSchoolError("");
+  }, [zip]);
+
   useEffect(() => {
     const fetchSchools = async () => {
+      const zip5 = zip.replace(/\D/g, "");
+
+      // Only load when ZIP is valid AND we have city/state from lookup
+      if (zip5.length !== 5 || !city.trim() || state.trim().length !== 2) {
+        setSchools([]);
+        setSelectedSchool(null);
+        return;
+      }
+
       setSchoolsLoading(true);
       setSchoolsError("");
+
       try {
-        const res = await axios.get<School[]>(`${baseUrl}/school/v1/all`);
+        const res = await axios.get<School[]>(`${baseUrl}/school/v1/search`, {
+          params: { city: city.trim(), state: state.trim() },
+        });
+
         setSchools(Array.isArray(res.data) ? res.data : []);
-      } catch (e) {
-        console.error(e);
-        setSchools([]);
-        setSchoolsError(
-          "Failed to load schools. Please refresh and try again."
+      } catch (e: any) {
+        console.error(
+          "fetchSchools failed",
+          e?.response?.status,
+          e?.response?.data,
         );
+        setSchools([]);
+        setSchoolsError("Failed to load schools for that ZIP.");
       } finally {
         setSchoolsLoading(false);
       }
     };
 
     fetchSchools();
-  }, []);
+  }, [zip, city, state]);
+
+  useEffect(() => {
+    const zip5 = zip.replace(/\D/g, "");
+    setZipLookupError("");
+
+    if (zip5.length !== 5) {
+      // Clear location if ZIP not valid yet
+      setCity("");
+      setState("");
+      return;
+    }
+
+    let cancelled = false;
+
+    (async () => {
+      try {
+        setZipLookupLoading(true);
+        setSchools([]);
+        setSchoolsError("");
+        setSelectedSchool(null);
+
+        const data = await lookupZip(zip5);
+
+        // Zippopotam format:
+        // data.places[0]["place name"] => city
+        // data.places[0]["state abbreviation"] => state
+        const place = data?.places?.[0];
+        const cityName = place?.["place name"] || "";
+        const stateAbbr = place?.["state abbreviation"] || "";
+
+        if (!cancelled) {
+          setCity(cityName);
+          setState(stateAbbr);
+        }
+      } catch (e: any) {
+        if (!cancelled) {
+          setCity("");
+          setState("");
+          setZipLookupError("Could not find that ZIP code.");
+        }
+      } finally {
+        if (!cancelled) setZipLookupLoading(false);
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [zip]);
 
   const filteredSchools = useMemo(() => {
     const q = schoolQuery.trim().toLowerCase();
     if (!q) return schools;
 
     return schools.filter((s) =>
-      (s.schoolName || "").toLowerCase().includes(q)
+      (s.schoolName || "").toLowerCase().includes(q),
     );
   }, [schools, schoolQuery]);
 
@@ -105,7 +193,15 @@ export default function Register() {
 
     const name = newSchoolName.trim();
     const currency = newCurrencyName.trim();
+    const cityValue = city.trim();
+    const stateValue = state.trim().toUpperCase();
 
+    if (zipDigits.length !== 5)
+      return setCreateSchoolError("ZIP must be 5 digits.");
+
+    if (!cityValue) return setCreateSchoolError("City is required.");
+    if (stateValue.length !== 2)
+      return setCreateSchoolError("State must be 2 letters.");
     if (!name) return setCreateSchoolError("School name is required.");
     if (!currency) return setCreateSchoolError("Currency name is required.");
 
@@ -114,12 +210,14 @@ export default function Register() {
       const payload = {
         schoolName: name,
         currency: currency,
-        // maxPunishLevel and id are set server-side
+        city: cityValue,
+        state: stateValue,
+        zip: zipDigits,
       };
 
       const res = await axios.post<SchoolResponse>(
         `${baseUrl}/school/v1/newSchool`,
-        payload
+        payload,
       );
 
       const created = res.data?.school;
@@ -131,7 +229,7 @@ export default function Register() {
       // Add to local list if not already present, then select it
       setSchools((prev) => {
         const exists = prev.some(
-          (s) => s.schoolIdNumber === created.schoolIdNumber
+          (s) => s.schoolIdNumber === created.schoolIdNumber,
         );
         return exists ? prev : [created, ...prev];
       });
@@ -173,7 +271,7 @@ export default function Register() {
 
       const res = await axios.post<CheckoutResponse>(
         `${baseUrl}/stripe/v1/create-checkout-session`,
-        payload
+        payload,
       );
 
       if (!res.data?.url) {
@@ -199,7 +297,7 @@ export default function Register() {
       setCheckoutError(
         data?.error ||
           (typeof data === "string" ? data : null) ||
-          `Checkout failed (status ${status ?? "unknown"})`
+          `Checkout failed (status ${status ?? "unknown"})`,
       );
     } finally {
       setCheckoutLoading(false);
@@ -225,6 +323,58 @@ export default function Register() {
       >
         <h2 style={{ marginTop: 0 }}>1) Select your school</h2>
 
+        <div
+          style={{ display: "flex", gap: 12, flexWrap: "wrap", marginTop: 8 }}
+        >
+          <input
+            type="text"
+            value={zip}
+            onChange={(e) =>
+              setZip(e.target.value.replace(/\D/g, "").slice(0, 5))
+            }
+            placeholder="ZIP code (5 digits)"
+            style={{
+              flex: "0 0 180px",
+              padding: 10,
+              borderRadius: 8,
+              border: "1px solid #ccc",
+            }}
+          />
+
+          <input
+            type="text"
+            value={city}
+            readOnly
+            placeholder="City"
+            style={{
+              flex: "1 1 240px",
+              padding: 10,
+              borderRadius: 8,
+              border: "1px solid #ccc",
+              background: "#f7f7f7",
+            }}
+          />
+
+          <input
+            type="text"
+            value={state}
+            readOnly
+            placeholder="State"
+            style={{
+              flex: "0 0 90px",
+              padding: 10,
+              borderRadius: 8,
+              border: "1px solid #ccc",
+              background: "#f7f7f7",
+            }}
+          />
+        </div>
+
+        {zipLookupLoading && <p style={{ marginTop: 8 }}>Looking up ZIP…</p>}
+        {!!zipLookupError && (
+          <p style={{ marginTop: 8, color: "crimson" }}>{zipLookupError}</p>
+        )}
+
         {schoolsLoading && <p>Loading schools…</p>}
         {!!schoolsError && <p style={{ color: "crimson" }}>{schoolsError}</p>}
 
@@ -241,7 +391,12 @@ export default function Register() {
             type="text"
             value={schoolQuery}
             onChange={(e) => setSchoolQuery(e.target.value)}
-            placeholder="Search school name…"
+            placeholder={
+              zipDigits.length === 5 && !zipLookupError
+                ? "Search school name…"
+                : "Enter ZIP to search schools…"
+            }
+            disabled={zipDigits.length !== 5 || !!zipLookupError}
             style={{
               flex: "1 1 320px",
               padding: 10,
@@ -252,8 +407,25 @@ export default function Register() {
           <button
             type="button"
             onClick={() => {
+              // only allow creating once ZIP lookup succeeded
+              if (
+                zipDigits.length !== 5 ||
+                !city.trim() ||
+                state.trim().length !== 2 ||
+                zipLookupError
+              ) {
+                setCreateSchoolError(
+                  "Enter a valid 5-digit ZIP so we can locate your city/state before creating a school.",
+                );
+                setShowCreateSchool(true);
+                return;
+              }
+
               setShowCreateSchool((v) => !v);
               setCreateSchoolError("");
+              if (schoolQuery.trim() && !newSchoolName.trim()) {
+                setNewSchoolName(schoolQuery.trim());
+              }
             }}
             style={{
               padding: "10px 14px",
@@ -310,11 +482,18 @@ export default function Register() {
           </div>
         )}
 
-        {!schoolsLoading && filteredSchools.length === 0 && (
+        {zipDigits.length !== 5 ? (
           <p style={{ marginTop: 12, color: "#555" }}>
-            No schools match that search. Try creating a new one.
+            Enter a 5-digit ZIP code to load schools.
           </p>
-        )}
+        ) : !zipLookupLoading &&
+          !zipLookupError &&
+          !schoolsLoading &&
+          filteredSchools.length === 0 ? (
+          <p style={{ marginTop: 12, color: "#555" }}>
+            No schools found in {city}, {state} {zipDigits}. Try creating one.
+          </p>
+        ) : null}
 
         {/* Selected school card */}
         {selectedSchool && (

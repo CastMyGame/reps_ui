@@ -18,7 +18,7 @@ export type RoleModel = {
 export type Student = {
   firstName: string;
   lastName: string;
-  address:string;
+  address: string;
   parentEmail: string;
   studentEmail: string;
   guidanceEmail: string;
@@ -52,6 +52,9 @@ export type School = {
   schoolName: string;
   maxPunishLevel: number;
   currency: string;
+  city: string;
+  state: string;
+  zip: string;
 };
 
 // Define the props type
