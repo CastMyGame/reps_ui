@@ -15,7 +15,7 @@ type CheckoutResponse = {
 
 const PRICE_IDS = {
   monthly: "price_1SxV0BL6eaJCQwNQLWIQKkoD",
-  yearly: "price_1RtIJFPsDvvGNveTXRsEzWtJ",
+  yearly: "price_1SxajDL6eaJCQwNQYOsv0kMo",
 } as const;
 
 type Plan = keyof typeof PRICE_IDS;
