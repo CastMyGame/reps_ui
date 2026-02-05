@@ -14,7 +14,7 @@ type CheckoutResponse = {
 };
 
 const PRICE_IDS = {
-  monthly: "price_1RtIGqPsDvvGNveTKLCJPk7p",
+  monthly: "price_1SxV0BL6eaJCQwNQLWIQKkoD",
   yearly: "price_1RtIJFPsDvvGNveTXRsEzWtJ",
 } as const;
 

@@ -23,7 +23,6 @@ const TeacherOverviewPanel: React.FC<TeacherOverviewProps> = ({
   data,
   students,
 }) => {
-
   const [openModal, setOpenModal] = useState({
     display: false,
     message: "",
@@ -33,7 +32,7 @@ const TeacherOverviewPanel: React.FC<TeacherOverviewProps> = ({
     if (
       data?.punishmentResponse?.some(
         (punishment) =>
-          punishment.status === "PENDING" && punishment.infractionLevel === "3"
+          punishment.status === "PENDING" && punishment.infractionLevel === "3",
       )
     ) {
       setOpenModal({
@@ -45,9 +44,7 @@ const TeacherOverviewPanel: React.FC<TeacherOverviewProps> = ({
   }, [data]);
 
   return (
-    <div
-      className="dashboard-container"
-    >
+    <div className="dashboard-container">
       {openModal.display && (
         <div className="modal-overlay">
           <div className="modal-content">
@@ -130,7 +127,7 @@ const TeacherOverviewPanel: React.FC<TeacherOverviewProps> = ({
           <RecentIncidents
             punishmentResponse={data?.punishmentResponse || []}
             officeReferrals={data?.officeReferrals || []}
-            students={students}
+            students={students || []}
           />
         </ZoomableCard>
       </div>
