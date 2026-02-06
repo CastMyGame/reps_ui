@@ -68,12 +68,11 @@ const TeacherDashboard = () => {
           !response.teacher.classes ||
           response.teacher.classes.length === 0
         ) {
-          // No classes, set empty data and emailList
-          setData({});
+          // No classes: still set data so the overview renders empty graphs
+          setData(response);
           setEmailList([]);
           setTeacher(response.teacher);
         } else {
-          // Normal case, set data
           setData(response);
           setEmailList(response.teacher.classes);
           setTeacher(response.teacher);
@@ -95,10 +94,10 @@ const TeacherDashboard = () => {
     if (studentList.length > 0 && emailList.length > 0) {
       // Flatten the classRoster arrays into a single array of emails
       const allEmails = emailList.flatMap((classItem: ClassRoster) =>
-        classItem.classRoster.map((student: string) => student)
+        classItem.classRoster.map((student: string) => student),
       );
       const filteredStudents = studentList.filter((student: Student) =>
-        allEmails.includes(student.studentEmail)
+        allEmails.includes(student.studentEmail),
       );
       setFilteredStudentList(filteredStudents);
     }
@@ -194,7 +193,9 @@ const TeacherDashboard = () => {
         {panelName === "classUpdate" && (
           <ClassUpdate setPanelName={setPanelName} teacher={teacher} />
         )}
-        {panelName === "assignmentTemplates" && <TeacherAssignmentTemplatesPanel />}
+        {panelName === "assignmentTemplates" && (
+          <TeacherAssignmentTemplatesPanel />
+        )}
       </>
     );
   }
