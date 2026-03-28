@@ -12,7 +12,7 @@ interface NavigationLoggedInProps {
 }
 
 export const NavigationLoggedIn: React.FC<NavigationLoggedInProps> = (
-  props
+  props,
 ) => {
   const dropdownRef = useRef<HTMLDivElement | null>(null);
 
@@ -46,7 +46,7 @@ export const NavigationLoggedIn: React.FC<NavigationLoggedInProps> = (
         className="container"
         style={{
           width: "100%",
-          display: "inline-block"
+          display: "inline-block",
         }}
         ref={dropdownRef}
       >
@@ -77,14 +77,19 @@ export const NavigationLoggedIn: React.FC<NavigationLoggedInProps> = (
           <ul className="nav navbar-nav navbar-right">
             <li>
               <AccessibleDiv
-                onClick={() => dropdownHandler("overview")} className="page-scroll"
+                onClick={() => dropdownHandler("overview")}
+                className="page-scroll"
               >
                 Overview
               </AccessibleDiv>
             </li>
             <li>
               <AccessibleDiv
-                onClick={() => props.setDropdown(prev => (prev === "referral" ? "" : "referral"))}
+                onClick={() =>
+                  props.setDropdown((prev) =>
+                    prev === "referral" ? "" : "referral",
+                  )
+                }
                 className="page-scroll"
               >
                 Referrals
@@ -114,6 +119,12 @@ export const NavigationLoggedIn: React.FC<NavigationLoggedInProps> = (
                 >
                   New Office Managed Referral
                 </AccessibleDiv>
+                <AccessibleDiv
+                  onClick={() => dropdownHandler("trackedBehavior")}
+                  className="item page-scroll"
+                >
+                  New Tracked Behavior
+                </AccessibleDiv>
               </div>
             </li>
             <li>
@@ -129,7 +140,7 @@ export const NavigationLoggedIn: React.FC<NavigationLoggedInProps> = (
                 className="page-scroll"
                 onClick={() =>
                   props.setDropdown((prev) =>
-                    prev === "student" ? "" : "student"
+                    prev === "student" ? "" : "student",
                   )
                 }
               >

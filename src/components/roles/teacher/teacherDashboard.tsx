@@ -23,6 +23,7 @@ import axios from "axios";
 import { ClassRoster, Employee, Student } from "src/types/school.js";
 import { TeacherOverviewDto } from "src/types/responses.js";
 import { TeacherAssignmentTemplatesPanel } from "src/components/globalComponents/components/generic-components/teacherAssignmentTemplateModel";
+import TrackedBehaviorPanel from "src/components/globalComponents/trackedBehaviorPanel";
 
 const TeacherDashboard = () => {
   const [loggedIn, setLoggedIn] = useState(true);
@@ -190,6 +191,7 @@ const TeacherDashboard = () => {
         {panelName === "ftc" && <TeacherFTCPanel />}
         {panelName === "levelThree" && <LevelThreePanel roleType={"TEACHER"} />}
         {panelName === "spendPoints" && <SpendPage data={data} />}
+        {panelName === "trackedBehavior" && <TrackedBehaviorPanel setPanelName={setPanelName} data={data} />}
         {panelName === "classUpdate" && (
           <ClassUpdate setPanelName={setPanelName} teacher={teacher} />
         )}

@@ -16,7 +16,7 @@ import axios from "axios";
 import { baseUrl } from "src/utils/jsonData";
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
-import "ag-grid-community/styles/ag-theme-alpine.css"; // Using "alpine" for a modern theme
+import "ag-grid-community/styles/ag-theme-alpine.css";
 import {
   AdminOverviewDto,
   TeacherOverviewDto,
@@ -33,7 +33,7 @@ interface StudentPanelProps {
 
 interface StudentDisplay {
   studentEmail: string;
-  fullName?: string; // ✅ Add fullName to avoid TypeScript errors
+  fullName?: string;
   grade: number;
   teacherManagedReferrals: number;
   officeManagedReferrals: number;
@@ -48,38 +48,43 @@ const TeacherStudentPanel: React.FC<StudentPanelProps> = ({
   const [studentDisplay, setStudentDisplay] = useState(false);
   const [studentData, setStudentData] = useState<TeacherReferral[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedGrade, setSelectedGrade] = useState(""); // State for selected grade
+  const [selectedGrade, setSelectedGrade] = useState("");
   const [spotEmail, setSpotEmail] = useState("");
-  const [selectedClass, setSelectedClass] = useState(""); // Selected class name
+  const [selectedClass, setSelectedClass] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [selectedStudentName, setSelectedStudentName] = useState([]);
+  const [trackedBehaviorTotals, setTrackedBehaviorTotals] = useState<
+    Record<string, number>
+  >({});
+  const [trackedBehaviorTimeline, setTrackedBehaviorTimeline] = useState<any[]>(
+    [],
+  );
+  const [trackedBehaviorLoading, setTrackedBehaviorLoading] = useState(false);
 
-  const isAdmin = !!(data as AdminOverviewDto)?.teachers; // If 'teachers' exists, it's an admin
+  const isAdmin = !!(data as AdminOverviewDto)?.teachers;
 
   const fetchAdminStudents = async (data: AdminOverviewDto, headers: any) => {
     const url = `${baseUrl}/student/v1/allStudents`;
     try {
       const response = await axios.get(url, { headers });
 
-      // Extract referrals from the admin data
       const teacherManagedReferrals = data?.writeUpResponse ?? [];
       const officeManagedReferrals = data?.officeReferrals ?? [];
 
-      // Transform data to match StudentDisplay type
       const formattedStudents: StudentDisplay[] = response.data.map(
         (student: Student) => ({
           fullName: `${student.firstName} ${student.lastName}`,
           studentEmail: student.studentEmail,
           grade: student.grade,
           teacherManagedReferrals: teacherManagedReferrals.filter(
-            (w) => w.studentEmail === student.studentEmail
+            (w) => w.studentEmail === student.studentEmail,
           ).length,
           officeManagedReferrals: officeManagedReferrals.filter(
-            (o) => o.studentEmail === student.studentEmail
+            (o) => o.studentEmail === student.studentEmail,
           ).length,
-          className: "N/A", // Admin doesn't have class-specific data
-        })
+          className: "N/A",
+        }),
       );
 
       return formattedStudents;
@@ -89,16 +94,15 @@ const TeacherStudentPanel: React.FC<StudentPanelProps> = ({
     }
   };
 
-  // Helper function to fetch students for teacher
   const fetchTeacherStudents = async (
     data: TeacherOverviewDto,
-    headers: any
+    headers: any,
   ) => {
     try {
       const uniqueEmails = Array.from(
         new Set(
-          data.teacher?.classes?.flatMap((classItem) => classItem.classRoster)
-        )
+          data.teacher?.classes?.flatMap((classItem) => classItem.classRoster),
+        ),
       );
 
       const url = `${baseUrl}/student/v1/getByEmailList`;
@@ -108,6 +112,38 @@ const TeacherStudentPanel: React.FC<StudentPanelProps> = ({
     } catch (err) {
       console.error(err);
       throw new Error("Failed to fetch students");
+    }
+  };
+
+  const fetchTrackedBehaviorTotals = async (studentEmail: string) => {
+    try {
+      const response = await get(
+        `tracked-behaviors/v1/student/${studentEmail}/totals`,
+      );
+      if (response != null) {
+        setTrackedBehaviorTotals(response);
+      } else {
+        setTrackedBehaviorTotals({});
+      }
+    } catch (error) {
+      console.error(error);
+      setTrackedBehaviorTotals({});
+    }
+  };
+
+  const fetchTrackedBehaviorTimeline = async (studentEmail: string) => {
+    try {
+      const response = await get(
+        `tracked-behaviors/v1/student/${studentEmail}/timeline`,
+      );
+      if (response != null) {
+        setTrackedBehaviorTimeline(response);
+      } else {
+        setTrackedBehaviorTimeline([]);
+      }
+    } catch (error) {
+      console.error(error);
+      setTrackedBehaviorTimeline([]);
     }
   };
 
@@ -121,17 +157,15 @@ const TeacherStudentPanel: React.FC<StudentPanelProps> = ({
       try {
         if (data) {
           if ("teachers" in data) {
-            // Admin fetching all students
             const fetchedStudents = await fetchAdminStudents(data, headers);
             setListOfStudents(fetchedStudents);
           } else {
-            // Teacher fetching students from their class roster
             const fetchedStudents = await fetchTeacherStudents(data, headers);
             const studentsArray: StudentDisplay[] = [];
             data?.teacher?.classes?.forEach((classEntry) => {
               classEntry.classRoster.forEach((student) => {
                 const foundStudent = fetchedStudents.find(
-                  (s: Student) => s.studentEmail === student
+                  (s: Student) => s.studentEmail === student,
                 );
                 if (foundStudent) {
                   studentsArray.push({
@@ -141,12 +175,12 @@ const TeacherStudentPanel: React.FC<StudentPanelProps> = ({
                     teacherManagedReferrals: (
                       data?.writeUpResponse ?? []
                     ).filter(
-                      (w) => w.studentEmail === foundStudent.studentEmail
+                      (w) => w.studentEmail === foundStudent.studentEmail,
                     ).length,
                     officeManagedReferrals: (
                       data?.officeReferrals ?? []
                     ).filter(
-                      (o) => o.studentEmail === foundStudent.studentEmail
+                      (o) => o.studentEmail === foundStudent.studentEmail,
                     ).length,
                     className: classEntry.className,
                   });
@@ -182,21 +216,39 @@ const TeacherStudentPanel: React.FC<StudentPanelProps> = ({
     }
   }, [data?.teacher?.classes, selectedClass]);
 
-  // Fetch specific student data when clicking the student name
   const fetchStudentData = async (studentEmail: string) => {
     try {
+      setTrackedBehaviorLoading(true);
+
       const response: TeacherReferral[] = await get(
-        `punish/v1/student/punishments/${studentEmail}`
+        `punish/v1/student/punishments/${studentEmail}`,
       );
+
       if (response != null) {
         setStudentData(response);
         setStudentDisplay(true);
-        // Handle the display of fetched student data here
+      } else {
+        setStudentData([]);
+        setStudentDisplay(true);
       }
+
+      await Promise.all([
+        fetchTrackedBehaviorTotals(studentEmail),
+        fetchTrackedBehaviorTimeline(studentEmail),
+      ]);
     } catch (error) {
       console.error(error);
+    } finally {
+      setTrackedBehaviorLoading(false);
     }
   };
+
+  const formatBehaviorLabel = (code: string) =>
+    code
+      .toLowerCase()
+      .split("_")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
 
   const addSpotter = async () => {
     if (studentData != null) {
@@ -215,7 +267,7 @@ const TeacherStudentPanel: React.FC<StudentPanelProps> = ({
         .then((response) => {
           setStudentDisplay(false);
           window.alert(
-            `You have been successfully added as a spotter for: ${spotEmail} `
+            `You have been successfully added as a spotter for: ${spotEmail} `,
           );
         })
         .catch((error) => {
@@ -243,59 +295,12 @@ const TeacherStudentPanel: React.FC<StudentPanelProps> = ({
 
   const pdfRef = useRef();
 
-  // const generatePDF = (studentData: TeacherReferral[]) => {
-  //   const pdf = new jsPDF();
-  //   // Add logo
-  //   const logoWidth = 50; // Adjust the width of the logo as needed
-  //   const logoHeight = 50; // Adjust the height of the logo as needed
-  //   const logoX = 130; // Adjust the X coordinate of the logo as needed
-  //   const logoY = 15; // Adjust the Y coordinate of the logo as needed
-
-  //   //https://medium.com/dont-leave-me-out-in-the-code/5-steps-to-create-a-pdf-in-react-using-jspdf-1af182b56cee
-  //   //Resource for adding image and how pdf text works
-  //   let image = new Image();
-  //   image.src = "/burke-logo.png";
-  //   pdf.addImage(image, "PNG", logoX, logoY, logoWidth, logoHeight);
-
-  //   // Add student details section
-  //   pdf.setFontSize(12);
-  //   pdf.rect(15, 15, 180, 50);
-  //   pdf.text(`${studentData[0].firstName} ${studentData[0].lastName}`, 20, 20);
-  //   pdf.text(`Email: ${studentData[0].studentEmail}`, 20, 30);
-  //   pdf.text(`Phone: ${studentData[0].studentPhoneNumber}`, 20, 40);
-  //   pdf.text(`Grade: ${studentData[0].grade}`, 20, 50);
-
-  //   // Add punishment details table
-  //   (pdf as any).autoTable({
-  //     startY: 70, // Adjust the Y-coordinate as needed
-  //     head: [["Status", "Description", "Date", "Infraction"]],
-  //     body: studentData.map((student) => [
-  //       student.status,
-  //       student.infractionDescription,
-  //       student.timeCreated,
-  //       student.infractionName,
-  //     ]),
-  //   });
-
-  //   // Save or open the PDF
-  //   pdf.save("student_report.pdf");
-  // };
-
   const hasScroll = listOfStudents.length > 10;
 
   const filteredStudentData = listOfStudents.filter(
-    (student) => student.className === selectedClass
+    (student) => student.className === selectedClass,
   );
 
-  // const handleSearchChange = (e) => {
-  //   setSearchQuery(e.target.value);
-  // };
-
-  // const handleGradeChange = (e) => {
-  //   setSelectedGrade(e.target.value);
-  // };
-
-  // Define column definitions, with clickable student name
   const columnDefs = [
     {
       headerName: "Student Name",
@@ -325,7 +330,6 @@ const TeacherStudentPanel: React.FC<StudentPanelProps> = ({
 
   return (
     <>
-      {/* If no classes exist and not an admin */}
       {!isAdmin &&
       (!data?.teacher?.classes || data.teacher?.classes?.length === 0) ? (
         <div style={{ textAlign: "center", marginTop: "50px" }}>
@@ -334,7 +338,6 @@ const TeacherStudentPanel: React.FC<StudentPanelProps> = ({
         </div>
       ) : (
         <>
-          {/* Modal for No Punishment Data */}
           {studentDisplay && studentData && studentData.length === 0 && (
             <div
               className="modal-overlay"
@@ -350,38 +353,49 @@ const TeacherStudentPanel: React.FC<StudentPanelProps> = ({
               <div
                 className="modal-content"
                 style={{
-                  width: "80%",
-                  backgroundColor: "white",
+                  width: "90%",
+                  maxWidth: "1200px",
+                  height: "90vh",
                   padding: "20px",
                   borderRadius: "8px",
                   boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                  backgroundColor: "white",
+                  display: "flex",
+                  flexDirection: "column",
+                  overflow: "hidden",
+                  boxSizing: "border-box",
                 }}
               >
                 <div className="modal-header">
                   <h1>Student has No punishments</h1>
                 </div>
-                <div className="modal-buttons" style={{ padding: "10px" }}>
+                <div
+                  className="modal-buttons"
+                  style={{
+                    padding: "15px 10px 0 10px",
+                    backgroundColor: "white",
+                    display: "flex",
+                    justifyContent: "space-between",
+                    borderTop: "1px solid #ddd",
+                    marginTop: "20px",
+                    flexShrink: 0,
+                  }}
+                >
                   <button onClick={() => setStudentDisplay(false)}>
                     Cancel
                   </button>
-                  {/* <button
-                    onClick={() => generatePDF(studentData)}
-                    style={{ backgroundColor: "#CF9FFF" }}
-                  >
-                    Print
-                  </button> */}
                 </div>
               </div>
             </div>
           )}
 
-          {/* Modal for Student Data Display */}
           {studentDisplay && studentData && studentData.length > 0 && (
             <div
               className="modal-overlay"
               style={{
                 display: "flex",
                 justifyContent: "center",
+                alignItems: "center",
                 position: "fixed",
                 top: 0,
                 left: 0,
@@ -389,6 +403,8 @@ const TeacherStudentPanel: React.FC<StudentPanelProps> = ({
                 height: "100%",
                 backgroundColor: "rgba(0,0,0,0.5)",
                 zIndex: 1300,
+                padding: "20px",
+                boxSizing: "border-box",
               }}
             >
               <div
@@ -396,144 +412,369 @@ const TeacherStudentPanel: React.FC<StudentPanelProps> = ({
                 style={{
                   width: "90%",
                   maxWidth: "1200px",
-                  maxHeight: "90vh",
+                  height: "90vh",
                   padding: "20px",
                   borderRadius: "8px",
                   boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
                   backgroundColor: "white",
-                  overflowY: "auto",
                   display: "flex",
                   flexDirection: "column",
+                  overflow: "hidden",
+                  boxSizing: "border-box",
                 }}
               >
                 <div
-                  className="modal-header"
                   style={{
-                    display: "flex",
-                    flexWrap: "wrap",
-                    gap: "20px",
-                    justifyContent: "space-between",
+                    flex: 1,
+                    overflowY: "auto",
+                    minHeight: 0,
+                    paddingRight: "4px",
                   }}
                 >
                   <div
-                    className="box-left"
-                    style={{ minWidth: "200px", flex: "1" }}
+                    className="modal-header"
+                    style={{
+                      display: "flex",
+                      flexWrap: "wrap",
+                      gap: "20px",
+                      justifyContent: "space-between",
+                    }}
                   >
-                    <AccountBoxIcon style={{ fontSize: "100px" }} />
-                    <h4>{selectedStudentName}</h4>
-                    <div className="details-box">
-                      <p>Email: {filteredData[0]?.studentEmail}</p>
-                      <p>Grade: {filteredData[0]?.grade || "N/A"}</p>
-                      <p>Class: {filteredData[0]?.className || "N/A"}</p>
+                    <div
+                      className="box-left"
+                      style={{ minWidth: "200px", flex: "1" }}
+                    >
+                      <AccountBoxIcon style={{ fontSize: "100px" }} />
+                      <h4>{selectedStudentName}</h4>
+                      <div className="details-box">
+                        <p>Email: {filteredData[0]?.studentEmail}</p>
+                        <p>Grade: {filteredData[0]?.grade || "N/A"}</p>
+                        <p>Class: {filteredData[0]?.className || "N/A"}</p>
+                      </div>
+                    </div>
+                    <Card
+                      style={{ width: "100%", flex: "2", height: "100%" }}
+                      variant="outlined"
+                    >
+                      <StudentReferralsByWeek data={studentData} />
+                    </Card>
+                    <div
+                      className="box-right"
+                      style={{ minWidth: "250px", flex: "1" }}
+                    >
+                      <IncidentByTypePieChart data={studentData} />
                     </div>
                   </div>
-                  <Card
-                    style={{ width: "100%", flex: "2", height: "100%" }}
-                    variant="outlined"
-                  >
-                    <StudentReferralsByWeek data={studentData} />
-                  </Card>
+
                   <div
-                    className="box-right"
-                    style={{ minWidth: "250px", flex: "1" }}
+                    className="modal-body-student"
+                    style={{
+                      marginTop: "20px",
+                    }}
                   >
-                    <IncidentByTypePieChart data={studentData} />
-                  </div>
-                </div>
-                <div
-                  className="modal-body-student"
-                  style={{
-                    flexGrow: 1,
-                    overflowY: "auto",
-                    maxHeight: "40vh",
-                    marginTop: "20px",
-                  }}
-                >
-                  <TableContainer
-                    style={{ backgroundColor: "white", fontSize: "18" }}
-                  >
-                    <Table stickyHeader>
-                      <TableHead>
-                        <TableRow>
-                          <TableCell
-                            sx={{ fontSize: "1.5rem", textAlign: "center" }}
-                          >
-                            Status
-                          </TableCell>
-                          <TableCell
-                            sx={{ fontSize: "1.5rem", textAlign: "center" }}
-                          >
-                            Description
-                          </TableCell>
-                          <TableCell
-                            sx={{ fontSize: "1.5rem", textAlign: "center" }}
-                          >
-                            Date
-                          </TableCell>
-                          <TableCell
-                            sx={{ fontSize: "1.5rem", textAlign: "center" }}
-                          >
-                            Infraction
-                          </TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {studentData.map((student, index) => (
-                          <TableRow
-                            key={index}
-                            style={{
-                              background:
-                                index % 2 === 0 ? "lightgrey" : "white",
-                            }}
-                          >
-                            <TableCell
-                              sx={{ fontSize: "1.5rem", textAlign: "center" }}
-                            >
-                              {student.status}
-                            </TableCell>
-                            <TableCell
-                              sx={{ fontSize: "1.5rem", textAlign: "center" }}
-                            >
-                              {student.infractionDescription}
-                            </TableCell>
-                            <TableCell
-                              sx={{ fontSize: "1.5rem", textAlign: "center" }}
-                            >
-                              {new Date(student.timeCreated).toLocaleDateString(
-                                "en-US"
+                    <div style={{ marginTop: "20px" }}>
+                      <Card
+                        style={{
+                          width: "100%",
+                          padding: "16px",
+                          marginBottom: "20px",
+                        }}
+                        variant="outlined"
+                      >
+                        <h3 style={{ marginTop: 0 }}>Tracked Behaviors</h3>
+
+                        {trackedBehaviorLoading ? (
+                          <p>Loading tracked behaviors...</p>
+                        ) : (
+                          <>
+                            <div style={{ marginBottom: "20px" }}>
+                              <h4>Totals</h4>
+                              {Object.keys(trackedBehaviorTotals).length ===
+                              0 ? (
+                                <p>No tracked behavior totals found.</p>
+                              ) : (
+                                <TableContainer
+                                  style={{ backgroundColor: "white" }}
+                                >
+                                  <Table stickyHeader>
+                                    <TableHead>
+                                      <TableRow>
+                                        <TableCell
+                                          sx={{
+                                            fontSize: "1.5rem",
+                                            textAlign: "center",
+                                          }}
+                                        >
+                                          Behavior
+                                        </TableCell>
+                                        <TableCell
+                                          sx={{
+                                            fontSize: "1.5rem",
+                                            textAlign: "center",
+                                          }}
+                                        >
+                                          Total
+                                        </TableCell>
+                                      </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                      {Object.entries(
+                                        trackedBehaviorTotals,
+                                      ).map(([behaviorCode, total], index) => (
+                                        <TableRow
+                                          key={behaviorCode}
+                                          style={{
+                                            background:
+                                              index % 2 === 0
+                                                ? "lightgrey"
+                                                : "white",
+                                          }}
+                                        >
+                                          <TableCell
+                                            sx={{
+                                              fontSize: "1.5rem",
+                                              textAlign: "center",
+                                            }}
+                                          >
+                                            {formatBehaviorLabel(behaviorCode)}
+                                          </TableCell>
+                                          <TableCell
+                                            sx={{
+                                              fontSize: "1.5rem",
+                                              textAlign: "center",
+                                            }}
+                                          >
+                                            {total}
+                                          </TableCell>
+                                        </TableRow>
+                                      ))}
+                                    </TableBody>
+                                  </Table>
+                                </TableContainer>
                               )}
+                            </div>
+
+                            <div>
+                              <h4>Timeline</h4>
+                              {trackedBehaviorTimeline.length === 0 ? (
+                                <p>No tracked behavior timeline found.</p>
+                              ) : (
+                                <TableContainer
+                                  style={{ backgroundColor: "white" }}
+                                >
+                                  <Table stickyHeader>
+                                    <TableHead>
+                                      <TableRow>
+                                        <TableCell
+                                          sx={{
+                                            fontSize: "1.5rem",
+                                            textAlign: "center",
+                                          }}
+                                        >
+                                          Date
+                                        </TableCell>
+                                        <TableCell
+                                          sx={{
+                                            fontSize: "1.5rem",
+                                            textAlign: "center",
+                                          }}
+                                        >
+                                          Behavior
+                                        </TableCell>
+                                        <TableCell
+                                          sx={{
+                                            fontSize: "1.5rem",
+                                            textAlign: "center",
+                                          }}
+                                        >
+                                          Adjustment
+                                        </TableCell>
+                                        <TableCell
+                                          sx={{
+                                            fontSize: "1.5rem",
+                                            textAlign: "center",
+                                          }}
+                                        >
+                                          Teacher
+                                        </TableCell>
+                                        <TableCell
+                                          sx={{
+                                            fontSize: "1.5rem",
+                                            textAlign: "center",
+                                          }}
+                                        >
+                                          Class Period
+                                        </TableCell>
+                                      </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                      {trackedBehaviorTimeline.map(
+                                        (event, index) => (
+                                          <TableRow
+                                            key={
+                                              event.trackedBehaviorEventId ??
+                                              index
+                                            }
+                                            style={{
+                                              background:
+                                                index % 2 === 0
+                                                  ? "lightgrey"
+                                                  : "white",
+                                            }}
+                                          >
+                                            <TableCell
+                                              sx={{
+                                                fontSize: "1.5rem",
+                                                textAlign: "center",
+                                              }}
+                                            >
+                                              {event.timeCreated
+                                                ? new Date(
+                                                    event.timeCreated,
+                                                  ).toLocaleString("en-US")
+                                                : "N/A"}
+                                            </TableCell>
+                                            <TableCell
+                                              sx={{
+                                                fontSize: "1.5rem",
+                                                textAlign: "center",
+                                              }}
+                                            >
+                                              {event.behaviorName ??
+                                                formatBehaviorLabel(
+                                                  event.behaviorCode,
+                                                )}
+                                            </TableCell>
+                                            <TableCell
+                                              sx={{
+                                                fontSize: "1.5rem",
+                                                textAlign: "center",
+                                              }}
+                                            >
+                                              {event.adjustmentValue > 0
+                                                ? `+${event.adjustmentValue}`
+                                                : event.adjustmentValue}
+                                            </TableCell>
+                                            <TableCell
+                                              sx={{
+                                                fontSize: "1.5rem",
+                                                textAlign: "center",
+                                              }}
+                                            >
+                                              {event.teacherEmail ?? "N/A"}
+                                            </TableCell>
+                                            <TableCell
+                                              sx={{
+                                                fontSize: "1.5rem",
+                                                textAlign: "center",
+                                              }}
+                                            >
+                                              {event.classPeriod ?? "N/A"}
+                                            </TableCell>
+                                          </TableRow>
+                                        ),
+                                      )}
+                                    </TableBody>
+                                  </Table>
+                                </TableContainer>
+                              )}
+                            </div>
+                          </>
+                        )}
+                      </Card>
+                    </div>
+
+                    <TableContainer
+                      style={{ backgroundColor: "white", fontSize: "18" }}
+                    >
+                      <Table stickyHeader>
+                        <TableHead>
+                          <TableRow>
+                            <TableCell
+                              sx={{ fontSize: "1.5rem", textAlign: "center" }}
+                            >
+                              Status
                             </TableCell>
                             <TableCell
                               sx={{ fontSize: "1.5rem", textAlign: "center" }}
                             >
-                              {student.infractionName}
+                              Description
+                            </TableCell>
+                            <TableCell
+                              sx={{ fontSize: "1.5rem", textAlign: "center" }}
+                            >
+                              Date
+                            </TableCell>
+                            <TableCell
+                              sx={{ fontSize: "1.5rem", textAlign: "center" }}
+                            >
+                              Infraction
                             </TableCell>
                           </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
+                        </TableHead>
+                        <TableBody>
+                          {studentData.map((student, index) => (
+                            <TableRow
+                              key={index}
+                              style={{
+                                background:
+                                  index % 2 === 0 ? "lightgrey" : "white",
+                              }}
+                            >
+                              <TableCell
+                                sx={{ fontSize: "1.5rem", textAlign: "center" }}
+                              >
+                                {student.status}
+                              </TableCell>
+                              <TableCell
+                                sx={{ fontSize: "1.5rem", textAlign: "center" }}
+                              >
+                                {student.infractionDescription}
+                              </TableCell>
+                              <TableCell
+                                sx={{ fontSize: "1.5rem", textAlign: "center" }}
+                              >
+                                {new Date(
+                                  student.timeCreated,
+                                ).toLocaleDateString("en-US")}
+                              </TableCell>
+                              <TableCell
+                                sx={{ fontSize: "1.5rem", textAlign: "center" }}
+                              >
+                                {student.infractionName}
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+                  </div>
                 </div>
-                <div className="modal-buttons" style={{ padding: "10px" }}>
+
+                <div
+                  className="modal-buttons"
+                  style={{
+                    padding: "15px 10px 0 10px",
+                    backgroundColor: "white",
+                    display: "flex",
+                    justifyContent: "space-between",
+                    borderTop: "1px solid #ddd",
+                    marginTop: "20px",
+                    flexShrink: 0,
+                  }}
+                >
                   <button onClick={() => setStudentDisplay(false)}>
                     Cancel
                   </button>
                   <button onClick={addSpotter}>Spot this Student</button>
-                  {/* <button
-                    onClick={() => generatePDF(studentData)}
-                    style={{ backgroundColor: "#CF9FFF" }}
-                  >
-                    Print
-                  </button> */}
                 </div>
               </div>
             </div>
           )}
-          {/* Display Students Table */}
+
           <div style={{ marginTop: "20px" }}>
             <h3>{isAdmin ? "All Students" : selectedClass}</h3>
 
-            {/* Show class selection only for teachers */}
             {!isAdmin && (
               <div>
                 <label htmlFor="class-select" style={{ marginRight: "8px" }}>
