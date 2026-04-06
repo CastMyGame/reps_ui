@@ -7,6 +7,9 @@ import {
   TableBody,
   TableRow,
   Card,
+  Tabs,
+  Tab,
+  Box,
 } from "@mui/material";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import "jspdf-autotable";
@@ -61,6 +64,14 @@ const TeacherStudentPanel: React.FC<StudentPanelProps> = ({
     [],
   );
   const [trackedBehaviorLoading, setTrackedBehaviorLoading] = useState(false);
+  const [selectedStudentTab, setSelectedStudentTab] = useState<
+    | "all"
+    | "trackedBehaviors"
+    | "trackedBehaviorAdjustments"
+    | "punishments"
+    | "positiveShoutOuts"
+    | "behavioralConcerns"
+  >("all");
 
   const isAdmin = !!(data as AdminOverviewDto)?.teachers;
 
@@ -219,6 +230,7 @@ const TeacherStudentPanel: React.FC<StudentPanelProps> = ({
   const fetchStudentData = async (studentEmail: string) => {
     try {
       setTrackedBehaviorLoading(true);
+      setSelectedStudentTab("all");
 
       const response: TeacherReferral[] = await get(
         `punish/v1/student/punishments/${studentEmail}`,
@@ -286,6 +298,34 @@ const TeacherStudentPanel: React.FC<StudentPanelProps> = ({
       return matchesQuery && matchesGrade;
     });
   }, [listOfStudents, searchQuery, selectedGrade]);
+
+  const sortedStudentData = useMemo(() => {
+    return [...studentData].sort((a, b) => {
+      const aTime = a?.timeCreated ? new Date(a.timeCreated).getTime() : 0;
+      const bTime = b?.timeCreated ? new Date(b.timeCreated).getTime() : 0;
+      return bTime - aTime;
+    });
+  }, [studentData]);
+
+  const positiveShoutOutsData = useMemo(() => {
+    return sortedStudentData.filter(
+      (student) => student.infractionName === "Positive Behavior Shout Out!",
+    );
+  }, [sortedStudentData]);
+
+  const behavioralConcernsData = useMemo(() => {
+    return sortedStudentData.filter(
+      (student) => student.infractionName === "Behavioral Concern",
+    );
+  }, [sortedStudentData]);
+
+  const punishmentsOnlyData = useMemo(() => {
+    return sortedStudentData.filter(
+      (student) =>
+        student.infractionName !== "Positive Behavior Shout Out!" &&
+        student.infractionName !== "Behavioral Concern",
+    );
+  }, [sortedStudentData]);
 
   const handleProfileClick = (x: CellClickedEvent) => {
     fetchStudentData(x.data.studentEmail);
@@ -472,55 +512,178 @@ const TeacherStudentPanel: React.FC<StudentPanelProps> = ({
                       marginTop: "20px",
                     }}
                   >
-                    <div style={{ marginTop: "20px" }}>
-                      <Card
-                        style={{
-                          width: "100%",
-                          padding: "16px",
-                          marginBottom: "20px",
+                    <Card
+                      style={{
+                        width: "100%",
+                        marginBottom: "20px",
+                      }}
+                      variant="outlined"
+                    >
+                      <Box
+                        sx={{
+                          borderBottom: 1,
+                          borderColor: "divider",
+                          backgroundColor: "white",
                         }}
-                        variant="outlined"
                       >
-                        <h3 style={{ marginTop: 0 }}>Tracked Behaviors</h3>
+                        <Tabs
+                          value={selectedStudentTab}
+                          onChange={(_, newValue) =>
+                            setSelectedStudentTab(newValue)
+                          }
+                          variant="scrollable"
+                          scrollButtons="auto"
+                        >
+                          <Tab label="All" value="all" />
+                          <Tab
+                            label="Tracked Behaviors"
+                            value="trackedBehaviors"
+                          />
+                          <Tab
+                            label="Tracked Behavior Adjustments"
+                            value="trackedBehaviorAdjustments"
+                          />
+                          <Tab label="Punishments" value="punishments" />
+                          <Tab
+                            label="Positive Shout Outs"
+                            value="positiveShoutOuts"
+                          />
+                          <Tab
+                            label="Behavioral Concerns"
+                            value="behavioralConcerns"
+                          />
+                        </Tabs>
+                      </Box>
 
-                        {trackedBehaviorLoading ? (
-                          <p>Loading tracked behaviors...</p>
-                        ) : (
+                      <Box sx={{ padding: "16px" }}>
+                        {selectedStudentTab === "all" && (
+                          <TableContainer
+                            style={{ backgroundColor: "white", fontSize: "18" }}
+                          >
+                            <Table stickyHeader>
+                              <TableHead>
+                                <TableRow>
+                                  <TableCell
+                                    sx={{
+                                      fontSize: "1.5rem",
+                                      textAlign: "center",
+                                    }}
+                                  >
+                                    Infraction
+                                  </TableCell>
+                                  <TableCell
+                                    sx={{
+                                      fontSize: "1.5rem",
+                                      textAlign: "center",
+                                    }}
+                                  >
+                                    Description
+                                  </TableCell>
+                                  <TableCell
+                                    sx={{
+                                      fontSize: "1.5rem",
+                                      textAlign: "center",
+                                    }}
+                                  >
+                                    Date
+                                  </TableCell>
+                                  <TableCell
+                                    sx={{
+                                      fontSize: "1.5rem",
+                                      textAlign: "center",
+                                    }}
+                                  >
+                                    Status
+                                  </TableCell>
+                                </TableRow>
+                              </TableHead>
+                              <TableBody>
+                                {sortedStudentData.map((student, index) => (
+                                  <TableRow
+                                    key={index}
+                                    style={{
+                                      background:
+                                        index % 2 === 0 ? "lightgrey" : "white",
+                                    }}
+                                  >
+                                    <TableCell
+                                      sx={{
+                                        fontSize: "1.5rem",
+                                        textAlign: "center",
+                                      }}
+                                    >
+                                      {student.infractionName}
+                                    </TableCell>
+                                    <TableCell
+                                      sx={{
+                                        fontSize: "1.5rem",
+                                        textAlign: "center",
+                                      }}
+                                    >
+                                      {student.infractionDescription}
+                                    </TableCell>
+                                    <TableCell
+                                      sx={{
+                                        fontSize: "1.5rem",
+                                        textAlign: "center",
+                                      }}
+                                    >
+                                      {new Date(
+                                        student.timeCreated,
+                                      ).toLocaleDateString("en-US")}
+                                    </TableCell>
+                                    <TableCell
+                                      sx={{
+                                        fontSize: "1.5rem",
+                                        textAlign: "center",
+                                      }}
+                                    >
+                                      {student.status}
+                                    </TableCell>
+                                  </TableRow>
+                                ))}
+                              </TableBody>
+                            </Table>
+                          </TableContainer>
+                        )}
+
+                        {selectedStudentTab === "trackedBehaviors" && (
                           <>
-                            <div style={{ marginBottom: "20px" }}>
-                              <h4>Totals</h4>
-                              {Object.keys(trackedBehaviorTotals).length ===
+                            <h3 style={{ marginTop: 0 }}>Tracked Behaviors</h3>
+
+                            {trackedBehaviorLoading ? (
+                              <p>Loading tracked behaviors...</p>
+                            ) : Object.keys(trackedBehaviorTotals).length ===
                               0 ? (
-                                <p>No tracked behavior totals found.</p>
-                              ) : (
-                                <TableContainer
-                                  style={{ backgroundColor: "white" }}
-                                >
-                                  <Table stickyHeader>
-                                    <TableHead>
-                                      <TableRow>
-                                        <TableCell
-                                          sx={{
-                                            fontSize: "1.5rem",
-                                            textAlign: "center",
-                                          }}
-                                        >
-                                          Behavior
-                                        </TableCell>
-                                        <TableCell
-                                          sx={{
-                                            fontSize: "1.5rem",
-                                            textAlign: "center",
-                                          }}
-                                        >
-                                          Total
-                                        </TableCell>
-                                      </TableRow>
-                                    </TableHead>
-                                    <TableBody>
-                                      {Object.entries(
-                                        trackedBehaviorTotals,
-                                      ).map(([behaviorCode, total], index) => (
+                              <p>No tracked behavior totals found.</p>
+                            ) : (
+                              <TableContainer
+                                style={{ backgroundColor: "white" }}
+                              >
+                                <Table stickyHeader>
+                                  <TableHead>
+                                    <TableRow>
+                                      <TableCell
+                                        sx={{
+                                          fontSize: "1.5rem",
+                                          textAlign: "center",
+                                        }}
+                                      >
+                                        Behavior
+                                      </TableCell>
+                                      <TableCell
+                                        sx={{
+                                          fontSize: "1.5rem",
+                                          textAlign: "center",
+                                        }}
+                                      >
+                                        Total
+                                      </TableCell>
+                                    </TableRow>
+                                  </TableHead>
+                                  <TableBody>
+                                    {Object.entries(trackedBehaviorTotals).map(
+                                      ([behaviorCode, total], index) => (
                                         <TableRow
                                           key={behaviorCode}
                                           style={{
@@ -547,207 +710,440 @@ const TeacherStudentPanel: React.FC<StudentPanelProps> = ({
                                             {total}
                                           </TableCell>
                                         </TableRow>
-                                      ))}
-                                    </TableBody>
-                                  </Table>
-                                </TableContainer>
-                              )}
-                            </div>
-
-                            <div>
-                              <h4>Timeline</h4>
-                              {trackedBehaviorTimeline.length === 0 ? (
-                                <p>No tracked behavior timeline found.</p>
-                              ) : (
-                                <TableContainer
-                                  style={{ backgroundColor: "white" }}
-                                >
-                                  <Table stickyHeader>
-                                    <TableHead>
-                                      <TableRow>
-                                        <TableCell
-                                          sx={{
-                                            fontSize: "1.5rem",
-                                            textAlign: "center",
-                                          }}
-                                        >
-                                          Date
-                                        </TableCell>
-                                        <TableCell
-                                          sx={{
-                                            fontSize: "1.5rem",
-                                            textAlign: "center",
-                                          }}
-                                        >
-                                          Behavior
-                                        </TableCell>
-                                        <TableCell
-                                          sx={{
-                                            fontSize: "1.5rem",
-                                            textAlign: "center",
-                                          }}
-                                        >
-                                          Adjustment
-                                        </TableCell>
-                                        <TableCell
-                                          sx={{
-                                            fontSize: "1.5rem",
-                                            textAlign: "center",
-                                          }}
-                                        >
-                                          Teacher
-                                        </TableCell>
-                                        <TableCell
-                                          sx={{
-                                            fontSize: "1.5rem",
-                                            textAlign: "center",
-                                          }}
-                                        >
-                                          Class Period
-                                        </TableCell>
-                                      </TableRow>
-                                    </TableHead>
-                                    <TableBody>
-                                      {trackedBehaviorTimeline.map(
-                                        (event, index) => (
-                                          <TableRow
-                                            key={
-                                              event.trackedBehaviorEventId ??
-                                              index
-                                            }
-                                            style={{
-                                              background:
-                                                index % 2 === 0
-                                                  ? "lightgrey"
-                                                  : "white",
-                                            }}
-                                          >
-                                            <TableCell
-                                              sx={{
-                                                fontSize: "1.5rem",
-                                                textAlign: "center",
-                                              }}
-                                            >
-                                              {event.timeCreated
-                                                ? new Date(
-                                                    event.timeCreated,
-                                                  ).toLocaleString("en-US")
-                                                : "N/A"}
-                                            </TableCell>
-                                            <TableCell
-                                              sx={{
-                                                fontSize: "1.5rem",
-                                                textAlign: "center",
-                                              }}
-                                            >
-                                              {event.behaviorName ??
-                                                formatBehaviorLabel(
-                                                  event.behaviorCode,
-                                                )}
-                                            </TableCell>
-                                            <TableCell
-                                              sx={{
-                                                fontSize: "1.5rem",
-                                                textAlign: "center",
-                                              }}
-                                            >
-                                              {event.adjustmentValue > 0
-                                                ? `+${event.adjustmentValue}`
-                                                : event.adjustmentValue}
-                                            </TableCell>
-                                            <TableCell
-                                              sx={{
-                                                fontSize: "1.5rem",
-                                                textAlign: "center",
-                                              }}
-                                            >
-                                              {event.teacherEmail ?? "N/A"}
-                                            </TableCell>
-                                            <TableCell
-                                              sx={{
-                                                fontSize: "1.5rem",
-                                                textAlign: "center",
-                                              }}
-                                            >
-                                              {event.classPeriod ?? "N/A"}
-                                            </TableCell>
-                                          </TableRow>
-                                        ),
-                                      )}
-                                    </TableBody>
-                                  </Table>
-                                </TableContainer>
-                              )}
-                            </div>
+                                      ),
+                                    )}
+                                  </TableBody>
+                                </Table>
+                              </TableContainer>
+                            )}
                           </>
                         )}
-                      </Card>
-                    </div>
 
-                    <TableContainer
-                      style={{ backgroundColor: "white", fontSize: "18" }}
-                    >
-                      <Table stickyHeader>
-                        <TableHead>
-                          <TableRow>
-                            <TableCell
-                              sx={{ fontSize: "1.5rem", textAlign: "center" }}
-                            >
-                              Status
-                            </TableCell>
-                            <TableCell
-                              sx={{ fontSize: "1.5rem", textAlign: "center" }}
-                            >
-                              Description
-                            </TableCell>
-                            <TableCell
-                              sx={{ fontSize: "1.5rem", textAlign: "center" }}
-                            >
-                              Date
-                            </TableCell>
-                            <TableCell
-                              sx={{ fontSize: "1.5rem", textAlign: "center" }}
-                            >
-                              Infraction
-                            </TableCell>
-                          </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          {studentData.map((student, index) => (
-                            <TableRow
-                              key={index}
-                              style={{
-                                background:
-                                  index % 2 === 0 ? "lightgrey" : "white",
-                              }}
-                            >
-                              <TableCell
-                                sx={{ fontSize: "1.5rem", textAlign: "center" }}
+                        {selectedStudentTab ===
+                          "trackedBehaviorAdjustments" && (
+                          <>
+                            <h3 style={{ marginTop: 0 }}>
+                              Tracked Behavior Adjustments
+                            </h3>
+
+                            {trackedBehaviorLoading ? (
+                              <p>Loading tracked behavior adjustments...</p>
+                            ) : trackedBehaviorTimeline.length === 0 ? (
+                              <p>No tracked behavior adjustments found.</p>
+                            ) : (
+                              <TableContainer
+                                style={{ backgroundColor: "white" }}
                               >
-                                {student.status}
-                              </TableCell>
-                              <TableCell
-                                sx={{ fontSize: "1.5rem", textAlign: "center" }}
+                                <Table stickyHeader>
+                                  <TableHead>
+                                    <TableRow>
+                                      <TableCell
+                                        sx={{
+                                          fontSize: "1.5rem",
+                                          textAlign: "center",
+                                        }}
+                                      >
+                                        Date
+                                      </TableCell>
+                                      <TableCell
+                                        sx={{
+                                          fontSize: "1.5rem",
+                                          textAlign: "center",
+                                        }}
+                                      >
+                                        Behavior
+                                      </TableCell>
+                                      <TableCell
+                                        sx={{
+                                          fontSize: "1.5rem",
+                                          textAlign: "center",
+                                        }}
+                                      >
+                                        Adjustment
+                                      </TableCell>
+                                      <TableCell
+                                        sx={{
+                                          fontSize: "1.5rem",
+                                          textAlign: "center",
+                                        }}
+                                      >
+                                        Teacher
+                                      </TableCell>
+                                      <TableCell
+                                        sx={{
+                                          fontSize: "1.5rem",
+                                          textAlign: "center",
+                                        }}
+                                      >
+                                        Class Period
+                                      </TableCell>
+                                    </TableRow>
+                                  </TableHead>
+                                  <TableBody>
+                                    {trackedBehaviorTimeline.map(
+                                      (event, index) => (
+                                        <TableRow
+                                          key={
+                                            event.trackedBehaviorEventId ??
+                                            index
+                                          }
+                                          style={{
+                                            background:
+                                              index % 2 === 0
+                                                ? "lightgrey"
+                                                : "white",
+                                          }}
+                                        >
+                                          <TableCell
+                                            sx={{
+                                              fontSize: "1.5rem",
+                                              textAlign: "center",
+                                            }}
+                                          >
+                                            {event.timeCreated
+                                              ? new Date(
+                                                  event.timeCreated,
+                                                ).toLocaleString("en-US")
+                                              : "N/A"}
+                                          </TableCell>
+                                          <TableCell
+                                            sx={{
+                                              fontSize: "1.5rem",
+                                              textAlign: "center",
+                                            }}
+                                          >
+                                            {event.behaviorName ??
+                                              formatBehaviorLabel(
+                                                event.behaviorCode,
+                                              )}
+                                          </TableCell>
+                                          <TableCell
+                                            sx={{
+                                              fontSize: "1.5rem",
+                                              textAlign: "center",
+                                            }}
+                                          >
+                                            {event.adjustmentValue > 0
+                                              ? `+${event.adjustmentValue}`
+                                              : event.adjustmentValue}
+                                          </TableCell>
+                                          <TableCell
+                                            sx={{
+                                              fontSize: "1.5rem",
+                                              textAlign: "center",
+                                            }}
+                                          >
+                                            {event.teacherEmail ?? "N/A"}
+                                          </TableCell>
+                                          <TableCell
+                                            sx={{
+                                              fontSize: "1.5rem",
+                                              textAlign: "center",
+                                            }}
+                                          >
+                                            {event.classPeriod ?? "N/A"}
+                                          </TableCell>
+                                        </TableRow>
+                                      ),
+                                    )}
+                                  </TableBody>
+                                </Table>
+                              </TableContainer>
+                            )}
+                          </>
+                        )}
+
+                        {selectedStudentTab === "punishments" && (
+                          <>
+                            <h3 style={{ marginTop: 0 }}>Punishments</h3>
+
+                            {punishmentsOnlyData.length === 0 ? (
+                              <p>No punishments found.</p>
+                            ) : (
+                              <TableContainer
+                                style={{
+                                  backgroundColor: "white",
+                                  fontSize: "18",
+                                }}
                               >
-                                {student.infractionDescription}
-                              </TableCell>
-                              <TableCell
-                                sx={{ fontSize: "1.5rem", textAlign: "center" }}
+                                <Table stickyHeader>
+                                  <TableHead>
+                                    <TableRow>
+                                      <TableCell
+                                        sx={{
+                                          fontSize: "1.5rem",
+                                          textAlign: "center",
+                                        }}
+                                      >
+                                        Infraction
+                                      </TableCell>
+                                      <TableCell
+                                        sx={{
+                                          fontSize: "1.5rem",
+                                          textAlign: "center",
+                                        }}
+                                      >
+                                        Description
+                                      </TableCell>
+                                      <TableCell
+                                        sx={{
+                                          fontSize: "1.5rem",
+                                          textAlign: "center",
+                                        }}
+                                      >
+                                        Date
+                                      </TableCell>
+                                      <TableCell
+                                        sx={{
+                                          fontSize: "1.5rem",
+                                          textAlign: "center",
+                                        }}
+                                      >
+                                        Status
+                                      </TableCell>
+                                    </TableRow>
+                                  </TableHead>
+                                  <TableBody>
+                                    {punishmentsOnlyData.map(
+                                      (student, index) => (
+                                        <TableRow
+                                          key={index}
+                                          style={{
+                                            background:
+                                              index % 2 === 0
+                                                ? "lightgrey"
+                                                : "white",
+                                          }}
+                                        >
+                                          <TableCell
+                                            sx={{
+                                              fontSize: "1.5rem",
+                                              textAlign: "center",
+                                            }}
+                                          >
+                                            {student.infractionName}
+                                          </TableCell>
+                                          <TableCell
+                                            sx={{
+                                              fontSize: "1.5rem",
+                                              textAlign: "center",
+                                            }}
+                                          >
+                                            {student.infractionDescription}
+                                          </TableCell>
+                                          <TableCell
+                                            sx={{
+                                              fontSize: "1.5rem",
+                                              textAlign: "center",
+                                            }}
+                                          >
+                                            {new Date(
+                                              student.timeCreated,
+                                            ).toLocaleDateString("en-US")}
+                                          </TableCell>
+                                          <TableCell
+                                            sx={{
+                                              fontSize: "1.5rem",
+                                              textAlign: "center",
+                                            }}
+                                          >
+                                            {student.status}
+                                          </TableCell>
+                                        </TableRow>
+                                      ),
+                                    )}
+                                  </TableBody>
+                                </Table>
+                              </TableContainer>
+                            )}
+                          </>
+                        )}
+
+                        {selectedStudentTab === "positiveShoutOuts" && (
+                          <>
+                            <h3 style={{ marginTop: 0 }}>
+                              Positive Shout Outs
+                            </h3>
+
+                            {positiveShoutOutsData.length === 0 ? (
+                              <p>No positive shout outs found.</p>
+                            ) : (
+                              <TableContainer
+                                style={{
+                                  backgroundColor: "white",
+                                  fontSize: "18",
+                                }}
                               >
-                                {new Date(
-                                  student.timeCreated,
-                                ).toLocaleDateString("en-US")}
-                              </TableCell>
-                              <TableCell
-                                sx={{ fontSize: "1.5rem", textAlign: "center" }}
+                                <Table stickyHeader>
+                                  <TableHead>
+                                    <TableRow>
+                                      <TableCell
+                                        sx={{
+                                          fontSize: "1.5rem",
+                                          textAlign: "center",
+                                        }}
+                                      >
+                                        Teacher
+                                      </TableCell>
+                                      <TableCell
+                                        sx={{
+                                          fontSize: "1.5rem",
+                                          textAlign: "center",
+                                        }}
+                                      >
+                                        Description
+                                      </TableCell>
+                                      <TableCell
+                                        sx={{
+                                          fontSize: "1.5rem",
+                                          textAlign: "center",
+                                        }}
+                                      >
+                                        Date
+                                      </TableCell>
+                                    </TableRow>
+                                  </TableHead>
+                                  <TableBody>
+                                    {positiveShoutOutsData.map(
+                                      (student, index) => (
+                                        <TableRow
+                                          key={index}
+                                          style={{
+                                            background:
+                                              index % 2 === 0
+                                                ? "lightgrey"
+                                                : "white",
+                                          }}
+                                        >
+                                          <TableCell
+                                            sx={{
+                                              fontSize: "1.5rem",
+                                              textAlign: "center",
+                                            }}
+                                          >
+                                            {student.teacherEmail}
+                                          </TableCell>
+                                          <TableCell
+                                            sx={{
+                                              fontSize: "1.5rem",
+                                              textAlign: "center",
+                                            }}
+                                          >
+                                            {student.infractionDescription}
+                                          </TableCell>
+                                          <TableCell
+                                            sx={{
+                                              fontSize: "1.5rem",
+                                              textAlign: "center",
+                                            }}
+                                          >
+                                            {new Date(
+                                              student.timeCreated,
+                                            ).toLocaleDateString("en-US")}
+                                          </TableCell>
+                                        </TableRow>
+                                      ),
+                                    )}
+                                  </TableBody>
+                                </Table>
+                              </TableContainer>
+                            )}
+                          </>
+                        )}
+
+                        {selectedStudentTab === "behavioralConcerns" && (
+                          <>
+                            <h3 style={{ marginTop: 0 }}>
+                              Behavioral Concerns
+                            </h3>
+
+                            {behavioralConcernsData.length === 0 ? (
+                              <p>No behavioral concerns found.</p>
+                            ) : (
+                              <TableContainer
+                                style={{
+                                  backgroundColor: "white",
+                                  fontSize: "18",
+                                }}
                               >
-                                {student.infractionName}
-                              </TableCell>
-                            </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
-                    </TableContainer>
+                                <Table stickyHeader>
+                                  <TableHead>
+                                    <TableRow>
+                                      <TableCell
+                                        sx={{
+                                          fontSize: "1.5rem",
+                                          textAlign: "center",
+                                        }}
+                                      >
+                                        Teacher
+                                      </TableCell>
+                                      <TableCell
+                                        sx={{
+                                          fontSize: "1.5rem",
+                                          textAlign: "center",
+                                        }}
+                                      >
+                                        Description
+                                      </TableCell>
+                                      <TableCell
+                                        sx={{
+                                          fontSize: "1.5rem",
+                                          textAlign: "center",
+                                        }}
+                                      >
+                                        Date
+                                      </TableCell>
+                                    </TableRow>
+                                  </TableHead>
+                                  <TableBody>
+                                    {behavioralConcernsData.map(
+                                      (student, index) => (
+                                        <TableRow
+                                          key={index}
+                                          style={{
+                                            background:
+                                              index % 2 === 0
+                                                ? "lightgrey"
+                                                : "white",
+                                          }}
+                                        >
+                                          <TableCell
+                                            sx={{
+                                              fontSize: "1.5rem",
+                                              textAlign: "center",
+                                            }}
+                                          >
+                                            {student.teacherEmail}
+                                          </TableCell>
+                                          <TableCell
+                                            sx={{
+                                              fontSize: "1.5rem",
+                                              textAlign: "center",
+                                            }}
+                                          >
+                                            {student.infractionDescription}
+                                          </TableCell>
+                                          <TableCell
+                                            sx={{
+                                              fontSize: "1.5rem",
+                                              textAlign: "center",
+                                            }}
+                                          >
+                                            {new Date(
+                                              student.timeCreated,
+                                            ).toLocaleDateString("en-US")}
+                                          </TableCell>
+                                        </TableRow>
+                                      ),
+                                    )}
+                                  </TableBody>
+                                </Table>
+                              </TableContainer>
+                            )}
+                          </>
+                        )}
+                      </Box>
+                    </Card>
                   </div>
                 </div>
 
