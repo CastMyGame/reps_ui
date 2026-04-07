@@ -5,16 +5,8 @@ import {
   Box,
   Button,
   CircularProgress,
-  MenuItem,
   Paper,
-  Select,
   Snackbar,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
   Typography,
 } from "@mui/material";
 import { baseUrl } from "src/utils/jsonData";
@@ -36,24 +28,7 @@ type Student = {
 type TrackedBehaviorType = {
   code: string;
   displayName: string;
-};
-
-type TrackedBehaviorStudentTotalsResponse = Record<
-  string,
-  Record<string, number>
->;
-
-type TrackedBehaviorAdjustmentRequest = {
-  studentEmail: string;
-  behaviorCode: string;
-  adjustmentValue: number;
-};
-
-type TrackedBehaviorRequest = {
-  teacherEmail: string;
-  school: string;
-  classPeriod: string;
-  adjustments: TrackedBehaviorAdjustmentRequest[];
+  consequences: string[];
 };
 
 interface TrackedBehaviorPanelProps {
@@ -67,21 +42,20 @@ const TrackedBehaviorPanel: React.FC<TrackedBehaviorPanelProps> = ({
 }) => {
   const teacherEmail = sessionStorage.getItem("email") ?? "";
   const authToken = sessionStorage.getItem("Authorization") ?? "";
-  const school = data?.school?.schoolName ?? "";
 
   const [allStudents, setAllStudents] = useState<Student[]>([]);
   const [trackedBehaviorTypes, setTrackedBehaviorTypes] = useState<
     TrackedBehaviorType[]
   >([]);
   const [selectedClassPeriod, setSelectedClassPeriod] = useState<string>("");
-  const [selectedClass, setSelectedClass] = useState<ClassRoster | null>(null);
-  const [studentTotals, setStudentTotals] =
-    useState<TrackedBehaviorStudentTotalsResponse>({});
-  const [draftAdjustments, setDraftAdjustments] = useState<
-    Record<string, Record<string, number>>
-  >({});
+  const [selectedStudentEmails, setSelectedStudentEmails] = useState<string[]>(
+    [],
+  );
+  const [selectedBehaviorCode, setSelectedBehaviorCode] = useState<string>("");
+  const [selectedConsequenceCode, setSelectedConsequenceCode] =
+    useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
-  const [saving, setSaving] = useState<boolean>(false);
+  const [submitting, setSubmitting] = useState<boolean>(false);
   const [toast, setToast] = useState<{
     open: boolean;
     message: string;
@@ -91,6 +65,18 @@ const TrackedBehaviorPanel: React.FC<TrackedBehaviorPanelProps> = ({
     message: "",
     severity: "success",
   });
+  const [studentsConfirmed, setStudentsConfirmed] = useState<boolean>(false);
+
+  const fontSizes = {
+    pageTitle: { fontSize: "2rem", fontWeight: 700 },
+    headerText: { fontSize: "1.1rem" },
+    stepTitle: { fontSize: "1.4rem", fontWeight: 700 },
+    sectionTitle: { fontSize: "1.5rem", fontWeight: 700 },
+    primaryText: { fontSize: "1.15rem" },
+    secondaryText: { fontSize: "1rem" },
+    smallText: { fontSize: "0.95rem" },
+    buttonTitle: { fontSize: "1.1rem", fontWeight: 700 },
+  };
 
   const teacherClasses: ClassRoster[] = useMemo(() => {
     return data?.teacher?.classes ?? [];
@@ -103,32 +89,66 @@ const TrackedBehaviorPanel: React.FC<TrackedBehaviorPanelProps> = ({
     [authToken],
   );
 
+  const selectedClass: ClassRoster | null = useMemo(() => {
+    return (
+      teacherClasses.find((cls) => cls.classPeriod === selectedClassPeriod) ??
+      null
+    );
+  }, [teacherClasses, selectedClassPeriod]);
+
+  const studentsInSelectedClass: Student[] = useMemo(() => {
+    if (!selectedClass?.classRoster?.length) return [];
+
+    const rosterEmails = selectedClass.classRoster
+      .filter(Boolean)
+      .map((email) => email.trim().toLowerCase());
+
+    const rosterSet = new Set(rosterEmails);
+
+    return allStudents
+      .filter((student) =>
+        rosterSet.has((student.studentEmail ?? "").trim().toLowerCase()),
+      )
+      .sort((a, b) =>
+        `${a.lastName} ${a.firstName}`.localeCompare(
+          `${b.lastName} ${b.firstName}`,
+        ),
+      );
+  }, [allStudents, selectedClass]);
+
+  const selectedBehavior: TrackedBehaviorType | null = useMemo(() => {
+    return (
+      trackedBehaviorTypes.find((type) => type.code === selectedBehaviorCode) ??
+      null
+    );
+  }, [trackedBehaviorTypes, selectedBehaviorCode]);
+
+  const selectedBehaviorConsequences = useMemo(() => {
+    return selectedBehavior?.consequences ?? [];
+  }, [selectedBehavior]);
+
+  const formatConsequenceLabel = (value: string) =>
+    value
+      .toLowerCase()
+      .split("_")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+
   useEffect(() => {
     fetchAllStudents();
     fetchTrackedBehaviorTypes();
   }, []);
 
   useEffect(() => {
-    if (!selectedClassPeriod) {
-      setSelectedClass(null);
-      setStudentTotals({});
-      setDraftAdjustments({});
-      return;
-    }
+    setSelectedStudentEmails([]);
+    setSelectedBehaviorCode("");
+    setSelectedConsequenceCode("");
+    setStudentsConfirmed(false);
+  }, [selectedClassPeriod]);
 
-    const foundClass =
-      teacherClasses.find((cls) => cls.classPeriod === selectedClassPeriod) ??
-      null;
-
-    setSelectedClass(foundClass);
-    setDraftAdjustments({});
-
-    if (foundClass?.classRoster?.length) {
-      fetchStudentTotals(foundClass.classRoster);
-    } else {
-      setStudentTotals({});
-    }
-  }, [selectedClassPeriod, teacherClasses]);
+  useEffect(() => {
+    setSelectedConsequenceCode("");
+  }, [selectedBehaviorCode]);
 
   const fetchAllStudents = async () => {
     try {
@@ -173,222 +193,171 @@ const TrackedBehaviorPanel: React.FC<TrackedBehaviorPanelProps> = ({
         `${baseUrl}/tracked-behaviors/v1/types`,
         { headers },
       );
+
       setTrackedBehaviorTypes(response.data || []);
     } catch (error) {
       console.error("Failed to fetch tracked behavior types", error);
 
-      // Placeholder fallback in case backend endpoint is not ready yet
       setTrackedBehaviorTypes([
-        { code: "PHONE_OUT", displayName: "Phone Out" },
+        {
+          code: "PHONE_OUT",
+          displayName: "Phone Out",
+          consequences: ["WARNING", "PHONE_CONFISCATED", "PARENT_CONTACT"],
+        },
         {
           code: "TALKING_DURING_INSTRUCTION",
           displayName: "Talking During Instruction",
+          consequences: ["WARNING", "SEAT_CHANGE", "LUNCH_DETENTION"],
         },
         {
           code: "INTERRUPTED_CLASSROOM",
           displayName: "Interrupted Classroom",
+          consequences: ["WARNING", "REFLECTION_FORM", "OFFICE_REFERRAL"],
         },
       ]);
-    }
-  };
-
-  const fetchStudentTotals = async (studentEmails: string[]) => {
-    try {
-      const response = await axios.post(
-        `${baseUrl}/tracked-behaviors/v1/students/totals`,
-        {
-          school,
-          studentEmails,
-        },
-        { headers },
-      );
-
-      setStudentTotals(response.data || {});
-    } catch (error) {
-      console.error("Failed to fetch tracked behavior totals", error);
-      setToast({
-        open: true,
-        message: "Failed to load current behavior totals",
-        severity: "error",
-      });
-      setStudentTotals({});
-    }
-  };
-
-  const studentsInSelectedClass: Student[] = useMemo(() => {
-    if (!selectedClass?.classRoster?.length) return [];
-
-    const rosterEmails = selectedClass.classRoster
-      .filter(Boolean)
-      .map((email) => email.trim().toLowerCase());
-
-    const rosterSet = new Set(rosterEmails);
-
-    return allStudents
-      .filter((student) =>
-        rosterSet.has((student.studentEmail ?? "").trim().toLowerCase()),
-      )
-      .sort((a, b) =>
-        `${a.lastName} ${a.firstName}`.localeCompare(
-          `${b.lastName} ${b.firstName}`,
-        ),
-      );
-  }, [allStudents, selectedClass]);
-
-  const getSavedTotal = (
-    studentEmail: string,
-    behaviorCode: string,
-  ): number => {
-    return studentTotals?.[studentEmail]?.[behaviorCode] ?? 0;
-  };
-
-  const getDraftTotal = (
-    studentEmail: string,
-    behaviorCode: string,
-  ): number => {
-    return draftAdjustments?.[studentEmail]?.[behaviorCode] ?? 0;
-  };
-
-  const getResultingTotal = (
-    studentEmail: string,
-    behaviorCode: string,
-  ): number => {
-    return (
-      getSavedTotal(studentEmail, behaviorCode) +
-      getDraftTotal(studentEmail, behaviorCode)
-    );
-  };
-
-  const updateDraftValue = (
-    studentEmail: string,
-    behaviorCode: string,
-    changeAmount: number,
-  ) => {
-    const savedTotal = getSavedTotal(studentEmail, behaviorCode);
-    const currentDraft = getDraftTotal(studentEmail, behaviorCode);
-    const nextDraft = currentDraft + changeAmount;
-    const nextResultingTotal = savedTotal + nextDraft;
-
-    if (nextResultingTotal < 0) {
-      setToast({
-        open: true,
-        message: "This change would make the student's total go below 0.",
-        severity: "warning",
-      });
-      return;
-    }
-
-    setDraftAdjustments((prev) => {
-      const studentDrafts = prev[studentEmail] ?? {};
-      const nextStudentDrafts = {
-        ...studentDrafts,
-        [behaviorCode]: nextDraft,
-      };
-
-      if (nextDraft === 0) {
-        delete nextStudentDrafts[behaviorCode];
-      }
-
-      const nextState = {
-        ...prev,
-        [studentEmail]: nextStudentDrafts,
-      };
-
-      if (Object.keys(nextStudentDrafts).length === 0) {
-        delete nextState[studentEmail];
-      }
-
-      return nextState;
-    });
-  };
-
-  const resetDrafts = () => {
-    setDraftAdjustments({});
-  };
-
-  const hasAnyDraftChanges = useMemo(() => {
-    return Object.keys(draftAdjustments).length > 0;
-  }, [draftAdjustments]);
-
-  const buildSavePayload = (): TrackedBehaviorRequest | null => {
-    if (!selectedClassPeriod) return null;
-
-    const adjustments: TrackedBehaviorAdjustmentRequest[] = [];
-
-    Object.entries(draftAdjustments).forEach(([studentEmail, behaviorMap]) => {
-      Object.entries(behaviorMap).forEach(([behaviorCode, adjustmentValue]) => {
-        if (adjustmentValue !== 0) {
-          adjustments.push({
-            studentEmail,
-            behaviorCode,
-            adjustmentValue,
-          });
-        }
-      });
-    });
-
-    if (adjustments.length === 0) return null;
-
-    return {
-      teacherEmail,
-      school,
-      classPeriod: selectedClassPeriod,
-      adjustments,
-    };
-  };
-
-  const handleSave = async () => {
-    const payload = buildSavePayload();
-
-    if (!payload) {
-      setToast({
-        open: true,
-        message: "There are no changes to save.",
-        severity: "warning",
-      });
-      return;
-    }
-
-    try {
-      setSaving(true);
-
-      await axios.post(`${baseUrl}/tracked-behaviors/v1/save`, payload, {
-        headers,
-      });
-
-      setToast({
-        open: true,
-        message: "Tracked behaviors saved successfully.",
-        severity: "success",
-      });
-
-      if (selectedClass?.classRoster?.length) {
-        await fetchStudentTotals(selectedClass.classRoster);
-      }
-
-      setDraftAdjustments({});
-    } catch (error: any) {
-      console.error("Failed to save tracked behaviors", error);
-
-      const message =
-        error?.response?.data?.message ||
-        "Failed to save tracked behavior changes.";
-
-      setToast({
-        open: true,
-        message,
-        severity: "error",
-      });
-    } finally {
-      setSaving(false);
     }
   };
 
   const getStudentDisplayName = (student: Student) =>
     `${student.lastName}, ${student.firstName}`;
 
+  const toggleStudentSelection = (studentEmail: string) => {
+    setSelectedStudentEmails((prev) => {
+      if (prev.includes(studentEmail)) {
+        return prev.filter((email) => email !== studentEmail);
+      }
+
+      return [...prev, studentEmail];
+    });
+  };
+
+  const handleBack = () => {
+    if (selectedConsequenceCode) {
+      setSelectedConsequenceCode("");
+      return;
+    }
+
+    if (selectedBehaviorCode) {
+      setSelectedBehaviorCode("");
+      return;
+    }
+
+    if (studentsConfirmed) {
+      setStudentsConfirmed(false);
+      return;
+    }
+
+    if (selectedStudentEmails.length > 0) {
+      setSelectedStudentEmails([]);
+      return;
+    }
+
+    if (selectedClassPeriod) {
+      setSelectedClassPeriod("");
+    }
+  };
+
+  const handleResetAll = () => {
+    setSelectedClassPeriod("");
+    setSelectedStudentEmails([]);
+    setSelectedBehaviorCode("");
+    setSelectedConsequenceCode("");
+    setStudentsConfirmed(false);
+  };
+
+  const handleSubmit = async () => {
+    if (!selectedClass) {
+      setToast({
+        open: true,
+        message: "Please select a class.",
+        severity: "warning",
+      });
+      return;
+    }
+
+    if (selectedStudentEmails.length === 0) {
+      setToast({
+        open: true,
+        message: "Please select at least one student.",
+        severity: "warning",
+      });
+      return;
+    }
+
+    if (!selectedBehavior) {
+      setToast({
+        open: true,
+        message: "Please select a tracked behavior.",
+        severity: "warning",
+      });
+      return;
+    }
+
+    if (!selectedConsequenceCode) {
+      setToast({
+        open: true,
+        message: "Please select a consequence.",
+        severity: "warning",
+      });
+      return;
+    }
+
+    const payload = selectedStudentEmails.map((studentEmail) => ({
+      studentEmail,
+      teacherEmail,
+      school: data?.school?.schoolName ?? "",
+      classPeriod: selectedClass.classPeriod,
+      behaviorCode: selectedBehavior.code,
+      behaviorName: selectedBehavior.displayName,
+      consequenceCode: selectedConsequenceCode,
+      consequenceName: formatConsequenceLabel(selectedConsequenceCode),
+    }));
+
+    try {
+      setSubmitting(true);
+
+      const response = await axios.post(
+        `${baseUrl}/tracked-behaviors/v1/save`,
+        payload,
+        { headers },
+      );
+
+      console.log("Tracked behavior save response:", response.data);
+
+      setToast({
+        open: true,
+        message: "Tracked behavior(s) saved successfully.",
+        severity: "success",
+      });
+
+      handleResetAll();
+    } catch (error) {
+      console.error("Failed to submit tracked behavior flow", error);
+      setToast({
+        open: true,
+        message: "Failed to save tracked behavior(s).",
+        severity: "error",
+      });
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const currentStep = useMemo(() => {
+    if (!selectedClassPeriod) return 1;
+    if (!studentsConfirmed) return 2;
+    if (!selectedBehaviorCode) return 3;
+    if (!selectedConsequenceCode) return 4;
+    return 4;
+  }, [
+    selectedClassPeriod,
+    studentsConfirmed,
+    selectedBehaviorCode,
+    selectedConsequenceCode,
+  ]);
+
   return (
-    <Box sx={{ width: "100%", p: 2 }}>
+    <Box sx={{ width: "100%", p: 3 }}>
       <Snackbar
         open={toast.open}
         autoHideDuration={3500}
@@ -398,209 +367,331 @@ const TrackedBehaviorPanel: React.FC<TrackedBehaviorPanelProps> = ({
         <Alert
           severity={toast.severity}
           onClose={() => setToast((prev) => ({ ...prev, open: false }))}
-          sx={{ width: "100%" }}
+          sx={{ width: "100%", fontSize: "1rem" }}
         >
           {toast.message}
         </Alert>
       </Snackbar>
 
-      <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
-        <Typography variant="h5">Tracked Behaviors</Typography>
-        <Typography variant="body1">Teacher: {teacherEmail}</Typography>
+      <Box sx={{ display: "flex", justifyContent: "space-between", mb: 3 }}>
+        <Typography sx={fontSizes.pageTitle}>Tracked Behaviors</Typography>
+        <Typography sx={fontSizes.headerText}>
+          Teacher: {teacherEmail}
+        </Typography>
       </Box>
 
-      <Paper sx={{ p: 2, mb: 2 }}>
-        <Typography variant="subtitle1" sx={{ mb: 1 }}>
-          Select Class Roster
+      <Paper sx={{ p: 3, mb: 3 }}>
+        <Typography sx={{ ...fontSizes.stepTitle, mb: 1.5 }}>
+          Step {currentStep} of 4
         </Typography>
 
-        <Select
-          fullWidth
-          displayEmpty
-          value={selectedClassPeriod}
-          onChange={(e) => setSelectedClassPeriod(e.target.value)}
+        <Typography
+          sx={{ ...fontSizes.secondaryText, color: "text.secondary" }}
         >
-          <MenuItem value="">
-            <em>Select a class period</em>
-          </MenuItem>
+          1. Select class → 2. Select student(s) → 3. Select behavior → 4.
+          Select consequence
+        </Typography>
 
-          {teacherClasses.map((cls) => (
-            <MenuItem key={cls.classPeriod} value={cls.classPeriod}>
-              {cls.className} - {cls.classPeriod}
-            </MenuItem>
-          ))}
-        </Select>
+        {(selectedClass ||
+          selectedStudentEmails.length > 0 ||
+          selectedBehavior) && (
+          <Box sx={{ mt: 2.5 }}>
+            <Typography sx={{ ...fontSizes.primaryText, mb: 0.5 }}>
+              <strong>Class:</strong>{" "}
+              {selectedClass
+                ? `${selectedClass.className} - ${selectedClass.classPeriod}`
+                : "None"}
+            </Typography>
+
+            <Typography sx={{ ...fontSizes.primaryText, mb: 0.5 }}>
+              <strong>Students selected:</strong> {selectedStudentEmails.length}
+            </Typography>
+
+            <Typography sx={{ ...fontSizes.primaryText, mb: 0.5 }}>
+              <strong>Behavior:</strong>{" "}
+              {selectedBehavior?.displayName ?? "None"}
+            </Typography>
+
+            <Typography sx={fontSizes.primaryText}>
+              <strong>Consequence:</strong>{" "}
+              {selectedConsequenceCode
+                ? formatConsequenceLabel(selectedConsequenceCode)
+                : "None"}
+            </Typography>
+          </Box>
+        )}
       </Paper>
 
-      {(loading || saving) && (
-        <Box sx={{ display: "flex", justifyContent: "center", my: 3 }}>
-          <CircularProgress />
+      {(loading || submitting) && (
+        <Box sx={{ display: "flex", justifyContent: "center", my: 4 }}>
+          <CircularProgress size={36} />
         </Box>
       )}
 
-      {!loading && selectedClass && (
-        <Paper sx={{ p: 2 }}>
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              mb: 2,
-            }}
+      {!loading && !selectedClassPeriod && (
+        <Paper sx={{ p: 3 }}>
+          <Typography sx={{ ...fontSizes.sectionTitle, mb: 3 }}>
+            Select Your Class
+          </Typography>
+
+          <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2.5 }}>
+            {teacherClasses.map((cls) => (
+              <Button
+                key={cls.classPeriod}
+                variant="outlined"
+                onClick={() => setSelectedClassPeriod(cls.classPeriod)}
+                sx={{
+                  minWidth: 260,
+                  justifyContent: "flex-start",
+                  textAlign: "left",
+                  p: 2.5,
+                }}
+              >
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "flex-start",
+                  }}
+                >
+                  <Typography sx={fontSizes.buttonTitle}>
+                    {cls.className}
+                  </Typography>
+                  <Typography sx={{ ...fontSizes.secondaryText, mt: 0.5 }}>
+                    Period: {cls.classPeriod}
+                  </Typography>
+                  <Typography
+                    sx={{ ...fontSizes.smallText, mt: 0.5 }}
+                    color="text.secondary"
+                  >
+                    {cls.classRoster?.length ?? 0} students
+                  </Typography>
+                </Box>
+              </Button>
+            ))}
+          </Box>
+        </Paper>
+      )}
+
+      {!loading && selectedClassPeriod && !studentsConfirmed && (
+        <Paper sx={{ p: 3 }}>
+          <Typography sx={{ ...fontSizes.sectionTitle, mb: 1.5 }}>
+            Select Students
+          </Typography>
+
+          <Typography
+            sx={{ ...fontSizes.secondaryText, color: "text.secondary", mb: 3 }}
           >
-            <Box>
-              <Typography variant="h6">{selectedClass.className}</Typography>
-              <Typography variant="body2">
-                Period: {selectedClass.classPeriod}
-              </Typography>
+            You can select multiple students.
+          </Typography>
+
+          <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2.5 }}>
+            {studentsInSelectedClass.map((student) => {
+              const isSelected = selectedStudentEmails.includes(
+                student.studentEmail,
+              );
+
+              return (
+                <Button
+                  key={student.studentEmail}
+                  variant={isSelected ? "contained" : "outlined"}
+                  onClick={() => toggleStudentSelection(student.studentEmail)}
+                  sx={{
+                    minWidth: 260,
+                    justifyContent: "flex-start",
+                    textAlign: "left",
+                    p: 2.5,
+                  }}
+                >
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "flex-start",
+                    }}
+                  >
+                    <Typography sx={fontSizes.buttonTitle}>
+                      {getStudentDisplayName(student)}
+                    </Typography>
+                    <Typography sx={{ ...fontSizes.smallText, mt: 0.5 }}>
+                      {student.studentEmail}
+                    </Typography>
+                  </Box>
+                </Button>
+              );
+            })}
+          </Box>
+
+          {studentsInSelectedClass.length === 0 && (
+            <Typography
+              sx={{
+                ...fontSizes.secondaryText,
+                color: "text.secondary",
+                mt: 2,
+              }}
+            >
+              No students found for this class roster.
+            </Typography>
+          )}
+
+          <Box sx={{ display: "flex", gap: 1.5, mt: 4 }}>
+            <Button
+              variant="outlined"
+              onClick={handleBack}
+              sx={{ fontSize: "1rem", px: 2.5, py: 1.25 }}
+            >
+              Back
+            </Button>
+            <Button
+              variant="contained"
+              disabled={selectedStudentEmails.length === 0}
+              onClick={() => setStudentsConfirmed(true)}
+              sx={{ fontSize: "1rem", px: 2.5, py: 1.25 }}
+            >
+              Next
+            </Button>
+          </Box>
+        </Paper>
+      )}
+
+      {!loading &&
+        selectedClassPeriod &&
+        studentsConfirmed &&
+        !selectedBehaviorCode && (
+          <Paper sx={{ p: 3 }}>
+            <Typography sx={{ ...fontSizes.sectionTitle, mb: 1.5 }}>
+              Select Tracked Behavior
+            </Typography>
+
+            <Typography
+              sx={{
+                ...fontSizes.secondaryText,
+                color: "text.secondary",
+                mb: 3,
+              }}
+            >
+              Choose the behavior that applies to the selected student(s).
+            </Typography>
+
+            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2.5 }}>
+              {trackedBehaviorTypes.map((type) => (
+                <Button
+                  key={type.code}
+                  variant="outlined"
+                  onClick={() => setSelectedBehaviorCode(type.code)}
+                  sx={{
+                    minWidth: 260,
+                    justifyContent: "flex-start",
+                    textAlign: "left",
+                    p: 2.5,
+                  }}
+                >
+                  <Typography sx={fontSizes.buttonTitle}>
+                    {type.displayName}
+                  </Typography>
+                </Button>
+              ))}
             </Box>
 
-            <Box sx={{ display: "flex", gap: 1 }}>
+            <Box sx={{ display: "flex", gap: 1.5, mt: 4 }}>
               <Button
                 variant="outlined"
-                onClick={resetDrafts}
-                disabled={!hasAnyDraftChanges || saving}
+                onClick={handleBack}
+                sx={{ fontSize: "1rem", px: 2.5, py: 1.25 }}
               >
-                Reset Draft
+                Back
+              </Button>
+            </Box>
+          </Paper>
+        )}
+
+      {!loading &&
+        selectedClassPeriod &&
+        studentsConfirmed &&
+        selectedBehaviorCode && (
+          <Paper sx={{ p: 3 }}>
+            <Typography sx={{ ...fontSizes.sectionTitle, mb: 1.5 }}>
+              Select Consequence
+            </Typography>
+
+            <Typography
+              sx={{
+                ...fontSizes.secondaryText,
+                color: "text.secondary",
+                mb: 3,
+              }}
+            >
+              Behavior selected:{" "}
+              <strong>{selectedBehavior?.displayName}</strong>
+            </Typography>
+
+            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2.5 }}>
+              {selectedBehaviorConsequences.map((consequence) => {
+                const isSelected = selectedConsequenceCode === consequence;
+
+                return (
+                  <Button
+                    key={consequence}
+                    variant={isSelected ? "contained" : "outlined"}
+                    onClick={() => setSelectedConsequenceCode(consequence)}
+                    sx={{
+                      minWidth: 260,
+                      justifyContent: "flex-start",
+                      textAlign: "left",
+                      p: 2.5,
+                    }}
+                  >
+                    <Typography sx={fontSizes.buttonTitle}>
+                      {formatConsequenceLabel(consequence)}
+                    </Typography>
+                  </Button>
+                );
+              })}
+            </Box>
+
+            {selectedBehaviorConsequences.length === 0 && (
+              <Typography
+                sx={{
+                  ...fontSizes.secondaryText,
+                  color: "text.secondary",
+                  mt: 2,
+                }}
+              >
+                No consequences were returned for this tracked behavior yet.
+              </Typography>
+            )}
+
+            <Box sx={{ display: "flex", gap: 1.5, mt: 4 }}>
+              <Button
+                variant="outlined"
+                onClick={handleBack}
+                sx={{ fontSize: "1rem", px: 2.5, py: 1.25 }}
+              >
+                Back
               </Button>
               <Button
                 variant="contained"
-                onClick={handleSave}
-                disabled={!hasAnyDraftChanges || saving}
+                onClick={handleSubmit}
+                disabled={!selectedConsequenceCode || submitting}
+                sx={{ fontSize: "1rem", px: 2.5, py: 1.25 }}
               >
-                Save Changes
+                Submit
               </Button>
             </Box>
-          </Box>
+          </Paper>
+        )}
 
-          <TableContainer>
-            <Table size="small">
-              <TableHead>
-                <TableRow>
-                  <TableCell sx={{ minWidth: 220, fontWeight: 700 }}>
-                    Student
-                  </TableCell>
-
-                  {trackedBehaviorTypes.map((type) => (
-                    <TableCell
-                      key={type.code}
-                      align="center"
-                      sx={{ minWidth: 220, fontWeight: 700 }}
-                    >
-                      {type.displayName}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              </TableHead>
-
-              <TableBody>
-                {studentsInSelectedClass.map((student) => (
-                  <TableRow key={student.studentEmail} hover>
-                    <TableCell>
-                      <Box>
-                        <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                          {getStudentDisplayName(student)}
-                        </Typography>
-                        <Typography variant="caption" color="text.secondary">
-                          {student.studentEmail}
-                        </Typography>
-                      </Box>
-                    </TableCell>
-
-                    {trackedBehaviorTypes.map((type) => {
-                      const savedTotal = getSavedTotal(
-                        student.studentEmail,
-                        type.code,
-                      );
-                      const draftTotal = getDraftTotal(
-                        student.studentEmail,
-                        type.code,
-                      );
-                      const resultingTotal = getResultingTotal(
-                        student.studentEmail,
-                        type.code,
-                      );
-
-                      return (
-                        <TableCell key={type.code} align="center">
-                          <Box
-                            sx={{
-                              display: "flex",
-                              flexDirection: "column",
-                              alignItems: "center",
-                              gap: 1,
-                            }}
-                          >
-                            <Box sx={{ display: "flex", gap: 1 }}>
-                              <Button
-                                variant="outlined"
-                                size="small"
-                                onClick={() =>
-                                  updateDraftValue(
-                                    student.studentEmail,
-                                    type.code,
-                                    -1,
-                                  )
-                                }
-                              >
-                                -
-                              </Button>
-
-                              <Button
-                                variant="contained"
-                                size="small"
-                                onClick={() =>
-                                  updateDraftValue(
-                                    student.studentEmail,
-                                    type.code,
-                                    1,
-                                  )
-                                }
-                              >
-                                +
-                              </Button>
-                            </Box>
-
-                            <Typography variant="body2">
-                              Draft:{" "}
-                              {draftTotal >= 0 ? `+${draftTotal}` : draftTotal}
-                            </Typography>
-
-                            <Typography
-                              variant="caption"
-                              color="text.secondary"
-                            >
-                              Current total: {resultingTotal}
-                            </Typography>
-
-                            <Typography
-                              variant="caption"
-                              color="text.secondary"
-                              sx={{ opacity: 0.7 }}
-                            >
-                              Saved: {savedTotal}
-                            </Typography>
-                          </Box>
-                        </TableCell>
-                      );
-                    })}
-                  </TableRow>
-                ))}
-
-                {studentsInSelectedClass.length === 0 && (
-                  <TableRow>
-                    <TableCell
-                      colSpan={trackedBehaviorTypes.length + 1}
-                      align="center"
-                    >
-                      No students found for this class roster.
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </Paper>
+      {!loading && (
+        <Box sx={{ display: "flex", gap: 1.5, mt: 3 }}>
+          <Button
+            variant="text"
+            color="inherit"
+            onClick={handleResetAll}
+            sx={{ fontSize: "1rem", px: 1.5, py: 1 }}
+          >
+            Reset All
+          </Button>
+        </Box>
       )}
     </Box>
   );
