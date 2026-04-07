@@ -67,7 +67,7 @@ const TeacherStudentPanel: React.FC<StudentPanelProps> = ({
   const [selectedStudentTab, setSelectedStudentTab] = useState<
     | "all"
     | "trackedBehaviors"
-    | "trackedBehaviorAdjustments"
+    | "trackedBehaviorConsequences"
     | "punishments"
     | "positiveShoutOuts"
     | "behavioralConcerns"
@@ -256,6 +256,13 @@ const TeacherStudentPanel: React.FC<StudentPanelProps> = ({
   };
 
   const formatBehaviorLabel = (code: string) =>
+    code
+      .toLowerCase()
+      .split("_")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+
+  const formatCodeLabel = (code: string) =>
     code
       .toLowerCase()
       .split("_")
@@ -540,8 +547,8 @@ const TeacherStudentPanel: React.FC<StudentPanelProps> = ({
                             value="trackedBehaviors"
                           />
                           <Tab
-                            label="Tracked Behavior Adjustments"
-                            value="trackedBehaviorAdjustments"
+                            label="Tracked Behavior Consequences"
+                            value="trackedBehaviorConsequences"
                           />
                           <Tab label="Punishments" value="punishments" />
                           <Tab
@@ -653,9 +660,8 @@ const TeacherStudentPanel: React.FC<StudentPanelProps> = ({
 
                             {trackedBehaviorLoading ? (
                               <p>Loading tracked behaviors...</p>
-                            ) : Object.keys(trackedBehaviorTotals).length ===
-                              0 ? (
-                              <p>No tracked behavior totals found.</p>
+                            ) : trackedBehaviorTimeline.length === 0 ? (
+                              <p>No tracked behaviors found.</p>
                             ) : (
                               <TableContainer
                                 style={{ backgroundColor: "white" }}
@@ -677,15 +683,26 @@ const TeacherStudentPanel: React.FC<StudentPanelProps> = ({
                                           textAlign: "center",
                                         }}
                                       >
-                                        Total
+                                        Consequence
+                                      </TableCell>
+                                      <TableCell
+                                        sx={{
+                                          fontSize: "1.5rem",
+                                          textAlign: "center",
+                                        }}
+                                      >
+                                        Date
                                       </TableCell>
                                     </TableRow>
                                   </TableHead>
                                   <TableBody>
-                                    {Object.entries(trackedBehaviorTotals).map(
-                                      ([behaviorCode, total], index) => (
+                                    {trackedBehaviorTimeline.map(
+                                      (event, index) => (
                                         <TableRow
-                                          key={behaviorCode}
+                                          key={
+                                            event.trackedBehaviorEventId ??
+                                            index
+                                          }
                                           style={{
                                             background:
                                               index % 2 === 0
@@ -699,7 +716,10 @@ const TeacherStudentPanel: React.FC<StudentPanelProps> = ({
                                               textAlign: "center",
                                             }}
                                           >
-                                            {formatBehaviorLabel(behaviorCode)}
+                                            {event.behaviorName ??
+                                              formatBehaviorLabel(
+                                                event.behaviorCode,
+                                              )}
                                           </TableCell>
                                           <TableCell
                                             sx={{
@@ -707,7 +727,22 @@ const TeacherStudentPanel: React.FC<StudentPanelProps> = ({
                                               textAlign: "center",
                                             }}
                                           >
-                                            {total}
+                                            {event.consequenceName ??
+                                              formatCodeLabel(
+                                                event.consequenceCode ?? "",
+                                              )}
+                                          </TableCell>
+                                          <TableCell
+                                            sx={{
+                                              fontSize: "1.5rem",
+                                              textAlign: "center",
+                                            }}
+                                          >
+                                            {event.timeCreated
+                                              ? new Date(
+                                                  event.timeCreated,
+                                                ).toLocaleString("en-US")
+                                              : "N/A"}
                                           </TableCell>
                                         </TableRow>
                                       ),
@@ -720,14 +755,14 @@ const TeacherStudentPanel: React.FC<StudentPanelProps> = ({
                         )}
 
                         {selectedStudentTab ===
-                          "trackedBehaviorAdjustments" && (
+                          "trackedBehaviorConsequences" && (
                           <>
                             <h3 style={{ marginTop: 0 }}>
-                              Tracked Behavior Adjustments
+                              Tracked Behavior Consequences
                             </h3>
 
                             {trackedBehaviorLoading ? (
-                              <p>Loading tracked behavior adjustments...</p>
+                              <p>Loading tracked behavior Consequences...</p>
                             ) : trackedBehaviorTimeline.length === 0 ? (
                               <p>No tracked behavior adjustments found.</p>
                             ) : (
@@ -759,7 +794,7 @@ const TeacherStudentPanel: React.FC<StudentPanelProps> = ({
                                           textAlign: "center",
                                         }}
                                       >
-                                        Adjustment
+                                        Consequence
                                       </TableCell>
                                       <TableCell
                                         sx={{
@@ -823,9 +858,10 @@ const TeacherStudentPanel: React.FC<StudentPanelProps> = ({
                                               textAlign: "center",
                                             }}
                                           >
-                                            {event.adjustmentValue > 0
-                                              ? `+${event.adjustmentValue}`
-                                              : event.adjustmentValue}
+                                            {event.consequenceName ??
+                                              formatCodeLabel(
+                                                event.consequenceCode ?? "",
+                                              )}
                                           </TableCell>
                                           <TableCell
                                             sx={{
