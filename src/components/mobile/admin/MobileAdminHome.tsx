@@ -10,6 +10,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { get, handleLogout } from "../../../utils/api/api";
 import { AdminOverviewDto } from "../../../types/responses";
 import "../admin-mobile.css";
+import NotificationSimulator from "../../../notifications/NotificationSimulator";
 
 const MobileAdminHome = () => {
   const navigate = useNavigate();
@@ -78,6 +79,7 @@ const MobileAdminHome = () => {
         </section>
         <section className="mobile-admin-section" aria-labelledby="mobile-scope"><h3 id="mobile-scope">Mobile management</h3><p className="mobile-admin-supporting-copy">Class and student management will be the next mobile admin flow. Reports, charts, and school configuration remain deliberately desktop-first.</p></section>
       </>}
+        <NotificationSimulator />
     </section>
   </main>;
 };
