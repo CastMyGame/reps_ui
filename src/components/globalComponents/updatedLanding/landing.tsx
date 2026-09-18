@@ -918,7 +918,7 @@ const LandingPage = () => {
       textAlign: "center",
     }}
   >
-    REPS · v0.1.0 · Mobile pilot
+    REPS · v0.1.1 · Mobile pilot - firebase notification
   </div>
         </div>
       </div>
