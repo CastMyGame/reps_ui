@@ -142,9 +142,13 @@ const LandingPage = () => {
       navigate(path);
     }
     if (role === "ADMIN") {
-      let path = "/dashboard/admin";
-      navigate(path);
-    }
+    const isMobile = window.matchMedia(
+      "(max-width: 767px), (pointer: coarse)"
+    ).matches;
+
+    const path = isMobile ? "/m/admin" : "/dashboard/admin";
+    navigate(path);
+  }
     if (role === "GUIDANCE") {
       let path = "/dashboard/guidance";
       navigate(path);
