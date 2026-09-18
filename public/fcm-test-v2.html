@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>REPS · FCM diagnostics</title>
+    <style>
+      :root { font-family: system-ui, sans-serif; color: #17212b; background: #f5f7f7; }
+      body { margin: 0; padding: 24px; } main { max-width: 650px; margin: auto; padding: 24px; border-radius: 18px; background: #fff; box-shadow: 0 16px 42px #17212b22; }
+      h1 { margin-top: 0; } p { color: #52636d; line-height: 1.5; } button { width: 100%; min-height: 46px; margin: 8px 0; border: 0; border-radius: 9px; background: #25444c; color: #fff; font: inherit; font-weight: 700; cursor: pointer; } button:disabled { cursor: default; opacity: .65; } button.secondary { color: #25444c; background: #eaf1f1; }
+      #diagnostics, #events, #token { white-space: pre-wrap; overflow-wrap: anywhere; padding: 12px; border-radius: 9px; background: #f0f4f4; font: .8rem ui-monospace, monospace; } #events { min-height: 88px; } .good { color: #176b3a; font-weight: 700; } .bad { color: #a22828; font-weight: 700; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>REPS FCM diagnostics</h1>
+      <p>This page tests one browser only. It reports worker state and records every FCM event it receives.</p>
+      <button id="enable">Enable / refresh push registration</button>
+      <button id="copy" class="secondary" hidden>Copy current FCM token</button>
+      <p id="status" role="status"></p>
+      <h3>Browser and worker status</h3><pre id="diagnostics">Checking…</pre>
+      <h3>FCM event log</h3><pre id="events">No messages received yet.</pre>
+      <h3>Current registration token</h3><pre id="token" hidden></pre>
+    </main>
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+      import { getMessaging, getToken, isSupported, onMessage } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-messaging.js";
+      const config = { apiKey:"AIzaSyDrD8VQP0AcHp8uJI1IjFakHn214hav9j4", authDomain:"notification-service-reps.firebaseapp.com", projectId:"notification-service-reps", storageBucket:"notification-service-reps.firebasestorage.app", messagingSenderId:"514965369233", appId:"1:514965369233:web:4bb7a21f33f365a42f6a30" };
+      const vapidKey = "BFme_RsLQDpkAkWzvSDvwa2w57Tgb0-g8WwFJd1HLSUfwJCWNDHniP-mbeOA7PHayctJ4KEcjLEJL9RRmwhuqCM";
+      const status = document.querySelector("#status"), diagnostics = document.querySelector("#diagnostics"), events = document.querySelector("#events"), tokenView = document.querySelector("#token"), enable = document.querySelector("#enable"), copy = document.querySelector("#copy");
+      let token = "";
+      const log = (text) => { events.textContent = `[${new Date().toLocaleTimeString()}] ${text}\n${events.textContent}`; };
+      const refreshDiagnostics = async () => {
+        const registrations = await navigator.serviceWorker.getRegistrations();
+        diagnostics.textContent = [
+          `Secure context: ${window.isSecureContext}`,
+          `Notification permission: ${Notification.permission}`,
+          `Service worker support: ${"serviceWorker" in navigator}`,
+          `Page controlled by worker: ${Boolean(navigator.serviceWorker.controller)}`,
+          `Registered workers: ${registrations.length}`,
+          ...registrations.map((r) => `• ${r.scope} | active: ${r.active?.scriptURL || "none"} | waiting: ${r.waiting?.scriptURL || "none"}`)
+        ].join("\n");
+      };
+      navigator.serviceWorker.addEventListener("message", (event) => log(`Worker event: ${JSON.stringify(event.data)}`));
+      refreshDiagnostics();
+      enable.addEventListener("click", async () => {
+        enable.disabled = true; status.textContent = "Registering the diagnostic service worker…"; status.className = "";
+        try {
+          if (!(await isSupported())) throw new Error("Firebase Messaging is not supported by this browser.");
+          if (await Notification.requestPermission() !== "granted") throw new Error("Notifications are not allowed for localhost.");
+          const worker = await navigator.serviceWorker.register("/fcm-test-v2-sw.js");
+          await navigator.serviceWorker.ready;
+          const messaging = getMessaging(initializeApp(config));
+          token = await getToken(messaging, { vapidKey, serviceWorkerRegistration: worker });
+          if (!token) throw new Error("Firebase returned no registration token.");
+          tokenView.textContent = token; tokenView.hidden = false; copy.hidden = false;
+          status.textContent = "Ready — worker active and token registered."; status.className = "good";
+          log("Token issued. Send a Firebase Console test message to this exact token.");
+          onMessage(messaging, (payload) => log(`Foreground FCM message: ${JSON.stringify(payload)}`));
+        } catch (error) {
+          status.textContent = error instanceof Error ? error.message : "Push registration failed."; status.className = "bad"; log(`Setup error: ${status.textContent}`);
+        } finally { enable.disabled = false; await refreshDiagnostics(); }
+      });
+      copy.addEventListener("click", async () => { await navigator.clipboard.writeText(token); status.textContent = "Ready — token copied for Firebase Console."; status.className = "good"; });
+    </script>
+  </body>
+</html>
