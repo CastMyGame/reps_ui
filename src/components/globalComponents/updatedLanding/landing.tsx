@@ -158,7 +158,18 @@ const LandingPage = () => {
   useEffect(() => {
     // Check for OAuth error
     const error = searchParams.get("error");
+    const token = searchParams.get("token");
     const errorType = searchParams.get("errorType");
+    const userParam = searchParams.get("user");
+
+    if (
+    !token &&
+    !error &&
+    window.matchMedia("(max-width: 767px), (pointer: coarse)").matches
+  ) {
+    navigate("/m/landing-login", { replace: true });
+    return;
+  }
 
     if (error && errorType === "UNAUTHORIZED") {
       navigate("/sign-up");
@@ -166,8 +177,7 @@ const LandingPage = () => {
       window.history.replaceState({}, document.title, "/login");
     }
 
-    const token = searchParams.get("token");
-    const userParam = searchParams.get("user");
+  
 
     if (token && userParam) {
       try {
@@ -918,7 +928,7 @@ const LandingPage = () => {
       textAlign: "center",
     }}
   >
-    REPS · v0.1.0 · Mobile pilot
+    REPS · v0.1.2 · Mobile pilot 
   </div>
         </div>
       </div>

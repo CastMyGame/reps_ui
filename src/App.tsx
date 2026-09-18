@@ -26,6 +26,10 @@ import CheckoutCancel from "./security/checkoutCancel";
 import CheckoutSuccess from "./security/checkoutSuccess";
 import MobileAdminOpenWriteUps from "./components/mobile/admin/MobileAdminOpenWriteUps";
 import DevSessionLogin from "./security/DevSessionLogin";
+  import MobileLandingLogin from "./components/mobile/MobileLandingLogin";
+import MobileAdminHomeV2 from "./components/mobile/admin/MobileAdminHomeV2";
+import MobileAdminCreateRecordV2 from "./components/mobile/admin/MobileAdminCreateRecordV2";
+import MobileAdminPositiveBehavior from "./components/mobile/admin/MobileAdminPositiveBehavior";
 
 function App() {
   const [isLoggedOut, setIsLoggedOut] = useState(false);
@@ -45,9 +49,10 @@ function App() {
             <Route path="/student-login" element={<SinglePageSignIn />} />
             <Route path="/dev/session" element={<DevSessionLogin/>}/>
             <Route path="/login" element={<LandingPage />} />
+              <Route path="/m/landing-login" element={<MobileLandingLogin />} />
             <Route path="/m/admin" element={
               <AuthRoute allowedRoles={["ADMIN"]} userRole={"ADMIN"}>
-                <MobileAdminHome/>
+                <MobileAdminHomeV2/>
               </AuthRoute>
             }/>
              <Route
@@ -58,11 +63,28 @@ function App() {
                     </AuthRoute>
     }
   />
+          <Route
+                  path="/m/admin/admin-create-v2"
+                  element={
+                    <AuthRoute allowedRoles={["ADMIN"]} userRole={"ADMIN"}>
+                      <MobileAdminCreateRecordV2 />
+                    </AuthRoute>
+    }
+  />
               <Route
                   path="/m/admin/write-ups"
                   element={
                     <AuthRoute allowedRoles={["ADMIN"]} userRole={"ADMIN"}>
                       <MobileAdminOpenWriteUps />
+                    </AuthRoute>
+                  }
+                />
+
+                <Route
+                  path="/m/admin/positive-behavior"
+                  element={
+                    <AuthRoute allowedRoles={["ADMIN"]} userRole={"ADMIN"}>
+                      <MobileAdminPositiveBehavior/>
                     </AuthRoute>
                   }
                 />
