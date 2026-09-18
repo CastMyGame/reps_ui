@@ -908,6 +908,18 @@ const LandingPage = () => {
               </div>
             </div>
           </section>
+           <div
+    aria-label="Application version"
+    style={{
+      padding: "10px 16px 16px",
+      color: "#7a8585",
+      fontSize: "10px",
+      letterSpacing: "0.08em",
+      textAlign: "center",
+    }}
+  >
+    REPS · v0.1.0 · Mobile pilot
+  </div>
         </div>
       </div>
     </div>
