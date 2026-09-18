@@ -1,0 +1,37 @@
+.reps-notification-host { position: fixed; z-index: 1500; right: 16px; bottom: 16px; display: grid; gap: 10px; width: min(360px, calc(100vw - 32px)); }.reps-notification { display: grid; grid-template-columns: 1fr 40px; gap: 10px; padding: 14px; border-radius: 14px; color: #17212b; background: #fff; box-shadow: 0 10px 28px rgba(23,33,43,.2); }.reps-notification-success { border-left: 5px solid #2e7d32; }.reps-notification-warning { border-left: 5px solid #c17700; }.reps-notification-info { border-left: 5px solid #25444c; }.reps-notification strong { display: block; font-size: 16px; }.reps-notification p { margin: 4px 0 10px; color: #52636d; font-size: 14px; line-height: 1.35; }.reps-notification button { min-height: 36px; border: 0; border-radius: 8px; color: #fff; background: #25444c; font: inherit; font-weight: 800; }.reps-notification-dismiss { width: 40px; padding: 0; color: #52636d !important; background: transparent !important; }.reps-notification-simulator { display: grid; gap: 8px; margin-top: 22px; padding: 14px; border-radius: 14px; background: #eaf1f1; }.reps-notification-simulator p { margin: 0; color: #25444c; font-size: 13px; font-weight: 800; text-transform: uppercase; }.reps-notification-simulator button { min-height: 42px; border: 0; border-radius: 10px; color: #25444c; background: #fff; font: inherit; font-weight: 800; }
+.reps-notification {
+    animation: reps-notification-enter 260ms cubic-
+    bezier(0.22, 1, 0.36, 1);
+  }
+
+  @keyframes reps-notification-enter {
+    from {
+      opacity: 0;
+      transform: translateY(24px) scale(0.98);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  @media (max-width: 600px) {
+    .reps-notification-host {
+      right: 16px;
+      left: 16px;
+      bottom: max(16px, env(safe-area-inset-
+      bottom));
+      width: auto;
+    }
+
+    .reps-notification {
+      border-radius: 16px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reps-notification {
+      animation: none;
+    }
+  }

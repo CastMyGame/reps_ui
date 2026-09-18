@@ -1,4 +1,8 @@
 import "./App.css";
+import { NotificationProvider } from "./notifications/NotificationProvider";
+import NotificationHost from "./notifications/NotificationHost";
+import MobileAdminCreateRecord from "./components/mobile/admin/MobileAdminCreateRecord";
+import MobileAdminHome from "./components/mobile/admin/MobileAdminHome";
 import ViolationPage from "./forms/ViolationPage";
 import FailureToComplete from "./forms/FailureToComplete";
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
@@ -20,6 +24,8 @@ import AuthRoute from "./utils/api/api";
 import PrivatePolicyPage from "./components/globalComponents/updatedLanding/privacy-policy";
 import CheckoutCancel from "./security/checkoutCancel";
 import CheckoutSuccess from "./security/checkoutSuccess";
+import MobileAdminOpenWriteUps from "./components/mobile/admin/MobileAdminOpenWriteUps";
+import DevSessionLogin from "./security/DevSessionLogin";
 
 function App() {
   const [isLoggedOut, setIsLoggedOut] = useState(false);
@@ -27,14 +33,39 @@ function App() {
   return (
     <div className="App">
       <Router>
+        <NotificationProvider>
+
         <div>
+          <NotificationHost/>
           <Routes>
             <Route path="/sign-up" element={<Register />} />
             <Route path="/checkout/success" element={<CheckoutSuccess />} />
             <Route path="/checkout/cancel" element={<CheckoutCancel />} />
             <Route path="/privacy-policy" element={<PrivatePolicyPage />} />
             <Route path="/student-login" element={<SinglePageSignIn />} />
+            <Route path="/dev/session" element={<DevSessionLogin/>}/>
             <Route path="/login" element={<LandingPage />} />
+            <Route path="/m/admin" element={
+              <AuthRoute allowedRoles={["ADMIN"]} userRole={"ADMIN"}>
+                <MobileAdminHome/>
+              </AuthRoute>
+            }/>
+             <Route
+                  path="/m/admin/admin-create"
+                  element={
+                    <AuthRoute allowedRoles={["ADMIN"]} userRole={"ADMIN"}>
+                      <MobileAdminCreateRecord />
+                    </AuthRoute>
+    }
+  />
+              <Route
+                  path="/m/admin/write-ups"
+                  element={
+                    <AuthRoute allowedRoles={["ADMIN"]} userRole={"ADMIN"}>
+                      <MobileAdminOpenWriteUps />
+                    </AuthRoute>
+                  }
+                />
             <Route path="/reset-password/:token" element={<ResetPassword />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
 
@@ -100,6 +131,7 @@ function App() {
           </Routes>
           {!isLoggedOut && <IdleTimerContainer></IdleTimerContainer>}
         </div>
+        </NotificationProvider>
       </Router>
     </div>
   );
