@@ -29,6 +29,7 @@ import DevSessionLogin from "./security/DevSessionLogin";
   import MobileLandingLogin from "./components/mobile/MobileLandingLogin";
 import MobileAdminHomeV2 from "./components/mobile/admin/MobileAdminHomeV2";
 import MobileAdminCreateRecordV2 from "./components/mobile/admin/MobileAdminCreateRecordV2";
+import MobileAdminPositiveBehavior from "./components/mobile/admin/MobileAdminPositiveBehavior";
 
 function App() {
   const [isLoggedOut, setIsLoggedOut] = useState(false);
@@ -75,6 +76,15 @@ function App() {
                   element={
                     <AuthRoute allowedRoles={["ADMIN"]} userRole={"ADMIN"}>
                       <MobileAdminOpenWriteUps />
+                    </AuthRoute>
+                  }
+                />
+
+                <Route
+                  path="/m/admin/positive-behavior"
+                  element={
+                    <AuthRoute allowedRoles={["ADMIN"]} userRole={"ADMIN"}>
+                      <MobileAdminPositiveBehavior/>
                     </AuthRoute>
                   }
                 />
