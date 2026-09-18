@@ -64,10 +64,18 @@ export default function SinglePageSignIn() {
       let path = "/dashboard/student";
       navigate(path);
     }
-    if (role === "ADMIN") {
-      let path = "/dashboard/admin";
-      navigate(path);
-    }
+
+     if (role === "ADMIN") {
+    const isMobile = window.matchMedia(
+      "(max-width: 767px), (pointer: coarse)"
+    ).matches;
+
+    const path = isMobile ? "/m/admin" : "/dashboard/admin";
+    navigate(path);
+  }
+
+   
+  
     if (role === "GUIDANCE") {
       let path = "/dashboard/teacher";
       navigate(path);
