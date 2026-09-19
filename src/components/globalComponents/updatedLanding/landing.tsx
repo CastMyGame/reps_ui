@@ -928,7 +928,7 @@ const LandingPage = () => {
       textAlign: "center",
     }}
   >
-    REPS · v0.1.2 · Mobile pilot 
+    REPS · v0.1.2.1 · Mobile pilot 
   </div>
         </div>
       </div>
