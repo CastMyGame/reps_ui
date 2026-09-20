@@ -34,7 +34,7 @@ const MobileAdminHomeV2 = () => {
         <section className="mobile-admin-v2-section" aria-labelledby="quick-actions"><h3 id="quick-actions">Quick actions</h3><div className="mobile-admin-v2-action-grid">
           <button type="button" className="positive" onClick={() => navigate("/m/admin/positive-behavior")}><CelebrationRoundedIcon /><strong>Positive behavior</strong><span>Celebrate student shout-outs</span></button>
           <button type="button" className="referrals" onClick={() => navigate("/m/admin/write-ups")}><WarningAmberRoundedIcon /><strong>Open write-ups</strong><span>{openReferrals} need review</span></button>
-          <button type="button" onClick={desktopOnly}><PersonAddAltRoundedIcon /><strong>Add student</strong><span>Open student tools</span></button>
+          <button type="button" onClick={() =>   navigate("/m/admin/create-person")}><PersonAddAltRoundedIcon /><strong>Add student</strong><span>Open student tools</span></button>
           <button type="button" onClick={desktopOnly}><TimerRoundedIcon /><strong>Detention</strong><span>Manage time and status</span></button>
           <button type="button" onClick={desktopOnly}><AssessmentRoundedIcon /><strong>Reports</strong><span>View school insights</span></button>
           <button type="button" onClick={() => navigate("/m/admin/admin-create-v2")}><AddRoundedIcon /><strong>Create record</strong><span>Referral or shout-out</span></button>

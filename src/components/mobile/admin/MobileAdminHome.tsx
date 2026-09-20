@@ -11,7 +11,6 @@ import { get, handleLogout } from "../../../utils/api/api";
 import { AdminOverviewDto } from "../../../types/responses";
 import "../admin-mobile.css";
 import NotificationSimulator from "../../../notifications/NotificationSimulator";
-import PushNotificationSetup from "../../../notifications/PushNotificationSetup";
 
 const MobileAdminHome = () => {
   const navigate = useNavigate();
@@ -79,7 +78,6 @@ const MobileAdminHome = () => {
           </div>
         </section>
         <section className="mobile-admin-section" aria-labelledby="mobile-scope"><h3 id="mobile-scope">Mobile management</h3><p className="mobile-admin-supporting-copy">Class and student management will be the next mobile admin flow. Reports, charts, and school configuration remain deliberately desktop-first.</p></section>
-          <PushNotificationSetup />
       </>}
         <NotificationSimulator />
     </section>
