@@ -39,6 +39,8 @@ import MobileAdminPositiveBehavior from "./components/mobile/admin/MobileAdminPo
 import MobileAdminManageStaff from "./components/mobile/admin/MobileAdminManageStaff";
 import MobileTeacherHome from "./components/mobile/teacher/MobileTeacherHome";
 import MobileTeacherShoutOut from "./components/mobile/teacher/MobileTeacherShoutOut";
+import MobileTeacherClasses from "./components/mobile/teacher/MobileTeacherClasses";
+import MobileTeacherAddStudent from "./components/mobile/teacher/MobileTeacherAddStudent";
 import MobileStudentHome from "./components/mobile/student/MobileStudentHome";
 
 
@@ -62,6 +64,8 @@ function App() {
               <Route path="/m/landing-login" element={<MobileLandingLogin />} />
               <Route path="/m/teacher" element={<AuthRoute allowedRoles={["TEACHER"]} userRole={"TEACHER"}><MobileTeacherHome /></AuthRoute>} />
               <Route path="/m/teacher/shout-out" element={<AuthRoute allowedRoles={["TEACHER"]} userRole={"TEACHER"}><MobileTeacherShoutOut /></AuthRoute>} />
+              <Route path="/m/teacher/classes" element={<AuthRoute allowedRoles={["TEACHER"]} userRole={"TEACHER"}><MobileTeacherClasses /></AuthRoute>} />
+              <Route path="/m/teacher/add-student" element={<AuthRoute allowedRoles={["TEACHER"]} userRole={"TEACHER"}><MobileTeacherAddStudent /></AuthRoute>} />
               <Route path="/m/student" element={<AuthRoute allowedRoles={["STUDENT"]} userRole={"STUDENT"}><MobileStudentHome /></AuthRoute>} />
               <Route
                 path="/m/admin"
