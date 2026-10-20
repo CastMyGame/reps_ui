@@ -36,6 +36,7 @@ import MobileAdminHomeV2 from "./components/mobile/admin/MobileAdminHomeV2";
 import MobileAdminCreateRecordV2 from "./components/mobile/admin/MobileAdminCreateRecordV2";
 import MobileAdminPositiveBehavior from "./components/mobile/admin/MobileAdminPositiveBehavior";
  import MobileAdminCreateStudentTeacherV2 from "./components/mobile/admin/MobileAdminCreateStudentTeacherV2";
+import MobileAdminManageStaff from "./components/mobile/admin/MobileAdminManageStaff";
 import MobileTeacherHome from "./components/mobile/teacher/MobileTeacherHome";
 import MobileTeacherShoutOut from "./components/mobile/teacher/MobileTeacherShoutOut";
 import MobileStudentHome from "./components/mobile/student/MobileStudentHome";
@@ -113,6 +114,7 @@ function App() {
                   </AuthRoute>
                 }
               />
+              <Route path="/m/admin/manage-staff" element={<AuthRoute allowedRoles={["ADMIN"]} userRole={"ADMIN"}><MobileAdminManageStaff /></AuthRoute>} />
               <Route
                 path="/reset-password/:token"
                 element={<ResetPassword />}

@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import AdminPanelSettingsRoundedIcon from "@mui/icons-material/AdminPanelSettingsRounded";
-import AssessmentRoundedIcon from "@mui/icons-material/AssessmentRounded";
 import CelebrationRoundedIcon from "@mui/icons-material/CelebrationRounded";
 import GroupsRoundedIcon from "@mui/icons-material/GroupsRounded";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
@@ -37,7 +36,7 @@ const MobileAdminHomeV2 = () => {
           <button type="button" className="referrals" onClick={() => navigate("/m/admin/write-ups")}><WarningAmberRoundedIcon /><strong>Open write-ups</strong><span>{openReferrals} need review</span></button>
           <button type="button" onClick={() =>   navigate("/m/admin/create-person")}><PersonAddAltRoundedIcon /><strong>Add student</strong><span>Open student tools</span></button>
           <button type="button" disabled={true} onClick={desktopOnly}><TimerRoundedIcon /><strong>Detention</strong><span>Manage time and status</span></button>
-          <button type="button" disabled={true} onClick={desktopOnly}><AssessmentRoundedIcon /><strong>Reports</strong><span>View school insights</span></button>
+          <button type="button" onClick={() => navigate("/m/admin/manage-staff")}><GroupsRoundedIcon /><strong>Manage staff</strong><span>Update teacher and admin access</span></button>
           <button type="button" onClick={() => navigate("/m/admin/admin-create-v2")}><AddRoundedIcon /><strong>Create record</strong><span>Referral or shout-out</span></button>
         </div></section>
 

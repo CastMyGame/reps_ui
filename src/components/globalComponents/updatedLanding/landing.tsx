@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import "./landing-01.css";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import axios from "axios";
@@ -132,7 +132,7 @@ const LandingPage = () => {
 
   const navigate = useNavigate();
 
-  const routeChange = (role: string) => {
+  const routeChange = useCallback((role: string) => {
     const isMobile = window.matchMedia(
       "(max-width: 767px), (pointer: coarse)"
     ).matches;
@@ -153,7 +153,7 @@ const LandingPage = () => {
       let path = "/dashboard/guidance";
       navigate(path);
     }
-  };
+  }, [navigate]);
 
   useEffect(() => {
     // Check for OAuth error
@@ -214,7 +214,7 @@ const LandingPage = () => {
         console.error("Error parsing OAuth callback:", error);
       }
     }
-  }, [searchParams, navigate]);
+  }, [searchParams, navigate, routeChange]);
 
   const [modalType, setModalType] = useState("");
 
