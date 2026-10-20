@@ -41,6 +41,7 @@ import MobileTeacherHome from "./components/mobile/teacher/MobileTeacherHome";
 import MobileTeacherShoutOut from "./components/mobile/teacher/MobileTeacherShoutOut";
 import MobileTeacherClasses from "./components/mobile/teacher/MobileTeacherClasses";
 import MobileTeacherAddStudent from "./components/mobile/teacher/MobileTeacherAddStudent";
+import MobileTeacherRecords from "./components/mobile/teacher/MobileTeacherRecords";
 import MobileStudentHome from "./components/mobile/student/MobileStudentHome";
 
 
@@ -66,6 +67,7 @@ function App() {
               <Route path="/m/teacher/shout-out" element={<AuthRoute allowedRoles={["TEACHER"]} userRole={"TEACHER"}><MobileTeacherShoutOut /></AuthRoute>} />
               <Route path="/m/teacher/classes" element={<AuthRoute allowedRoles={["TEACHER"]} userRole={"TEACHER"}><MobileTeacherClasses /></AuthRoute>} />
               <Route path="/m/teacher/add-student" element={<AuthRoute allowedRoles={["TEACHER"]} userRole={"TEACHER"}><MobileTeacherAddStudent /></AuthRoute>} />
+              <Route path="/m/teacher/records" element={<AuthRoute allowedRoles={["TEACHER"]} userRole={"TEACHER"}><MobileTeacherRecords /></AuthRoute>} />
               <Route path="/m/student" element={<AuthRoute allowedRoles={["STUDENT"]} userRole={"STUDENT"}><MobileStudentHome /></AuthRoute>} />
               <Route
                 path="/m/admin"

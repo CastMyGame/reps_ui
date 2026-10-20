@@ -56,7 +56,7 @@ const MobileTeacherHome = () => {
         </section>
         <section className="mobile-section" aria-labelledby="quick-actions"><h3 id="quick-actions">Quick actions</h3>
           <div className="mobile-teacher-action-grid">
-            <button type="button" className="mobile-teacher-action action-referrals" onClick={() => navigate("/dashboard/teacher")}><WarningAmberRoundedIcon /><strong>Open referrals</strong><small>{openReferralCount} need attention</small></button>
+            <button type="button" className="mobile-teacher-action action-referrals" onClick={() => navigate("/m/teacher/records")}><WarningAmberRoundedIcon /><strong>Shout-outs & referrals</strong><small>{openReferralCount} open · {recentShoutOutCount} recent</small></button>
             <button type="button" className="mobile-teacher-action action-tasks" onClick={() => navigate("/dashboard/teacher")}><TaskAltRoundedIcon /><strong>My tasks</strong><small>{taskCount} level 3 reviews</small></button>
             <button type="button" className="mobile-teacher-action" onClick={() => navigate("/m/teacher/classes")}><GroupsRoundedIcon /><strong>My classes</strong><small>View rosters and students</small></button>
             <button type="button" className="mobile-teacher-action" onClick={() => navigate("/m/teacher/add-student")}><GroupsRoundedIcon /><strong>Add student</strong><small>Create a student and place them in a class</small></button>
