@@ -3,6 +3,10 @@ import { useNavigate } from "react-router-dom";
 import CampaignRoundedIcon from "@mui/icons-material/CampaignRounded";
 import GroupsRoundedIcon from "@mui/icons-material/GroupsRounded";
 import EmojiEventsRoundedIcon from "@mui/icons-material/EmojiEventsRounded";
+import WarningAmberRoundedIcon from "@mui/icons-material/WarningAmberRounded";
+import TaskAltRoundedIcon from "@mui/icons-material/TaskAltRounded";
+import AnnouncementRoundedIcon from "@mui/icons-material/AnnouncementRounded";
+import TrackChangesRoundedIcon from "@mui/icons-material/TrackChangesRounded";
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 import CircularProgress from "@mui/material/CircularProgress";
 import { get } from "../../../utils/api/api";
@@ -30,6 +34,8 @@ const MobileTeacherHome = () => {
   const teacherName = overview.teacher?.firstName || sessionStorage.getItem("userName") || "Teacher";
   const classCount = overview.teacher?.classes?.length ?? 0;
   const recentShoutOutCount = overview.shoutOutsResponse?.length ?? 0;
+  const openReferralCount = [...(overview.writeUpResponse ?? []), ...(overview.officeReferrals ?? [])].filter((item) => item.status !== "CLOSED").length;
+  const taskCount = (overview.punishmentResponse ?? []).filter((item) => item.status === "PENDING" && item.infractionLevel === "3").length;
 
   return <MobileTeacherShell title="Teacher home">
     <section className="mobile-teacher-content" aria-busy={loading}>
@@ -48,7 +54,16 @@ const MobileTeacherHome = () => {
             <div className="mobile-summary-item"><CampaignRoundedIcon aria-hidden="true" /><strong>{recentShoutOutCount}</strong><span>shout-outs</span></div>
           </div>
         </section>
-        <section className="mobile-section" aria-labelledby="today-title"><h3 id="today-title">Designed for the moment</h3><p className="mobile-supporting-copy">The mobile teacher experience stays focused on quick recognition. Class management and the full dashboard remain on desktop while their mobile flows are built.</p></section>
+        <section className="mobile-section" aria-labelledby="quick-actions"><h3 id="quick-actions">Quick actions</h3>
+          <div className="mobile-teacher-action-grid">
+            <button type="button" className="mobile-teacher-action action-referrals" onClick={() => navigate("/dashboard/teacher")}><WarningAmberRoundedIcon /><strong>Open referrals</strong><small>{openReferralCount} need attention</small></button>
+            <button type="button" className="mobile-teacher-action action-tasks" onClick={() => navigate("/dashboard/teacher")}><TaskAltRoundedIcon /><strong>My tasks</strong><small>{taskCount} level 3 reviews</small></button>
+            <button type="button" className="mobile-teacher-action" onClick={() => navigate("/dashboard/teacher")}><GroupsRoundedIcon /><strong>My classes</strong><small>View rosters and students</small></button>
+            <button type="button" className="mobile-teacher-action" onClick={() => navigate("/dashboard/teacher")}><WarningAmberRoundedIcon /><strong>Detention & ISS</strong><small>Review today’s list</small></button>
+            <button type="button" className="mobile-teacher-action" onClick={() => navigate("/dashboard/teacher")}><AnnouncementRoundedIcon /><strong>Announcement</strong><small>Message a class</small></button>
+            <button type="button" className="mobile-teacher-action" onClick={() => navigate("/dashboard/teacher")}><TrackChangesRoundedIcon /><strong>Tracked behavior</strong><small>Record a behavior note</small></button>
+          </div>
+        </section>
       </>}
     </section>
   </MobileTeacherShell>;
