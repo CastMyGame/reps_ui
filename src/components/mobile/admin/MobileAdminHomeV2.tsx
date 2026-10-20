@@ -13,6 +13,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { get, handleLogout } from "../../../utils/api/api";
 import { AdminOverviewDto } from "../../../types/responses";
 import "../admin-mobile-v2.css";
+import EmailCapabilityIndicator from "../../globalComponents/EmailCapabilityIndicator";
 
 const MobileAdminHomeV2 = () => {
   const navigate = useNavigate();
@@ -28,7 +29,7 @@ const MobileAdminHomeV2 = () => {
   return <main className="mobile-admin-v2-app">
     <header className="mobile-admin-v2-header"><div className="mobile-admin-v2-mark"><AdminPanelSettingsRoundedIcon /></div><div><span>REPS</span><h1>Admin home</h1></div><div className="mobile-admin-v2-header-actions"><button type="button" onClick={() => navigate("/m/admin/admin-create-v2")} aria-label="Create a record"><AddRoundedIcon /></button><button type="button" onClick={handleLogout} aria-label="Sign out"><LogoutRoundedIcon /></button></div></header>
     
-    <section className="mobile-admin-v2-content" aria-busy={loading}><p className="mobile-admin-v2-eyebrow">{schoolName}</p><h2>Hi, {adminName}</h2><p className="mobile-admin-v2-intro">Your focused school-day tools, designed for a phone.</p>
+    <section className="mobile-admin-v2-content" aria-busy={loading}><p className="mobile-admin-v2-eyebrow">{schoolName}</p><h2>Hi, {adminName}</h2><p className="mobile-admin-v2-intro">Your focused school-day tools, designed for a phone.</p><EmailCapabilityIndicator />
       {loading ? <div className="mobile-admin-v2-loading"><CircularProgress size={28} /> Loading school summary</div> : error ? <p className="mobile-admin-v2-error">{error}</p> : <>
         <section className="mobile-admin-v2-stats"><div><WarningAmberRoundedIcon /><strong>{openReferrals}</strong><span>open write-ups</span></div><div><CelebrationRoundedIcon /><strong>{shoutOuts}</strong><span>positive shout-outs</span></div><div><GroupsRoundedIcon /><strong>{overview?.students?.length ?? 0}</strong><span>students</span></div></section>
         <section className="mobile-admin-v2-section" aria-labelledby="quick-actions"><h3 id="quick-actions">Quick actions</h3><div className="mobile-admin-v2-action-grid">
