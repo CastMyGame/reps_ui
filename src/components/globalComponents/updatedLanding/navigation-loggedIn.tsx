@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { AccessibleDiv } from "src/utils/accessibleDiv";
+import EmailCapabilityIndicator from "../EmailCapabilityIndicator";
 import "./landing.css";
 
 interface NavigationLoggedInProps {
@@ -69,6 +70,7 @@ export const NavigationLoggedIn: React.FC<NavigationLoggedInProps> = (
         >
           Welcome {sessionStorage.getItem("userName")}!
         </a>
+        <EmailCapabilityIndicator compact />
 
         <div
           className="collapse navbar-collapse"

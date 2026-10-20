@@ -300,3 +300,100 @@
         padding: 12px;
     }
 }
+
+.mobile-staff-list {
+    display: grid;
+    gap: 12px;
+    margin-top: 18px;
+}
+
+.mobile-staff-search-label {
+    color: #344054;
+    display: block;
+    font-size: 12px;
+    font-weight: 700;
+    margin-top: 18px;
+}
+
+.mobile-staff-search {
+    background: #fff;
+    border: 1px solid #d0d5dd;
+    border-radius: 10px;
+    box-sizing: border-box;
+    color: #1d2939;
+    font: inherit;
+    margin-top: 6px;
+    min-height: 44px;
+    padding: 0 12px;
+    width: 100%;
+}
+
+.mobile-staff-card {
+    background: #fff;
+    border: 1px solid #e4e7ec;
+    border-radius: 16px;
+    padding: 16px;
+}
+
+.mobile-staff-card-heading {
+    align-items: flex-start;
+    display: flex;
+    gap: 12px;
+    justify-content: space-between;
+}
+
+.mobile-staff-card-heading strong,
+.mobile-staff-card-heading span {
+    display: block;
+}
+
+.mobile-staff-card-heading strong {
+    color: #1d2939;
+    font-size: 16px;
+}
+
+.mobile-staff-card-heading div > span,
+.mobile-staff-card > p,
+.mobile-staff-saving {
+    color: #667085;
+    font-size: 12px;
+}
+
+.mobile-staff-card > p {
+    margin: 8px 0 14px;
+}
+
+.mobile-staff-role {
+    background: #eef4ff;
+    border-radius: 999px;
+    color: #175cd3;
+    font-size: 10px;
+    font-weight: 800;
+    padding: 5px 8px;
+}
+
+.mobile-staff-card label {
+    color: #344054;
+    display: grid;
+    font-size: 12px;
+    font-weight: 700;
+    gap: 6px;
+}
+
+.mobile-staff-card select {
+    background: #fff;
+    border: 1px solid #d0d5dd;
+    border-radius: 10px;
+    box-sizing: border-box;
+    color: #1d2939;
+    font: inherit;
+    min-height: 42px;
+    padding: 0 10px;
+    max-width: 100%;
+    width: 100%;
+}
+
+.mobile-staff-saving {
+    display: block;
+    margin-top: 8px;
+}

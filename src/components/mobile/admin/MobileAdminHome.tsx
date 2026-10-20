@@ -11,6 +11,7 @@ import { get, handleLogout } from "../../../utils/api/api";
 import { AdminOverviewDto } from "../../../types/responses";
 import "../admin-mobile.css";
 import NotificationSimulator from "../../../notifications/NotificationSimulator";
+import EmailCapabilityIndicator from "../../globalComponents/EmailCapabilityIndicator";
 
 const MobileAdminHome = () => {
   const navigate = useNavigate();
@@ -54,6 +55,7 @@ const MobileAdminHome = () => {
       <p className="mobile-admin-eyebrow">{schoolName}</p>
       <h2>Hi, {adminName}</h2>
       <p className="mobile-admin-intro">See what needs attention before you open the full dashboard.</p>
+      <EmailCapabilityIndicator />
       {loading ? <div className="mobile-admin-loading" aria-live="polite"><CircularProgress size={28} /> Loading school summary</div> : error ? <p className="mobile-admin-error" role="alert">{error}</p> : <>
        <button
     className="mobile-admin-primary-action"

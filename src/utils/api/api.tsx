@@ -79,6 +79,26 @@ export const get = async (endpoint: string) => {
   throw new Error("Max retries reached without successful response.");
 };
 
+export interface AuthCapabilities {
+  loginMethod: "GOOGLE" | "PASSWORD" | string;
+  userEmail: string;
+  emailProvider: "GOOGLE_GMAIL" | "REPS_SMTP" | string;
+  emailPermission: "GRANTED" | "NOT_GRANTED" | "NOT_AVAILABLE" | string;
+  canSendAsUser: boolean;
+}
+
+export const getAuthCapabilities = async (): Promise<AuthCapabilities> => {
+  const response = await fetch(`${baseUrl}/auth/capabilities`, {
+    headers: getHeaders(),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Unable to determine email capabilities (${response.status})`);
+  }
+
+  return (await response.json()) as AuthCapabilities;
+};
+
 export const handleLogout = async () => {
   const headers = {
     Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
@@ -95,7 +115,7 @@ export const handleLogout = async () => {
 };
 
 const clearSessionStorage = () => {
-  ["Authorization", "userName", "schoolName", "email", "role"].forEach(
+  ["Authorization", "userName", "schoolName", "email", "role", "loginMethod"].forEach(
     (key) => {
       sessionStorage.removeItem(key);
     }

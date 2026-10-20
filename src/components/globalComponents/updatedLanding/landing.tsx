@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import "./landing-01.css";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import axios from "axios";
@@ -132,20 +132,20 @@ const LandingPage = () => {
 
   const navigate = useNavigate();
 
-  const routeChange = (role: string) => {
-    if (role === "TEACHER") {
-      let path = "/dashboard/teacher";
-      navigate(path);
-    }
-    if (role === "STUDENT") {
-      let path = "/dashboard/student";
-      navigate(path);
-    }
-    if (role === "ADMIN") {
+  const routeChange = useCallback((role: string) => {
     const isMobile = window.matchMedia(
       "(max-width: 767px), (pointer: coarse)"
     ).matches;
 
+    if (role === "TEACHER") {
+      const path = isMobile ? "/m/teacher" : "/dashboard/teacher";
+      navigate(path);
+    }
+    if (role === "STUDENT") {
+      const path = isMobile ? "/m/student" : "/dashboard/student";
+      navigate(path);
+    }
+    if (role === "ADMIN") {
     const path = isMobile ? "/m/admin" : "/dashboard/admin";
     navigate(path);
   }
@@ -153,7 +153,7 @@ const LandingPage = () => {
       let path = "/dashboard/guidance";
       navigate(path);
     }
-  };
+  }, [navigate]);
 
   useEffect(() => {
     // Check for OAuth error
@@ -199,6 +199,7 @@ const LandingPage = () => {
 
         // Step 4: Store in sessionStorage exactly like traditional login
         sessionStorage.setItem("Authorization", token);
+        sessionStorage.setItem("loginMethod", "GOOGLE");
         sessionStorage.setItem("userName", userName);
         sessionStorage.setItem("schoolName", schoolName);
         sessionStorage.setItem("email", email);
@@ -213,7 +214,7 @@ const LandingPage = () => {
         console.error("Error parsing OAuth callback:", error);
       }
     }
-  }, [searchParams, navigate]);
+  }, [searchParams, navigate, routeChange]);
 
   const [modalType, setModalType] = useState("");
 
@@ -238,6 +239,7 @@ const LandingPage = () => {
         const email = res.data.userModel.username;
         const role = res.data.userModel.roles[0]["role"];
         sessionStorage.setItem("Authorization", token);
+        sessionStorage.setItem("loginMethod", "PASSWORD");
         sessionStorage.setItem("userName", userName);
         sessionStorage.setItem("schoolName", schoolName);
         sessionStorage.setItem("email", email);
@@ -279,29 +281,84 @@ const LandingPage = () => {
     setWarningToast(false);
   };
 
-  const FFTraditionalLogin = false;
+  // Keep both authentication methods available from the same login modal.
+  // Password login is the primary form; Google is offered below it.
+  const FFTraditionalLogin = true;
   const FFGOOGLESSOLOGIN = true;
 
   return (
     <div className="full-width-container">
       {modalType === "login" && (
         <div
-          style={{ height: "auto", background: "red" }}
-          className="login-modal"
+          className="login-modal-backdrop"
+          onClick={() => setModalType("")}
+          style={{
+            alignItems: "center",
+            background: "rgba(15, 23, 42, 0.62)",
+            display: "flex",
+            inset: 0,
+            justifyContent: "center",
+            overflowY: "auto",
+            padding: "24px 16px",
+            position: "fixed",
+            zIndex: 1000,
+          }}
         >
-          {FFTraditionalLogin && (
-            <form className="form-container" onSubmit={HandleLogin}>
-              <div className="form-row">
-                <div className="form-column">
+          <div
+            className="login-modal"
+            onClick={(event) => event.stopPropagation()}
+            style={{
+              background: "#143c3c",
+              borderRadius: 16,
+              boxShadow: "0 24px 80px rgba(0,0,0,.28)",
+              maxWidth: 560,
+              overflow: "hidden",
+              position: "relative",
+              width: "100%",
+            }}
+          >
+            <button
+              type="button"
+              aria-label="Close sign in"
+              onClick={() => setModalType("")}
+              style={{
+                background: "transparent",
+                border: 0,
+                color: "rgba(255,255,255,.8)",
+                cursor: "pointer",
+                fontSize: 28,
+                lineHeight: 1,
+                padding: "10px 14px",
+                position: "absolute",
+                right: 4,
+                top: 4,
+                zIndex: 1,
+              }}
+            >
+              ×
+            </button>
+            {FFTraditionalLogin && (
+              <form
+                className="form-container"
+                onSubmit={HandleLogin}
+                style={{
+                  alignItems: "stretch",
+                  flexDirection: "column",
+                  height: "auto",
+                  padding: "48px 28px 24px",
+                  textAlign: "center",
+                }}
+              >
+              <div className="form-row" style={{ alignItems: "center", flexDirection: "column", gap: 14, marginBottom: 8, width: "100%" }}>
+                <div className="form-column" style={{ alignItems: "center", display: "flex", flexDirection: "column", width: "100%" }}>
                   <label htmlFor="uName">User Name*</label>
                   <br />
-                  <input type="text" id="uName" name="username" />
+                  <input type="text" id="uName" name="username" autoComplete="username" required style={{ maxWidth: 360, width: "100%" }} />
                 </div>
-                <div className="form-column">
+                <div className="form-column" style={{ alignItems: "center", display: "flex", flexDirection: "column", width: "100%" }}>
                   <label htmlFor="password">Password*</label>
                   <br />
-                  <input type="password" id="password" name="password" />
-                  <a href="/forgot-password">Forgot Password?</a>
+                  <input type="password" id="password" name="password" autoComplete="current-password" required style={{ maxWidth: 360, width: "100%" }} />
                 </div>
               </div>
 
@@ -320,24 +377,64 @@ const LandingPage = () => {
               </Snackbar>
 
               <input
-                style={{ borderRadius: 30, width: "200px", height: "20px" }}
+                style={{ borderRadius: 30, height: "42px", margin: "16px auto 0", width: "200px" }}
                 type="submit"
                 value={loading ? "Loading..." : "Sign In"}
               />
+              <a
+                href="/forgot-password"
+                style={{ color: "rgba(255,255,255,.85)", marginTop: 10, textAlign: "center" }}
+              >
+                Forgot Password?
+              </a>
             </form>
-          )}
-          {FFGOOGLESSOLOGIN && (
+            )}
+            {FFGOOGLESSOLOGIN && (
             <form
               className="form-container"
-              style={{ flexDirection: "row-reverse", height: "AUTO" }}
+              style={{
+                flexDirection: "column",
+                height: "auto",
+                padding: "0 24px 24px",
+                borderTop: "1px solid rgba(255,255,255,.2)",
+              }}
             >
+              <span
+                style={{
+                  color: "rgba(255,255,255,.75)",
+                  fontSize: 12,
+                  margin: "14px 0 8px",
+                }}
+              >
+                or continue with
+              </span>
               <button
-                style={{ background: "none", fontSize: 10 }}
+                aria-label="Sign in with Google"
+                style={{
+                  alignItems: "center",
+                  background: "#fff",
+                  border: "1px solid #747775",
+                  borderRadius: 4,
+                  boxShadow: "none",
+                  color: "#1f1f1f",
+                  cursor: "pointer",
+                  display: "inline-flex",
+                  fontFamily: "Roboto, Arial, sans-serif",
+                  fontSize: 14,
+                  fontWeight: 500,
+                  gap: 12,
+                  justifyContent: "center",
+                  letterSpacing: 0.1,
+                  lineHeight: "20px",
+                  minHeight: 40,
+                  minWidth: 210,
+                  padding: "9px 16px",
+                }}
                 onClick={handleGoogleLogin}
                 className="google-login-button"
                 type="button"
               >
-                <svg className="google-icon" viewBox="0 0 24 24">
+                <svg className="google-icon" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
                   <path
                     fill="#4285F4"
                     d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -355,10 +452,11 @@ const LandingPage = () => {
                     d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
                   />
                 </svg>
-                <span style={{ fontSize: 12 }}>Sign in with Google</span>
+                <span>Sign in with Google</span>
               </button>
             </form>
-          )}
+            )}
+          </div>
         </div>
       )}
 

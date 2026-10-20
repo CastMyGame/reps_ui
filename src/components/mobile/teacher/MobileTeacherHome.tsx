@@ -9,6 +9,7 @@ import { get } from "../../../utils/api/api";
 import { TeacherOverviewDto } from "../../../types/responses";
 import MobileTeacherShell from "./MobileTeacherShell";
 import "../mobile.css";
+import EmailCapabilityIndicator from "../../globalComponents/EmailCapabilityIndicator";
 
 const MobileTeacherHome = () => {
   const navigate = useNavigate();
@@ -35,6 +36,7 @@ const MobileTeacherHome = () => {
       <p className="mobile-eyebrow">Welcome back</p>
       <h2 className="mobile-greeting">Hi, {teacherName}</h2>
       <p className="mobile-intro">Recognize a student in under a minute.</p>
+      <EmailCapabilityIndicator />
       <button className="mobile-primary-action" type="button" onClick={() => navigate("/m/teacher/shout-out")}>
         <CampaignRoundedIcon aria-hidden="true" /><span><strong>Give a shout-out</strong><small>Celebrate positive behavior now</small></span><ArrowForwardRoundedIcon aria-hidden="true" />
       </button>

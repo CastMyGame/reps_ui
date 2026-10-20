@@ -36,6 +36,10 @@ import MobileAdminHomeV2 from "./components/mobile/admin/MobileAdminHomeV2";
 import MobileAdminCreateRecordV2 from "./components/mobile/admin/MobileAdminCreateRecordV2";
 import MobileAdminPositiveBehavior from "./components/mobile/admin/MobileAdminPositiveBehavior";
  import MobileAdminCreateStudentTeacherV2 from "./components/mobile/admin/MobileAdminCreateStudentTeacherV2";
+import MobileAdminManageStaff from "./components/mobile/admin/MobileAdminManageStaff";
+import MobileTeacherHome from "./components/mobile/teacher/MobileTeacherHome";
+import MobileTeacherShoutOut from "./components/mobile/teacher/MobileTeacherShoutOut";
+import MobileStudentHome from "./components/mobile/student/MobileStudentHome";
 
 
 function App() {
@@ -56,6 +60,9 @@ function App() {
               <Route path="/dev/session" element={<DevSessionLogin />} />
               <Route path="/login" element={<LandingPage />} />
               <Route path="/m/landing-login" element={<MobileLandingLogin />} />
+              <Route path="/m/teacher" element={<AuthRoute allowedRoles={["TEACHER"]} userRole={"TEACHER"}><MobileTeacherHome /></AuthRoute>} />
+              <Route path="/m/teacher/shout-out" element={<AuthRoute allowedRoles={["TEACHER"]} userRole={"TEACHER"}><MobileTeacherShoutOut /></AuthRoute>} />
+              <Route path="/m/student" element={<AuthRoute allowedRoles={["STUDENT"]} userRole={"STUDENT"}><MobileStudentHome /></AuthRoute>} />
               <Route
                 path="/m/admin"
                 element={
@@ -107,6 +114,7 @@ function App() {
                   </AuthRoute>
                 }
               />
+              <Route path="/m/admin/manage-staff" element={<AuthRoute allowedRoles={["ADMIN"]} userRole={"ADMIN"}><MobileAdminManageStaff /></AuthRoute>} />
               <Route
                 path="/reset-password/:token"
                 element={<ResetPassword />}
