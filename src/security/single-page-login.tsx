@@ -120,6 +120,7 @@ export default function SinglePageSignIn() {
         const email = res.data.userModel.username;
         const role = res.data.userModel.roles[0]["role"];
         sessionStorage.setItem("Authorization", token);
+        sessionStorage.setItem("loginMethod", "PASSWORD");
         sessionStorage.setItem("userName", userName);
         sessionStorage.setItem("schoolName", schoolName);
         sessionStorage.setItem("email", email);

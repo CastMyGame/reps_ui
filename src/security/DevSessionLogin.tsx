@@ -37,6 +37,7 @@ const DevSessionLogin = () => {
     }
 
     sessionStorage.setItem("Authorization", trimmedToken);
+    sessionStorage.setItem("loginMethod", "DEV");
     sessionStorage.setItem("email", trimmedEmail);
     sessionStorage.setItem("role", role);
     sessionStorage.setItem("userName", name.trim() || trimmedEmail);

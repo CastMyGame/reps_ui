@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import "./landing.css";
 import { AccessibleDiv } from "src/utils/accessibleDiv";
+import EmailCapabilityIndicator from "../EmailCapabilityIndicator";
 
 interface NavigationAdminProps {
   toggleNotificationDrawer: (open: boolean) => void;
@@ -63,6 +64,7 @@ export const NavigationAdmin: React.FC<NavigationAdminProps> = (props) => {
         >
           Welcome {sessionStorage.getItem("userName")}!
         </a>
+        <EmailCapabilityIndicator compact />
 
         <div
           className="collapse navbar-collapse"

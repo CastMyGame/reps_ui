@@ -142,7 +142,9 @@ const TeacherDashboard = () => {
           />
         </div>
 
-        <div className="header">{renderTeacherPanel()}</div>
+        <div className="header">
+          {renderTeacherPanel()}
+        </div>
 
         <Drawer
           anchor="right"
