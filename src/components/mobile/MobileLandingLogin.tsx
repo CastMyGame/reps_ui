@@ -19,8 +19,8 @@ const MobileLandingLogin = () => {
 
   const routeByRole = (role: string) => {
     if (role === "ADMIN") return navigate("/m/admin");
-    if (role === "TEACHER") return navigate("/dashboard/teacher");
-    if (role === "STUDENT") return navigate("/dashboard/student");
+    if (role === "TEACHER") return navigate("/m/teacher");
+    if (role === "STUDENT") return navigate("/m/student");
     if (role === "GUIDANCE") return navigate("/dashboard/guidance");
     setError("Your account does not have a valid REPS role.");
   };

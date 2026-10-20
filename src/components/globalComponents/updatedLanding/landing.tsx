@@ -133,19 +133,19 @@ const LandingPage = () => {
   const navigate = useNavigate();
 
   const routeChange = (role: string) => {
-    if (role === "TEACHER") {
-      let path = "/dashboard/teacher";
-      navigate(path);
-    }
-    if (role === "STUDENT") {
-      let path = "/dashboard/student";
-      navigate(path);
-    }
-    if (role === "ADMIN") {
     const isMobile = window.matchMedia(
       "(max-width: 767px), (pointer: coarse)"
     ).matches;
 
+    if (role === "TEACHER") {
+      const path = isMobile ? "/m/teacher" : "/dashboard/teacher";
+      navigate(path);
+    }
+    if (role === "STUDENT") {
+      const path = isMobile ? "/m/student" : "/dashboard/student";
+      navigate(path);
+    }
+    if (role === "ADMIN") {
     const path = isMobile ? "/m/admin" : "/dashboard/admin";
     navigate(path);
   }
