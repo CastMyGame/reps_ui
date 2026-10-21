@@ -1,22 +1,22 @@
 import { useEffect, useState } from "react";
-import { getAuthCapabilities } from "../../utils/api/api";
+import { AuthCapabilities, getAuthCapabilities } from "../../utils/api/api";
 
 interface EmailCapabilityIndicatorProps {
   compact?: boolean;
 }
 
 const EmailCapabilityIndicator = ({ compact = false }: EmailCapabilityIndicatorProps) => {
-  const [canSendAsUser, setCanSendAsUser] = useState(false);
+  const [capabilities, setCapabilities] = useState<AuthCapabilities | null>(null);
 
   useEffect(() => {
     let active = true;
     getAuthCapabilities()
       .then((capabilities) => {
-        if (active) setCanSendAsUser(capabilities.canSendAsUser);
+        if (active) setCapabilities(capabilities);
       })
       .catch(() => {
-        // If capabilities cannot be verified, keep the safe REPS service default.
-        if (active) setCanSendAsUser(false);
+        // An unavailable status must not promise a usable delivery route.
+        if (active) setCapabilities(null);
       });
 
     return () => {
@@ -24,9 +24,19 @@ const EmailCapabilityIndicator = ({ compact = false }: EmailCapabilityIndicatorP
     };
   }, []);
 
-  const message = canSendAsUser
-    ? "Messages will be sent from your Google account."
-    : "Outbound notifications will be sent through the REPS service account.";
+  const reconnectRequired = capabilities?.emailProvider === "RECONNECT_REQUIRED"
+    || capabilities?.emailPermission === "RECONNECT_REQUIRED";
+  const canSendAsUser = !reconnectRequired && capabilities?.emailProvider === "GOOGLE_GMAIL"
+    && capabilities.canSendAsUser;
+  const smtpAvailable = !reconnectRequired && capabilities?.emailProvider === "REPS_SMTP";
+  const label = reconnectRequired ? "Gmail reconnect required"
+    : canSendAsUser ? "Google email enabled"
+    : smtpAvailable ? "REPS email service" : "Email status unavailable";
+  const message = reconnectRequired
+    ? "Reconnect Gmail in Gmail settings. Email requiring your Gmail connection is blocked."
+    : canSendAsUser ? "Messages will be sent from your Google account."
+    : smtpAvailable ? "Outbound notifications will be sent through the REPS service account."
+    : "Email availability could not be verified. Check Gmail settings or try again.";
 
   return (
     <div
@@ -47,7 +57,7 @@ const EmailCapabilityIndicator = ({ compact = false }: EmailCapabilityIndicatorP
       <span
         aria-hidden="true"
         style={{
-          background: canSendAsUser ? "#2563eb" : "#98a2b3",
+          background: reconnectRequired ? "#b45309" : canSendAsUser ? "#2563eb" : "#98a2b3",
           borderRadius: "50%",
           boxShadow: canSendAsUser ? "0 0 0 3px rgba(37,99,235,.12)" : "none",
           display: "inline-block",
@@ -57,11 +67,15 @@ const EmailCapabilityIndicator = ({ compact = false }: EmailCapabilityIndicatorP
         }}
       />
       <span>
-        {compact ? (canSendAsUser ? "Google email enabled" : "REPS email service") : (
+        {compact ? label : (
           <>
-            {canSendAsUser ? "Google email permissions enabled" : "REPS email service active"}
+            {label}
             <br />
             {message}
+            <br />
+            <a href="/account/gmail">Gmail settings</a>
+            {" · "}
+            <a href="/account/notifications">Email status</a>
           </>
         )}
       </span>

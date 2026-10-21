@@ -45,6 +45,9 @@ import MobileTeacherRecords from "./components/mobile/teacher/MobileTeacherRecor
 import MobileStudentHome from "./components/mobile/student/MobileStudentHome";
 
 
+import GmailSettings from "./security/GmailSettings";
+import RequiredNotifications, { DisciplinaryActionNotice } from "./security/RequiredNotifications";
+
 function App() {
   const [isLoggedOut, setIsLoggedOut] = useState(false);
 
@@ -55,6 +58,9 @@ function App() {
           <div>
             <NotificationHost />
             <Routes>
+              <Route path="/account/gmail" element={<GmailSettings />} />
+              <Route path="/account/gmail/callback" element={<GmailSettings />} />
+              <Route path="/account/notifications" element={<RequiredNotifications />} />
               <Route path="/sign-up" element={<Register />} />
               <Route path="/checkout/success" element={<CheckoutSuccess />} />
               <Route path="/checkout/cancel" element={<CheckoutCancel />} />
@@ -190,6 +196,7 @@ function App() {
                 }
               />
             </Routes>
+            <DisciplinaryActionNotice />
             {!isLoggedOut && <IdleTimerContainer></IdleTimerContainer>}
           </div>
         </NotificationProvider>
