@@ -63,6 +63,7 @@ const MobileTeacherHome = () => {
             <button type="button" className="mobile-teacher-action" onClick={() => navigate("/dashboard/teacher")}><WarningAmberRoundedIcon /><strong>Detention & ISS</strong><small>Review today’s list</small></button>
             <button type="button" className="mobile-teacher-action" onClick={() => navigate("/dashboard/teacher")}><AnnouncementRoundedIcon /><strong>Announcement</strong><small>Message a class</small></button>
             <button type="button" className="mobile-teacher-action" onClick={() => navigate("/dashboard/teacher")}><TrackChangesRoundedIcon /><strong>Tracked behavior</strong><small>Record a behavior note</small></button>
+            <button type="button" className="mobile-teacher-action action-analysis" onClick={() => navigate("/m/teacher/analysis")}><TrackChangesRoundedIcon /><strong>Analysis</strong><small>Explore classroom trends</small></button>
           </div>
         </section>
       </>}
