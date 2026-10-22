@@ -1,7 +1,7 @@
 import axios from "axios";
 import { baseUrl } from "../jsonData";
 
-const API_BASE_URL = baseUrl || "http://localhost:8080";
+const API_BASE_URL = baseUrl;
 
 export const api = axios.create({
   baseURL: API_BASE_URL,

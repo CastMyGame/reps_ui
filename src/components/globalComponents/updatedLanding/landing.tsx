@@ -70,9 +70,7 @@ const LandingPage = () => {
   };
 
   const handleGoogleLogin = () => {
-    // Replace with your actual backend URL
-    const backendUrl = baseUrl || "http://localhost:8080";
-    window.location.href = `${backendUrl}/oauth2/authorization/google`;
+    window.location.href = `${baseUrl}/oauth2/authorization/google`;
   };
 
   const openLogin = () => {
