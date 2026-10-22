@@ -71,6 +71,8 @@ export const NavigationAdmin: React.FC<NavigationAdminProps> = (props) => {
           id="bs-example-navbar-collapse-1"
         >
           <ul className="nav navbar-nav navbar-right">
+            <li><a className="page-scroll" href="/account/gmail">Gmail settings</a></li>
+            <li><a className="page-scroll" href="/account/notifications">Email status</a></li>
             <li>
               <AccessibleDiv
                 onClick={() => dropdownHandler("overview")}
