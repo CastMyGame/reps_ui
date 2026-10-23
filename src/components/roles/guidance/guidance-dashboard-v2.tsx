@@ -194,7 +194,7 @@ const GuidanceDashboardV2 = () => {
         {panelName === "levelThree" && <LevelThreePanel roleType={"TEACHER"} />}
         {panelName === "spendPoints" && <SpendPage data={data} />}
         {panelName === "classUpdate" && (
-          <ClassUpdate setPanelName={setPanelName} teacher={teacher} />
+          <ClassUpdate setPanelName={setPanelName} teacher={teacher} onUpdated={updated => { setTeacher(updated); setData(current => ({ ...current, teacher: updated })); }} />
         )}
       </>
     );

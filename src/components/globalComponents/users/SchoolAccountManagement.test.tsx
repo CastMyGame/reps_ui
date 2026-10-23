@@ -1,3 +1,5 @@
+import axios from "axios";
+jest.mock("axios");
 import {
   act,
   fireEvent,
@@ -24,6 +26,7 @@ const account = (extra: any = {}) => ({
 });
 beforeEach(() => {
   jest.clearAllMocks();
+  (axios.get as jest.Mock).mockResolvedValue({ data: [] });
   sessionStorage.clear();
   sessionStorage.setItem("role", "ADMIN");
   sessionStorage.setItem("email", "admin@school.test");
@@ -189,4 +192,18 @@ test("staff invitation accepts 202 then shows persisted status", async () => {
     ),
   ).toBeInTheDocument();
   expect(screen.getByText("Pending password setup")).toBeInTheDocument();
+});
+
+test("administrator opens the existing class editor for a persisted staff record", async () => {
+  get.mockResolvedValueOnce({ data: [account()] }).mockResolvedValueOnce({ data: { email: "teacher@school.test", classes: [], rosterRevision: 4 } });
+  render(<SchoolAccountManagement />);
+  fireEvent.click(await screen.findByRole("button", { name: "Manage classes" }));
+  expect(await screen.findByRole("region", { name: "Teacher class management" })).toBeInTheDocument();
+  expect(get).toHaveBeenCalledWith("/employees/v1/employees/email/teacher%40school.test");
+});
+test("staff class lookup permission failure is shown without opening the editor", async () => {
+  get.mockResolvedValueOnce({ data: [account()] }).mockRejectedValueOnce({ response: { status: 403 } });
+  render(<SchoolAccountManagement />); fireEvent.click(await screen.findByRole("button", { name: "Manage classes" }));
+  expect(await screen.findByText(/Access denied/)).toBeInTheDocument();
+  expect(screen.queryByRole("region", { name: "Teacher class management" })).not.toBeInTheDocument();
 });

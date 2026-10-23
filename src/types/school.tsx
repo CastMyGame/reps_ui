@@ -40,6 +40,7 @@ export type Student = {
 };
 
 export type Employee = {
+  rosterRevision?: number;
   employeeId: string;
   firstName: string;
   lastName: string;
