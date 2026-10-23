@@ -1,3 +1,4 @@
+import { invitationLabel } from "./accountAdministration";
 import {
   accountError,
   accountRoles,
@@ -76,3 +77,5 @@ test("200 does not prove teacher creation", () => {
     }),
   ).not.toThrow();
 });
+
+test("setup status distinguishes completion and expiry from email acceptance",()=>{expect(invitationLabel(user({invitationStatus:"GOOGLE_ESTABLISHED"}))).toBe("Access established through Google");expect(invitationLabel(user({invitationStatus:"SENT"}))).toContain("delivery not confirmed");expect(invitationLabel(user({invitationStatus:"SENT",invitationExpiresAt:"2000-01-01T00:00:00Z"}))).toContain("expired");});

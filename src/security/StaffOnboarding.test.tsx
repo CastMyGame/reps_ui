@@ -63,7 +63,7 @@ test("mobile creation confirms employee body and explains access without sending
   fireEvent.click(screen.getByRole("button", { name: "Add teacher" }));
   expect(await screen.findByText("Teacher added")).toBeInTheDocument();
   expect(
-    screen.getByText(/No invitation or initial password/),
+    screen.getByText(/No password is emailed/),
   ).toBeInTheDocument();
   expect(post).toHaveBeenCalledWith(
     "http://127.0.0.1:1/employees/v1/employees",

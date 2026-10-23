@@ -8,7 +8,7 @@ import {
 import SchoolAccountManagement from "./SchoolAccountManagement";
 import { api } from "../../../utils/api/http";
 jest.mock("../../../utils/api/http", () => ({
-  api: { get: jest.fn(), put: jest.fn() },
+  api: { get: jest.fn(), put: jest.fn(), post: jest.fn() },
 }));
 const get = api.get as jest.Mock,
   put = api.put as jest.Mock;
@@ -160,4 +160,33 @@ test("server load rejection removes account controls", async () => {
   expect(
     screen.queryByRole("button", { name: "Activate account" }),
   ).not.toBeInTheDocument();
+});
+
+test("staff invitation accepts 202 then shows persisted status", async () => {
+  (api.post as jest.Mock).mockResolvedValue({ status: 202 });
+  get
+    .mockResolvedValueOnce({
+      data: [
+        account({ passwordSetupRequired: true, invitationStatus: "FAILED" }),
+      ],
+    })
+    .mockResolvedValue({
+      data: [
+        account({ passwordSetupRequired: true, invitationStatus: "SENT" }),
+      ],
+    });
+  render(<SchoolAccountManagement />);
+  const button = await screen.findByRole("button", {
+    name: "Send setup invitation",
+  });
+  await act(async () => {
+    fireEvent.click(button);
+  });
+  expect(api.post).toHaveBeenCalledWith("/accounts/v1/teacher-id/invitation");
+  expect(
+    await screen.findByText(
+      "Setup invitation: Invitation sent (delivery not confirmed)",
+    ),
+  ).toBeInTheDocument();
+  expect(screen.getByText("Pending password setup")).toBeInTheDocument();
 });

@@ -256,7 +256,7 @@ const LandingPage = () => {
         }, 2000);
       }
     } catch (error) {
-      console.error("Error:", error);
+
       setLoading(false);
       setWarningToast(true);
       setTimeout(() => {
@@ -333,6 +333,7 @@ const LandingPage = () => {
             >
               ×
             </button>
+            <a href="/set-password">Have a school setup credential?</a>
             {FFTraditionalLogin && (
               <form
                 className="form-container"

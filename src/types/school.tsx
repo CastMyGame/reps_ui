@@ -9,6 +9,10 @@ export type UserModel = {
   schoolName: string;
   school?: string;
   enabled?: boolean;
+  passwordSetupRequired?: boolean;
+  invitationStatus?: string;
+  invitationExpiresAt?: string;
+  setupCompletedAt?: string;
   paid?: boolean;
   roles: RoleModel[];
 };

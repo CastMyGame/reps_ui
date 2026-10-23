@@ -209,7 +209,8 @@ export default function SinglePageSignIn() {
                 <Avatar sx={{ m: 1, bgcolor: "grey" }}>
                   <LockOutlinedIcon />
                 </Avatar>
-                <Typography component="h1" variant="h5">
+                <a href="/set-password">Have a school setup credential?</a>
+              <Typography component="h1" variant="h5">
                   Sign in
                 </Typography>
 

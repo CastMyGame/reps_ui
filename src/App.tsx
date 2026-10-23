@@ -1,3 +1,5 @@
+import SetPassword from "./security/SetPassword";
+import StudentAccess from "./security/StudentAccess";
 import "./App.css";
 import { NotificationProvider } from "./notifications/NotificationProvider";
 import NotificationHost from "./notifications/NotificationHost";
@@ -59,6 +61,8 @@ function App() {
           <div>
             <NotificationHost />
             <Routes>
+              <Route path="/set-password" element={<SetPassword />} />
+              <Route path="/account/student-access" element={<StudentAccess />} />
               <Route path="/account/gmail" element={<GmailSettings />} />
               <Route path="/account/gmail/callback" element={<GmailSettings />} />
               <Route path="/account/notifications" element={<RequiredNotifications />} />

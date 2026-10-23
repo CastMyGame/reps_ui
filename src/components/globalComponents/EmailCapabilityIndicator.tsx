@@ -74,6 +74,7 @@ const EmailCapabilityIndicator = ({ compact = false }: EmailCapabilityIndicatorP
             {message}
             <br />
             <a href="/account/gmail">Gmail settings</a>
+            {["ADMIN", "TEACHER"].includes(sessionStorage.getItem("role") || "") && <>{" · "}<a href="/account/student-access">Student access</a></>}
             {" Â· "}
             <a href="/account/notifications">Email status</a>
           </>

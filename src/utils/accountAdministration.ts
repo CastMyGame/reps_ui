@@ -2,7 +2,31 @@ import { UserModel } from "../types/school";
 
 export const STAFF_ROLES = ["TEACHER", "GUIDANCE", "ADMIN"];
 export const teacherAccessInstructions =
-  "After successful creation here, the teacher account is active. No invitation or initial password is emailed automatically. Ask the teacher to use Forgot password on this REPS login page to set a password, or sign in with Google using the exact registered email. Google login does not authorize Gmail sending; Gmail connection is separate.";
+  "After account creation, check Manage staff for the setup invitation status. The teacher uses the single-use email link to choose a password, or signs in with their registered Google account. No password is emailed. Failed or unconfirmed delivery does not delete the account; an administrator can reissue the invitation. Gmail sending permission is separate.";
+export const invitationStateLabel = (state: string) =>
+  (
+    ({
+      PENDING_SEND: "Invitation send pending",
+      SENT: "Invitation sent (delivery not confirmed)",
+      FAILED: "Invitation sending failed",
+      DELIVERY_UNCONFIRMED:
+        "Delivery unconfirmed; check the mailbox before reissuing",
+      CONFIGURATION_REQUIRED:
+        "Setup email configuration required; contact REPS support",
+      READY_TO_HANDOFF: "School setup credential issued",
+      SETUP_COMPLETE: "Password setup complete",
+      GOOGLE_ESTABLISHED: "Access established through Google",
+      REVOKED: "Previous setup access revoked",
+    }) as Record<string, string>
+  )[state] || "Existing account";
+export const invitationLabel = (user: UserModel) =>
+  user.invitationExpiresAt && Date.parse(user.invitationExpiresAt) < Date.now()
+    ? "Setup credential expired; request another"
+    : user.invitationStatus
+      ? invitationStateLabel(user.invitationStatus)
+      : user.passwordSetupRequired
+        ? "Pending setup"
+        : "Existing account";
 export const accountRoles = (user: UserModel) => [
   ...new Set(
     (user.roles || []).map((r) => r.role?.trim().toUpperCase()).filter(Boolean),
@@ -25,7 +49,9 @@ export const accountStatus = (user: UserModel) =>
   user.enabled === false
     ? "Pending activation / inactive"
     : user.enabled === true
-      ? "Active"
+      ? user.passwordSetupRequired
+        ? "Pending password setup"
+        : "Active"
       : "Status unavailable";
 export function accountError(error: any): string {
   switch (error?.response?.status) {
