@@ -18,6 +18,7 @@ import { ContactUsModal } from "./contactUsModal";
 import ChatIcon from "@mui/icons-material/Chat";
 import "./modal.css";
 import ForgotPassword from "./forgotPassword";
+import { loginRole } from "../utils/accountAdministration";
 import { CircularProgress } from "@mui/material";
 
 type CopyrightProps = {
@@ -77,7 +78,7 @@ export default function SinglePageSignIn() {
    
   
     if (role === "GUIDANCE") {
-      let path = "/dashboard/teacher";
+      let path = "/dashboard/guidance";
       navigate(path);
     }
   };
@@ -116,9 +117,9 @@ export default function SinglePageSignIn() {
       if (res.data?.userModel) {
         const token = res.data.response;
         const userName = res.data.userModel.firstName;
-        const schoolName = res.data.userModel.schoolName;
+        const schoolName = res.data.userModel.school ?? res.data.userModel.schoolName ?? "";
         const email = res.data.userModel.username;
-        const role = res.data.userModel.roles[0]["role"];
+        const role = loginRole(res.data.userModel);
         sessionStorage.setItem("Authorization", token);
         sessionStorage.setItem("loginMethod", "PASSWORD");
         sessionStorage.setItem("userName", userName);
@@ -142,7 +143,7 @@ export default function SinglePageSignIn() {
         }, 2000);
       }
     } catch (error) {
-      console.error("Error:", error);
+
       setLoading(false);
       setWarningToast(true);
       setTimeout(() => {

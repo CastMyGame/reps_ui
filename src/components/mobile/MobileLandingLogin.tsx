@@ -1,3 +1,4 @@
+import { loginRole } from "../../utils/accountAdministration";
 import { useEffect, useState } from "react";
 import type { FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
@@ -38,7 +39,7 @@ const MobileLandingLogin = () => {
       });
       const user = response.data?.userModel;
       const token = response.data?.response;
-      const role = user?.roles?.[0]?.role;
+      const role = user ? loginRole(user) : "";
 
       if (!user || !token || !role) {
         throw new Error("Invalid login response");
@@ -47,12 +48,12 @@ const MobileLandingLogin = () => {
       sessionStorage.setItem("Authorization", token);
       sessionStorage.setItem("loginMethod", "PASSWORD");
       sessionStorage.setItem("userName", user.firstName || user.username || "");
-      sessionStorage.setItem("schoolName", user.schoolName || user.school || "");
+      sessionStorage.setItem("schoolName", user.school ?? user.schoolName ?? "");
       sessionStorage.setItem("email", user.username || "");
       sessionStorage.setItem("role", role);
       routeByRole(role);
     } catch {
-      setError("Email or password is incorrect.");
+      setError("Sign-in failed. Check your email and password. New or inactive accounts require school administrator activation first.");
     } finally {
       setLoading(false);
     }

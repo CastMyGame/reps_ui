@@ -7,6 +7,9 @@ export type UserModel = {
   firstName: string;
   lastName: string;
   schoolName: string;
+  school?: string;
+  enabled?: boolean;
+  paid?: boolean;
   roles: RoleModel[];
 };
 
