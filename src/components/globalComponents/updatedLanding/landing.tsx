@@ -1,3 +1,4 @@
+import { loginRole } from "../../../utils/accountAdministration";
 import React, { useCallback, useEffect, useState } from "react";
 import "./landing-01.css";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -188,12 +189,9 @@ const LandingPage = () => {
 
         // Step 3: Extract values from the user object
         const userName = user.username || "";
-        const schoolName = user.school || "";
+        const schoolName = user.school ?? user.schoolName ?? "";
         const email = user.username || ""; // username is the email
-        const role =
-          user.roles && user.roles.length > 0
-            ? user.roles[0].role // Get first role from roles array
-            : "";
+        const role = loginRole(user);
 
         // Step 4: Store in sessionStorage exactly like traditional login
         sessionStorage.setItem("Authorization", token);
@@ -233,9 +231,9 @@ const LandingPage = () => {
       if (res.data?.userModel) {
         const token = res.data.response;
         const userName = res.data.userModel.firstName;
-        const schoolName = res.data.userModel.schoolName;
+        const schoolName = res.data.userModel.school ?? res.data.userModel.schoolName ?? "";
         const email = res.data.userModel.username;
-        const role = res.data.userModel.roles[0]["role"];
+        const role = loginRole(res.data.userModel);
         sessionStorage.setItem("Authorization", token);
         sessionStorage.setItem("loginMethod", "PASSWORD");
         sessionStorage.setItem("userName", userName);

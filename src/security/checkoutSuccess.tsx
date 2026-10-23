@@ -14,8 +14,7 @@ export default function CheckoutSuccess() {
     <div style={{ maxWidth: 800, margin: "0 auto", padding: 24 }}>
       <h1>Payment successful</h1>
       <p>
-        Thanks — your subscription is active. We’re now provisioning your school +
-        teacher account.
+        Payment was submitted. Account provisioning waits for Stripe confirmation. New teacher accounts require school administrator activation before login or password setup. Payment does not grant administrator access.
       </p>
 
       {sessionId && (
@@ -56,8 +55,7 @@ export default function CheckoutSuccess() {
       </div>
 
       <p style={{ marginTop: 18, color: "#666" }}>
-        If login doesn’t work immediately, wait ~10–30 seconds and try again — the
-        provisioning happens when Stripe confirms the checkout via webhook.
+        Ask your existing school administrator to activate your account. Then use Forgot password on this REPS login page or Google login with your registered email. No initial password is emailed automatically. If your school has no administrator, contact REPS for assisted setup; creating a school does not create its first administrator.
       </p>
     </div>
   );

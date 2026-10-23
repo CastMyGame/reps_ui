@@ -74,8 +74,8 @@ const ForgotPassword = () => {
         navigate("/login");
       }, 2000);
     } catch (error) {
-      console.error("Error:", error);
-      showToast(AlertSeverity.Error, "Invalid Email ,User not in the system");
+
+      showToast(AlertSeverity.Error, "Password setup is unavailable. Check the registered email; pending or inactive accounts require school administrator activation first.");
       setFormData((prev) => ({
         ...prev,
         newPassword: "",
@@ -93,7 +93,7 @@ const ForgotPassword = () => {
       <Typography component="h1" variant="h5">
         Forgot Your Password?
       </Typography>
-      <p>Dont Worry we got you! Please enter a valid school email address</p>
+      <p>Use your registered REPS email to set or reset your password. Your school administrator must activate your account first. Google login uses the same registered email; Gmail sending authorization is separate.</p>
 
       {loading ? (
         <CircularProgress style={{ marginTop: "10px" }} color="secondary" />

@@ -1,5 +1,6 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import { accountError, requireCreatedTeacher, teacherAccessInstructions } from "../../../utils/accountAdministration";
+import React, { useEffect, useRef, useState } from "react";
 import { baseUrl } from "../../../utils/jsonData";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -41,10 +42,12 @@ const AddTeacherForm: React.FC<AddTeacherProps> = ({ adminDto }) => {
     studentPhoneNumber: false,
   });
 
+  const submittingRef = useRef(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [requestError, setRequestError] = useState("");
   const [school, setSchool] = useState("");
 
   useEffect(() => {
-    console.log(" ADMINDTO ", adminDto);
     setSchool(adminDto.school.schoolName);
   }, [adminDto]);
 
@@ -53,6 +56,8 @@ const AddTeacherForm: React.FC<AddTeacherProps> = ({ adminDto }) => {
   const [type, setType] = useState("student");
 
   const handleTypeToggle = () => {
+    setRegistrationSuccessMessage(false);
+    setRequestError("");
     if (type === "student") {
       setType("employee");
     }
@@ -63,6 +68,9 @@ const AddTeacherForm: React.FC<AddTeacherProps> = ({ adminDto }) => {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    if (submittingRef.current) return;
+    setRequestError("");
+    setRegistrationSuccessMessage(false);
     const data = new FormData(event.currentTarget);
 
     //Check for missing fields
@@ -152,7 +160,7 @@ const AddTeacherForm: React.FC<AddTeacherProps> = ({ adminDto }) => {
         firstName: data.get("firstName"),
         lastName: data.get("lastName"),
         email: data.get("studentEmail"),
-        school: data.get("schoolName"),
+        school,
       };
     }
 
@@ -164,18 +172,17 @@ const AddTeacherForm: React.FC<AddTeacherProps> = ({ adminDto }) => {
 
     const url = `${baseUrl}${type === "student" ? "/student/v1/newStudent" : "/employees/v1/employees"}`;
 
+    submittingRef.current = true;
+    setSubmitting(true);
     axios
       .post(url, payload, { headers })
       .then(function (res) {
+        if (type === "employee") requireCreatedTeacher(res.data);
         setRegistrationSuccessMessage(true);
-        setTimeout(() => {
-          setRegistrationSuccessMessage(true);
-          // props.setAddTeacherModalOpen(false)
-        }, 1500);
       })
       .catch(function (error) {
-        console.error(error);
-      });
+        setRequestError(error.response ? accountError(error) : error.message?.startsWith("Teacher creation") ? error.message : accountError(error));
+      }).finally(() => { submittingRef.current = false; setSubmitting(false); });
   };
 
   const handleCloseSnackbar = (
@@ -198,10 +205,12 @@ const AddTeacherForm: React.FC<AddTeacherProps> = ({ adminDto }) => {
         Add {type === "student" ? "Student" : "Teacher"}
       </h1>
       <p style={{ textAlign: "center", color: "white" }}>
-        <button onClick={() => handleTypeToggle()}>
-          Click Here to Add {type === "student" ? "Student" : "Teacher"}
+        <button disabled={submitting} onClick={() => handleTypeToggle()}>
+          Click Here to Add {type === "student" ? "Teacher" : "Student"}
         </button>
       </p>
+      {type === "employee" && <MuiAlert severity="info">{teacherAccessInstructions}</MuiAlert>}
+      {requestError && <MuiAlert severity="error">{requestError}</MuiAlert>}
       <Container component="main" sx={{ width: "100%" }}>
         <CssBaseline />
         <Box
@@ -356,6 +365,7 @@ const AddTeacherForm: React.FC<AddTeacherProps> = ({ adminDto }) => {
               )}
             </Grid>
             <Button
+              disabled={submitting}
               type="submit"
               fullWidth
               variant="contained"

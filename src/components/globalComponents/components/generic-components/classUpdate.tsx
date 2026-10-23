@@ -1,3 +1,4 @@
+import { accountError } from "../../../../utils/accountAdministration";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { baseUrl } from "src/utils/jsonData";
@@ -10,6 +11,7 @@ interface ClassUpdateProps {
 }
 
 const ClassUpdate: React.FC<ClassUpdateProps> = ({ setPanelName, teacher }) => {
+  const [requestError, setRequestError] = useState("");
   const [listOfStudents, setListOfStudents] = useState<Student[]>([]);
   const [teacherEmailSelected, setTeacherEmailSelected] = useState<
     string | null
@@ -65,7 +67,8 @@ const ClassUpdate: React.FC<ClassUpdateProps> = ({ setPanelName, teacher }) => {
         setLoading(false);
       })
       .catch((error) => {
-        console.error(error);
+        setLoading(false);
+        setRequestError(accountError(error));
       });
   }, []);
 
@@ -158,8 +161,7 @@ const ClassUpdate: React.FC<ClassUpdateProps> = ({ setPanelName, teacher }) => {
         })
         .catch((error) => {
           setLoading(false);
-          console.error(error);
-          alert("Error deleting class. Please try again.");
+          setRequestError(accountError(error));
         });
     }
   };
@@ -221,8 +223,7 @@ const ClassUpdate: React.FC<ClassUpdateProps> = ({ setPanelName, teacher }) => {
       })
       .catch((error) => {
         setLoading(false);
-        console.error(error);
-        alert("Error updating class roster. Please try again.");
+        setRequestError(accountError(error));
       });
   };
 
@@ -243,6 +244,7 @@ const ClassUpdate: React.FC<ClassUpdateProps> = ({ setPanelName, teacher }) => {
 
   return (
     <div style={{ padding: "20px" }}>
+      {requestError && <p role="alert">{requestError}</p>}
       {isModified && (
         <div style={{ color: "red", marginTop: "10px" }}>
           You have unsaved changes. Please submit to save.

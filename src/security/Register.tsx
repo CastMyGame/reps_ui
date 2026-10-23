@@ -308,10 +308,10 @@ export default function Register() {
     <div style={{ maxWidth: 900, margin: "0 auto", padding: 24 }}>
       <h1 style={{ marginBottom: 8 }}>Create your REPS Discipline account</h1>
       <p style={{ marginTop: 0, color: "#444" }}>
-        Select your school, choose a plan, then complete payment to finish
-        setup.
+        Select your school and plan. Payment does not activate access: your existing school administrator must approve the teacher account before login or password setup.
       </p>
 
+      <p role="note">Before paying, confirm your school already has a REPS administrator. If not, contact REPS for assisted setup first. Adding a school here does not create its first administrator. After activation, use Forgot password or Google login with the registered email; no initial password is emailed automatically.</p>
       {/* Step 1: School selection */}
       <section
         style={{
