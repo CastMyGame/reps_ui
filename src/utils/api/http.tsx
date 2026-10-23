@@ -1,4 +1,5 @@
 import axios from "axios";
+import { rejectAuthenticationFailure } from "./session";
 import { baseUrl } from "../jsonData";
 
 const API_BASE_URL = baseUrl;
@@ -49,5 +50,5 @@ export function completeDisciplinaryAction(response: any) {
 }
 for (const client of [axios, api]) {
   client.interceptors?.request?.use(attachDisciplinaryActionId);
-  client.interceptors?.response?.use(completeDisciplinaryAction);
+  client.interceptors?.response?.use(completeDisciplinaryAction, rejectAuthenticationFailure);
 }
