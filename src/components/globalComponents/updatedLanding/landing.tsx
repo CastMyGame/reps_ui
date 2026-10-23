@@ -7,6 +7,8 @@ import { baseUrl } from "src/utils/jsonData";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import { AccordionItem } from "./AccordianItem";
+import { useGoogleSignIn } from "../../../security/useGoogleSignIn";
+import "../../../security/google-sign-in.css";
 
 const summaryData = [
   {
@@ -70,9 +72,7 @@ const LandingPage = () => {
     }
   };
 
-  const handleGoogleLogin = () => {
-    window.location.href = `${baseUrl}/oauth2/authorization/google`;
-  };
+  const googleSignIn = useGoogleSignIn();
 
   const openLogin = () => {
     if (modalType === "login") {
@@ -406,7 +406,9 @@ const LandingPage = () => {
                 or continue with
               </span>
               <button
-                aria-label="Sign in with Google"
+                aria-label={googleSignIn.pending ? "Opening Google…" : "Sign in with Google"}
+                aria-busy={googleSignIn.pending}
+                disabled={loading || googleSignIn.pending}
                 style={{
                   alignItems: "center",
                   background: "#fff",
@@ -414,7 +416,7 @@ const LandingPage = () => {
                   borderRadius: 4,
                   boxShadow: "none",
                   color: "#1f1f1f",
-                  cursor: "pointer",
+                  cursor: googleSignIn.pending ? "wait" : "pointer",
                   display: "inline-flex",
                   fontFamily: "Roboto, Arial, sans-serif",
                   fontSize: 14,
@@ -427,7 +429,7 @@ const LandingPage = () => {
                   minWidth: 210,
                   padding: "9px 16px",
                 }}
-                onClick={handleGoogleLogin}
+                onClick={googleSignIn.signIn}
                 className="google-login-button"
                 type="button"
               >
@@ -449,8 +451,9 @@ const LandingPage = () => {
                     d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
                   />
                 </svg>
-                <span>Sign in with Google</span>
+                <span>{googleSignIn.pending ? "Opening Google…" : "Sign in with Google"}</span>
               </button>
+              {googleSignIn.error && <p role="alert" style={{ color: "white" }}>{googleSignIn.error}</p>}
             </form>
             )}
           </div>

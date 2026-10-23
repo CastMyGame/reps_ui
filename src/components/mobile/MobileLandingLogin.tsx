@@ -6,11 +6,14 @@ import axios from "axios";
 import GoogleIcon from "@mui/icons-material/GMobiledataRounded";
 import { baseUrl } from "../../utils/jsonData";
 import "./mobile-landing.css";
+import { useGoogleSignIn } from "../../security/useGoogleSignIn";
+import "../../security/google-sign-in.css";
 
 const MobileLandingLogin = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const googleSignIn = useGoogleSignIn();
 
   useEffect(() => {
     if (!window.matchMedia("(max-width: 767px), (pointer: coarse)").matches) {
@@ -78,9 +81,11 @@ const MobileLandingLogin = () => {
         {error && <p className="mobile-login-error" role="alert">{error}</p>}
       </form>
       <div className="mobile-login-divider"><span>or continue with</span></div>
-      <button type="button" className="mobile-login-google" onClick={() => { window.location.assign(`${baseUrl}/oauth2/authorization/google`); }}>
-        <GoogleIcon aria-hidden="true" /> Sign in with Google
+      <button type="button" className="mobile-login-google" disabled={loading || googleSignIn.pending}
+        aria-busy={googleSignIn.pending} onClick={googleSignIn.signIn}>
+        <GoogleIcon aria-hidden="true" /><span>{googleSignIn.pending ? "Opening Google…" : "Sign in with Google"}</span>
       </button>
+      {googleSignIn.error && <p className="mobile-login-error" role="alert">{googleSignIn.error}</p>}
     </section>
     <p className="mobile-login-footer">Secure school access · Google sign-in</p>
   </main>;
