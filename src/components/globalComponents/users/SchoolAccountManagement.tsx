@@ -11,6 +11,7 @@ import { UserModel } from "../../../types/school";
 import { api } from "../../../utils/api/http";
 import {
   accountError,
+  invitationLabel,
   accountRoles,
   accountSchool,
   accountStatus,
@@ -24,11 +25,13 @@ function AccountControls({
   busy,
   onRoles,
   onEnabled,
+  onInvite,
 }: {
   user: UserModel;
   busy: boolean;
   onRoles: (roles: string[]) => void;
   onEnabled: () => void;
+  onInvite: () => void;
 }) {
   const [roles, setRoles] = useState(accountRoles(user));
   useEffect(() => setRoles(accountRoles(user)), [user]);
@@ -56,11 +59,13 @@ function AccountControls({
       </p>
       {user.enabled === false && (
         <p>
-          Login and password reset are blocked. Activate after confirming school
+          Login and password reset are blocked. Approve access after confirming school
           membership. This account may be awaiting first activation or may have
           been deactivated previously.
         </p>
       )}
+      <p>Setup invitation: {invitationLabel(user)}</p>
+      {user.enabled && supportedStaff(user) && <Button disabled={busy} onClick={onInvite}>Send setup invitation</Button>}
       <p>Current roles: {accountRoles(user).join(", ") || "Unknown"}</p>
       {editable ? (
         <fieldset disabled={busy}>
@@ -178,6 +183,14 @@ export default function SchoolAccountManagement() {
       setLoading(false);
     }
   };
+  const invite = async (user: UserModel) => {
+    if (!administrator || lock.current || needsReload || !user.enabled || !supportedStaff(user)) return;
+    if (!window.confirm(`Send a new setup email to ${user.username}? Check the mailbox first if an earlier send was unconfirmed.`)) return;
+    lock.current = true; setLoading(true); setMessage(""); setError("");
+    try { await api.post(`/accounts/v1/${encodeURIComponent(user.id)}/invitation`); await load(); setMessage("Invitation request recorded. Check the saved invitation status; this is not proof of delivery."); }
+    catch (failure) { setError(accountError(failure)); setNeedsReload(true); }
+    finally { lock.current = false; setLoading(false); }
+  };
   if (!administrator)
     return (
       <Alert severity="warning">
@@ -225,6 +238,7 @@ export default function SchoolAccountManagement() {
             busy={loading || needsReload}
             onRoles={(roles) => void update(user, roles)}
             onEnabled={() => void update(user)}
+            onInvite={() => void invite(user)}
           />
         ))}
       {!loading && !error && !users.length && <p>No school accounts found.</p>}

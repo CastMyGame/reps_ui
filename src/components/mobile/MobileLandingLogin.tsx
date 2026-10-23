@@ -73,6 +73,7 @@ const MobileLandingLogin = () => {
         <button type="submit" className="mobile-login-submit" disabled={loading}>
           {loading ? "Signing in…" : "Sign In"}
         </button>
+        <a href="/set-password">Have a school setup credential?</a>
         <a className="mobile-login-forgot" href="/forgot-password">Forgot password?</a>
         {error && <p className="mobile-login-error" role="alert">{error}</p>}
       </form>

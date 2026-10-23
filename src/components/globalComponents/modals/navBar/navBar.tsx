@@ -96,6 +96,7 @@ const NavbarCustom: React.FC<NavBarProps> = ({
         >
           <ul className="nav navbar-nav navbar-right">
             <li><a className="page-scroll" href="/account/gmail">Gmail settings</a></li>
+            {["ADMIN", "TEACHER"].includes(sessionStorage.getItem("role") || "") && <li><a href="/account/student-access">Student access</a></li>}
             <li><a className="page-scroll" href="/account/notifications">Email status</a></li>
             <li>
               <div className="page-scroll" style={{ fontWeight: "bold" }}>

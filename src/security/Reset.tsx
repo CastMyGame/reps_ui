@@ -82,10 +82,10 @@ const ResetPassword = () => {
         navigate("/login");
       }, 2000);
     } catch (error) {
-      console.error("Error:", error);
+
       showToast(
         AlertSeverity.Error,
-        "Invalid Token, submit another request for renewal"
+        "This reset link could not be used. Request a new setup email from this REPS environment, or ask your school for a setup credential."
       );
       setFormData((prev) => ({
         ...prev,

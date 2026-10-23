@@ -69,7 +69,7 @@ const ForgotPassword = () => {
         email: formData.email,
       });
 
-      showToast(AlertSeverity.Success, "Email has been sent to your email");
+      showToast(AlertSeverity.Success, "If account access is available, setup instructions have been requested. Students without private mailbox access should ask their teacher.");
       setTimeout(() => {
         navigate("/login");
       }, 2000);
@@ -93,7 +93,7 @@ const ForgotPassword = () => {
       <Typography component="h1" variant="h5">
         Forgot Your Password?
       </Typography>
-      <p>Use your registered REPS email to set or reset your password. Your school administrator must activate your account first. Google login uses the same registered email; Gmail sending authorization is separate.</p>
+      <p>Use your registered REPS email to set or reset your password. Your school administrator must approve access first. Students without private mailbox access can ask their teacher for a school setup credential. Google login uses the same registered email; Gmail sending authorization is separate.</p>
 
       {loading ? (
         <CircularProgress style={{ marginTop: "10px" }} color="secondary" />
