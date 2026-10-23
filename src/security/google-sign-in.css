@@ -1,0 +1,7 @@
+/* Keep decorative children inside one native mouse/touch/keyboard target. */
+.google-login-button > *, .mobile-login-google > * { pointer-events: none; }
+.google-login-button:disabled, .mobile-login-google:disabled { cursor: wait; opacity: .7; }
+.google-login-button:focus-visible, .mobile-login-google:focus-visible {
+  outline: 3px solid #4285f4;
+  outline-offset: 3px;
+}
