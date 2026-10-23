@@ -1,3 +1,4 @@
+import { requireSavedStudent } from "../../../utils/roster";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { accountError, requireCreatedTeacher, teacherAccessInstructions } from "../../../utils/accountAdministration";
@@ -30,7 +31,7 @@ const MobileAdminCreateStudentTeacherV2 = () => {
     event.preventDefault(); if (submittingRef.current) return; submittingRef.current = true; setSubmitting(true); setError("");
     const headers = { Authorization: `Bearer ${sessionStorage.getItem("Authorization")}` };
     const payload = mode === "STUDENT" ? { firstName: form.firstName.trim(), lastName: form.lastName.trim(), grade: form.grade, studentEmail: form.email.trim(), parentEmail: form.parentEmail.trim(), parentPhoneNumber: form.parentPhoneNumber.trim(), studentPhoneNumber: form.studentPhoneNumber.trim(), address: form.address.trim(), guidanceEmail: form.guidanceEmail.trim(), school: schoolName } : { firstName: form.firstName.trim(), lastName: form.lastName.trim(), email: form.email.trim(), school: schoolName };
-    try { const response = await axios.post(`${baseUrl}${mode === "STUDENT" ? "/student/v1/newStudent" : "/employees/v1/employees"}`, payload, { headers }); if (mode === "TEACHER") requireCreatedTeacher(response.data); setSuccess(true); } catch (requestError: any) { setError(requestError.response ? accountError(requestError) : requestError.message?.startsWith("Teacher creation") ? requestError.message : accountError(requestError)); } finally { submittingRef.current = false; setSubmitting(false); }
+    try { const response = await axios.post(`${baseUrl}${mode === "STUDENT" ? "/student/v1/newStudent" : "/employees/v1/employees"}`, payload, { headers }); if (mode === "TEACHER") requireCreatedTeacher(response.data); else requireSavedStudent(response.data); setSuccess(true); } catch (requestError: any) { setError(requestError.response ? accountError(requestError) : requestError.message?.startsWith("Teacher creation") ? requestError.message : accountError(requestError)); } finally { submittingRef.current = false; setSubmitting(false); }
   };
   const reset = () => { setForm(emptyForm); setSuccess(false); setError(""); };
   const input = (label: string, field: keyof FormValues, type = "text", required = true) => <label>{label}<input required={required} type={type} value={form[field]} onChange={(event) => updateField(field, event.target.value)} /></label>;

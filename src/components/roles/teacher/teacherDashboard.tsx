@@ -195,7 +195,7 @@ const TeacherDashboard = () => {
         {panelName === "spendPoints" && <SpendPage data={data} />}
         {panelName === "trackedBehavior" && <TrackedBehaviorPanel setPanelName={setPanelName} data={data} />}
         {panelName === "classUpdate" && (
-          <ClassUpdate setPanelName={setPanelName} teacher={teacher} />
+          <ClassUpdate setPanelName={setPanelName} teacher={teacher} onUpdated={updated => { setTeacher(updated); setData(current => ({ ...current, teacher: updated })); }} />
         )}
         {panelName === "assignmentTemplates" && (
           <TeacherAssignmentTemplatesPanel />

@@ -1,3 +1,4 @@
+import { requireSavedStudent, rosterError } from "../../../utils/roster";
 import React, { useState } from "react";
 import Typography from "@mui/material/Typography";
 import axios from "axios";
@@ -81,17 +82,16 @@ const CreateNewStudentPanel = () => {
         headers: headers,
       })
       .then(function (res) {
+        requireSavedStudent(res.data);
         setSuccessDisplay(true);
-        setSuccessMessage("Student Add");
+        setSuccessMessage("Student record saved. Use Class roster to enroll the student in a class.");
         setTimeout(() => {
           setSuccessDisplay(false);
         }, 3000);
         resetForm();
       })
       .catch(function (error) {
-        console.error(error);
-        const errorMessage =
-          error.response.status === 500 ? "Bad Request" : "Other Error";
+        const errorMessage = rosterError(error);
         setErrorDisplay(true);
         setErrorMessage(errorMessage);
         setTimeout(() => {

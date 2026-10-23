@@ -1,3 +1,4 @@
+import { classKey } from "../../../utils/roster";
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
@@ -29,7 +30,7 @@ const MobileTeacherShoutOut = () => {
         const data: TeacherOverviewDto = await get("DTO/v1/TeacherOverviewData");
         setOverview(data);
         const classes = data.teacher?.classes ?? [];
-        setSelectedClassName(classes[0]?.className ?? "");
+        setSelectedClassName(classes[0] ? classKey(classes[0]) : "");
         const emails = Array.from(new Set(classes.flatMap((item) => item.classRoster ?? [])));
         if (emails.length) {
           const response = await axios.post(`${baseUrl}/student/v1/getByEmailList`, emails, { headers: { Authorization: `Bearer ${sessionStorage.getItem("Authorization")}` } });
@@ -41,7 +42,7 @@ const MobileTeacherShoutOut = () => {
     loadForm();
   }, []);
 
-  const selectedClass = useMemo(() => overview.teacher?.classes?.find((item) => item.className === selectedClassName), [overview.teacher?.classes, selectedClassName]);
+  const selectedClass = useMemo(() => overview.teacher?.classes?.find((item) => classKey(item) === selectedClassName), [overview.teacher?.classes, selectedClassName]);
   const classStudents = useMemo(() => students.filter((student) => selectedClass?.classRoster?.includes(student.studentEmail)), [students, selectedClass]);
   const toggleStudent = (email: string) => setSelectedStudentEmails((current) => current.includes(email) ? current.filter((item) => item !== email) : [...current, email]);
   const resetForAnother = () => { setSelectedStudentEmails([]); setPoints(1); setMessage(""); setSuccess(false); };
@@ -66,7 +67,7 @@ const MobileTeacherShoutOut = () => {
   return <MobileTeacherShell title="Give a shout-out" showBack><section className="mobile-teacher-content">
     <p className="mobile-eyebrow">Positive behavior</p><h2 className="mobile-greeting">Make it specific</h2><p className="mobile-intro">Choose one or more students from the same class and say what they did well.</p>
     <form className="mobile-form" onSubmit={submit}>
-      <label htmlFor="mobile-class">Class</label><select id="mobile-class" value={selectedClassName} onChange={(event) => { setSelectedClassName(event.target.value); setSelectedStudentEmails([]); }} required>{overview.teacher?.classes?.map((item) => <option key={`${item.className}-${item.classPeriod}`} value={item.className}>{item.className} · Period {item.classPeriod}</option>)}</select>
+      <label htmlFor="mobile-class">Class</label><select id="mobile-class" value={selectedClassName} onChange={(event) => { setSelectedClassName(event.target.value); setSelectedStudentEmails([]); }} required>{overview.teacher?.classes?.map((item) => <option key={`${item.className}-${item.classPeriod}`} value={classKey(item)}>{item.className} · Period {item.classPeriod}</option>)}</select>
       <div className="mobile-student-picker"><div className="mobile-student-picker-heading"><label>Students</label><span>{selectedStudentEmails.length} selected</span></div>{classStudents.length === 0 ? <p className="mobile-field-hint">No students are assigned to this class yet.</p> : <div className="mobile-student-options">{classStudents.map((student) => <label key={student.studentEmail} className={selectedStudentEmails.includes(student.studentEmail) ? "selected" : ""}><input type="checkbox" checked={selectedStudentEmails.includes(student.studentEmail)} onChange={() => toggleStudent(student.studentEmail)} /><span><strong>{student.firstName} {student.lastName}</strong><small>{student.studentEmail}</small></span></label>)}</div>}</div>
       <label htmlFor="mobile-points">Points to award</label><div className="mobile-points-row"><button type="button" onClick={() => setPoints((value) => Math.max(0, value - 1))} aria-label="Decrease points">−</button><input id="mobile-points" type="number" min="0" max={overview.teacher?.currency ?? 0} value={points} onChange={(event) => setPoints(Number(event.target.value))} /><button type="button" onClick={() => setPoints((value) => Math.min(overview.teacher?.currency ?? 0, value + 1))} aria-label="Increase points">+</button></div><p className="mobile-field-hint">Available to award: {overview.teacher?.currency ?? 0}</p>
       <label htmlFor="mobile-message">What did they do well? <span>(optional)</span></label><textarea id="mobile-message" value={message} onChange={(event) => setMessage(event.target.value)} placeholder="For example: You helped a classmate get caught up without being asked." rows={4} maxLength={500} /><p className="mobile-field-hint">This message may be visible to the student and guardian.</p>

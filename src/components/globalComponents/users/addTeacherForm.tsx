@@ -1,3 +1,4 @@
+import { requireSavedStudent } from "../../../utils/roster";
 import axios from "axios";
 import { accountError, requireCreatedTeacher, teacherAccessInstructions } from "../../../utils/accountAdministration";
 import React, { useEffect, useRef, useState } from "react";
@@ -178,6 +179,7 @@ const AddTeacherForm: React.FC<AddTeacherProps> = ({ adminDto }) => {
       .post(url, payload, { headers })
       .then(function (res) {
         if (type === "employee") requireCreatedTeacher(res.data);
+        else requireSavedStudent(res.data);
         setRegistrationSuccessMessage(true);
       })
       .catch(function (error) {

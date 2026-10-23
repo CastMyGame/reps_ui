@@ -7,6 +7,8 @@ import {
   FormControlLabel,
   Typography,
 } from "@mui/material";
+import ClassUpdate from "../components/generic-components/classUpdate";
+import { Employee } from "../../../types/school";
 import { UserModel } from "../../../types/school";
 import { api } from "../../../utils/api/http";
 import {
@@ -26,12 +28,14 @@ function AccountControls({
   onRoles,
   onEnabled,
   onInvite,
+  onClasses,
 }: {
   user: UserModel;
   busy: boolean;
   onRoles: (roles: string[]) => void;
   onEnabled: () => void;
   onInvite: () => void;
+  onClasses: () => void;
 }) {
   const [roles, setRoles] = useState(accountRoles(user));
   useEffect(() => setRoles(accountRoles(user)), [user]);
@@ -66,6 +70,7 @@ function AccountControls({
       )}
       <p>Setup invitation: {invitationLabel(user)}</p>
       {user.enabled && supportedStaff(user) && <Button disabled={busy} onClick={onInvite}>Send setup invitation</Button>}
+      {user.enabled !== false && supportedStaff(user) && <Button disabled={busy} onClick={onClasses}>Manage classes</Button>}
       <p>Current roles: {accountRoles(user).join(", ") || "Unknown"}</p>
       {editable ? (
         <fieldset disabled={busy}>
@@ -112,6 +117,7 @@ function AccountControls({
 }
 
 export default function SchoolAccountManagement() {
+  const [classTeacher, setClassTeacher] = useState<Employee>();
   const [users, setUsers] = useState<UserModel[]>([]);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(false);
@@ -191,6 +197,13 @@ export default function SchoolAccountManagement() {
     catch (failure) { setError(accountError(failure)); setNeedsReload(true); }
     finally { lock.current = false; setLoading(false); }
   };
+  const manageClasses = async (user: UserModel) => {
+    if (lock.current || !administrator) return;
+    lock.current = true; setLoading(true); setError(""); setClassTeacher(undefined);
+    try { const result = await api.get<Employee>(`/employees/v1/employees/email/${encodeURIComponent(user.username)}`); setClassTeacher(result.data); }
+    catch (failure) { setError(accountError(failure)); }
+    finally { lock.current = false; setLoading(false); }
+  };
   if (!administrator)
     return (
       <Alert severity="warning">
@@ -225,6 +238,7 @@ export default function SchoolAccountManagement() {
           onChange={(e) => setSearch(e.target.value)}
         />
       </label>
+      {classTeacher && <section aria-label="Teacher class management"><h3>Classes for {classTeacher.email}</h3><Button onClick={() => setClassTeacher(undefined)}>Close classes</Button><ClassUpdate teacher={classTeacher} onUpdated={setClassTeacher} setPanelName={() => {}} /></section>}
       {users
         .filter((user) =>
           `${user.firstName} ${user.lastName} ${user.username}`
@@ -239,6 +253,7 @@ export default function SchoolAccountManagement() {
             onRoles={(roles) => void update(user, roles)}
             onEnabled={() => void update(user)}
             onInvite={() => void invite(user)}
+            onClasses={() => void manageClasses(user)}
           />
         ))}
       {!loading && !error && !users.length && <p>No school accounts found.</p>}

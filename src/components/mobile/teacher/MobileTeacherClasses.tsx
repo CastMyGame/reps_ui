@@ -1,3 +1,4 @@
+import ClassUpdate from "../../globalComponents/components/generic-components/classUpdate";
 import { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import GroupsRoundedIcon from "@mui/icons-material/GroupsRounded";
@@ -49,6 +50,7 @@ const MobileTeacherClasses = () => {
       <p className="mobile-intro">View the students connected to each of your classes.</p>
       {loading ? <div className="mobile-loading"><CircularProgress size={28} /> Loading your classes</div> : error ? <p className="mobile-error" role="alert">{error}</p> : classes.length === 0 ? <div className="mobile-class-empty"><GroupsRoundedIcon /><strong>No classes yet</strong><span>Your class rosters will appear here when they are assigned.</span></div> : <div className="mobile-class-list">{classes.map((classItem) => <article className="mobile-class-card" key={`${classItem.className}-${classItem.classPeriod}`}><div className="mobile-class-card-heading"><div><strong>{classItem.className}</strong><span>Period {classItem.classPeriod}</span></div><small>{classItem.classRoster?.length ?? 0} students</small></div><div className="mobile-class-roster">{(classItem.classRoster ?? []).map((email) => { const student = studentByEmail.get(email); return <span key={email}>{student ? `${student.firstName} ${student.lastName}` : email}</span>; })}</div></article>)}</div>}
     </section>
+    {overview.teacher && <ClassUpdate teacher={overview.teacher} setPanelName={() => {}} onUpdated={teacher => setOverview(current => ({ ...current, teacher }))} />}
   </MobileTeacherShell>;
 };
 

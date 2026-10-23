@@ -1,3 +1,4 @@
+import { classKey } from "../../../utils/roster";
 import { useState, useEffect, useRef, useMemo } from "react";
 import {
   Table,
@@ -193,7 +194,7 @@ const TeacherStudentPanel: React.FC<StudentPanelProps> = ({
                     ).filter(
                       (o) => o.studentEmail === foundStudent.studentEmail,
                     ).length,
-                    className: classEntry.className,
+                    className: classKey(classEntry),
                   });
                 }
               });
@@ -223,7 +224,7 @@ const TeacherStudentPanel: React.FC<StudentPanelProps> = ({
       data?.teacher.classes.length > 0 &&
       !selectedClass
     ) {
-      setSelectedClass(data.teacher.classes[0].className);
+      setSelectedClass(classKey(data.teacher.classes[0]));
     }
   }, [data?.teacher?.classes, selectedClass]);
 
@@ -370,7 +371,7 @@ const TeacherStudentPanel: React.FC<StudentPanelProps> = ({
     if (!isAdmin && selectedClass === "" && classes?.length > 0) {
       const firstClass = classes?.find((c) => c.className.trim() !== "");
       if (firstClass) {
-        setSelectedClass(firstClass.className);
+        setSelectedClass(classKey(firstClass));
       }
     }
   }, [isAdmin, selectedClass, data]);
@@ -496,7 +497,7 @@ const TeacherStudentPanel: React.FC<StudentPanelProps> = ({
                       <div className="details-box">
                         <p>Email: {filteredData[0]?.studentEmail}</p>
                         <p>Grade: {filteredData[0]?.grade || "N/A"}</p>
-                        <p>Class: {filteredData[0]?.className || "N/A"}</p>
+                        <p>Class: {data?.teacher?.classes?.find(c => classKey(c) === selectedClass)?.className || "N/A"}</p>
                       </div>
                     </div>
                     <Card
@@ -1205,7 +1206,7 @@ const TeacherStudentPanel: React.FC<StudentPanelProps> = ({
           )}
 
           <div style={{ marginTop: "20px" }}>
-            <h3>{isAdmin ? "All Students" : selectedClass}</h3>
+            <h3>{isAdmin ? "All Students" : data?.teacher?.classes?.find(c => classKey(c) === selectedClass)?.className || "Students"}</h3>
 
             {!isAdmin && (
               <div>
@@ -1227,8 +1228,8 @@ const TeacherStudentPanel: React.FC<StudentPanelProps> = ({
                   {data?.teacher?.classes
                     ?.filter((classEntry) => classEntry.className.trim() !== "")
                     .map((classEntry, index) => (
-                      <option key={index} value={classEntry.className}>
-                        {classEntry.className}
+                      <option key={index} value={classKey(classEntry)}>
+                        {classEntry.className} · {classEntry.classPeriod}
                       </option>
                     ))}
                 </select>
