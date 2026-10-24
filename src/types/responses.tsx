@@ -74,6 +74,7 @@ export interface OfficeReferralResponse {
 }
 
 export interface TeacherReferral {
+  assignmentWork?: { state: string };
   punishmentId: string;
   studentEmail: string;
   schoolName: string;

@@ -2,6 +2,10 @@ import React, { useEffect, useState } from "react";
 import { TemplateQuestion } from "src/types/assignments";
 
 interface RetryQuestionProps {
+  value?: string;
+  onDraftChange?: (value: string) => void;
+  disabled?: boolean;
+  required?: boolean;
   essay: TemplateQuestion;
   saveAnswerAndProgress: (payload: {
     question: string;
@@ -15,8 +19,13 @@ const RetryQuestionFormat: React.FC<RetryQuestionProps> = ({
   essay,
   saveAnswerAndProgress,
   sectionName,
+  value,
+  onDraftChange,
+  disabled = false,
+  required = true,
 }) => {
-  const [copyText, setCopyText] = useState("");
+  const [localCopyText, setCopyText] = useState("");
+  const copyText = value ?? localCopyText;
   const [generatedImage, setGeneratedImage] = useState<HTMLImageElement | null>(
     null
   );
@@ -145,14 +154,16 @@ const RetryQuestionFormat: React.FC<RetryQuestionProps> = ({
         <textarea
           id="copyText"
           name="copyText"
-          style={{ minWidth: "400px", minHeight: "200px" }}
+          style={{ width: "100%", minHeight: "200px", boxSizing: "border-box" }}
+          aria-label="Retry text"
+          disabled={disabled}
           value={copyText}
-          onChange={(e) => setCopyText(e.target.value)}
-          required
+          onChange={(e) => { if (onDraftChange) onDraftChange(e.target.value); else setCopyText(e.target.value); }}
+          required={required}
         />
       </div>
       <div className="button-container">
-        <button type="button" onClick={checkWork}>
+        <button type="button" disabled={disabled} onClick={checkWork}>
           Check Work
         </button>
       </div>

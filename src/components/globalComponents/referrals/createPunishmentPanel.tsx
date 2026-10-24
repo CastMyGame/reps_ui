@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { assignmentCreationWarning } from "../../../utils/assignmentStatus";
 import axios from "axios";
 import { baseUrl } from "../../../utils/jsonData";
 import Button from "@mui/material/Button";
@@ -89,6 +90,7 @@ const CreatePunishmentPanel: React.FC<CreatePunishmentProps> = ({
   const [infractionDescriptionSelected, setInfractionDescriptionSelected] =
     useState("");
   const [toast, setToast] = useState({ display: false, message: "" });
+  const [toastSeverity, setToastSeverity] = useState<"success" | "warning" | "error">("success");
   const [studentNames, setStudentNames] = useState<StudentOption[]>([]);
   const [loading, setLoading] = useState(false);
   const [openModal, setOpenModal] = useState({
@@ -274,17 +276,20 @@ const CreatePunishmentPanel: React.FC<CreatePunishmentProps> = ({
         headers: headers,
       })
       .then(function (res) {
-        setToast({ display: true, message: "Referral Succesfuly Created" });
+        const warning = assignmentCreationWarning(res.data);
+        setToastSeverity(warning ? "warning" : "success");
+        setToast({ display: true, message: warning || "Referral successfully created" });
         setTimeout(() => {
           setLoading(false);
           setToast({ display: false, message: "" });
-        }, 1000);
+        }, warning ? 6000 : 1000);
         resetForm();
         setInfractionDescriptionSelected("");
       })
       .catch(function (error) {
         console.error(error);
         setToast({ display: true, message: "Something Went Wrong" });
+        setToastSeverity("error");
         setTimeout(() => {
           setLoading(false);
           setToast({ display: false, message: "" });
@@ -436,7 +441,7 @@ const CreatePunishmentPanel: React.FC<CreatePunishmentProps> = ({
         >
           <Alert
             onClose={handleClose}
-            severity="success"
+            severity={toastSeverity}
             sx={{ width: "100%" }}
           >
             {toast.message}

@@ -1,3 +1,4 @@
+import { assignmentCreationWarning } from "../../../utils/assignmentStatus";
 import { FormEvent, useEffect, useState } from "react";
 import axios from "axios";
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
@@ -31,6 +32,7 @@ const MobileAdminCreateRecord = () => {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [assignmentWarning, setAssignmentWarning] = useState("");
   const [success, setSuccess] = useState(false);
 
   useEffect(() => {
@@ -67,7 +69,7 @@ const MobileAdminCreateRecord = () => {
     }];
     try {
       setSubmitting(true); setError("");
-      await axios.post(
+      const result = await axios.post(
     `${baseUrl}/punish/v1/startPunish/formList`,
     payload,
     {
@@ -96,14 +98,14 @@ const MobileAdminCreateRecord = () => {
     );
   }, 5000);
 
-  setSuccess(true);
+  setAssignmentWarning(assignmentCreationWarning(result.data)); setSuccess(true);
     } catch (err) { console.error("Unable to create record", err); setError("The record was not created. Check your connection and try again."); }
     finally { setSubmitting(false); }
   };
 
   return <main className="mobile-create-app">
     <header className="mobile-create-header"><button type="button" onClick={() => navigate("/m/admin")} aria-label="Back to admin home"><ArrowBackRoundedIcon /></button><div><span>REPS</span><h1>Create record</h1></div><button type="button" onClick={handleLogout} aria-label="Sign out"><LogoutRoundedIcon /></button></header>
-    {loading ? <div className="mobile-create-loading" aria-live="polite"><CircularProgress size={28} /> Preparing form</div> : success ? <section className="mobile-create-content mobile-create-success"><CheckCircleRoundedIcon aria-hidden="true" /><p className="mobile-create-eyebrow">{kind === "SHOUT_OUT" ? "Shout-out sent" : "Referral created"}</p><h2>All set</h2><p>The student record has been saved.</p><button type="button" onClick={resetForAnother}>Create another record</button></section> : <section className="mobile-create-content">
+    {loading ? <div className="mobile-create-loading" aria-live="polite"><CircularProgress size={28} /> Preparing form</div> : success ? <section className="mobile-create-content mobile-create-success"><CheckCircleRoundedIcon aria-hidden="true" /><p className="mobile-create-eyebrow">{kind === "SHOUT_OUT" ? "Shout-out sent" : "Referral created"}</p><h2>{assignmentWarning ? "Case saved — assignment needs attention" : "All set"}</h2><p>The student record has been saved.</p>{assignmentWarning && <p role="alert">{assignmentWarning}</p>}<button type="button" onClick={resetForAnother}>Create another record</button></section> : <section className="mobile-create-content">
       <p className="mobile-create-eyebrow">Quick action</p><h2>What are you creating?</h2><p className="mobile-create-intro">Choose the action first. The form stays short and focused.</p>
       <form onSubmit={submit} className="mobile-create-form">
         <fieldset><legend>Record type</legend><div className="mobile-create-choice-grid"><label className={kind === "SHOUT_OUT" ? "selected" : ""}><input type="radio" name="recordKind" checked={kind === "SHOUT_OUT"} onChange={() => setKind("SHOUT_OUT")} /><strong >Shout-out</strong><span>Recognize positive behavior and award points.</span></label><label className={kind === "REFERRAL" ? "selected" : ""}><input type="radio" name="recordKind" checked={kind === "REFERRAL"} onChange={() => setKind("REFERRAL")} /><strong>Referral</strong><span>Document a concern that needs follow-up.</span></label></div></fieldset>

@@ -32,7 +32,6 @@ const MobileStudentHome = () => {
 
   const assignments: MobileAssignment[] = useMemo(() => [
     ...(overview.punishments ?? []).map((item) => ({ id: item.punishmentId, title: item.infractionName, description: item.infractionDescription?.[0] || "", status: item.status })),
-    ...(overview.officeReferrals ?? []).map((item) => ({ id: item.officeReferralId, title: "Office referral", description: item.referralDescription || "", status: item.status })),
   ].filter((item) => item.status === "OPEN" || item.status === "PENDING"), [overview]);
   const firstName = overview.student?.firstName || sessionStorage.getItem("userName") || "Student";
 
@@ -49,7 +48,7 @@ const MobileStudentHome = () => {
       <EmailCapabilityIndicator />
       {loading ? <div className="mobile-student-loading"><CircularProgress size={26} /> Loading assignments</div> : error ? <p className="mobile-student-error" role="alert">{error}</p> : <>
         <section className="mobile-student-stats"><div><AssignmentRoundedIcon /><strong>{assignments.length}</strong><span>to complete</span></div><div><CheckCircleRoundedIcon /><strong>—</strong><span>completed</span></div></section>
-        <section className="mobile-student-section" aria-labelledby="student-assignments"><h3 id="student-assignments">Assignments to complete</h3>
+        <section className="mobile-student-section" aria-labelledby="student-assignments"><h3 id="student-assignments">Assignments to complete</h3>{overview.officeReferrals?.some(r => r.status !== "CLOSED") && <p>Office referrals are handled by the principal. They do not require a student assignment.</p>}
           {assignments.length === 0 ? <div className="mobile-student-empty"><CheckCircleRoundedIcon /><strong>You’re all caught up</strong><span>No open assignments right now.</span></div> : <div className="mobile-student-list">{assignments.map((item) => <article key={item.id}><div><strong>{item.title}</strong><p>{item.description || "Review this assignment with your teacher."}</p><small>{item.status === "PENDING" ? "Waiting for teacher approval" : "Ready to start"}</small></div><button type="button" disabled={item.status === "PENDING"} onClick={() => navigate("/dashboard/student")}>{item.status === "PENDING" ? "Pending" : "Open"}</button></article>)}</div>}
         </section>
       </>}

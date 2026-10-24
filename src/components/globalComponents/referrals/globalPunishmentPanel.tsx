@@ -24,6 +24,7 @@ import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import { dateCreateFormat } from "../../../helperComponents/helperComponents";
 import LoadingWheelPanel from "../../roles/student/LoadingWheelPanel";
 import { PunishmentDto, TeacherReferral } from "src/types/responses";
+import AssignmentStaffReview from "./AssignmentStaffReview";
 
 const Alert = React.forwardRef<
   HTMLDivElement,
@@ -39,6 +40,7 @@ interface GlobalPunishmentProps {
 const GlobalPunishmentPanel: React.FC<GlobalPunishmentProps> = ({
   roleType,
 }) => {
+  const [assignmentCase, setAssignmentCase] = useState("");
   const [listOfPunishments, setListOfPunishments] = useState<PunishmentDto[]>(
     []
   );
@@ -182,6 +184,7 @@ const GlobalPunishmentPanel: React.FC<GlobalPunishmentProps> = ({
   };
 
   const handleClosePunishment = (obj: PunishmentDto) => {
+    if (obj.punishment.assignmentWork) { setOpenModal(previous => ({ ...previous, display: false })); setAssignmentCase(obj.punishment.punishmentId); return; }
     setLoadingPunishmentId({
       id: obj.punishment.punishmentId,
       buttonType: "close",
@@ -234,6 +237,7 @@ const GlobalPunishmentPanel: React.FC<GlobalPunishmentProps> = ({
 
   return (
     <>
+      {assignmentCase && <AssignmentStaffReview id={assignmentCase} onClose={() => setAssignmentCase("")} onSaved={() => setToast({ visible: true, message: "Assignment change saved" })} />}
       {openModal.display && (
         <div className="modal-overlay">
           <div className="modal-content">
@@ -444,6 +448,7 @@ const GlobalPunishmentPanel: React.FC<GlobalPunishmentProps> = ({
                   return (
                     <TableRow key={key.valueOf()}>
                       <TableCell>
+                        {!['Positive Behavior Shout Out!', 'Behavioral Concern', 'Academic Concern', 'Failure to Complete Work'].includes(x.punishment.infractionName) && <button type="button" onClick={() => setAssignmentCase(x.punishment.punishmentId)}>Assignment work</button>}
                         <div style={{ display: "flex", alignItems: "center" }}>
                           <AccountCircleIcon
                             style={{

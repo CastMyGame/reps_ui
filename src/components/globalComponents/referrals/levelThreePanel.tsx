@@ -16,6 +16,7 @@ import MuiAlert from "@mui/material/Alert";
 import CircularProgress from "@mui/material/CircularProgress";
 import LoadingWheelPanel from "../../roles/student/LoadingWheelPanel";
 import { PunishmentDto } from "src/types/responses";
+import AssignmentStaffReview from "./AssignmentStaffReview";
 
 interface LevelThreeProps {
   roleType: string;
@@ -29,6 +30,7 @@ const Alert = React.forwardRef<
 });
 
 const LevelThreePanel: React.FC<LevelThreeProps> = ({ roleType }) => {
+  const [assignmentCase, setAssignmentCase] = useState("");
   const [listOfPunishments, setListOfPunishments] = useState<PunishmentDto[]>(
     []
   );
@@ -148,6 +150,7 @@ const LevelThreePanel: React.FC<LevelThreeProps> = ({ roleType }) => {
   };
 
   const handleClosePunishment = (obj: PunishmentDto | null) => {
+    if (obj?.punishment.assignmentWork) { setOpenModal(previous => ({ ...previous, display: false })); setAssignmentCase(obj.punishment.punishmentId); return; }
     const headers = {
       Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
     };
@@ -180,44 +183,14 @@ const LevelThreePanel: React.FC<LevelThreeProps> = ({ roleType }) => {
   };
 
   const handleRejectPunishment = (obj: PunishmentDto | null) => {
-    if (obj === null) return; // Prevent execution if obj is null
-
-    const headers = {
-      Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
-    };
-    setLoadingPunishmentId({
-      id: obj.punishment.punishmentId,
-      buttonType: "close",
-    });
-    const url = `${baseUrl}/punish/v1/rejected/${obj.punishment.punishmentId}`;
-    axios
-      .put(url, { headers }) // Pass the headers option with the JWT token
-      .then(function (response) {
-        setToast({
-          visible: true,
-          message:
-            "You have rejected the student's answers and an email has been sent letting them know.",
-        });
-      })
-      .catch(function (error) {
-        console.error(error);
-      })
-      .finally(() => {
-        setOpenModal({
-          display: false,
-          message: "",
-          buttonType: "",
-          data: null,
-        });
-        setTimeout(() => {
-          setToast({ visible: false, message: "" });
-          setLoadingPunishmentId({ id: "", buttonType: "" });
-        }, 1000);
-      });
+    if (!obj) return;
+    setOpenModal(previous => ({ ...previous, display: false }));
+    setAssignmentCase(obj.punishment.punishmentId);
   };
 
   return (
     <>
+      {assignmentCase && <AssignmentStaffReview id={assignmentCase} onClose={() => { setAssignmentCase(""); setOpenModal(previous => ({ ...previous, display: false })); }} onSaved={() => setToast({ visible: true, message: "Assignment review saved" })} />}
       {openModal.display && (
         <div className="modal-overlay">
           <div className="modal-content">

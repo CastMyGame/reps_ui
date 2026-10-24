@@ -99,22 +99,7 @@ const StudentOpenPunishmentPanel: React.FC<StudentOpenProps> = ({
   const hasScroll = punishmentData.length + referralData.length > 10;
 
   const renderAssignmentAction = (x: OfficeReferral) => {
-    if (x.referralCode === null) {
-      return <AssignmentIcon />;
-    }
-    if (x.status === "PENDING") {
-      return <Typography color="orange">Pending</Typography>;
-    }
-    return (
-      <Button
-        size="small"
-        color="success"
-        variant="contained"
-        onClick={() => handleAssignmentClick(x)}
-      >
-        Start Assignment
-      </Button>
-    );
+    return <Typography>Principal review — no student assignment</Typography>;
   };
 
   const renderInfractionAction = (x: TeacherReferral) => {
