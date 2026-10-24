@@ -7,7 +7,6 @@ import { Student } from "src/types/school";
 import { TeacherReferral } from "src/types/responses";
 
 const FailureToComplete = () => {
-  const emailPattern = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
   const [listOfStudents, setListOfStudents] = useState<Student[]>([]);
   const [email, setEmail] = useState<string | null>(null);
   const [selectedOptions, setSelectedOptions] = useState<{
@@ -38,6 +37,7 @@ const FailureToComplete = () => {
   }, []);
 
   useEffect(() => {
+    if (!email) { setListOfInfractions([]); return; }
     const headers = {
       Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
     };
@@ -86,61 +86,26 @@ const FailureToComplete = () => {
     setEmail(data.value);
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    if (!emailPattern.test(email ?? "")) {
-      setErrorDisplay(true);
-      setErrorMessage("Please enter a valid email address");
-      return; // Do not proceed with submission
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const student=findStudentByEmail(email || "");
+    const open=listOfInfractions.filter(record => record.status !== "CLOSED" && !record.archived);
+    if (!student || open.length !== 1) {
+      setErrorDisplay(true); setErrorMessage("Select the exact open record below to confirm completion."); return;
     }
-
-    const foundStudent = findStudentByEmail(email ?? "");
-    if (foundStudent) {
-      let payload = {
-        studentEmail: email,
-        infractionName: "Failure to Complete Work",
-      };
-
-      const headers = {
-        Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
-      };
-
-      axios
-        .post(`${baseUrl}/punish/v1/punishId/close`, payload, {
-          headers: headers,
-        })
-        .then(function (res) {
-          window.alert(
-            `You Work Has been Recorded for  ${payload.studentEmail}`
-          );
-        })
-        .catch(function (error) {
-          console.error(error);
-        });
-    } else {
-      setErrorDisplay(true);
-      setErrorMessage("Student Not Found in System");
-      setTimeout(() => {
-        setErrorDisplay(false);
-      }, 2000);
-    }
+    void handleClose(open[0].punishmentId);
   };
 
-  const handleClose = (punishmentId: string) => {
-    const headers = {
-      Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
-    };
-    axios
-      .post(`${baseUrl}/punish/v1/close/${punishmentId}`, null, {
-        headers: headers,
-      })
-      .then(function (res) {
-        window.alert(`You Assigment Has been marked Completed for  ${email}`);
-      })
-      .catch(function (error) {
-        console.error(error);
-      });
+  const handleClose = async (punishmentId: string) => {
+    setErrorDisplay(false);
+    try {
+      await axios.post(`${baseUrl}/punish/v1/close/${encodeURIComponent(punishmentId)}`, null,
+        {headers:{Authorization:"Bearer " + sessionStorage.getItem("Authorization")}});
+      setListOfInfractions(records => records.filter(record => record.punishmentId !== punishmentId));
+      window.alert("The selected work-completion record was marked completed.");
+    } catch {
+      setErrorDisplay(true);setErrorMessage("Completion was not confirmed. Retry the selected record or ask an authorized staff member to review it.");
+    }
   };
 
   return (
@@ -148,6 +113,7 @@ const FailureToComplete = () => {
       <div className="lrKTG">
         <div className="form-container" style={{ width: "100%" }}>
           <form onSubmit={handleSubmit}>
+            {errorDisplay && <p role="alert">{errorMessage}</p>}
             <h1 className="instructions">Failure To Complete Work Closure</h1>
             <div className="M7eMe">Student Work Completion Form</div>
             <h5>
@@ -162,7 +128,7 @@ const FailureToComplete = () => {
               * Indicates required question
             </div>
             <div className="question-container">
-              <label htmlFor="selectStudent">Enter The Student's Email *</label>
+              <label htmlFor="selectStudent">Select the student *</label>
               <Select
                 name="selectStudent"
                 options={selectOptions}

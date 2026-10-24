@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Drawer from "@mui/material/Drawer";
 import NotificationBar from "src/components/notification-bar/NotificationBar";
 import StudentClosedPunishmentPanel from "src/components/roles/student/studentClosePunishmentPanel";
@@ -18,6 +18,13 @@ import { School, Student } from "src/types/school";
 import { ZoomableCard } from "src/helperComponents/displayHelpers";
 
 const StudentDashboard = () => {
+  const [assignmentDirty, setAssignmentDirty] = useState(false);
+  const saveAssignment = useRef<(() => Promise<boolean>)>();
+  const registerSave = useCallback((save?: () => Promise<boolean>) => { saveAssignment.current = save; }, []);
+  const leaveAssignment = async (next: () => void) => {
+    if (assignmentDirty && (!saveAssignment.current || !await saveAssignment.current())) return;
+    next();
+  };
   const [loggedIn, setLoggedIn] = useState(true);
   const [punishments, setPunishments] = useState<TeacherReferral[]>([]);
   const [referrals, setReferrals] = useState([]);
@@ -72,9 +79,9 @@ const StudentDashboard = () => {
         )}
 
         <NavigationStudent
-          setPanelName={setPanelName}
+          setPanelName={(panel: any) => { void leaveAssignment(() => setPanelName(panel)); }}
           setDropdown={setIsDropdownOpen}
-          setLogin={handleLogout}
+          setLogin={() => { void leaveAssignment(handleLogout); }}
         />
       </div>
       <div className="student-main-content">
@@ -172,7 +179,7 @@ const StudentDashboard = () => {
                 />
               )}
               {panelName === "startAssignment" && selectAssignmentToStart && (
-                <ViolationPage assignment={selectAssignmentToStart} />
+                <ViolationPage assignment={selectAssignmentToStart} onDirtyChange={setAssignmentDirty} onSaveReady={registerSave} />
               )}
             </div>
           </>

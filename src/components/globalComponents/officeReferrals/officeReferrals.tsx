@@ -27,6 +27,7 @@ interface ModalState {
 }
 
 const OfficeReferrals: React.FC<OfficeReferralProps> = ({ data }) => {
+  const canClose = sessionStorage.getItem("role") === "ADMIN";
   const [updatePage, setUpdatePage] = useState(false);
   const [deletePayload, setDeletePayload] = useState<OfficeReferral | null>(
     null
@@ -70,7 +71,7 @@ const OfficeReferrals: React.FC<OfficeReferralProps> = ({ data }) => {
       .post(url, payload, { headers })
       .then((response) => {
         handleUpdatePage();
-        setToast({ visible: true, message: "Answers accepted successfully!" });
+        setToast({ visible: true, message: "Referral closed. Notification status is tracked separately." });
         setOpenModal({
           display: false,
           message: "",
@@ -82,50 +83,8 @@ const OfficeReferrals: React.FC<OfficeReferralProps> = ({ data }) => {
         console.error(error);
         setToast({
           visible: true,
-          message: "Failed to accept answers. Please try again.",
+          message: "Failed to close referral. Please try again.",
         });
-      });
-  };
-
-  const handleRejectPunishment = (obj: OfficeReferral) => {
-    setLoadingPunishmentId({
-      id: obj.officeReferralId,
-      buttonType: "close",
-    });
-    const url = `${baseUrl}/officeReferral/v1/rejected/${obj.officeReferralId}`;
-    axios
-      .put(url, null, { headers }) // Pass the headers option with the JWT token
-      .then(function (response) {
-        setToast({
-          visible: true,
-          message:
-            "You have rejected the student's answers and an email has been sent letting them know.",
-        });
-        setOpenModal({
-          display: false,
-          message: "",
-          buttonType: "",
-          data: null,
-        });
-      })
-      .catch(function (error) {
-        console.error(error);
-        setToast({
-          visible: true,
-          message: "Failed to reject answers. Try again.",
-        });
-      })
-      .finally(() => {
-        setOpenModal({
-          display: false,
-          message: "",
-          buttonType: "",
-          data: null,
-        });
-        setTimeout(() => {
-          setToast({ visible: false, message: "" });
-          setLoadingPunishmentId({ id: null, buttonType: "" });
-        }, 1000);
       });
   };
 
@@ -333,7 +292,7 @@ const OfficeReferrals: React.FC<OfficeReferralProps> = ({ data }) => {
                               marginTop: "-2%",
                             }}
                           >
-                            Review Answers
+                            Review Referral
                           </p>
                           <CheckBoxIcon />
                         </button>
@@ -465,21 +424,9 @@ const OfficeReferrals: React.FC<OfficeReferralProps> = ({ data }) => {
               >
                 Cancel
               </button>
+
               <button
-                disabled={textareaValue.length === 0}
-                style={{
-                  backgroundColor: textareaValue === "" ? "grey" : "red",
-                }}
-                onClick={() => {
-                  if (deletePayload) {
-                    handleRejectPunishment(deletePayload);
-                  }
-                }}
-              >
-                Reject Answers
-              </button>
-              <button
-                disabled={textareaValue.length === 0}
+                disabled={!canClose || textareaValue.length === 0}
                 style={{
                   backgroundColor: textareaValue === "" ? "grey" : "green",
                 }}
@@ -492,8 +439,9 @@ const OfficeReferrals: React.FC<OfficeReferralProps> = ({ data }) => {
                   }
                 }}
               >
-                Accept Answers
+                Close Referral
               </button>
+              {!canClose && <p>Only the principal or school administrator can close an office referral.</p>}
             </div>
           </div>
         </div>

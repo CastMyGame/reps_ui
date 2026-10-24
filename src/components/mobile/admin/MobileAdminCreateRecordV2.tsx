@@ -1,3 +1,4 @@
+import { assignmentCreationWarning } from "../../../utils/assignmentStatus";
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
@@ -45,6 +46,7 @@ const MobileAdminCreateRecordV2 = () => {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [assignmentWarning, setAssignmentWarning] = useState("");
   const [success, setSuccess] = useState(false);
   useEffect(() => {
     Promise.all([
@@ -102,12 +104,12 @@ const MobileAdminCreateRecordV2 = () => {
     try {
       setSubmitting(true);
       setError("");
-      await axios.post(`${baseUrl}/punish/v1/startPunish/formList`, payload, {
+      const result = await axios.post(`${baseUrl}/punish/v1/startPunish/formList`, payload, {
         headers: {
           Authorization: `Bearer ${sessionStorage.getItem("Authorization")}`,
         },
       });
-      setSuccess(true);
+      setAssignmentWarning(assignmentCreationWarning(result.data)); setSuccess(true);
     } catch {
       setError(
         "The record was not created. Check your connection and try again.",
@@ -149,7 +151,8 @@ const MobileAdminCreateRecordV2 = () => {
         <section className="mobile-create-v2-content mobile-create-v2-success">
           <CheckCircleRoundedIcon />
           <p>{kind === "SHOUT_OUT" ? "Shout-out sent" : "Referral created"}</p>
-          <h2>All set</h2>
+          {assignmentWarning && <p role="alert">{assignmentWarning}</p>}
+          <h2>{assignmentWarning ? "Case saved — assignment needs attention" : "All set"}</h2>
           <span>
             {selected.length}{" "}
             {selected.length === 1 ? "student was" : "students were"} included.
