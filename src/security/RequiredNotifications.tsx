@@ -17,18 +17,17 @@ const staff = () => ["TEACHER", "ADMIN", "GUIDANCE"].includes(sessionStorage.get
 export function DisciplinaryActionNotice() {
   const [message, setMessage] = useState("");
   useEffect(() => {
-    let active = true; let enabled = false;
-    if (staff()) void request("").then(result => { enabled = result.available; }).catch(() => undefined);
-    const saved = () => { if (active && enabled) setMessage("Action saved. Required email is tracked separately and may still be pending."); };
+    let active = true;
+    const saved = () => { if (active && staff()) setMessage("Action saved. Saving does not confirm an email was sent. Check notification status separately."); };
     window.addEventListener("reps:disciplinary-action-saved", saved);
     return () => { active = false; window.removeEventListener("reps:disciplinary-action-saved", saved); };
   }, []);
   return message ? <aside role="status" style={{ padding: 12, background: "#e8f3fa" }}>{message} <a href="/account/notifications">Check email status</a></aside> : null;
 }
-const labels: Record<string,string> = { PENDING: "Pending", DISPATCHING: "Processing", ACCEPTED: "Accepted by provider", FAILED: "Failed", RECONNECT_REQUIRED: "Gmail reconnection required", UNCERTAIN: "Uncertain — review required", RESOLVED: "Manually resolved" };
+const labels: Record<string,string> = { PENDING: "Notification queued", DISPATCHING: "Processing", ACCEPTED: "Accepted by provider", FAILED: "Failed", RECONNECT_REQUIRED: "Gmail reconnection required", UNCERTAIN: "Uncertain — review required", RESOLVED: "Manually resolved" };
 export default function RequiredNotifications() {
   const [cases, setCases] = useState<CaseStatus[]>([]);
-  const [available, setAvailable] = useState(false);
+  const [available, setAvailable] = useState<boolean | null>(null);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState("");
   const [notes, setNotes] = useState<Record<string,string>>({});
@@ -56,14 +55,17 @@ export default function RequiredNotifications() {
     <p>A saved disciplinary action remains saved while its email is pending or needs attention. Provider acceptance does not confirm delivery or that the message was read.</p>
     {message && <p role="status">{message}</p>}
     <button disabled={busy} onClick={() => void reload()}>Refresh status</button>
-    {!busy && !available && <p>Managed notifications are not enabled.</p>}
+    {!busy && available === false && <p>Managed notifications are not enabled.</p>}
     {available && cases.length === 0 && <p>No required emails are visible for your authorized cases.</p>}
     {cases.map(item => <section key={`${item.kind}:${item.caseId}`}>
       <h2 title={item.caseId}>Case {item.conversationId.slice(0, 8)}{item.studentName ? ` — ${item.studentName}` : ""}</h2>
       {item.notifications.map(notification => <article key={notification.id} style={{ border: "1px solid #ccc", padding: 12, marginBottom: 12 }}>
         <p><strong>{notification.event.replace(/_/g, " ")}</strong> — {labels[notification.state] || "Unavailable"}</p>
         <p>Sending staff: {notification.actor === "SYSTEM" ? "REPS automated notification" : notification.actor}</p>
+        {notification.state === "ACCEPTED" && <p>The provider accepted the message. Inbox delivery is not confirmed.</p>}
         {notification.state === "RECONNECT_REQUIRED" && <p>The sending staff member must <a href="/account/gmail">reconnect Gmail</a> before retrying.</p>}
+        {notification.state === "FAILED" && <p>The notification failed. The disciplinary action remains saved. Check the reason before queuing a safe retry.</p>}
+        {notification.reason && <p>Reason: {notification.reason.replace(/_/g, " ")}</p>}
         {notification.state === "UNCERTAIN" && <p>The provider may have accepted some or all recipients. Retrying is blocked; a school administrator must verify the outcome and record any external resolution.</p>}
         {Object.keys(notification.recipientOutcomes || {}).length > 0 && <ul>{Object.entries(notification.recipientOutcomes).map(([recipient, outcome]) => <li key={recipient}>{recipient}: {outcome.replace(/_/g, " ")}</li>)}</ul>}
         {notification.retrySafe && ["FAILED", "RECONNECT_REQUIRED"].includes(notification.state) && <button disabled={busy} onClick={() => void change(item, notification, "retry")}>Queue safe retry</button>}

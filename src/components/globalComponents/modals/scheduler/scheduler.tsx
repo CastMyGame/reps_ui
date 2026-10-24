@@ -24,7 +24,7 @@ const handleSetDate = () => {
     .then(response => {
       setToastType("success-toast")
       setIsToast(true)
-      setToastMessage("Reminder for Task has been Sent")
+      setToastMessage("Follow-up date saved. This does not confirm email delivery.")
       
       setTimeout(()=>{
         setIsToast(false)

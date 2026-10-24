@@ -83,7 +83,7 @@ const MobileAdminCreateRecord = () => {
     notify(
       kind === "SHOUT_OUT"
         ? {
-            title: "Shout-out sent", 
+            title: "Recognition saved",
             message: "A student has been recognized for positive behavior.",
             kind: "success",
             target: "/m/admin",
@@ -105,7 +105,7 @@ const MobileAdminCreateRecord = () => {
 
   return <main className="mobile-create-app">
     <header className="mobile-create-header"><button type="button" onClick={() => navigate("/m/admin")} aria-label="Back to admin home"><ArrowBackRoundedIcon /></button><div><span>REPS</span><h1>Create record</h1></div><button type="button" onClick={handleLogout} aria-label="Sign out"><LogoutRoundedIcon /></button></header>
-    {loading ? <div className="mobile-create-loading" aria-live="polite"><CircularProgress size={28} /> Preparing form</div> : success ? <section className="mobile-create-content mobile-create-success"><CheckCircleRoundedIcon aria-hidden="true" /><p className="mobile-create-eyebrow">{kind === "SHOUT_OUT" ? "Shout-out sent" : "Referral created"}</p><h2>{assignmentWarning ? "Case saved — assignment needs attention" : "All set"}</h2><p>The student record has been saved.</p>{assignmentWarning && <p role="alert">{assignmentWarning}</p>}<button type="button" onClick={resetForAnother}>Create another record</button></section> : <section className="mobile-create-content">
+    {loading ? <div className="mobile-create-loading" aria-live="polite"><CircularProgress size={28} /> Preparing form</div> : success ? <section className="mobile-create-content mobile-create-success"><CheckCircleRoundedIcon aria-hidden="true" /><p className="mobile-create-eyebrow">{kind === "SHOUT_OUT" ? "Recognition saved" : "Referral created"}</p><h2>{assignmentWarning ? "Case saved — assignment needs attention" : "All set"}</h2><p>The student record has been saved.</p>{assignmentWarning && <p role="alert">{assignmentWarning}</p>}<button type="button" onClick={resetForAnother}>Create another record</button></section> : <section className="mobile-create-content">
       <p className="mobile-create-eyebrow">Quick action</p><h2>What are you creating?</h2><p className="mobile-create-intro">Choose the action first. The form stays short and focused.</p>
       <form onSubmit={submit} className="mobile-create-form">
         <fieldset><legend>Record type</legend><div className="mobile-create-choice-grid"><label className={kind === "SHOUT_OUT" ? "selected" : ""}><input type="radio" name="recordKind" checked={kind === "SHOUT_OUT"} onChange={() => setKind("SHOUT_OUT")} /><strong >Shout-out</strong><span>Recognize positive behavior and award points.</span></label><label className={kind === "REFERRAL" ? "selected" : ""}><input type="radio" name="recordKind" checked={kind === "REFERRAL"} onChange={() => setKind("REFERRAL")} /><strong>Referral</strong><span>Document a concern that needs follow-up.</span></label></div></fieldset>
