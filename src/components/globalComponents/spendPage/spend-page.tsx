@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import { currencyFailure, confirmedRedemption } from "../../../utils/currency";
+import React, { useState, useEffect, useRef } from "react";
 import { baseUrl } from "../../../utils/jsonData";
 import "./spend-page.css";
 import { Button, MenuItem, Select, TextField } from "@mui/material";
@@ -11,6 +12,9 @@ interface SpendProps {
 }
 
 const SpendPage: React.FC<SpendProps> = ({ data }) => {
+  const sending = useRef(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
   const [shoppingList, setShoppingList] = useState<
     { amount: number; description: string }[]
   >([]);
@@ -50,7 +54,7 @@ const SpendPage: React.FC<SpendProps> = ({ data }) => {
     const headers = {
       Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
     };
-    if (studentSelect !== null) {
+    if (studentSelect) {
       const selectStudentUrl = `${baseUrl}/student/v1/email/${studentSelect}`; // Replace with your actual API endpoint
       axios
         .get(selectStudentUrl, { headers }) // Pass the headers option with the JWT token
@@ -75,6 +79,11 @@ const SpendPage: React.FC<SpendProps> = ({ data }) => {
       return accu + Number(curr.amount);
     }, 0);
 
+    if (sending.current) return;
+    if (!studentSelect || !Number.isInteger(totalPoints) || totalPoints <= 0 || totalPoints > (studentPoints ?? -1) || totalPoints > 2147483647) {
+      setError("Choose a student and a positive whole redemption amount within their balance."); return;
+    }
+    sending.current = true; setSubmitting(true); setError("");
     const payload = [
       { studentEmail: studentSelect, currencyTransferred: totalPoints },
     ];
@@ -85,17 +94,21 @@ const SpendPage: React.FC<SpendProps> = ({ data }) => {
         headers: headers,
       })
       .then(function (res) {
+        confirmedRedemption(res.data, payload as {studentEmail: string}[]);
+        const saved = Array.isArray(res.data) && res.data.find((s: Student) => s.studentEmail === studentSelect);
+        if (!saved || !Number.isInteger(saved.currency) || saved.currency < 0) throw new Error("Unconfirmed redemption");
+        setStudentPoints(saved.currency);
         window.alert("Redemption Successful");
         setShoppingList([]);
-        setStudentSelect("");
+        setStudentSelect(null);
       })
       .catch(function (error) {
-        window.alert("Error Redeeming");
-      });
+        setError(currencyFailure(error));
+      }).finally(() => { sending.current = false; setSubmitting(false); });
   };
 
   const addToCart = (amount: number, description: string) => {
-    if (amount && description) {
+    if (Number.isInteger(amount) && amount > 0 && amount <= 2147483647 && description.trim()) {
       setShoppingList((prev) => [
         ...prev,
         { amount: amount, description: description },
@@ -110,9 +123,11 @@ const SpendPage: React.FC<SpendProps> = ({ data }) => {
     <div className="panel-container">
       <div className="form">
         <h1 className="title">Point Redemption</h1>
+        {error && <p role="alert">{error}</p>}
+        <p>Total redemption: {shoppingList.reduce((total, item) => total + item.amount, 0)}</p>
         <div className="divider"></div>
         <h2 className="center">Select Student</h2>
-        <Select
+        <Select disabled={submitting}
           required
           fullWidth
           variant="outlined"
@@ -191,7 +206,7 @@ const SpendPage: React.FC<SpendProps> = ({ data }) => {
                 }}
               />
             </div>
-            <Button
+            <Button disabled={submitting}
               onClick={() => {if (amount !== "") {
                 addToCart(Number(amount), description);
               } else {
@@ -229,7 +244,7 @@ const SpendPage: React.FC<SpendProps> = ({ data }) => {
               </div>
             </div>
 
-            <Button
+            <Button disabled={submitting}
               type="submit"
               onClick={() => handleSubmit()}
               // color="success"

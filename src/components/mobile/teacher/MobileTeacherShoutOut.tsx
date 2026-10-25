@@ -1,5 +1,6 @@
+import { awardValidation, committedAwardBalance, currencyFailure } from "../../../utils/currency";
 import { classKey } from "../../../utils/roster";
-import { FormEvent, useEffect, useMemo, useState } from "react";
+import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import axios from "axios";
 import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -13,6 +14,7 @@ import "../mobile.css";
 const SHOUT_OUT_NAME = "Positive Behavior Shout Out!";
 
 const MobileTeacherShoutOut = () => {
+  const sending = useRef(false);
   const [overview, setOverview] = useState<TeacherOverviewDto>({});
   const [students, setStudents] = useState<Student[]>([]);
   const [selectedClassName, setSelectedClassName] = useState("");
@@ -50,12 +52,21 @@ const MobileTeacherShoutOut = () => {
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (selectedStudentEmails.length === 0 || !selectedClass) return;
-    const safePoints = Math.max(0, Math.floor(points || 0));
-    if (safePoints > (overview.teacher?.currency ?? 0)) { setError("That award is larger than your available points balance."); return; }
+    if (sending.current) return;
+    const safePoints = points;
+    const validation = awardValidation(points, selectedStudentEmails.length, overview.teacher?.currency);
+    if (validation || !message.trim()) { setError(validation || "Describe the positive behavior."); return; }
     const payload: ReferralPayload[] = selectedStudentEmails.map((studentEmail) => ({ studentEmail, teacherEmail: overview.teacher?.email || sessionStorage.getItem("email") || "", infractionPeriod: selectedClass.classPeriod, infractionName: SHOUT_OUT_NAME, infractionDescription: message.trim(), currency: safePoints, guidanceDescription: "", phoneLogDescription: "" }));
-    try { setSubmitting(true); setError(""); await axios.post(`${baseUrl}/punish/v1/startPunish/formList`, payload, { headers: { Authorization: `Bearer ${sessionStorage.getItem("Authorization")}` } }); setSuccess(true); }
-    catch (err) { console.error("Unable to submit shout-out", err); setError("The request did not complete. Some recognition records may have been saved; check records before retrying."); }
-    finally { setSubmitting(false); }
+    sending.current = true;
+    try {
+      setSubmitting(true); setError("");
+      const result = await axios.post(`${baseUrl}/punish/v1/startPunish/formList`, payload, { headers: { Authorization: `Bearer ${sessionStorage.getItem("Authorization")}` } });
+      const balance = committedAwardBalance(result.data, payload);
+      setOverview(current => current.teacher ? ({ ...current, teacher: { ...current.teacher, currency: balance } }) : current);
+      setSuccess(true);
+    } catch (err) { setError(currencyFailure(err)); }
+    finally { sending.current = false; setSubmitting(false); }
+
   };
 
   if (loading) return <MobileTeacherShell title="Give a shout-out" showBack><div className="mobile-loading" aria-live="polite"><CircularProgress size={28} /> Preparing your roster</div></MobileTeacherShell>;
@@ -69,8 +80,8 @@ const MobileTeacherShoutOut = () => {
     <form className="mobile-form" onSubmit={submit}>
       <label htmlFor="mobile-class">Class</label><select id="mobile-class" value={selectedClassName} onChange={(event) => { setSelectedClassName(event.target.value); setSelectedStudentEmails([]); }} required>{overview.teacher?.classes?.map((item) => <option key={`${item.className}-${item.classPeriod}`} value={classKey(item)}>{item.className} · Period {item.classPeriod}</option>)}</select>
       <div className="mobile-student-picker"><div className="mobile-student-picker-heading"><label>Students</label><span>{selectedStudentEmails.length} selected</span></div>{classStudents.length === 0 ? <p className="mobile-field-hint">No students are assigned to this class yet.</p> : <div className="mobile-student-options">{classStudents.map((student) => <label key={student.studentEmail} className={selectedStudentEmails.includes(student.studentEmail) ? "selected" : ""}><input type="checkbox" checked={selectedStudentEmails.includes(student.studentEmail)} onChange={() => toggleStudent(student.studentEmail)} /><span><strong>{student.firstName} {student.lastName}</strong><small>{student.studentEmail}</small></span></label>)}</div>}</div>
-      <label htmlFor="mobile-points">Points to award</label><div className="mobile-points-row"><button type="button" onClick={() => setPoints((value) => Math.max(0, value - 1))} aria-label="Decrease points">−</button><input id="mobile-points" type="number" min="0" max={overview.teacher?.currency ?? 0} value={points} onChange={(event) => setPoints(Number(event.target.value))} /><button type="button" onClick={() => setPoints((value) => Math.min(overview.teacher?.currency ?? 0, value + 1))} aria-label="Increase points">+</button></div><p className="mobile-field-hint">Available to award: {overview.teacher?.currency ?? 0}</p>
-      <label htmlFor="mobile-message">What did they do well? <span>(optional)</span></label><textarea id="mobile-message" value={message} onChange={(event) => setMessage(event.target.value)} placeholder="For example: You helped a classmate get caught up without being asked." rows={4} maxLength={500} /><p className="mobile-field-hint">This message may be visible to the student and guardian.</p>
+      <label htmlFor="mobile-points">Points to award</label><div className="mobile-points-row"><button type="button" onClick={() => setPoints((value) => Math.max(0, value - 1))} aria-label="Decrease points">−</button><input id="mobile-points" type="number" min="0" max={overview.teacher?.currency ?? 0} value={points} onChange={(event) => setPoints(Number(event.target.value))} /><button type="button" onClick={() => setPoints((value) => Math.min(overview.teacher?.currency ?? 0, value + 1))} aria-label="Increase points">+</button></div><p className="mobile-field-hint">Total award cost: {points * selectedStudentEmails.length} · Available to award: {overview.teacher?.currency ?? 0}</p>
+      <label htmlFor="mobile-message">What did they do well?</label><textarea required id="mobile-message" value={message} onChange={(event) => setMessage(event.target.value)} placeholder="For example: You helped a classmate get caught up without being asked." rows={4} maxLength={500} /><p className="mobile-field-hint">This message may be visible to the student and guardian.</p>
       {error && <p className="mobile-error" role="alert">{error}</p>}<button className="mobile-primary-button" type="submit" disabled={submitting || selectedStudentEmails.length === 0 || !selectedClass}>{submitting ? "Sending…" : `Send shout-out${selectedStudentEmails.length > 1 ? ` to ${selectedStudentEmails.length} students` : ""}`}</button>
     </form>
   </section></MobileTeacherShell>;

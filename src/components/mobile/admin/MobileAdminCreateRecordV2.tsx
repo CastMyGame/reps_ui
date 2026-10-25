@@ -1,5 +1,6 @@
+import { awardValidation, committedAwardBalance, currencyFailure } from "../../../utils/currency";
 import { assignmentCreationWarning } from "../../../utils/assignmentStatus";
-import { FormEvent, useEffect, useMemo, useState } from "react";
+import { FormEvent, useEffect, useMemo, useState, useRef } from "react";
 import axios from "axios";
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
@@ -33,6 +34,7 @@ const referralTypes = [
 ];
 
 const MobileAdminCreateRecordV2 = () => {
+  const sending = useRef(false);
   const navigate = useNavigate();
   const [overview, setOverview] = useState<AdminOverviewDto | null>(null);
   const [students, setStudents] = useState<Student[]>([]);
@@ -83,12 +85,10 @@ const MobileAdminCreateRecordV2 = () => {
     );
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const safePoints =
-      kind === "SHOUT_OUT" ? Math.max(0, Math.floor(points || 0)) : 0;
-    if (safePoints > (overview?.teacher?.currency ?? 0))
-      return setError(
-        "That award is larger than the available points balance.",
-      );
+    if (sending.current) return;
+    const safePoints = kind === "SHOUT_OUT" ? points : 0;
+    const validation = kind === "SHOUT_OUT" ? awardValidation(points, selected.length, overview?.teacher?.currency) : "";
+    if (validation) { setError(validation); return; }
     const payload: ReferralPayload[] = selected.map((studentEmail) => ({
       studentEmail,
       teacherEmail:
@@ -101,6 +101,7 @@ const MobileAdminCreateRecordV2 = () => {
       guidanceDescription: "",
       phoneLogDescription: "",
     }));
+    sending.current = true;
     try {
       setSubmitting(true);
       setError("");
@@ -109,13 +110,15 @@ const MobileAdminCreateRecordV2 = () => {
           Authorization: `Bearer ${sessionStorage.getItem("Authorization")}`,
         },
       });
+      if (kind === "SHOUT_OUT") {
+        const balance = committedAwardBalance(result.data, payload);
+        setOverview(current => current ? ({ ...current, teacher: { ...current.teacher, currency: balance } }) : current);
+      }
       setAssignmentWarning(assignmentCreationWarning(result.data)); setSuccess(true);
-    } catch {
-      setError(
-        "The record was not created. Check your connection and try again.",
-      );
+    } catch (err) {
+      setError(kind === "SHOUT_OUT" ? currencyFailure(err) : "The request did not complete. Check records before retrying.");
     } finally {
-      setSubmitting(false);
+      sending.current = false; setSubmitting(false);
     }
   };
   const reset = () => {
@@ -255,6 +258,7 @@ const MobileAdminCreateRecordV2 = () => {
                 />
               </label>
             )}
+            {kind === "SHOUT_OUT" && <p>Total award cost: {points * selected.length} · Available: {overview?.teacher?.currency ?? 0}</p>}
             <label>
               {kind === "SHOUT_OUT"
                 ? "What did they do well?"
