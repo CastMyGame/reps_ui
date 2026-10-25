@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { classKey } from "../../../../utils/roster";
 import { baseUrl } from "src/utils/jsonData";
 import { Employee } from "src/types/school";
 
@@ -32,9 +33,10 @@ const ClassAnnouncementModal: React.FC<ClassAnnouncementModalProps> = ({
       return;
     }
 
-    const payload = selectedClasses.map((className) => ({
+    const payload = (teacher?.classes || []).filter(cls => selectedClasses.includes(classKey(cls))).map(cls => ({
       teacherEmail: teacherEmailSelected,
-      className,
+      className: cls.className,
+      classPeriod: cls.classPeriod,
       subject: modalSubject,
       msg: modalMessage,
     }));
@@ -46,12 +48,12 @@ const ClassAnnouncementModal: React.FC<ClassAnnouncementModalProps> = ({
         },
       })
       .then(() => {
-        alert("Announcement sent successfully!");
+        alert("Announcement request completed. Inbox delivery is not confirmed.");
         setContactUsDisplayModal(""); // Close modal after submission
       })
       .catch((error) => {
         console.error(error);
-        alert("Error sending announcement. Please try again.");
+        alert("The announcement request did not complete. Some recipients may already have been contacted; verify the result before retrying.");
       });
   };
 
@@ -116,7 +118,7 @@ const ClassAnnouncementModal: React.FC<ClassAnnouncementModalProps> = ({
               {teacher?.classes && teacher.classes.length > 0 ? (
                 teacher?.classes.map((cls) => (
                   <label
-                    key={cls.className}
+                    key={classKey(cls)}
                     style={{
                       display: "flex",
                       alignItems: "center",
@@ -129,8 +131,8 @@ const ClassAnnouncementModal: React.FC<ClassAnnouncementModalProps> = ({
                   >
                     <input
                       type="checkbox"
-                      value={cls.className}
-                      checked={selectedClasses.includes(cls.className)}
+                      value={classKey(cls)}
+                      checked={selectedClasses.includes(classKey(cls))}
                       onChange={(e) => {
                         const selectedValue = e.target.value;
                         setSelectedClasses((prev) =>
@@ -141,7 +143,7 @@ const ClassAnnouncementModal: React.FC<ClassAnnouncementModalProps> = ({
                       }}
                       style={{ marginRight: "8px" }}
                     />
-                    {cls.className}
+                    {cls.className} · {cls.classPeriod}
                   </label>
                 ))
               ) : (

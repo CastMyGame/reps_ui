@@ -150,7 +150,7 @@ const MobileAdminCreateRecordV2 = () => {
       ) : success ? (
         <section className="mobile-create-v2-content mobile-create-v2-success">
           <CheckCircleRoundedIcon />
-          <p>{kind === "SHOUT_OUT" ? "Shout-out sent" : "Referral created"}</p>
+          <p>{kind === "SHOUT_OUT" ? "Recognition saved" : "Referral created"}</p>
           {assignmentWarning && <p role="alert">{assignmentWarning}</p>}
           <h2>{assignmentWarning ? "Case saved — assignment needs attention" : "All set"}</h2>
           <span>

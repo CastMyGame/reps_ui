@@ -54,14 +54,14 @@ const MobileTeacherShoutOut = () => {
     if (safePoints > (overview.teacher?.currency ?? 0)) { setError("That award is larger than your available points balance."); return; }
     const payload: ReferralPayload[] = selectedStudentEmails.map((studentEmail) => ({ studentEmail, teacherEmail: overview.teacher?.email || sessionStorage.getItem("email") || "", infractionPeriod: selectedClass.classPeriod, infractionName: SHOUT_OUT_NAME, infractionDescription: message.trim(), currency: safePoints, guidanceDescription: "", phoneLogDescription: "" }));
     try { setSubmitting(true); setError(""); await axios.post(`${baseUrl}/punish/v1/startPunish/formList`, payload, { headers: { Authorization: `Bearer ${sessionStorage.getItem("Authorization")}` } }); setSuccess(true); }
-    catch (err) { console.error("Unable to submit shout-out", err); setError("Your shout-out was not sent. Check your connection and try again."); }
+    catch (err) { console.error("Unable to submit shout-out", err); setError("The request did not complete. Some recognition records may have been saved; check records before retrying."); }
     finally { setSubmitting(false); }
   };
 
   if (loading) return <MobileTeacherShell title="Give a shout-out" showBack><div className="mobile-loading" aria-live="polite"><CircularProgress size={28} /> Preparing your roster</div></MobileTeacherShell>;
   if (success) {
     const selectedStudents = students.filter((item) => selectedStudentEmails.includes(item.studentEmail));
-    return <MobileTeacherShell title="Give a shout-out" showBack><section className="mobile-teacher-content mobile-success-state"><CheckCircleRoundedIcon aria-hidden="true" /><p className="mobile-eyebrow">Shout-out sent</p><h2>Nice work!</h2><p>{selectedStudents.length === 1 ? `${selectedStudents[0]?.firstName || "Your student"} has` : `${selectedStudents.length} students have`} been recognized for positive behavior.</p><button className="mobile-primary-button" type="button" onClick={resetForAnother}>Recognize another student</button></section></MobileTeacherShell>;
+    return <MobileTeacherShell title="Give a shout-out" showBack><section className="mobile-teacher-content mobile-success-state"><CheckCircleRoundedIcon aria-hidden="true" /><p className="mobile-eyebrow">Recognition saved</p><h2>Nice work!</h2><p>{selectedStudents.length === 1 ? `${selectedStudents[0]?.firstName || "Your student"} has` : `${selectedStudents.length} students have`} been recognized for positive behavior.</p><button className="mobile-primary-button" type="button" onClick={resetForAnother}>Recognize another student</button></section></MobileTeacherShell>;
   }
 
   return <MobileTeacherShell title="Give a shout-out" showBack><section className="mobile-teacher-content">

@@ -32,7 +32,7 @@ const SendResourcesComponent = (props:any) => {
       .then(response => {
         setToastType("success-toast")
         setIsToast(true)
-        setToastMessage("Resources Has Been Sent")
+        setToastMessage("Resources saved. Check notification status; delivery is not confirmed.")
         
         setTimeout(()=>{
           setIsToast(false)
