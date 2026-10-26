@@ -51,7 +51,7 @@ const ClassUpdate = ({ teacher, onUpdated }: Props) => {
   }, [teacher]); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => {
     axios
-      .get(`${baseUrl}/student/v1/allStudents`, { headers: headers() })
+      .get(`${baseUrl}/student/v1/enrollment-directory`, { headers: headers() })
       .then((r) => setStudents(r.data))
       .catch((e) => setError(rosterError(e)));
   }, []);

@@ -9,10 +9,11 @@ import {
   TextField,
   Chip,
 } from "@mui/material";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import "./teacher_profile_modal.css";
 import { baseUrl } from "src/utils/jsonData";
 import axios from "axios";
+import { eligibleSpotterStudent, requireSpotterResults, studentSecurityError } from "src/utils/studentSecurity";
 import TeacherProfileIncidentsByStudentTable from "./teacher_profile_widget_incident_table";
 import { TeacherProfileIncidentByStudentPieChart } from "./teacher_profile_widget_incident-pie";
 import { TeacherProfileSpotter } from "./teacher_profile_widget_spotter";
@@ -32,6 +33,9 @@ export const TeacherDetailsModal: React.FC<TeacherDetailsProps> = ({
   setDisplayBoolean,
   adminDto,
 }) => {
+  const inFlight = useRef(false);
+  const [saving, setSaving] = useState(false);
+  const [spotterError, setSpotterError] = useState("");
   const [teacherProfileData, setTeacherProfileData] = useState<
     TeacherReferral[]
   >([]);
@@ -63,7 +67,7 @@ export const TeacherDetailsModal: React.FC<TeacherDetailsProps> = ({
       });
   }, [url]);
 
-  const selectOptions = listOfStudents.map((student) => ({
+  const selectOptions = listOfStudents.filter(s => eligibleSpotterStudent(selectedTeacher, s)).map((student) => ({
     value: student.studentEmail, // Use a unique value for each option
     label: `${student.firstName} ${student.lastName} - ${student.studentEmail}`, // Display student's full name as the label
   }));
@@ -88,6 +92,8 @@ export const TeacherDetailsModal: React.FC<TeacherDetailsProps> = ({
   }, [selectedTeacher]);
 
   const addSpotter = () => {
+    if (inFlight.current || !selectedTeacher || !studentNames.length) return;
+    inFlight.current = true; setSaving(true); setSpotterError("");
     const headers = {
       Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
     };
@@ -105,18 +111,18 @@ export const TeacherDetailsModal: React.FC<TeacherDetailsProps> = ({
     const url = `${baseUrl}/student/v1/addAsSpotter`;
     axios
       .put(url, payload, { headers })
-      .then(() => {
+      .then((response) => {
+        requireSpotterResults(response.data, student_emails, selectedTeacher.email, true);
         window.alert(
-          `You have been successfully added as a spotter for the students entered. You will receive all REPS emails for these students when they are sent. `
+          `${selectedTeacher.email} is now subscribed for the selected authorized students.`
         );
         setTimeout(() => {
           setDisplaySpotterAdd(false);
           setStudentNames([]);
         }, 1000);
       })
-      .catch((error) => {
-        console.error(error);
-      });
+      .catch((error) => { setSpotterError(studentSecurityError(error)); })
+      .finally(() => { inFlight.current = false; setSaving(false); });
   };
 
   return (
@@ -156,7 +162,8 @@ export const TeacherDetailsModal: React.FC<TeacherDetailsProps> = ({
           </div>
           {displaySpotterAdd && (
             <div className="spot-student-modal">
-              <p style={{ textAlign: "center" }}>Add Students To Spot</p>
+              <p style={{ textAlign: "center" }}>Subscribe staff to students already authorized by roster or guidance assignment</p>
+              {spotterError && <p role="alert">{spotterError}</p>}
               <Autocomplete
                 multiple
                 className="student-dropdown"
@@ -186,6 +193,7 @@ export const TeacherDetailsModal: React.FC<TeacherDetailsProps> = ({
               />
               <button
                 className="btn-add-student-roster"
+                disabled={saving || !studentNames.length}
                 onClick={() => addSpotter()}
               >
                 Add Students

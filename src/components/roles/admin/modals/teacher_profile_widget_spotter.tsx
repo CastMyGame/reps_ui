@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import "./teacher_profile_modal_widgets.css";
 import { get } from "src/utils/api/api";
 import axios from "axios";
+import { requireSpotterResults, studentSecurityError } from "src/utils/studentSecurity";
 import { baseUrl } from "src/utils/jsonData";
 import { Student } from "src/types/school";
 
@@ -15,6 +16,8 @@ export const TeacherProfileSpotter: React.FC<TeacherSpotterProps> = ({
   setDisplaySpotterAdd,
   displaySpotterAdd,
 }) => {
+  const inFlight = useRef(false);
+  const [error, setError] = useState("");
   const [studentData, setStudentData] = useState<Student[]>([]);
   const [update, setUpdate] = useState(false);
 
@@ -23,7 +26,7 @@ export const TeacherProfileSpotter: React.FC<TeacherSpotterProps> = ({
       try {
         const result: Student[] = await get("student/v1/allStudents");
         const filteredResults = result.filter((x) =>
-          x.spotters.includes(teacher)
+          x.spotters?.some(email => email.toLowerCase() === teacher.toLowerCase())
         );
 
         setStudentData(filteredResults);
@@ -36,6 +39,7 @@ export const TeacherProfileSpotter: React.FC<TeacherSpotterProps> = ({
   }, [update, setDisplaySpotterAdd, teacher, displaySpotterAdd]);
 
   const removeSpotter = (x: Student) => {
+    if (inFlight.current) return;
     const headers = {
       Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
     };
@@ -44,21 +48,22 @@ export const TeacherProfileSpotter: React.FC<TeacherSpotterProps> = ({
       `Do you want to remove ${teacher} from spotting ${x.firstName} ${x.lastName}?`
     );
     if (userConfirmed) {
+      inFlight.current = true; setError("");
       axios
         .put(
           `${baseUrl}/student/v1/remove-spotter/${teacher}`,
           x, // Passing `x` as the request data
           { headers } // Passing headers in the configuration object
         )
-        .then(() => {
+        .then((response) => {
+          requireSpotterResults([response.data], [x.studentEmail], teacher, false);
           window.alert(
-            `You have been removed as spotter for ${x.firstName} ${x.lastName}`
+            `${teacher} is no longer subscribed for ${x.firstName} ${x.lastName}`
           );
           setUpdate((prev) => !prev);
         })
-        .catch(() => {
-          console.error("SOMETHING WENT WRONG");
-        });
+        .catch((failure) => { setError(studentSecurityError(failure)); })
+        .finally(() => { inFlight.current = false; });
     } else {
       // User clicked "Cancel" (No)
     }
@@ -67,6 +72,7 @@ export const TeacherProfileSpotter: React.FC<TeacherSpotterProps> = ({
   return (
     <div className="widget-container">
       <h2 style={{ textAlign: "center" }}>Spotters Roster</h2>
+      {error && <p role="alert">{error}</p>}
       <div className="spotter-pill-container">
         {studentData.map((x) => {
           return (

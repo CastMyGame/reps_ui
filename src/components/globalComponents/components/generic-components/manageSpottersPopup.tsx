@@ -11,6 +11,7 @@ import {
   SnackbarCloseReason,
 } from "@mui/material";
 import axios from "axios";
+import { studentSecurityError, requireSpotterResults } from "src/utils/studentSecurity";
 import { useEffect, useState, useRef } from "react";
 import { Student } from "src/types/school";
 import { baseUrl } from "src/utils/jsonData";
@@ -24,6 +25,9 @@ export const ManageSpottersPopup: React.FC<ManageSpottersProps> = ({
   setContactUsDisplayModal,
   contactUsDisplayModal,
 }) => {
+  const inFlight = useRef(false);
+  const [saving, setSaving] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const [warningToast, setWarningToast] = useState(false);
   const [errorToast, setErrorToast] = useState(false);
   const [studentOptions, setStudentOptions] = useState<Student[]>([]);
@@ -98,6 +102,8 @@ export const ManageSpottersPopup: React.FC<ManageSpottersProps> = ({
   }));
 
   const handleSpotterAction = async (action: "add" | "remove") => {
+    if (inFlight.current || !studentNames.length) return;
+    inFlight.current = true; setSaving(true); setErrorToast(false);
     const studentEmails = studentNames.map((x) => x.value);
     const payload = {
       spotters: [sessionStorage.getItem("email")],
@@ -113,7 +119,8 @@ export const ManageSpottersPopup: React.FC<ManageSpottersProps> = ({
     };
 
     try {
-      await axios.put(url, payload, { headers });
+      const result = await axios.put(url, payload, { headers });
+      requireSpotterResults(result.data, studentEmails, sessionStorage.getItem("email") ?? "", action === "add");
 
       window.alert(
         `You have been successfully ${
@@ -125,9 +132,9 @@ export const ManageSpottersPopup: React.FC<ManageSpottersProps> = ({
         setContactUsDisplayModal("");
       }, 1000);
     } catch (error) {
-      console.error(error);
+      setErrorMessage(studentSecurityError(error));
       setErrorToast(true);
-    }
+    } finally { inFlight.current = false; setSaving(false); }
   };
 
   const handleSnackbarClose = (
@@ -163,7 +170,7 @@ export const ManageSpottersPopup: React.FC<ManageSpottersProps> = ({
         onClose={() => setErrorToast(false)}
       >
         <Alert severity="error">
-          An error occurred while processing your request.
+          {errorMessage || "Unable to load authorized students. Please retry."}
         </Alert>
       </Snackbar>
 
@@ -172,7 +179,7 @@ export const ManageSpottersPopup: React.FC<ManageSpottersProps> = ({
           variant="h3"
           style={{ marginBottom: "20px", textAlign: "center" }}
         >
-          Choose which students you want to spot or stop spotting
+          Manage notifications for students in your classes or assigned guidance group
         </Typography>
 
         <Typography variant="h4" style={{ textAlign: "left" }}>
@@ -224,7 +231,7 @@ export const ManageSpottersPopup: React.FC<ManageSpottersProps> = ({
           }}
         >
           <Button
-            disabled={studentNames.length === 0}
+            disabled={saving || studentNames.length === 0}
             variant="contained"
             color="primary"
             onClick={() => handleSpotterAction("add")}
@@ -233,7 +240,7 @@ export const ManageSpottersPopup: React.FC<ManageSpottersProps> = ({
             Spot Students
           </Button>
           <Button
-            disabled={studentNames.length === 0}
+            disabled={saving || studentNames.length === 0}
             variant="contained"
             color="secondary"
             onClick={() => handleSpotterAction("remove")}

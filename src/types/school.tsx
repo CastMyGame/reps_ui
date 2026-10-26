@@ -23,6 +23,8 @@ export type RoleModel = {
 };
 
 export type Student = {
+  studentIdNumber?: string;
+  profileRevision?: number;
   firstName: string;
   lastName: string;
   address: string;
