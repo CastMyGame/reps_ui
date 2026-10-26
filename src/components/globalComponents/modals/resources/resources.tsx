@@ -3,9 +3,14 @@ import './resources.css';
 import { Checkbox, FormControlLabel, FormGroup } from '@mui/material';
 import { baseUrl } from 'src/utils/jsonData';
 import axios from 'axios';
+import { studentSecurityError } from 'src/utils/studentSecurity';
+import { requireGuidanceRecord, guidancePath } from 'src/utils/guidanceSecurity';
+import { useRef } from 'react';
 import { ResourceOption } from 'src/types/menus';
 
 const SendResourcesComponent = (props:any) => {
+  const inFlight = useRef(false);
+  const [saving, setSaving] = useState(false);
   const [filter,setFilter] = useState<string>("")
 
   const [toastMessage, setToastMessage] = useState("");
@@ -21,15 +26,19 @@ const SendResourcesComponent = (props:any) => {
 // }
 //Add PUT controller to update followup date
     const handleSubmitResources = () => {
+    if (inFlight.current) return;
+    inFlight.current = true; setSaving(true);
 
       const payload = {
         resourceOptionList: selectedItems
       }
 
   
-      const url =`${baseUrl}/punish/v1/guidance/resources/${props.activeTask}`
+      const url =guidancePath("resources", props.activeTask)
       axios.put(url, payload,{headers})
       .then(response => {
+        const saved = response.data?.guidance?.find((g: any) => g.guidanceId === props.activeTask);
+        requireGuidanceRecord(saved, props.activeTask);
         setToastType("success-toast")
         setIsToast(true)
         setToastMessage("Resources saved. Check notification status; delivery is not confirmed.")
@@ -47,7 +56,7 @@ const SendResourcesComponent = (props:any) => {
       .catch(error => {
         setToastType("warning-toast")
         setIsToast(true)
-        setToastMessage("Something Went Wrong, Try Again")
+        setToastMessage(studentSecurityError(error))
         
         setTimeout(()=>{
           setIsToast(false)
@@ -57,7 +66,7 @@ const SendResourcesComponent = (props:any) => {
     
         },3000)
  
-      });
+      }).finally(() => { inFlight.current = false; setSaving(false); });
     }
 
 
@@ -152,7 +161,7 @@ const [selectedItems, setSelectedItems] = useState<ResourceOption[]>([]);
 
 
             <div className="btn-container">
-            <button onClick={handleSubmitResources} className='resource-submit-btn'  >Submit</button>
+            <button disabled={saving} onClick={handleSubmitResources} className='resource-submit-btn'  >Submit</button>
             </div>
 
             </div>

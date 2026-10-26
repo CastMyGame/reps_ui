@@ -2,11 +2,16 @@ import React, { useState,useEffect } from 'react';
 import './notes.css';
 import { TextField } from '@mui/material';
 import axios from 'axios';
+import { studentSecurityError } from 'src/utils/studentSecurity';
+import { requireGuidanceRecord, guidancePath } from 'src/utils/guidanceSecurity';
+import { useRef } from 'react';
 import { baseUrl } from 'src/utils/jsonData';
 
 const NotesComponent = (props:any) => {
     const [noteText, setNoteText] = useState({createdBy: "",
       event:"Notes", content:""});
+    const inFlight = useRef(false);
+    const [saving, setSaving] = useState(false);
     const [toastMessage, setToastMessage] = useState("");
     const [isToast, setIsToast] = useState(false);
     const [toastType, setToastType] = useState("")
@@ -20,9 +25,13 @@ const NotesComponent = (props:any) => {
 
 //Add PUT controller to update followup date
     const handleSubmitNotes = () => {
-      let url = props.panelName === "overview"? `${baseUrl}/punish/v1/guidance/notes/${props.activeTask}` : `${baseUrl}/student/v1/notes/${props.activeTask}`
-    axios.put(url, noteText,{headers})
+    if (inFlight.current) return;
+    inFlight.current = true; setSaving(true);
+      let url = props.panelName === "overview"? guidancePath("notes", props.activeTask) : `${baseUrl}/student/v1/notes/${props.activeTask}`
+    axios.put(url, {event: noteText.event, content: noteText.content},{headers})
     .then(response => {
+      if (props.panelName === "overview") requireGuidanceRecord(response.data, props.activeTask);
+      else if (!response.data?.studentIdNumber) throw new Error("Note save not confirmed");
       setToastType("success-toast")
       setIsToast(true)
       setToastMessage("Notes Has Been Submitted")
@@ -39,7 +48,7 @@ const NotesComponent = (props:any) => {
     .catch(error => {
       setToastType("warning-toast")
       setIsToast(true)
-      setToastMessage("Something Went Wrong, Try Again")
+      setToastMessage(studentSecurityError(error))
       
       setTimeout(()=>{
         setIsToast(false)
@@ -49,7 +58,7 @@ const NotesComponent = (props:any) => {
   
       },3000)
 
-    });
+    }).finally(() => { inFlight.current = false; setSaving(false); });
 
   
 
@@ -89,7 +98,7 @@ const NotesComponent = (props:any) => {
         />
             </div>
             <div className="btn-container">
-            <button onClick={handleSubmitNotes} className='submit-button'  >Submit</button>
+            <button disabled={saving} onClick={handleSubmitNotes} className='submit-button'  >Submit</button>
             </div>
          
         </div>

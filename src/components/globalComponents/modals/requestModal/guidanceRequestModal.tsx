@@ -2,9 +2,14 @@ import React, { useState } from 'react';
 import './guidanceRequestModal.css';
 import { Box, Chip, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from '@mui/material';
 import axios from 'axios';
+import { useRef } from 'react';
+import { studentSecurityError } from 'src/utils/studentSecurity';
+import { requireGuidanceCreation } from 'src/utils/guidanceSecurity';
 import { baseUrl } from '../../../../utils/jsonData';
 
 const GuidanceRequestModal = (props: any) => {
+    const inFlight = useRef(false);
+    const [saving, setSaving] = useState(false);
     const [noteText, setNoteText] = useState({ event: "Notes", content: "" });
     const [toastMessage, setToastMessage] = useState("");
     const [isToast, setIsToast] = useState(false);
@@ -16,19 +21,22 @@ const GuidanceRequestModal = (props: any) => {
     };
 
     const handleSubmitNotes = () => {
+    if(inFlight.current || typeof selectValue !== "string" || !selectValue.trim()) return;
+    inFlight.current = true; setSaving(true);
     let  payload = [{
         guidance:{
           studentEmail: props.studentEmail,
-          referralDescription: [selectValue],
+          referralDescription: [selectValue, ...(noteText.content.trim() ? [noteText.content.trim()] : [])],
         },
         linkToPunishment: null,
       }]
 
       axios
-      .post(`${baseUrl}/punish/v1/guidance/formList`, payload, {
+      .post(`${baseUrl}/guidance/v1/guidance/new`, payload[0], {
         headers: headers,
       })
       .then(function (res) {
+        requireGuidanceCreation(res.data, props.studentEmail);
         window.alert(`${selectValue} has been created`)
         // setToast({ display: true, message: "Referral Succesfuly Created" });
         // setTimeout(() => {
@@ -40,13 +48,13 @@ const GuidanceRequestModal = (props: any) => {
         props.setDisplayModal(false)
       })
       .catch(function (error) {
-        console.error(error);
+        setToastType("warning-toast"); setIsToast(true); setToastMessage(studentSecurityError(error));
         // setToast({ display: true, message: "Something Went Wrong" });
         // setTimeout(() => {
         //   setLoading(false);
         //   setToast({ display: false, message: "" });
         // }, 2000);
-      });
+      }).finally(() => { inFlight.current=false; setSaving(false); });
   };
 
     const handleChange = (event: SelectChangeEvent) => {
@@ -142,7 +150,7 @@ const GuidanceRequestModal = (props: any) => {
                 />
             </div>
             <div className="btn-container">
-                <button onClick={handleSubmitNotes} className='submit-button'>Submit</button>
+                <button disabled={saving} onClick={handleSubmitNotes} className='submit-button'>Submit</button>
             </div>
         </div>
     );

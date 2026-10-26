@@ -256,32 +256,6 @@ const CreatePunishmentPanel: React.FC<CreatePunishmentProps> = ({
 
     const payload = payloadContent;
 
-    if (isGuidance.isGuidanceBoolean && !positive) {
-      const guidancePayloadContent = studentNames.map((student) => ({
-        guidance: {
-          studentEmail: student.value,
-          classPeriod: infractionPeriodSelected,
-          teacherEmail: teacherEmailSelected,
-          referralDescription: [isGuidance.guidanceDescription],
-        },
-      }));
-
-      axios
-        .post(
-          `${baseUrl}/punish/v1/guidance/formList`,
-          guidancePayloadContent,
-          {
-            headers: headers,
-          }
-        )
-        .then(function (res) {
-          window.alert(`Counseling Referral has been created`);
-        })
-        .catch(function (error) {
-          console.error(error);
-        });
-    }
-
     axios
       .post(`${baseUrl}/punish/v1/startPunish/formList`, payload, {
         headers: headers,
