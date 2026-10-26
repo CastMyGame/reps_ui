@@ -18,6 +18,7 @@ export interface ThreadEvent {
 }
 
 export interface GuidanceReferral {
+  archived?: boolean;
   guidanceId: string;
   studentEmail: string;
   schoolName: string;

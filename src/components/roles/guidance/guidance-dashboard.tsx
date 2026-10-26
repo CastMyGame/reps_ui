@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useRef } from "react";
 import "./guidance-dashboard.css";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import NoteAddIcon from "@mui/icons-material/NoteAdd";
@@ -8,6 +8,8 @@ import NotesComponent from "../../globalComponents/modals/notes/notes";
 import SendResourcesComponent from "../../globalComponents/modals/resources/resources";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import axios from "axios";
+import { requireGuidanceRecord, guidancePath } from "src/utils/guidanceSecurity";
+import { studentSecurityError } from "src/utils/studentSecurity";
 import { baseUrl } from "src/utils/jsonData";
 import {
   FormControlLabel,
@@ -29,6 +31,8 @@ import { GuidanceReferral, TeacherReferral } from "src/types/responses";
 import { Student } from "src/types/school";
 
 const GuidanceDashboard = () => {
+  const actionLocks = useRef(new Set<string>());
+  const [errorMessage, setErrorMessage] = useState("");
   const email = sessionStorage.getItem("email");
 
   const [displayPicker, setDisplayPicker] = useState(false);
@@ -68,7 +72,8 @@ const GuidanceDashboard = () => {
         setListOfStudents(response.data);
       })
       .catch(function (error) {
-        console.error(error);
+        setErrorMessage(studentSecurityError(error));
+        setCloseIndicator(false);
       });
   }, [studentUrl]);
 
@@ -97,20 +102,25 @@ const GuidanceDashboard = () => {
   };
 
   const handleStatusChange = (status: string, id: string) => {
+    if(data.find(g => g.guidanceId === id)?.archived) { setErrorMessage("Archived guidance history is read-only."); return; }
+    if(actionLocks.current.has(id)) return;
+    actionLocks.current.add(id); setErrorMessage("");
     const payload = { status: status };
     const headers = {
       Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
     };
 
-    const url = `${baseUrl}/guidance/v1/guidance/status/${id}`;
+    const url = guidancePath("status",id);
     axios
       .put(url, payload, { headers })
       .then((response) => {
+        requireGuidanceRecord(response.data, id, status);
         handleUpdatePage();
       })
       .catch((error) => {
-        console.error(error);
-      });
+        setErrorMessage(studentSecurityError(error));
+        setCloseIndicator(false);
+      }).finally(() => { actionLocks.current.delete(id); setCloseIndicator(false); });
   };
 
   const handleReferralFilterChange = (filterBoolean: boolean) => {
@@ -129,31 +139,11 @@ const GuidanceDashboard = () => {
 
   //Status Change Actions for Closing and Scheduling Task
 
-  const handlePunishmentClose = (id: string) => {
-    setCloseIndicator(true);
-
-    const headers = {
-      Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
-    };
-
-    const url = `${baseUrl}/punish/v1/close/${id}`;
-    axios
-      .post(url, [], { headers })
-      .then((response) => {
-        setCloseIndicator(false);
-        handleUpdatePage();
-        window.alert(`You have Closed Record: ${id} `);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  };
-
   const [punishmentRecord, setPunishmentRecord] =
     useState<TeacherReferral | null>();
   //
   const getPunishmentRecord = useCallback(async () => {
-    if (activeIndex !== null) {
+    if (activeIndex !== null && data[activeIndex]?.linkToPunishment) {
       try {
         let result;
 
@@ -162,7 +152,7 @@ const GuidanceDashboard = () => {
       } catch (err) {
         setPunishmentRecord(null);
 
-        console.error("Error Fetching Data: ", err);
+        setErrorMessage(studentSecurityError(err));
       }
     } else {
       setPunishmentRecord(null);
@@ -177,11 +167,10 @@ const GuidanceDashboard = () => {
       } else {
         result = await get(`guidance/v1/guidanceStatus/${taskType}`);
       }
-      setData(
-        result.filter((item: GuidanceReferral) => item.guidanceEmail === email)
-      );
+      if(!Array.isArray(result)) throw new Error("Guidance records were not confirmed");
+      setData(result);
     } catch (err) {
-      console.error("Error Fetching Data: ", err);
+      setData([]); setErrorMessage(studentSecurityError(err));
     }
   }, [taskType, email]);
 
@@ -190,7 +179,7 @@ const GuidanceDashboard = () => {
       let result = await get("student/v1/allStudents/");
       setData(result);
     } catch (err) {
-      console.error("Error Fetching Data: ", err);
+      setErrorMessage(studentSecurityError(err));
     }
   }, []);
 
@@ -199,55 +188,62 @@ const GuidanceDashboard = () => {
       let result = await get("employees/v1/employees/TEACHER");
       setData(result);
     } catch (err) {
-      console.error("Error Fetching Data: ", err);
+      setErrorMessage(studentSecurityError(err));
     }
   }, []);
 
   const fetchActiveReferrals = useCallback(async () => {
     try {
       const result = await get(
-        `punish/v1/guidance/${taskType}/${guidanceFilter}`
+        taskType === "ALL" ? "guidance/v1/referrals" : `guidance/v1/guidanceStatus/${taskType}`
       );
       if (Array.isArray(result)) {
+        const authorized = result.filter((item: GuidanceReferral) => !guidanceFilter || listOfStudents.some(s => s.studentEmail === item.studentEmail && s.guidanceEmail === email));
         if (categoryFilter === "CLERICAL") {
           setData(
-            result.filter((infractionName) => CLERICAL.includes(infractionName))
+            authorized.filter((item: GuidanceReferral) => CLERICAL.includes(item.infractionName))
           );
         } else if (categoryFilter === "BEHAVIORAL") {
           setData(
-            result.filter((infractionName) =>
-              BEHAVIORAL.includes(infractionName)
+            authorized.filter((item: GuidanceReferral) =>
+              BEHAVIORAL.includes(item.infractionName)
             )
           );
         } else {
-          setData(result);
+          setData(authorized);
         }
       } else {
-        console.error("Fetched data is not an array.");
+        throw new Error("Guidance records were not confirmed");
       }
     } catch (error) {
       console.error(error);
     }
-  }, [taskType, guidanceFilter, categoryFilter]);
+  }, [taskType, guidanceFilter, categoryFilter, listOfStudents, email]);
 
   //Handle Functions
   const deleteRecord = (punishment: GuidanceReferral) => {
+    if(punishment.archived) { setErrorMessage("Archived guidance history is read-only."); return; }
+    const id=punishment.guidanceId;
+    if(actionLocks.current.has(id)) return;
+    actionLocks.current.add(id); setErrorMessage("");
     const headers = {
       Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
     };
-    const url = `${baseUrl}/guidance/v1/delete`;
+    const url = guidancePath("delete",punishment.guidanceId);
 
     axios
       .delete(url, { data: punishment, headers }) // Pass the headers option with the JWT token
       .then(function (response) {
+        if(response.data !== "Guidance referral archived; history retained") throw new Error("Archive was not confirmed");
         setUpdatePage((prev) => !prev);
         window.alert(
-          `You have Deleted Record: ${punishment.infractionName} ${punishment.studentEmail}`
+          "Guidance record archived; history retained."
         );
       })
       .catch(function (error) {
-        console.error(error);
-      });
+        setErrorMessage(studentSecurityError(error));
+        setCloseIndicator(false);
+      }).finally(() => { actionLocks.current.delete(id); setCloseIndicator(false); });
   };
 
   useEffect(() => {
@@ -332,6 +328,7 @@ const GuidanceDashboard = () => {
 
   return (
     <>
+      {errorMessage && <div role="alert">{errorMessage}</div>}
       {/* MODALS */}
 
       <div>
@@ -520,11 +517,11 @@ const GuidanceDashboard = () => {
                       <div className="action-container">
                         <div className="card-actions">
                           <div className="card-action-title">
-                            {item.status === "CLOSED" ? "Restore" : " Complete"}
+                            {item.archived ? "Archived" : item.status === "CLOSED" ? "Restore" : " Complete"}
                           </div>
                           <div
                             onClick={() =>
-                              handlePunishmentClose(item.guidanceId)
+                              handleStatusChange(item.status === "CLOSED" ? "OPEN" : "CLOSED", item.guidanceId)
                             }
                             className={
                               closeIndicator && activeIndex === index
@@ -538,6 +535,7 @@ const GuidanceDashboard = () => {
                           <div
                             className="clock-icon"
                             onClick={() => {
+                              if(item.archived) { setErrorMessage("Archived guidance history is read-only."); return; }
                               setDisplayNotes((prevState) => !prevState); // Toggle the state
                               setActiveTask(item.guidanceId);
                             }}
@@ -548,7 +546,7 @@ const GuidanceDashboard = () => {
                           </div>
                         </div>
                         <div className="card-actions">
-                          <div className="card-action-title">Delete</div>
+                          <div className="card-action-title">Archive</div>
                           <div
                             className="clock-icon"
                             onClick={() => {
@@ -676,7 +674,7 @@ const GuidanceDashboard = () => {
                         </div>
                         <div
                           onClick={() =>
-                            handleStatusChange("CLOSED", item.guidanceId)
+                            handleStatusChange(item.status === "CLOSED" ? "OPEN" : "CLOSED", item.guidanceId)
                           }
                           className="check-box"
                         ></div>

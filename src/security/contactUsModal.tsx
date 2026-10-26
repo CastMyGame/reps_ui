@@ -14,6 +14,8 @@ import {
 } from "@mui/material";
 import MuiAlert from "@mui/material/Alert";
 import axios from "axios";
+import { requireGuidanceCreation } from "src/utils/guidanceSecurity";
+import { studentSecurityError } from "src/utils/studentSecurity";
 import { baseUrl } from "../utils/jsonData";
 import "./modal.css";
 
@@ -40,6 +42,8 @@ export const ContactUsModal: React.FC<ContactUsProps> = ({
     "Tool Issue",
   ];
 
+  const inFlight = useRef(false);
+  const [sending, setSending] = useState(false);
   const [selectedTopic, setSelectedTopic] = useState("");
   const [emailAddress, setEmailAddress] = useState("");
   const [message, setMessage] = useState("");
@@ -77,6 +81,7 @@ export const ContactUsModal: React.FC<ContactUsProps> = ({
 
   const handleTopicChange = (event: SelectChangeEvent<string>) => {
     setSelectedTopic(event.target.value);
+    if(event.target.value === "Guidance Request" && sessionStorage.getItem("role") === "STUDENT") setEmailAddress(sessionStorage.getItem("email") ?? "");
   };
 
   const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -90,13 +95,14 @@ export const ContactUsModal: React.FC<ContactUsProps> = ({
   };
 
   const handleSendMessage = () => {
+    if(inFlight.current) return;
     setEmailValidationMessage("");
 
     // Regular expression for basic email validation
     const emailValidationRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     // Check if the entered email is valid
-    if (!emailValidationRegex.test(emailAddress)) {
+    if (selectedTopic !== "Guidance Request" && !emailValidationRegex.test(emailAddress)) {
       setEmailValidationMessage("Invalid email address");
       return; // Exit the function if the email is not valid
     }
@@ -105,29 +111,32 @@ export const ContactUsModal: React.FC<ContactUsProps> = ({
     setEmailValidationMessage("");
 
     if (selectedTopic === "Guidance Request") {
+      if(!sessionStorage.getItem("Authorization")) { setEmailValidationMessage("Sign in to REPS before requesting guidance."); return; }
+      inFlight.current=true; setSending(true);
       const headers = {
         Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
       };
       const payload = {
         guidance: {
           studentEmail: emailAddress,
-          teacherEmail: sessionStorage.getItem("email"),
           referralDescription: [message],
         },
       };
 
       axios
-        .post(`${baseUrl}/punish/v1/guidance/new`, payload, {
+        .post(`${baseUrl}/guidance/v1/guidance/new`, payload, {
           headers: headers,
         })
         .then((response) => {
+          requireGuidanceCreation(response.data, emailAddress);
           setWarningToast(true);
           setTimeout(() => {
             setWarningToast(false);
             setContactUsDisplayModal("");
           }, 2000);
         })
-        .catch((error) => console.error(error));
+        .catch((error) => setEmailValidationMessage(studentSecurityError(error)))
+        .finally(() => { inFlight.current=false; setSending(false); });
     } else {
       const payload = {
         email: emailAddress,
@@ -257,7 +266,7 @@ export const ContactUsModal: React.FC<ContactUsProps> = ({
 
         <div style={{ display: "flex", justifyContent: "space-between" }}>
           <Button
-            disabled={!selectedTopic || !message}
+            disabled={sending || !selectedTopic || !message}
             variant="contained"
             color="primary"
             onClick={handleSendMessage}

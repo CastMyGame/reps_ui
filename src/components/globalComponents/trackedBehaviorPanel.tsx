@@ -1,5 +1,8 @@
 import React, { useEffect, useMemo, useState } from "react";
 import axios from "axios";
+import { useRef } from "react";
+import { requireTrackedSave } from "src/utils/guidanceSecurity";
+import { studentSecurityError } from "src/utils/studentSecurity";
 import {
   Alert,
   Box,
@@ -265,7 +268,9 @@ const TrackedBehaviorPanel: React.FC<TrackedBehaviorPanelProps> = ({
     setStudentsConfirmed(false);
   };
 
+  const inFlight = useRef(false);
   const handleSubmit = async () => {
+    if (inFlight.current) return;
     if (!selectedClass) {
       setToast({
         open: true,
@@ -304,8 +309,7 @@ const TrackedBehaviorPanel: React.FC<TrackedBehaviorPanelProps> = ({
 
     const payload = selectedStudentEmails.map((studentEmail) => ({
       studentEmail,
-      teacherEmail,
-      school: data?.school?.schoolName ?? "",
+
       classPeriod: selectedClass.classPeriod,
       behaviorCode: selectedBehavior.code,
       behaviorName: selectedBehavior.displayName,
@@ -314,7 +318,7 @@ const TrackedBehaviorPanel: React.FC<TrackedBehaviorPanelProps> = ({
     }));
 
     try {
-      setSubmitting(true);
+      inFlight.current = true; setSubmitting(true);
 
       const response = await axios.post(
         `${baseUrl}/tracked-behaviors/v1/save`,
@@ -322,7 +326,7 @@ const TrackedBehaviorPanel: React.FC<TrackedBehaviorPanelProps> = ({
         { headers },
       );
 
-      console.log("Tracked behavior save response:", response.data);
+      requireTrackedSave(response.data, selectedStudentEmails, teacherEmail);
 
       setToast({
         open: true,
@@ -335,11 +339,11 @@ const TrackedBehaviorPanel: React.FC<TrackedBehaviorPanelProps> = ({
       console.error("Failed to submit tracked behavior flow", error);
       setToast({
         open: true,
-        message: "Failed to save tracked behavior(s).",
+        message: studentSecurityError(error),
         severity: "error",
       });
     } finally {
-      setSubmitting(false);
+      inFlight.current = false; setSubmitting(false);
     }
   };
 

@@ -6,22 +6,30 @@ import { DateTime } from 'luxon';
 import './scheduler.css';
 import { baseUrl } from 'src/utils/jsonData';
 import axios from 'axios';
+import { studentSecurityError } from 'src/utils/studentSecurity';
+import { requireGuidanceRecord, guidancePath } from 'src/utils/guidanceSecurity';
+import { useRef } from 'react';
 
 const SchedulerComponent = (props:any) => {
     const [selectedDate, setSelectedDate] = useState<DateTime | null>(DateTime.now());
+    const inFlight = useRef(false);
+    const [saving, setSaving] = useState(false);
     const [toastMessage, setToastMessage] = useState("");
     const [isToast, setIsToast] = useState(true);
     const [toastType, setToastType] = useState("success-toast")
 //Add PUT controller to update followup date
 //Add PUT controller to update followup date
 const handleSetDate = () => {
+    if (inFlight.current) return;
+    inFlight.current = true; setSaving(true);
     const headers = {
         Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
       };
 
-    const url =`${baseUrl}/punish/v1/guidance/followup/${props.activeTask}`
+    const url =guidancePath("followup", props.activeTask)
     axios.put(url, {"followUpDate":selectedDate?.toFormat("yyyyMMdd"),"status":"DORMANT"},{headers})
     .then(response => {
+      requireGuidanceRecord(response.data, props.activeTask, "DORMANT");
       setToastType("success-toast")
       setIsToast(true)
       setToastMessage("Follow-up date saved. This does not confirm email delivery.")
@@ -39,7 +47,7 @@ const handleSetDate = () => {
     .catch(error => {
       setToastType("warning-toast")
       setIsToast(true)
-      setToastMessage("Something Went Wrong, Try Again")
+      setToastMessage(studentSecurityError(error))
       
       setTimeout(()=>{
         setIsToast(false)
@@ -47,7 +55,7 @@ const handleSetDate = () => {
         setToastType("")
 
   
-      },3000)    });
+      },3000)    }).finally(() => { inFlight.current = false; setSaving(false); });
 
    
 
@@ -77,7 +85,7 @@ const handleSetDate = () => {
             </div>
             <div className="btn-container">
             <p>{selectedDate?.toFormat('LLL dd yyyy')}</p>
-            <button onClick={handleSetDate} className='time-set-button'  >Set</button>
+            <button disabled={saving} onClick={handleSetDate} className='time-set-button'  >Set</button>
             </div>
          
         </div>
