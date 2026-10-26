@@ -1,5 +1,6 @@
+import { awardValidation, committedAwardBalance, currencyFailure } from "../../../utils/currency";
 import { assignmentCreationWarning } from "../../../utils/assignmentStatus";
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useEffect, useState, useRef } from "react";
 import axios from "axios";
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
@@ -19,6 +20,7 @@ const periods = ["Class Exchange", "After School", "Lunch", ...Array.from({ leng
 const referralTypes = ["Tardy", "Unauthorized Device/Cell Phone", "Disruptive Behavior", "Horseplay", "Dress Code", "Inappropriate Language", "Behavioral Concern", "Academic Concern", "Failure to Complete Work"];
 
 const MobileAdminCreateRecord = () => {
+  const sending = useRef(false);
   const navigate = useNavigate();
   const {notify} = useNotifications();
   const [overview, setOverview] = useState<AdminOverviewDto | null>(null);
@@ -55,8 +57,10 @@ const MobileAdminCreateRecord = () => {
 
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const safePoints = kind === "SHOUT_OUT" ? Math.max(0, Math.floor(points || 0)) : 0;
-    if (safePoints > (overview?.teacher?.currency ?? 0)) { setError("That award is larger than the available points balance."); return; }
+    if (sending.current) return;
+    const safePoints = kind === "SHOUT_OUT" ? points : 0;
+    const validation = kind === "SHOUT_OUT" ? awardValidation(points, (studentEmail ? 1 : 0), overview?.teacher?.currency) : "";
+    if (validation) { setError(validation); return; }
     const payload: ReferralPayload[] = [{
       studentEmail,
       teacherEmail: overview?.teacher?.email || sessionStorage.getItem("email") || "",
@@ -67,6 +71,7 @@ const MobileAdminCreateRecord = () => {
       guidanceDescription: "",
       phoneLogDescription: "",
     }];
+    sending.current = true;
     try {
       setSubmitting(true); setError("");
       const result = await axios.post(
@@ -79,6 +84,10 @@ const MobileAdminCreateRecord = () => {
     }
   );
 
+      if (kind === "SHOUT_OUT") {
+        const balance = committedAwardBalance(result.data, payload);
+        setOverview(current => current ? ({ ...current, teacher: { ...current.teacher, currency: balance } }) : current);
+      }
   window.setTimeout(() => {
     notify(
       kind === "SHOUT_OUT"
@@ -99,8 +108,8 @@ const MobileAdminCreateRecord = () => {
   }, 5000);
 
   setAssignmentWarning(assignmentCreationWarning(result.data)); setSuccess(true);
-    } catch (err) { console.error("Unable to create record", err); setError("The record was not created. Check your connection and try again."); }
-    finally { setSubmitting(false); }
+    } catch (err) { console.error("Unable to create record", err); setError(kind === "SHOUT_OUT" ? currencyFailure(err) : "The request did not complete. Check records before retrying."); }
+    finally { sending.current = false; setSubmitting(false); }
   };
 
   return <main className="mobile-create-app">
@@ -112,7 +121,7 @@ const MobileAdminCreateRecord = () => {
         <label htmlFor="record-student">Student</label><select id="record-student" value={studentEmail} onChange={(event) => setStudentEmail(event.target.value)} required><option value="">Choose a student</option>{students.map((student) => <option key={student.studentEmail} value={student.studentEmail}>{student.firstName} {student.lastName} · Grade {student.grade}</option>)}</select>
         <label htmlFor="record-period">Period</label><select id="record-period" value={period} onChange={(event) => setPeriod(event.target.value)} required><option value="">Choose a period</option>{periods.map((item) => <option key={item} value={item}>{item}</option>)}</select>
         {kind === "REFERRAL" && <><label htmlFor="record-referral-type">Referral type</label><select id="record-referral-type" value={referralType} onChange={(event) => setReferralType(event.target.value)}>{referralTypes.map((item) => <option key={item} value={item}>{item}</option>)}</select></>}
-        {kind === "SHOUT_OUT" && <><label htmlFor="record-points">Points to award</label><div className="mobile-create-points"><button type="button" onClick={() => setPoints((value) => Math.max(0, value - 1))} aria-label="Decrease points">−</button><input id="record-points" type="number" min="0" max={overview?.teacher?.currency ?? 0} value={points} onChange={(event) => setPoints(Number(event.target.value))} /><button type="button" onClick={() => setPoints((value) => Math.min(overview?.teacher?.currency ?? 0, value + 1))} aria-label="Increase points">+</button></div><p className="mobile-create-hint">Available to award: {overview?.teacher?.currency ?? 0}</p></>}
+        {kind === "SHOUT_OUT" && <><label htmlFor="record-points">Points to award</label><div className="mobile-create-points"><button type="button" onClick={() => setPoints((value) => Math.max(0, value - 1))} aria-label="Decrease points">−</button><input id="record-points" type="number" min="0" max={overview?.teacher?.currency ?? 0} value={points} onChange={(event) => setPoints(Number(event.target.value))} /><button type="button" onClick={() => setPoints((value) => Math.min(overview?.teacher?.currency ?? 0, value + 1))} aria-label="Increase points">+</button></div><p className="mobile-create-hint">Total award cost: {studentEmail ? points : 0} · Available to award: {overview?.teacher?.currency ?? 0}</p></>}
         <label htmlFor="record-description">{kind === "SHOUT_OUT" ? "What did they do well?" : "Brief description"}</label><textarea id="record-description" rows={4} value={description} onChange={(event) => setDescription(event.target.value)} placeholder={kind === "SHOUT_OUT" ? "Describe the positive behavior specifically." : "Use objective facts. This may be visible to a student and guardian."} maxLength={500} required />
         {error && <p className="mobile-create-error" role="alert">{error}</p>}<button className="mobile-create-submit" type="submit" disabled={!studentEmail || !period || !description.trim() || submitting}>{submitting ? "Saving…" : kind === "SHOUT_OUT" ? "Send shout-out" : "Create referral"}</button>
       </form>

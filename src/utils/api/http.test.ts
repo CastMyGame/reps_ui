@@ -15,3 +15,19 @@ test("different student payloads do not share an action key",async()=>{
 test("report reads and staff status retries are not disciplinary actions",async()=>{
   const config={method:"post",url:"http://127.0.0.1:1/punish/v1/studentsReport/student@example.test",headers:{}}; expect(await attachDisciplinaryActionId(config)).toEqual(config); expect(sessionStorage.length).toBe(1);
 });
+
+test("currency redemption retries keep the action ID",async()=>{
+  const redeem=()=>({method:"put",url:"http://127.0.0.1:1/employees/v1/currency/spend",data:[{studentEmail:"child@example.test",currencyTransferred:2}],headers:{}});
+  const first=await attachDisciplinaryActionId(redeem());const second=await attachDisciplinaryActionId(redeem());expect(first.headers["X-REPS-Action-Id"]).toBe(second.headers["X-REPS-Action-Id"]);
+});
+test("unconfirmed recognition response retains its action ID",async()=>{
+  const award=()=>({...request(),data:[{studentEmail:"child@example.test",infractionName:"Positive Behavior Shout Out!",currency:2}]});
+  const first=await attachDisciplinaryActionId(award());expect(()=>completeDisciplinaryAction({config:first,data:[]})).toThrow();
+  const retry=await attachDisciplinaryActionId(award());expect(retry.headers["X-REPS-Action-Id"]).toBe(first.headers["X-REPS-Action-Id"]);
+});
+
+test("an incomplete redemption response keeps its action ID",async()=>{
+  const redeem=()=>({method:"put",url:"http://127.0.0.1:1/employees/v1/currency/spend",data:[{studentEmail:"child@example.test",currencyTransferred:2}],headers:{}});
+  const first=await attachDisciplinaryActionId(redeem());expect(()=>completeDisciplinaryAction({config:first,data:[]})).toThrow();
+  const retry=await attachDisciplinaryActionId(redeem());expect(retry.headers["X-REPS-Action-Id"]).toBe(first.headers["X-REPS-Action-Id"]);
+});

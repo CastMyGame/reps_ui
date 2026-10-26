@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import { awardValidation, committedAwardBalance, currencyFailure } from "../../../utils/currency";
+import React, { useRef, useState, useEffect } from "react";
 import { assignmentCreationWarning } from "../../../utils/assignmentStatus";
 import axios from "axios";
 import { baseUrl } from "../../../utils/jsonData";
@@ -103,6 +104,8 @@ const CreatePunishmentPanel: React.FC<CreatePunishmentProps> = ({
     setTeacherEmailSelected(sessionStorage.getItem("email"));
   }, []);
 
+  const sending = useRef(false);
+  const [committedBalance, setCommittedBalance] = useState<number | null>(null);
   const [currency, setCurrency] = useState<number>(0);
 
   const [isGuidance, setIsGuidance] = useState({
@@ -217,6 +220,14 @@ const CreatePunishmentPanel: React.FC<CreatePunishmentProps> = ({
     };
 
     event.preventDefault();
+    if (sending.current) return;
+    const positive = infractionTypeSelected === "Positive Behavior Shout Out!";
+    const validation = positive ? awardValidation(currency, studentNames.length, committedBalance ?? data?.teacher?.currency) : "";
+    if (validation) { setToastSeverity("error"); setToast({display: true, message: validation}); return; }
+    if (!studentNames.length || studentNames.some(item => !listOfStudents.some(s => s.studentEmail === item.value))) {
+      setToastSeverity("error"); setToast({display: true, message: "Reload the student list and select valid students."}); return;
+    }
+    sending.current = true;
     setLoading(true);
     setOpenModal({ display: false, message: "", buttonType: "" });
     const payloadContent: ReferralPayload[] = [];
@@ -236,7 +247,7 @@ const CreatePunishmentPanel: React.FC<CreatePunishmentProps> = ({
         infractionPeriod: infractionPeriodSelected ?? "",
         infractionName: infractionTypeSelected ?? "",
         infractionDescription: personalizedDescription ?? "",
-        currency: currency ?? 0,
+        currency: positive ? currency : 0,
         guidanceDescription: isGuidance.guidanceDescription ?? "",
         phoneLogDescription: isPhoneLog.phoneLogDescription ?? "",
       };
@@ -245,7 +256,7 @@ const CreatePunishmentPanel: React.FC<CreatePunishmentProps> = ({
 
     const payload = payloadContent;
 
-    if (isGuidance.isGuidanceBoolean) {
+    if (isGuidance.isGuidanceBoolean && !positive) {
       const guidancePayloadContent = studentNames.map((student) => ({
         guidance: {
           studentEmail: student.value,
@@ -276,11 +287,12 @@ const CreatePunishmentPanel: React.FC<CreatePunishmentProps> = ({
         headers: headers,
       })
       .then(function (res) {
+        if (positive) setCommittedBalance(committedAwardBalance(res.data, payload));
         const warning = assignmentCreationWarning(res.data);
         setToastSeverity(warning ? "warning" : "success");
-        setToast({ display: true, message: warning || "Referral successfully created" });
+        setToast({ display: true, message: warning || (positive ? "Recognition and currency award saved" : "Referral successfully created") });
         setTimeout(() => {
-          setLoading(false);
+          sending.current = false; setLoading(false);
           setToast({ display: false, message: "" });
         }, warning ? 6000 : 1000);
         resetForm();
@@ -288,10 +300,10 @@ const CreatePunishmentPanel: React.FC<CreatePunishmentProps> = ({
       })
       .catch(function (error) {
         console.error(error);
-        setToast({ display: true, message: "Something Went Wrong" });
+        setToast({ display: true, message: positive ? currencyFailure(error) : "The request did not complete. Check records before retrying." });
         setToastSeverity("error");
         setTimeout(() => {
-          setLoading(false);
+          sending.current = false; setLoading(false);
           setToast({ display: false, message: "" });
         }, 2000);
       });
@@ -310,29 +322,7 @@ const CreatePunishmentPanel: React.FC<CreatePunishmentProps> = ({
   };
 
   const handleCurrencyChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const enteredValue = Number(event.target.value);
-    // Check if the entered value is greater than or equal to the minimum value
-    if (enteredValue >= 0) {
-      // Fix this to display toast if difference is negative
-
-      if (difference < 0) {
-        setToast({
-          display: true,
-          message:
-            "You do not have enough currency to give out that much please change your amount",
-        });
-        setTimeout(() => {
-          setLoading(false);
-          setToast({ display: false, message: "" });
-        }, 2000);
-        setCurrency(0);
-      } else {
-        setCurrency(enteredValue); // Update the state if it meets the validation criteria
-      }
-    } else {
-      // Optionally, you can show an error message or handle the invalid input in some way
-      console.log("Invalid input: Value must be greater than or equal to 0");
-    }
+    setCurrency(Number(event.target.value));
   };
 
   const handleClose = (
@@ -347,7 +337,7 @@ const CreatePunishmentPanel: React.FC<CreatePunishmentProps> = ({
   };
 
   const difference =
-    (data?.teacher?.currency ?? 0) - currency * (studentNames.length || 0);
+    (committedBalance ?? data?.teacher?.currency ?? 0) - currency * (studentNames.length || 0);
 
   const handleGuidanceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -751,7 +741,7 @@ const CreatePunishmentPanel: React.FC<CreatePunishmentProps> = ({
                                 <div className="wallet-after">
                                   <p>
                                     {" "}
-                                    Wallet after shout out: {difference ?? 0}
+                                    Total award cost: {currency * studentNames.length}. Wallet after shout out: {difference ?? 0}
                                   </p>
                                 </div>
                                 <TextField

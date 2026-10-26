@@ -1,3 +1,4 @@
+import { committedAwardBalance, confirmedRedemption } from "../currency";
 import axios from "axios";
 import { rejectAuthenticationFailure } from "./session";
 import { baseUrl } from "../jsonData";
@@ -24,7 +25,8 @@ export async function attachDisciplinaryActionId(config: any) {
   const method = String(config.method || "get").toLowerCase();
   const path = String(config.url || "");
   const disciplinary = /\/punish\/v1\/(startPunish\/|punishId\/close|close\/|rejected\/|archived\/)|\/officeReferral\/v1\/(startPunish\/|closeId|submit\/|rejected\/)|\/guidance\/v1\/guidance\/resources\//.test(path);
-  if (!disciplinary || !["post", "put", "patch"].includes(method)) return config;
+  const currency = /\/employees\/v1\/currency\/spend(?:$|\?)|\/employees\/v1\/[^/]+$/.test(path);
+  if ((!disciplinary && !currency) || !["post", "put", "patch"].includes(method)) return config;
   config.headers = config.headers || {};
   if (config.headers["X-REPS-Action-Id"]) return config;
   const body = typeof config.data === "string" ? config.data : JSON.stringify(config.data ?? null);
@@ -43,6 +45,10 @@ export async function attachDisciplinaryActionId(config: any) {
 }
 export function completeDisciplinaryAction(response: any) {
   if (response.config?.__repsActionKey) {
+    const body = typeof response.config.data === "string" ? JSON.parse(response.config.data) : response.config.data;
+    if (Array.isArray(body) && body.some(item => item?.infractionName === "Positive Behavior Shout Out!"))
+      committedAwardBalance(response.data, body); // Retain the action ID on an incomplete/old-server response.
+    if (/\/employees\/v1\/currency\/spend(?:$|\?)/.test(String(response.config.url))) confirmedRedemption(response.data, body);
     sessionStorage.removeItem(response.config.__repsActionKey);
     window.dispatchEvent(new Event("reps:disciplinary-action-saved"));
   }
