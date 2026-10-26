@@ -1,11 +1,16 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { studentProfilePatch, studentSecurityError } from "src/utils/studentSecurity";
+import { useRef } from "react";
 import Select, { ActionMeta, SingleValue } from "react-select";
 import { baseUrl } from "src/utils/jsonData";
 import { TextField, Button, Container, Typography, Box } from "@mui/material";
 import { Student } from "src/types/school";
 
 const EditStudentPanel = () => {
+  const inFlight = useRef(false);
+  const [saving, setSaving] = useState(false);
+  const administrator = (sessionStorage.getItem("roles") ?? sessionStorage.getItem("role") ?? "").includes("ADMIN");
   const [listOfStudents, setListOfStudents] = useState<Student[]>([]);
   const [selectedStudent, setSelectedStudent] = useState<Student>();
   const [studentForm, setStudentForm] = useState<Student>();
@@ -57,19 +62,24 @@ const EditStudentPanel = () => {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    if (!studentForm || inFlight.current) return;
+    inFlight.current = true; setSaving(true); setErrorMessage(""); setSuccessMessage("");
     const headers = {
       Authorization: "Bearer " + sessionStorage.getItem("Authorization"),
     };
     axios
-      .put(`${baseUrl}/student/v1/updateStudents`, [studentForm], { headers })
+      .put(`${baseUrl}/student/v1/updateStudents`, [studentProfilePatch(studentForm, administrator)], { headers })
       .then((response) => {
+        const saved = response.data?.find((s: Student) => s.studentIdNumber === studentForm.studentIdNumber);
+        if (!saved || saved.profileRevision !== (studentForm.profileRevision ?? 0) + 1) throw new Error("Update was not confirmed");
+        setStudentForm(saved); setSelectedStudent(saved);
+        setListOfStudents(current => current.map(s => s.studentIdNumber === saved.studentIdNumber ? saved : s));
         setSuccessMessage("Student updated successfully.");
         setTimeout(() => setSuccessMessage(""), 3000);
       })
       .catch((error) => {
-        setErrorMessage("Failed to update student.");
-        setTimeout(() => setErrorMessage(""), 3000);
-      });
+        setErrorMessage(studentSecurityError(error));
+      }).finally(() => { inFlight.current = false; setSaving(false); });
   };
 
   return (
@@ -131,6 +141,7 @@ const EditStudentPanel = () => {
             fullWidth
             label="Guidance Email"
             name="guidanceEmail"
+            disabled={!administrator || saving}
             value={studentForm?.guidanceEmail ?? ""}
             onChange={handleInputChange}
             margin="normal"
@@ -139,6 +150,7 @@ const EditStudentPanel = () => {
             fullWidth
             label="Admin Email"
             name="adminEmail"
+            disabled={!administrator || saving}
             value={studentForm?.adminEmail ?? ""}
             onChange={handleInputChange}
             margin="normal"
@@ -167,7 +179,7 @@ const EditStudentPanel = () => {
             onChange={handleInputChange}
             margin="normal"
           />
-          <Button type="submit" variant="contained" sx={{ mt: 2 }}>
+          <Button disabled={saving} type="submit" variant="contained" sx={{ mt: 2 }}>
             Update Student
           </Button>
         </Box>

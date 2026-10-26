@@ -41,7 +41,7 @@ const MobileTeacherAddStudent = () => {
 
   useEffect(() => {
     axios
-      .get(`${baseUrl}/student/v1/allStudents`, {
+      .get(`${baseUrl}/student/v1/enrollment-directory`, {
         headers: {
           Authorization: `Bearer ${sessionStorage.getItem("Authorization")}`,
         },
