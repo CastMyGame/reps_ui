@@ -6,8 +6,8 @@ export default function CheckoutCancel() {
 
   return (
     <div style={{ maxWidth: 800, margin: "0 auto", padding: 24 }}>
-      <h1>Checkout canceled</h1>
-      <p>No worries — you weren’t charged.</p>
+      <h1>Billing and onboarding</h1>
+      <p>New checkout is unavailable during the approved-onboarding pilot. Contact the REPS team to coordinate billing and school access. This page does not confirm payment or cancellation.</p>
 
       <div style={{ marginTop: 16, display: "flex", gap: 12, flexWrap: "wrap" }}>
         <button
@@ -22,7 +22,7 @@ export default function CheckoutCancel() {
             fontWeight: 800,
           }}
         >
-          Try again
+          Contact REPS
         </button>
 
         <button

@@ -138,7 +138,7 @@ test("checkout explains activation and first-administrator bootstrap", () => {
   ).toBeInTheDocument();
   expect(
     screen.getByText(
-      /creating a school does not create its first administrator/,
+      /first-administrator setup require approval from the REPS team/,
     ),
   ).toBeInTheDocument();
   expect(post).not.toHaveBeenCalled();
