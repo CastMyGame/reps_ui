@@ -49,6 +49,7 @@ import MobileStudentHome from "./components/mobile/student/MobileStudentHome";
 
 
 import GmailSettings from "./security/GmailSettings";
+import HistoricalCases from "./security/HistoricalCases";
 import RequiredNotifications, { DisciplinaryActionNotice } from "./security/RequiredNotifications";
 
 function App() {
@@ -65,6 +66,7 @@ function App() {
               <Route path="/account/student-access" element={<StudentAccess />} />
               <Route path="/account/gmail" element={<GmailSettings />} />
               <Route path="/account/gmail/callback" element={<GmailSettings />} />
+              <Route path="/account/history" element={<HistoricalCases />} />
               <Route path="/account/notifications" element={<RequiredNotifications />} />
               <Route path="/sign-up" element={<Register />} />
               <Route path="/checkout/success" element={<CheckoutSuccess />} />
